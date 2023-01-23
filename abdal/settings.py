@@ -44,8 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     "corsheaders",
     'doc',
-    'en_doc',
-    'ru_doc',
     'django_extensions',
     'after_response',
     'rest_framework'
@@ -111,7 +109,7 @@ DATABASES = {
         'PASSWORD': '123456789',
         'HOST': 'localhost' if os.environ.get('DB_URL') is None else
         os.environ.get('DB_URL'),  # Or an IP Address that your DB is hosted on
-        'PORT': '3306' if os.environ.get('DB_PORT') is None else os.environ.get('DB_PORT')
+        'PORT': '3333' if os.environ.get('DB_PORT') is None else os.environ.get('DB_PORT')
         ,
         'TEST': {
             "DEPENDENCIES": []
@@ -120,20 +118,20 @@ DATABASES = {
         #     'charset': 'utf8mb4'  # This is the important line
         # }
     },
-    'En_DataBase': {
-            'ENGINE': 'django.db.backends.mysql',
-            'CONN_MAX_AGE': 60,
-            'NAME': 'CyberMapDB_En_v1' if os.environ.get('DB_EN_NAME') is None else os.environ.get('DB_EN_NAME'),
-            'USER': 'dbadmin',
-            'PASSWORD': '123456789',
-            'HOST': 'localhost' if os.environ.get('DB_URL') is None else
-            os.environ.get('DB_URL'),  # Or an IP Address that your DB is hosted on
-            'PORT': '3306' if os.environ.get('DB_PORT') is None else os.environ.get('DB_PORT')
-            ,
-            # 'OPTIONS': {
-            #     'charset': 'utf8mb4'  # This is the important line
-            # }
-        },
+    # 'En_DataBase': {
+    #         'ENGINE': 'django.db.backends.mysql',
+    #         'CONN_MAX_AGE': 60,
+    #         'NAME': 'CyberMapDB_En_v1' if os.environ.get('DB_EN_NAME') is None else os.environ.get('DB_EN_NAME'),
+    #         'USER': 'dbadmin',
+    #         'PASSWORD': '123456789',
+    #         'HOST': 'localhost' if os.environ.get('DB_URL') is None else
+    #         os.environ.get('DB_URL'),  # Or an IP Address that your DB is hosted on
+    #         'PORT': '3306' if os.environ.get('DB_PORT') is None else os.environ.get('DB_PORT')
+    #         ,
+    #         # 'OPTIONS': {
+    #         #     'charset': 'utf8mb4'  # This is the important line
+    #         # }
+    #     },
 }
 
 
