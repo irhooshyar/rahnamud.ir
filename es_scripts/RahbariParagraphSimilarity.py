@@ -98,6 +98,19 @@ def apply(folder, Country):
         calculate_para_sim(Country, client, index, measure)
 
 
+
+
+def get_stopword_list(stopword_file_name):
+    stop_words = []
+    stop_words_file = str(Path(config.PERSIAN_PATH, stopword_file_name))
+    with open(stop_words_file, encoding="utf-8") as f:
+        lines = f.readlines()
+        for line in lines:
+            line = line.strip()
+            stop_words.append(line)
+    f.close()
+    return stop_words
+
 def calculate_para_sim(Country, client, rahbari_para_index, sim_measure):
 
     rahbari_sim_docs = RahbariSimilarity.objects.all().values('doc1_id', 'doc2_id')
@@ -106,6 +119,10 @@ def calculate_para_sim(Country, client, rahbari_para_index, sim_measure):
     row_count = rahbari_sim_docs.count()
     Create_List = []
     batch_size = 10000
+
+    para_stopword_list = get_stopword_list('rahbari_stopwords.txt')
+    doc_stopword_list = get_stopword_list('rahbari_doc_name_stopwords.txt')
+    res_stopword_list = list(set(para_stopword_list + doc_stopword_list))
 
     for row in rahbari_sim_docs:
         rahbari_doc_id = row['doc1_id']
@@ -141,6 +158,8 @@ def calculate_para_sim(Country, client, rahbari_para_index, sim_measure):
                                 "max_query_terms": 1000,
                                 "min_doc_freq": 2,
                                 "min_word_length": 4,
+                                "stopword_list":res_stopword_list
+
                             }
                         }
 

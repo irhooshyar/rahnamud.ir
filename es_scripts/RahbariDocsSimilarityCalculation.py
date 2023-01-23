@@ -98,9 +98,23 @@ def apply(folder, Country):
 
 
 
+def get_stopword_list(stopword_file_name):
+    stop_words = []
+    stop_words_file = str(Path(config.PERSIAN_PATH, stopword_file_name))
+    with open(stop_words_file, encoding="utf-8") as f:
+        lines = f.readlines()
+        for line in lines:
+            line = line.strip()
+            stop_words.append(line)
+    f.close()
+    return stop_words
+
 def calculate_rahbari_sim(Country, client, index_name, sim_measure):
     rahbari_index = "rahbarifull_document"
 
+    para_stopword_list = get_stopword_list('rahbari_stopwords.txt')
+    doc_stopword_list = get_stopword_list('rahbari_doc_name_stopwords.txt')
+    res_stopword_list = list(set(para_stopword_list + doc_stopword_list))
 
     document_list = Rahbari.objects.all().values()
 
