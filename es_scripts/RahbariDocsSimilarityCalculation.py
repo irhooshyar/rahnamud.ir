@@ -153,7 +153,8 @@ def calculate_rahbari_sim(Country, client, index_name, sim_measure):
                 "min_doc_freq": 2,
                 "max_doc_freq": 150000,
                 "min_word_length": 4,
-                "minimum_should_match":"60%"
+                "minimum_should_match":"55%",
+                "stop_words":res_stopword_list
             }
         }
         res_query['bool']['must'].append(like_query)

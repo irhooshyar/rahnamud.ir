@@ -158,7 +158,7 @@ def calculate_para_sim(Country, client, rahbari_para_index, sim_measure):
                                 "max_query_terms": 1000,
                                 "min_doc_freq": 2,
                                 "min_word_length": 4,
-                                "stopword_list":res_stopword_list
+                                "stop_words":res_stopword_list
 
                             }
                         }
