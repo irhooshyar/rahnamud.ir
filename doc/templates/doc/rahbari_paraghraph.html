@@ -162,7 +162,7 @@
         <div id="advanced_fields" class="collapse show row flex-row-reverse mx-auto mt-4">
             <!-- Match Type -->
             <div class="col-md-6 pt-3 col-12 col-lg-3 mt-1 bg-light" dir="rtl">
-                <label for="TypeSelect" class=" text-right bg-light float-right" style="direction: rtl;"> نوع سند:</label>
+                <label for="TypeSelect" class=" text-right bg-light float-right" style="direction: rtl;"> فرامین رهبری:</label>
                 <select id="TypeSelect" multiple class="form-select text-right float-right searchable-multi-select" style="direction: rtl;">
                 </select>
             </div>
@@ -618,7 +618,7 @@
 
 
         const COLUMNS = {
-            "rahbari_type": 'نوع سند',
+            "rahbari_type": 'فرامین رهبری',
             "rahbari_date": 'تاریخ',
             "rahbari_labels": 'برچسب'
         }
@@ -898,13 +898,13 @@
                 }
             }, {
                 "name": "type",
-                "title": "دسته سند",
+                "title": "نوع سند",
                 "style": {
                     "width": "10%"
                 }
             }, {
                 "name": "rahbari_type",
-                "title": "نوع سند",
+                "title": "فرامین رهبری",
                 "style": {
                     "width": "20%"
                 }
@@ -1073,14 +1073,14 @@
 
             } else if (Doc_Field == 'type_name') {
 
-                header = "دسته سند: " + column_value
+                header = "نوع سند: " + column_value
                 type_name = column_value
-                save_file_name += " (مجموعه سند {1} و دسته سند {2})".replace("1", "اسناد رهبری").replace("2", column_value)
+                save_file_name += " (مجموعه سند {1} و نوع سند {2})".replace("1", "اسناد رهبری").replace("2", column_value)
 
             } else if (Doc_Field == 'rahbari_type') {
 
-                header = "نوع اسناد: " + column_value
-                save_file_name += " (مجموعه سند {1} و نوع اسناد {2})".replace("1", "اسناد رهبری").replace("2", column_value)
+                header = "فرامین رهبری: " + column_value
+                save_file_name += " (مجموعه سند {1} و فرامین رهبری {2})".replace("1", "اسناد رهبری").replace("2", column_value)
                 rahbari_type = -1
                 for(rahbari_type_obj of Rahbari_type_data){
                     if(rahbari_type_obj['name'] == column_value){
@@ -1141,7 +1141,7 @@
                 var csv = "";
 
                 sep = ","
-                let Csv = "نام سند" + sep + "دسته سند" + sep +
+                let Csv = "نام سند" + sep + "نوع سند" + sep +
                     "برچسب سند" + sep + "سال سند" + "\n"
 
                 for (const document of RESULT_DOCUMENTS) {
@@ -1294,7 +1294,7 @@
 
             sep = ","
 
-            let Csv = "نام سند" + sep + "دسته سند" + sep +
+            let Csv = "نام سند" + sep + "نوع سند" + sep +
                 "برچسب سند" + sep + "سال سند" + "\n"
 
             for (const document of SearchResultValue) {

@@ -164,7 +164,7 @@
             <!-- Subject Type Display Name -->
             <div class="col-md-6 pt-3 col-12 col-lg-3 mt-1 bg-light" dir="rtl">
 
-                <label class=" text-right bg-light float-right" style="direction: rtl;;"> دسته سند:</label>
+                <label class=" text-right bg-light float-right" style="direction: rtl;;"> نوع سند:</label>
                 <select id="TypeName" class="form-select text-right float-right searchable-select"
                         style="direction: rtl;">
                 </select>
@@ -695,7 +695,7 @@
     <script>
 
         const COLUMNS = {
-            "rahbari_type": 'دسته سند',
+            "rahbari_type": 'نوع سند',
             "rahbari_date": 'تاریخ',
             // "rahbari_labels": 'برچسب'
         }
@@ -945,7 +945,7 @@
                 }
             }, {
                 "name": "rahbari_type",
-                "title": "دسته سند",
+                "title": "نوع سند",
                 "style": {
                     "width": "10%"
                 }
@@ -1059,7 +1059,7 @@
             }
             /* Show Chart  */
 
-            showChartData(type_chart, "type_container", "doc_charts", documents_information_result, false, "دسته", "توزیع اسناد براساس دسته")
+            showChartData(type_chart, "type_container", "doc_charts", documents_information_result, false, "نوع", "توزیع اسناد براساس نوع")
             showChartData(year_chart, "year_container", "doc_charts", documents_information_result, true, "سال", "توزیع اسناد براساس سال")
             showChartData(labels_chart, "labels_container", "doc_charts", documents_information_result, true, "برچسب", "توزیع اسناد براساس برچسب")
 
@@ -1360,9 +1360,9 @@
 
             } else if (Doc_Field == 'type_name') {
 
-                header = "دسته سند: " + column_value
+                header = "نوع سند: " + column_value
                 type_name = column_value
-                save_file_name += " (مجموعه سند {1} و دسته سند {2})".replace("1", "اسناد رهبری").replace("2", column_value)
+                save_file_name += " (مجموعه سند {1} و نوع سند {2})".replace("1", "اسناد رهبری").replace("2", column_value)
 
             } else if (Doc_Field == 'rahbari_year') {
 
@@ -1413,7 +1413,7 @@
                 var csv = "";
 
                 sep = ","
-                let Csv = "نام سند" + sep + "دسته سند" + sep +
+                let Csv = "نام سند" + sep + "نوع سند" + sep +
                     "برچسب سند" + sep + "سال سند" + "\n"
 
                 for (const document of RESULT_DOCUMENTS) {
@@ -1690,7 +1690,7 @@
 
             sep = ","
 
-            let Csv = "نام سند" + sep + "دسته سند" + sep +
+            let Csv = "نام سند" + sep + "نوع سند" + sep +
                 "برچسب سند" + sep + "سال سند" + "\n"
 
             for (const document of SearchResultValue) {

@@ -799,7 +799,7 @@
         {
 
             $("#node_click_result_tab").click()
-            $("#chart_pane_li").removeClass("d-none")
+            $("#chart_pane_li").addClass("d-none")
 
             const label_value = 0
             const country_id = 32;
@@ -994,7 +994,7 @@
 
             await showChartData(rahbari_year, "years_container", ES_SearchResult, true, "سال تصویب سند","توزیع اسناد براساس سال تصویب")
             await showChartData(rahbari_labels, "labels_container", ES_SearchResult, false, "برچسب","توزیع اسناد براساس برچسب ها")
-            await showHistogramChart(rahbari_type, "types_container", ES_SearchResult, false, "نوع سند","توزیع اسناد براساس نوع بیانات")
+            await showHistogramChart(rahbari_type, "types_container", ES_SearchResult, false, "نوع","توزیع اسناد براساس نوع")
             console.log(rahbari_type)
         }
 

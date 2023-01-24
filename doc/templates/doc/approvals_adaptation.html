@@ -172,7 +172,7 @@
                 <!-- document type -->
                 <div class="col-md-6 pt-3 col-12 col-lg-4 bg-light" dir="rtl">
 
-                    <label class=" text-right bg-light float-right" style="direction: rtl;;">دسته سند:</label>
+                    <label class=" text-right bg-light float-right" style="direction: rtl;;">نوع سند:</label>
                     <select id="TypeName" class="form-select text-right float-right searchable-select"
                         style="direction: rtl;">
                     </select>
@@ -648,7 +648,7 @@
                     }
                 }, {
                     "name": "rahbari_type",
-                    "title": "دسته سند",
+                    "title": "نوع سند",
                     "style": {
                         "width": "10%"
                     }
@@ -770,8 +770,8 @@
                             if (row['_source']["type"] === text)
                                 return row
                         });
-                        header = "دسته سند: " + text
-                        save_file_name += "اسناد رهبری - دسته سند " + text
+                        header = "نوع سند: " + text
+                        save_file_name += "اسناد رهبری - نوع سند " + text
                     } else if (container === "labels_container") {
                         filtered_result = documents_information_result.filter(function (row) {
                             if (row['_source']["labels"].includes(text))
@@ -817,7 +817,7 @@
                         var csv = "";
 
                         sep = ","
-                        let Csv = "نام سند" + sep + "دسته سند" + sep +
+                        let Csv = "نام سند" + sep + "نوع سند" + sep +
                             "برچسب سند" + sep + "سال سند" + "\n"
 
                         for (const document of filtered_result) {
@@ -1316,7 +1316,7 @@
 
             sep = ","
 
-            let Csv = "نام سند" + sep + "دسته سند" + sep +
+            let Csv = "نام سند" + sep + "نوع سند" + sep +
                 "برچسب سند" + sep + "سال سند" + "\n"
 
             for (const document of SearchResultValue) {
