@@ -8,9 +8,9 @@ document_node_color = "#00CC66"
 
 @after_response.enable
 def apply():
-    # CoLabelsGraph()
-    # DocumentLabelGraph()
-    DocumentDocumentGraph()
+    CoLabelsGraph()
+    DocumentLabelGraph()
+    # DocumentDocumentGraph()
     print("Done...")
 
 
