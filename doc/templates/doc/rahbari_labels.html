@@ -475,9 +475,9 @@
         label_list = selected_label
 
         const rahbari_type = 0
-
+        const document_ids = 0
         request_link = 'http://' + location.host + "/SearchRahbari_ES/" + country_id + "/" + "0" + "/" +
-            label_list + "/" + doc_year + "/" + doc_year + "/" + rahbari_type + "/" + "عنوان یا متن" + "/" + "empty" + "/" + "exact" + "/";
+            label_list + "/" + doc_year + "/" + doc_year + "/" + rahbari_type + "/" + document_ids + "/" + "عنوان یا متن" + "/" + "empty" + "/" + "exact" + "/";
 
         // set modal header
         modal_header = "اسناد دارای برچسب " + "<span class='bold text-primary'>" + selected_label + "</span>" + " در سال " + "<span class='bold text-primary'>" + doc_year + "</span>"
@@ -554,7 +554,7 @@
         label_list = selected_label + "_" + label_name
 
         request_link = 'http://' + location.host + "/SearchRahbari_ES/" + country_id + "/" + "0" + "/" +
-            label_list + "/" + "0" + "/" + "0" + "/" + "0" + "/" +  "عنوان یا متن" + "/" + "empty" + "/" + "exact" + "/";
+            label_list + "/" + "0" + "/" + "0" + "/" + "0" + "/" + "0" + "/" +  "عنوان یا متن" + "/" + "empty" + "/" + "exact" + "/";
 
 
         // set modal header

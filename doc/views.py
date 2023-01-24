@@ -5949,8 +5949,8 @@ def SearchJudgment_ES(request, country_id, JudgeName,
     })
 
 
-def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_year, rahbari_type, place, text, search_type, curr_page, search_result_size):
-    fields = [type_id, label_name, from_year, to_year]
+def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_year, rahbari_type, document_ids, place, text, search_type, curr_page, search_result_size):
+    fields = [type_id, label_name, from_year, to_year, rahbari_type]
 
     res_query = {
         "bool": {}
