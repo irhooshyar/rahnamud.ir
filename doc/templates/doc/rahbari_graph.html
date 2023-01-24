@@ -184,7 +184,7 @@
                     </div>
                 </div>
                 <div class="col-4">
-                        <div id="weight_histogram" chart-height="200px" class=""></div>
+                        <div id="weight_histogram" chart-height="200px" class="d-none"></div>
                 </div>
                 <div dir="rtl" id="informationBox" class="mt-4" style="visibility: hidden; padding: 0; border: 1px solid #006666;">
                     <table class="table table-light">
@@ -581,8 +581,8 @@
                     document.getElementById("DocumentSelectBoxDiv").style.display = "block"
                 }
 
-                await showWeightChart(histogram_list, "weight_histogram", true, "حداقل وزن", histogram_title)
-                document.getElementById("weight_histogram_chart_download_btn").style.display = "none"
+                /*await showWeightChart(histogram_list, "weight_histogram", true, "حداقل وزن", histogram_title)
+                document.getElementById("weight_histogram_chart_download_btn").style.display = "none"*/
             }
         }
 
