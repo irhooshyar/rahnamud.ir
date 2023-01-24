@@ -21017,12 +21017,12 @@ def getNeighbourforNode(node_id, edge_data, node_parents, edge_count_limit):
 def getRahbariGraphData(request, type_id, limit_neighbour_count, label_id, document_id, level):
     graph_data_object = RahbariGraph.objects.get(type_id=type_id)
 
-    node_list = graph_data_object.nodes_data
+    node_list = []
     if label_id != '0':
-        node_list = list(filter(lambda x: x["id"] == label_id and x["node_type"] == "label", node_list))
+        node_list += list(filter(lambda x: x["id"] == label_id and x["node_type"] == "label", graph_data_object.nodes_data))
 
     if document_id != '0':
-        node_list = list(filter(lambda x: x["id"] == document_id and x["node_type"] == "document", node_list))
+        node_list += list(filter(lambda x: x["id"] == document_id and x["node_type"] == "document", graph_data_object.nodes_data))
 
 
     print(node_list)
