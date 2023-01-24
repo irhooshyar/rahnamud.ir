@@ -40,7 +40,9 @@ SERVER_HUGGINGFACE_CONFIGS = {
     "summarizer":"global",
 }
 
-LOAD_MODELS = str(os.environ.get('LOAD_MODELS')) == 'true'
+print('=============================')
+print(str(os.environ.get('LOAD_MODELS')) )
+LOAD_MODELS = str(os.environ.get('LOAD_MODELS')) == 'True'
 HUGGINGFACE_CONFIGS = SERVER_HUGGINGFACE_CONFIGS if (LOAD_MODELS is None or LOAD_MODELS) else LOCAL_HUGGINGFACE_CONFIGS
 
 # ----------------------------------------------
