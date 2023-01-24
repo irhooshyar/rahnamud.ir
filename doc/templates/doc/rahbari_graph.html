@@ -611,7 +611,22 @@
 
             if ("0" in label_id.split("__") && "0" in document_id.split("__"))
             {
+
+                const type_object = SearchInJson(parseInt(type_id), graph_type_list)
                 let alert_text = "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>لطفا حداقل یک برچسب یا سند را در ورودی انتخاب نمایید.</p>"
+                if (type_object !== undefined) {
+                    const is_label = type_object.is_label
+                    const is_document = type_object.is_document
+                    if (is_label === 1 && is_document === 0)
+                    {
+                        alert_text = "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>لطفا حداقل یک برچسب را در ورودی انتخاب نمایید.</p>"
+                    }
+                    if (is_label === 0 && is_document === 1)
+                    {
+                        alert_text = "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>لطفا حداقل یک سند را در ورودی انتخاب نمایید.</p>"
+                    }
+                }
+
                 Swal.fire({
                     html: alert_text,
                     icon: "warning",
