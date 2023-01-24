@@ -374,7 +374,7 @@
                                     aria-selected="true">نتایج جست‌وجو
                             </button>
                         </li>
-                        <li class="nav-item float-right" role="presentation">
+                        <li id="chart_pane_li" class="nav-item float-right" role="presentation">
                             <button id="node_click_chart_tab" class="nav-link" data-bs-toggle="pill"
                                 data-bs-target="#node_click_chart_pane" type="button" role="tab"
                                 aria-controls="node_click_chart_pane" aria-selected="false">داشبورد آماری </button>
@@ -725,6 +725,7 @@
         async function label_node_click(node_data)
         {
             $("#node_click_result_tab").click()
+            $("#chart_pane_li").removeClass("d-none")
 
             const label_value = node_data["name"]
             const country_id = 32;
@@ -763,6 +764,8 @@
         {
 
             $("#node_click_result_tab").click()
+            $("#chart_pane_li").removeClass("d-none")
+
 
             const label_value = edge_data["source_name"] + "__" + edge_data["target_name"]
             const country_id = 32;
@@ -796,6 +799,7 @@
         {
 
             $("#node_click_result_tab").click()
+            $("#chart_pane_li").removeClass("d-none")
 
             const label_value = 0
             const country_id = 32;
@@ -831,6 +835,7 @@
         async function document_label_edge_click(edge_data)
         {
             $("#node_click_result_tab").click()
+            $("#chart_pane_li").addClass("d-none")
 
             let document_ids = edge_data["source"]
             let label_name = edge_data["target_name"]
