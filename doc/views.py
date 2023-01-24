@@ -21140,7 +21140,8 @@ def getRahbariDocumentAndLabels(request):
     RahbariList = Rahbari.objects.all()
     rahbari_result = [{"value": 0, "text": "همه"}]
     for row in RahbariList:
-        res = {"value": row.document_id_id, "text": row.document_name + "(تصویب: " + row.document_id.approval_date + ")"}
+        approval_date = row.document_id.approval_date if row.document_id.approval_date is not None else "نامشخص"
+        res = {"value": row.document_id_id, "text": row.document_name + "(تصویب: " + approval_date + ")"}
         rahbari_result.append(res)
 
     LabelsList = RahbariLabel.objects.all()
