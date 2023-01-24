@@ -4074,7 +4074,7 @@ def filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, ra
         document_ids = document_ids.split("__")
 
         if document_ids[-1] == "OR":
-            document_ids = document_ids[:-1]
+            document_ids = document_ids[:-1].split("_")
             my_query = {
                 "bool": {
                     "should": []
@@ -4090,6 +4090,7 @@ def filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, ra
 
             res_query['bool']['filter'].append(my_query)
         else:
+            document_ids = document_ids.split("_")
             for document_id in document_ids:
                 label_name_query = {
                     "term": {
