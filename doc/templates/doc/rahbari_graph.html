@@ -512,7 +512,7 @@
             syncSelectOptions("GraphTypeSelect", options)
 
             options = [];
-            for (let w = 1; w <= 5; w+=1) {
+            for (let w = 1; w <= 10; w+=1) {
                 options.push({value: w, text: w});
             }
             syncSelectOptions("limit_neighbour_count", options)
@@ -746,19 +746,25 @@
 
         async function document_document_edge_click(edge_data)
         {
+
+            console.log("__________________ 1 ")
             const label_value = 0
             const country_id = 32;
             const type_id = 0;
             const from_year = 0;
             const to_year = 0;
             const place = "عنوان";
-            const text = edge_data["source_name"] + "__" + edge_data["target_name"];
+
+            const document_id1 = edge_data["source"].split("_")[1]
+            const document_id2 = edge_data["target"].split("_")[1]
+
+            const document_ids = document_id1 + "_" + document_id2 + "__OR";
+            const text = "empty";
             const search_type = "exact";
             const curr_page = 1;
             const rahbari_type = 0
-            const documnet_ids = 0
             const request_link = 'http://' + location.host + "/SearchRahbari_ES/" + country_id + "/" + type_id + "/" +
-                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + documnet_ids + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
+                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + document_ids + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
             let response = await fetch(request_link).then(response => response.json());
 
             document.getElementById("CoLabels_Node_ModalHeader").innerText = text.replace("__", " / ")
@@ -775,10 +781,13 @@
 
         async function document_label_edge_click(edge_data)
         {
-            let document_name = edge_data["source_name"]
-            console.log(edge_data["target_type"])
+            console.log("__________________ 2 ")
+
+            let document_ids = edge_data["source"]
             if (edge_data["target_type"] === "document")
-                document_name = edge_data["target_name"]
+                document_ids = edge_data["target"]
+
+            document_ids = document_ids.split("_")[1]
 
             const label_value = 0
             const country_id = 32;
@@ -786,13 +795,12 @@
             const from_year = 0;
             const to_year = 0;
             const place = "عنوان";
-            const text = document_name
+            const text = "empty"
             const search_type = "exact";
             const curr_page = 1;
             const rahbari_type = 0
-            const documnet_ids = 0
             const request_link = 'http://' + location.host + "/SearchRahbari_ES/" + country_id + "/" + type_id + "/" +
-                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + documnet_ids + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
+                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + document_ids + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
             let response = await fetch(request_link).then(response => response.json());
 
             document.getElementById("CoLabels_Node_ModalHeader").innerText = text.replace("__", " / ")
@@ -823,7 +831,7 @@
             else if (edge_data.source_type === "document" && edge_data.target_type === "document")
                 await document_document_edge_click(edge_data)
             else
-                await document_document_edge_click(edge_data)
+                await document_label_edge_click(edge_data)
         }
 
         async function showDocumentInformation(documents_information_result, mode, where, total_hits, text, curr_page, max_score) {
