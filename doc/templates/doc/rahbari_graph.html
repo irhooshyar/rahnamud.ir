@@ -159,14 +159,14 @@
                     <div class="d-flex">
                         <div id="LabelSelectBoxDiv" class="col-md-3 pt-3 col-12 col-lg-4 bg-light mt-3" style="direction: rtl">
                             <label class=" text-right bg-light float-right" style="direction: rtl;;">انتخاب برچسب:</label>
-                            <select id="LabelSelectBox" name="LabelSelectBox" class="form-select text-right float-right searchable-select"
+                            <select id="LabelSelectBox" name="LabelSelectBox" class="form-select text-right float-right searchable-multi-select"
                                 style="direction: rtl;">
                             </select>
                         </div>
 
                         <div  id="DocumentSelectBoxDiv" class="col-md-3 pt-3 col-12 col-lg-6 bg-light mt-3" style="display:none; direction: rtl">
                             <label class=" text-right bg-light float-right" style="direction: rtl;;">انتخاب سند:</label>
-                            <select id="DocumentSelectBox" name="DocumentSelectBox" class="form-select text-right float-right searchable-select"
+                            <select id="DocumentSelectBox" name="DocumentSelectBox" class="form-select text-right float-right searchable-multi-select"
                                 style="direction: rtl;">
                             </select>
                         </div>
@@ -588,6 +588,14 @@
             }
         }
 
+        async function GetMultiSelectValue(container_id) {
+            let e = document.getElementById(container_id);
+            let selected = [...e.options]
+                .filter(option => option.selected)
+                .map(option => option.value)
+            return selected.join("__")
+        }
+
         async function ShowResult()
         {
 
@@ -598,8 +606,9 @@
             const GraphTypeSelect = document.getElementById("GraphTypeSelect").value
             const limit_neighbour_count = document.getElementById("limit_neighbour_count").value
 
-            let label_id = document.getElementById("LabelSelectBox").value
-            let document_id = document.getElementById("DocumentSelectBox").value
+            let label_id = await GetMultiSelectValue("LabelSelectBox")
+            let document_id = await GetMultiSelectValue("DocumentSelectBox")
+
 
 
             if (label_id === "0" && document_id === "0")
