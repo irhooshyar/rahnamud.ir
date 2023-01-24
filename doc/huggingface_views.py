@@ -5,7 +5,7 @@ from transformers import MT5ForConditionalGeneration, MT5Tokenizer, AutoTokenize
 
 # ---------- Huggingface configs ---------------
 from abdal.config import HUGGINGFACE_CONFIGS
-
+print(f"HUGGINGFACE_CONFIGS: \n {HUGGINGFACE_CONFIGS}")
 auto_translator_model_name = None
 auto_translator_tokenizer = None
 auto_translator_model = None

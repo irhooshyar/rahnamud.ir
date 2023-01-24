@@ -98,7 +98,7 @@ async function getSimilarParagraphs(paragraph_id) {
     "/";
   response = await fetch(request_link).then((response) => response.json());
   similar_paragraphs = response["similar_paragraphs"];
-
+  console.log(similar_paragraphs)
   let body_content = "";
 
   if (similar_paragraphs.length == 0) {

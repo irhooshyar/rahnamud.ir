@@ -17355,6 +17355,11 @@ def GetSimilarParagraphs_ByParagraphID(request, paragraph_id):
     index_name = standardIndexName(country_obj, DocumentParagraphs.__name__)
     # index_name = "doticfull_documentparagraphs"
 
+
+    para_stopword_list = get_stopword_list('rahbari_stopwords.txt')
+    doc_stopword_list = get_stopword_list('rahbari_doc_name_stopwords.txt')
+    res_stopword_list = list(set(para_stopword_list + doc_stopword_list))
+
     sim_query = {
         "bool": {
             "must_not": [
@@ -17381,7 +17386,8 @@ def GetSimilarParagraphs_ByParagraphID(request, paragraph_id):
                         "max_query_terms": 400,
                         "min_word_length": 4,
                         "min_doc_freq": 2,
-                        "minimum_should_match": "55%"
+                        "minimum_should_match": "55%",
+                        "stop_words":res_stopword_list
                     }
                 }
             ]
@@ -17391,11 +17397,21 @@ def GetSimilarParagraphs_ByParagraphID(request, paragraph_id):
     response = client.search(index=index_name,
                              _source_includes=['document_id', 'document_name', 'attachment.content'],
                              request_timeout=40,
-                             query=sim_query
+                             query=sim_query,
+                            highlight={
+                                "type": "fvh",
+                                "fields": {
+                                    "attachment.content":
+                                    {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
+                                    "number_of_fragments": 0
+                                    }
+                                }
+                            }
+                             
                              )
 
     similar_paragraphs = response['hits']['hits']
-
+    print(f"similar_paragraphs:\n {similar_paragraphs}")
     return JsonResponse({'similar_paragraphs': similar_paragraphs})
 
 def GetDoticSimDocument_ByTitle(request,document_name):
