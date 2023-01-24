@@ -539,7 +539,7 @@
                             <table class="tg" style="width: 100%">
                                 <thead>
                                   <tr>
-                                    <th>نوع</th>
+                                    <th>فرامین رهبری</th>
                                     <th>امتیاز</th>
                                     <th>کلیدواژه‌ها</th>
                                     <th>جزئیات</th>
@@ -981,8 +981,8 @@
                 doc_ids.push(doc_id)
             }
             /* Show Chart  */
-            showChartData(rahbari_type_chart, "rahbari_type_container", "rahbari_type", documents_information_result, false, "نوع", "توزیع اسناد براساس نوع", "تعداد سند")
-            showChartData(type_chart, "type_container", "type", documents_information_result, false, "دسته", "توزیع اسناد براساس دسته", "تعداد سند")
+            showChartData(rahbari_type_chart, "rahbari_type_container", "rahbari_type", documents_information_result, false, "فرامین رهبری", "توزیع اسناد براساس فرامین رهبری", "تعداد سند")
+            showChartData(type_chart, "type_container", "type", documents_information_result, false, "نوع", "توزیع اسناد براساس نوع", "تعداد سند")
             showChartData(year_chart, "year_container", "year", documents_information_result, true, "سال", "توزیع اسناد براساس سال", "تعداد سند")
             showChartData(labels_chart, "labels_container", "label", documents_information_result, true, "برچسب", "توزیع اسناد براساس برچسب", "تعداد سند")
 
@@ -1428,7 +1428,7 @@
         document.getElementById("RahbariTypeTableBody").innerHTML = tag
 
 
-        showChartData(rahbari_type_chart_data, "rahbari_chart_type_container", "rahbari_type_detail_chart", [], false, "نوع", "امتیاز سند براساس نوع", "امتیاز")
+        showChartData(rahbari_type_chart_data, "rahbari_chart_type_container", "rahbari_type_detail_chart", [], false, "فرامین رهبری", "امتیاز سند براساس فرامین رهبری", "امتیاز")
 
 
         $("#RahbariTypeModalBtn").click()
