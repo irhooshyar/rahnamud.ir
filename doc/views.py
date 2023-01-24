@@ -17397,16 +17397,16 @@ def GetSimilarParagraphs_ByParagraphID(request, paragraph_id):
     response = client.search(index=index_name,
                              _source_includes=['document_id', 'document_name', 'attachment.content'],
                              request_timeout=40,
-                             query=sim_query,
-                            highlight={
-                                "type": "fvh",
-                                "fields": {
-                                    "attachment.content":
-                                    {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
-                                    "number_of_fragments": 0
-                                    }
-                                }
-                            }
+                             query=sim_query
+                            # ,highlight={
+                            #     "type": "fvh",
+                            #     "fields": {
+                            #         "attachment.content":
+                            #         {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
+                            #         "number_of_fragments": 0
+                            #         }
+                            #     }
+                            # }
                              
                              )
 
