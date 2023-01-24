@@ -17355,6 +17355,11 @@ def GetSimilarParagraphs_ByParagraphID(request, paragraph_id):
     index_name = standardIndexName(country_obj, DocumentParagraphs.__name__)
     # index_name = "doticfull_documentparagraphs"
 
+
+    para_stopword_list = get_stopword_list('rahbari_stopwords.txt')
+    doc_stopword_list = get_stopword_list('rahbari_doc_name_stopwords.txt')
+    res_stopword_list = list(set(para_stopword_list + doc_stopword_list))
+
     sim_query = {
         "bool": {
             "must_not": [
@@ -17381,7 +17386,8 @@ def GetSimilarParagraphs_ByParagraphID(request, paragraph_id):
                         "max_query_terms": 400,
                         "min_word_length": 4,
                         "min_doc_freq": 2,
-                        "minimum_should_match": "55%"
+                        "minimum_should_match": "55%",
+                        "stop_words":res_stopword_list
                     }
                 }
             ]
