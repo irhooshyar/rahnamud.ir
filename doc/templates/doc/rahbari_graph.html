@@ -829,7 +829,7 @@
             if (edge_data["target_type"] === "document")
                 document_ids = edge_data["target"]
                 label_name = edge_data["source_name"]
-            console.log(edge_data, label_name)
+            console.log(edge_data, label_name, edge_data["target_name"])
             document_ids = document_ids.split("_")[1]
 
             const label_value = 0
