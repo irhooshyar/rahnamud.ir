@@ -824,14 +824,12 @@
 
         async function document_label_edge_click(edge_data)
         {
-            console.log("__________________ 2 ")
-
             let document_ids = edge_data["source"]
             let label_name = edge_data["target_name"]
             if (edge_data["target_type"] === "document")
                 document_ids = edge_data["target"]
                 label_name = edge_data["source_name"]
-
+            console.log(edge_data, label_name)
             document_ids = document_ids.split("_")[1]
 
             const label_value = 0
