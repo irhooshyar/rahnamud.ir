@@ -48,7 +48,7 @@ class EnglishRouter:
     A router to control all database operations on models in the
     auth and contenttypes applications.
     """
-    route_app_labels = {'en_doc','ru_doc'}
+    route_app_labels = {}
 
 
     def db_for_read(self, model, **hints):

@@ -1,6 +1,6 @@
 from scripts.Persian import PersianAutomating
-from scripts.English import EnglishAutomating
-from scripts.Russia import RussiaAutomating
+# from scripts.English import EnglishAutomating
+# from scripts.Russia import RussiaAutomating
 
 import after_response
 
@@ -10,12 +10,6 @@ def apply(folder_name, Country, tasks_list,host_url):
         if Country.language == "فارسی":
             PersianAutomating.persian_apply(folder_name, Country, tasks_list, host_url)
 
-        elif Country.language == "انگلیسی":
-            EnglishAutomating.english_apply(folder_name, Country, tasks_list, host_url)
-
-        elif Country.language == "روسی":
-            RussiaAutomating.russia_apply(folder_name, Country, tasks_list, host_url)
-            
         elif Country.language == "کتاب":
             PersianAutomating.persian_apply(folder_name, Country, tasks_list, host_url)
 
