@@ -4090,7 +4090,7 @@ def filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, ra
 
             res_query['bool']['filter'].append(my_query)
         else:
-            document_ids = document_ids.split("_")
+            document_ids = document_ids[0].split("_")
             for document_id in document_ids:
                 label_name_query = {
                     "term": {
