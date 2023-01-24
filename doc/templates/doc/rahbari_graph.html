@@ -724,6 +724,8 @@
 
         async function label_node_click(node_data)
         {
+            $("#node_click_result_tab").click()
+
             const label_value = node_data["name"]
             const country_id = 32;
             const type_id = 0;
@@ -759,6 +761,9 @@
 
         async function label_label_edge_click(edge_data)
         {
+
+            $("#node_click_result_tab").click()
+
             const label_value = edge_data["source_name"] + "__" + edge_data["target_name"]
             const country_id = 32;
             const type_id = 0;
@@ -790,7 +795,8 @@
         async function document_document_edge_click(edge_data)
         {
 
-            console.log("__________________ 1 ")
+            $("#node_click_result_tab").click()
+
             const label_value = 0
             const country_id = 32;
             const type_id = 0;
@@ -824,6 +830,8 @@
 
         async function document_label_edge_click(edge_data)
         {
+            $("#node_click_result_tab").click()
+
             let document_ids = edge_data["source"]
             let label_name = edge_data["target_name"]
             if (edge_data["target_type"] === "document") {
