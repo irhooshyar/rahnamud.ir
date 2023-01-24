@@ -611,7 +611,7 @@
 
             if ("0" in label_id.split("__") && "0" in document_id.split("__"))
             {
-
+                const type_id = document.getElementById("GraphTypeSelect").value
                 const type_object = SearchInJson(parseInt(type_id), graph_type_list)
                 let alert_text = "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>لطفا حداقل یک برچسب یا سند را در ورودی انتخاب نمایید.</p>"
                 if (type_object !== undefined) {
