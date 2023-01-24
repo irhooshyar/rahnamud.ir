@@ -499,6 +499,8 @@
 
         async function init()
         {
+            startFullPageBlockUI()
+
             let request_link = 'http://' + location.host + "/getRahbariGraphType/";
             let response = await fetch(request_link).then(response => response.json());
             let type_list = response["type_list"]
@@ -515,6 +517,15 @@
                 options.push({value: w, text: w});
             }
             syncSelectOptions("limit_neighbour_count", options)
+
+
+            options = [];
+            const LevelSize = 4
+            for(let i=1; i<= LevelSize; i++)
+            {
+                options.push({ value: i, text: i });
+            }
+            syncSelectOptions("SearchNodeLevel", options)
 
             request_link = 'http://' + location.host + "/getRahbariDocumentAndLabels/";
             response = await fetch(request_link).then(response => response.json());
@@ -535,13 +546,7 @@
             form_data.append('detail_type', detail_type);
             UserLog(form_data)
 
-            options = [];
-            const LevelSize = 4
-            for(let i=1; i<= LevelSize; i++)
-            {
-                options.push({ value: i, text: i });
-            }
-            syncSelectOptions("SearchNodeLevel", options)
+            startFullPageBlockUI()
 
 
         }
