@@ -21141,7 +21141,7 @@ def getRahbariDocumentAndLabels(request):
     rahbari_result = [{"value": 0, "text": "همه"}]
     for row in RahbariList:
         approval_date = row.document_id.approval_date if row.document_id.approval_date is not None else "نامشخص"
-        res = {"value": row.document_id_id, "text": row.document_name + " (تصویب: " + approval_date + ")"}
+        res = {"value": row.document_id_id, "text": row.document_name + " (تاریخ: " + approval_date + ")"}
         rahbari_result.append(res)
 
     LabelsList = RahbariLabel.objects.all()
