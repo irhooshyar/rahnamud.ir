@@ -13539,6 +13539,22 @@ def load_stop_words():
     return stop_words
 
 
+
+
+def get_stopword_list(file_name):
+    stop_words = []
+    
+    stop_words_file = str(Path(config.PERSIAN_PATH, file_name))
+    with open(stop_words_file, encoding="utf-8") as f:
+        lines = f.readlines()
+        for line in lines:
+            line = line.strip()
+            stop_words.append(line)
+    f.close()
+    return stop_words
+
+
+
 # def preprocess(text):
 #
 #     return text.replace('‌','')
@@ -17395,6 +17411,8 @@ def GetDoticSimDocument_ByTitle(request,document_name):
             ]
         }
     }
+    stopword_list = get_stopword_list('rahbari_doc_name_stopwords.txt')
+
     like_query = {
         "more_like_this": {
             "analyzer": "persian_custom_analyzer",
@@ -17405,7 +17423,8 @@ def GetDoticSimDocument_ByTitle(request,document_name):
             "min_doc_freq": 1,
             "max_doc_freq": 150000,
             "min_word_length": 3,
-            "minimum_should_match":"30%"
+            "minimum_should_match":"40%",
+            "stop_words":stopword_list
         }
     }
 
@@ -17437,6 +17456,7 @@ def GetDoticSimDocument_ByTitle(request,document_name):
         result_doc_list.append([doc_id,doc_name,doc_score])
 
     return JsonResponse({'result_doc_list': result_doc_list})
+
 
 
 
