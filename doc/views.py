@@ -17401,7 +17401,7 @@ def GetSimilarParagraphs_ByParagraphID(request, paragraph_id):
                             highlight={
                                 "type": "fvh",
                                 "fields": {
-                                    "name":
+                                    "attachment.content":
                                     {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
                                     "number_of_fragments": 0
                                     }
