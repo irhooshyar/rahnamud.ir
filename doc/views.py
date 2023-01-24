@@ -20990,7 +20990,8 @@ def getRahbariGraphType(request):
     result = []
     for row in rahbari_graph_types:
         res = {"id": row.id, "name": row.name, "en_name": row.en_name, "max_weight": row.max_weight,
-               "weight_list": row.weight_list, "histogram_data": row.histogram_data, "histogram_title": row.histogram_title}
+               "weight_list": row.weight_list, "histogram_data": row.histogram_data, "histogram_title": row.histogram_title,
+               "is_label":row.is_label, "is_document": row.is_document}
         result.append(res)
     return JsonResponse({"type_list": result})
 

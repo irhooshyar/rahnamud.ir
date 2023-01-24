@@ -559,29 +559,23 @@
             const type_id = document.getElementById("GraphTypeSelect").value
             const type_object = SearchInJson(parseInt(type_id), graph_type_list)
             if (type_object !== undefined) {
-                const type_en_name = type_object.en_name
+                const is_label = type_object.is_label
+                const is_document = type_object.is_document
                 const histogram_list = type_object.histogram_data
                 const histogram_title = type_object.histogram_title
-
-                console.log(type_en_name)
 
                 document.getElementById("LabelSelectBox").tomselect.setValue(0)
                 document.getElementById("DocumentSelectBox").tomselect.setValue(0)
 
                 document.getElementById("LabelSelectBoxDiv").style.display = "none"
                 document.getElementById("DocumentSelectBoxDiv").style.display = "none"
-
-                if (type_en_name === "CoLabelsGraph")
+                console.log(is_label, is_document)
+                if (is_label === 1)
                 {
                     document.getElementById("LabelSelectBoxDiv").style.display = "block"
                 }
-                else if (type_en_name === "DocumentDocumentGraph")
+                if (is_document === 1)
                 {
-                    document.getElementById("DocumentSelectBoxDiv").style.display = "block"
-                }
-                else if (type_en_name === "DocumentLabelGraph")
-                {
-                    document.getElementById("LabelSelectBoxDiv").style.display = "block"
                     document.getElementById("DocumentSelectBoxDiv").style.display = "block"
                 }
 
@@ -713,7 +707,8 @@
 
         async function document_node_click(node_data)
         {
-            window.open('http://' + location.host + "/information?id=" + node_data["id"])
+            const document_id = node_data["id"].split("_")[1]
+            window.open('http://' + location.host + "/information?id=" + document_id)
         }
 
         async function label_label_edge_click(edge_data)
