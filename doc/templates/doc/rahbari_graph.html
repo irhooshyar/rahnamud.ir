@@ -135,14 +135,14 @@
                                 <img style="width: 5%; height: 5%; margin: 0 5px; cursor: pointer; position: relative;"
                                      onclick="showTypeHelp()" src="../../static/icons/help.png">
                             </div>
-                            
+
                             <select id="GraphTypeSelect" name="GraphTypeSelect" onchange="change_graph_type()" class="form-select text-right float-right searchable-select" style="direction: rtl;">
                             </select>
                         </div>
 
                         <div class="col-md-3 pt-3 col-12 col-lg-5 bg-light mt-5" style="direction: rtl">
-                            <label class=" text-right bg-light float-right" style="direction: rtl;;">حداقل وزن:</label>
-                            <select id="MinimumSimilarity" name="MinimumSimilarity" class="form-select text-right float-right searchable-select"
+                            <label class=" text-right bg-light float-right" style="direction: rtl;;">حداکثر همسایه:</label>
+                            <select id="limit_neighbour_count" name="limit_neighbour_count" class="form-select text-right float-right searchable-select"
                                 style="direction: rtl;">
                             </select>
                         </div>
@@ -193,7 +193,7 @@
                         <tbody>
                             <tr>
                                 <td class="text-center" id="selected_graph_type">-</td>
-                                <td class="text-center" id="selected_min_weight">-</td>
+                                <td class="text-center" id="selected_limit_neighbour_count">-</td>
                                 <td class="text-center" id="selected_search_keyword">-</td>
                                 <td class="text-center" id="selected_neighbour_level">-</td>
                                 <td class="text-center" id="selected_node_count">-</td>
@@ -541,10 +541,10 @@
                 const histogram_list = type_object.histogram_data
                 const histogram_title = type_object.histogram_title
                 let options = [];
-                for (let w of weight_list) {
+                for (let w = 1; w <= 5; w+=1) {
                     options.push({value: w, text: w});
                 }
-                syncSelectOptions("MinimumSimilarity", options)
+                syncSelectOptions("limit_neighbour_count", options)
                 console.log(histogram_list)
                 await showWeightChart(histogram_list, "weight_histogram", true, "حداقل وزن", histogram_title)
                 document.getElementById("weight_histogram_chart_download_btn").style.display = "none"
@@ -559,7 +559,7 @@
             startFullPageBlockUI()
 
             const GraphTypeSelect = document.getElementById("GraphTypeSelect").value
-            const MinSimilarity = document.getElementById("MinimumSimilarity").value
+            const limit_neighbour_count = document.getElementById("limit_neighbour_count").value
 
             let keyword = document.getElementById("SearchNodeText").value
             let level = document.getElementById("SearchNodeLevel").value
@@ -574,14 +574,14 @@
                 level_text = "-"
             }
 
-            let request_link = 'http://' + location.host + "/getRahbariGraphData/" + GraphTypeSelect + "/" + MinSimilarity + "/" + keyword + "/" + level + "/"
+            let request_link = 'http://' + location.host + "/getRahbariGraphData/" + GraphTypeSelect + "/" + limit_neighbour_count + "/" + keyword + "/" + level + "/"
             let response = await fetch(request_link).then(response => response.json());
 
             let Nodes_data = response["Nodes_data"]
             let Edges_data = response["Edges_data"]
 
             document.getElementById("selected_graph_type").innerText = $("#GraphTypeSelect option:selected").text();
-            document.getElementById("selected_min_weight").innerText = MinSimilarity
+            document.getElementById("selected_limit_neighbour_count").innerText = limit_neighbour_count
             document.getElementById("selected_search_keyword").innerText = keyword_text
             document.getElementById("selected_neighbour_level").innerText = level_text
             document.getElementById("selected_node_count").innerText = Nodes_data.length
@@ -641,10 +641,11 @@
             let form_data = new FormData()
             let detail_type = "نتایج جست و جو"
             let Graph_Type = $("#GraphTypeSelect option:selected").text();
-            let Minimum_Similarity = $("#MinimumSimilarity option:selected").text();
+            let Minimum_Similarity = $("#limit_neighbour_count option:selected").text();
             form_data.append('detail_type', detail_type);
             form_data.append('Graph_Type', Graph_Type);
-            form_data.append('Minimum_Similarity', Minimum_Similarity);
+            form_data.append('limit_neighbour_count', limit_neighbour_count
+            );
             UserLog(form_data)
         }
 
@@ -995,19 +996,6 @@
                 showLabels: true,
                 yAxisTitle: "تعداد یال",
                 onClick: async function (event, data) {
-                    const text = data[0];
-
-                    try {
-                        const select = document.getElementById('MinimumSimilarity');
-                        let control = select.tomselect;
-                        control.setValue(text);
-                    }
-                    catch (error)
-                    {
-                        document.getElementById("MinimumSimilarity").value = text
-                    }
-
-                    $("#graph_show").click();
                 }
             };
 
