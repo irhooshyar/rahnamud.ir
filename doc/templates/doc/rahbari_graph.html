@@ -530,7 +530,7 @@
             syncSelectOptions("LabelSelectBox", rahbari_labels_list)
 
 
-            request_link = 'http://' + location.host + "/getRahbariLabelsList/";
+            request_link = 'http://' + location.host + "/getRahbariDocumentsList/";
             response = await fetch(request_link).then(response => response.json());
             const rahbari_doc_list = response["document_list"]
             syncSelectOptions("DocumentSelectBox", rahbari_doc_list)
