@@ -609,7 +609,7 @@
             let label_id = await GetMultiSelectValue("LabelSelectBox")
             let document_id = await GetMultiSelectValue("DocumentSelectBox")
 
-            if ("0" in label_id.split("__") && "0" in document_id.split("__"))
+            if (label_id.split("__").includes("0") && document_id.split("__").includes("0"))
             {
                 const type_id = document.getElementById("GraphTypeSelect").value
                 const type_object = SearchInJson(parseInt(type_id), graph_type_list)
