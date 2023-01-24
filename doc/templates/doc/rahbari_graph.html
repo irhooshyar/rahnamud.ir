@@ -635,7 +635,24 @@
                 document.getElementById("selected_node_count").innerText = Nodes_data.length
                 document.getElementById("selected_edge_count").innerText = Edges_data.length
 
-                if (Edges_data.length === 0 && Nodes_data.length === 0) {
+                if (Edges_data.length > 500) {
+                    let alert_text = "<img style='width: 15%; padding: 20px 0' src='../../static/icons/error.ico'>"
+                    alert_text += "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>" + "گراف خروجی شامل " + Nodes_data.length + " گره و " + Edges_data.length + " یال است. " + "</p>"
+                    alert_text += "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>" + "با توجه به حجم گراف، ممکن است مرورگر شما دچار مشکل شود." + "</p>"
+                    alert_text += "<p style='font-weight: bold; direction: rtl; font-size: 17px; padding: 5px 0'>" + "لطفا با تغییر فیلترهای ورودی، گراف کوچک‌تری ایجاد نمایید." + "</p>"
+                    Swal.fire({
+                        html: alert_text,
+                        customClass:"swal-wide",
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        showCloseButton: true,
+
+                    })
+                    Nodes_data = []
+                    Edges_data = []
+
+                }
+                else if (Edges_data.length === 0 && Nodes_data.length === 0) {
                     let alert_text = "<p style='font-weight: bold; direction: rtl; font-size: 18px; padding: 5px 0'>هیچ گره و یالی یافت نشد.</p>"
                     alert_text += "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>لطفا با تغییر فیلترهای ورودی، گراف خود را مجددا رسم نمایید.</p>"
                     Swal.fire({
