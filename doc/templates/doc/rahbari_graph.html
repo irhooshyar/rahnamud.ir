@@ -126,7 +126,7 @@
             method="post" novalidate>
             <div class="row mb-0 flex-row-reverse mx-auto">
 
-                <div class="col-8" dir="rtl">
+                <div class="col-12" dir="rtl">
 
                     <div class="d-flex">
                         <div class="col-md-6 pt-3 col-12 col-lg-4 bg-light mt-5" dir="rtl">
@@ -184,7 +184,7 @@
                     </div>
                 </div>
                 <div class="col-4">
-                        <div id="weight_histogram" chart-height="200px" class=""></div>
+                        <div id="weight_histogram" chart-height="200px" class="d-none"></div>
                 </div>
                 <div dir="rtl" id="informationBox" class="mt-4" style="visibility: hidden; padding: 0; border: 1px solid #006666;">
                     <table class="table table-light">
@@ -512,14 +512,14 @@
             syncSelectOptions("GraphTypeSelect", options)
 
             options = [];
-            for (let w = 1; w <= 5; w+=1) {
+            for (let w = 1; w <= 15; w+=1) {
                 options.push({value: w, text: w});
             }
             syncSelectOptions("limit_neighbour_count", options)
 
 
             options = [];
-            const LevelSize = 4
+            const LevelSize = 5
             for(let i=1; i<= LevelSize; i++)
             {
                 options.push({ value: i, text: i });
@@ -568,6 +568,8 @@
 
                 document.getElementById("LabelSelectBox").tomselect.setValue(0)
                 document.getElementById("DocumentSelectBox").tomselect.setValue(0)
+                document.getElementById("limit_neighbour_count").tomselect.setValue(1)
+                document.getElementById("SearchNodeLevel").tomselect.setValue(1)
 
                 document.getElementById("LabelSelectBoxDiv").style.display = "none"
                 document.getElementById("DocumentSelectBoxDiv").style.display = "none"
@@ -581,8 +583,8 @@
                     document.getElementById("DocumentSelectBoxDiv").style.display = "block"
                 }
 
-                await showWeightChart(histogram_list, "weight_histogram", true, "حداقل وزن", histogram_title)
-                document.getElementById("weight_histogram_chart_download_btn").style.display = "none"
+                /*await showWeightChart(histogram_list, "weight_histogram", true, "حداقل وزن", histogram_title)
+                document.getElementById("weight_histogram_chart_download_btn").style.display = "none"*/
             }
         }
 
@@ -633,7 +635,24 @@
                 document.getElementById("selected_node_count").innerText = Nodes_data.length
                 document.getElementById("selected_edge_count").innerText = Edges_data.length
 
-                if (Edges_data.length === 0 && Nodes_data.length === 0) {
+                if (Edges_data.length > 500) {
+                    let alert_text = "<img style='width: 15%; padding: 20px 0' src='../../static/icons/error.ico'>"
+                    alert_text += "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>" + "گراف خروجی شامل " + Nodes_data.length + " گره و " + Edges_data.length + " یال است. " + "</p>"
+                    alert_text += "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>" + "با توجه به حجم گراف، ممکن است مرورگر شما دچار مشکل شود." + "</p>"
+                    alert_text += "<p style='font-weight: bold; direction: rtl; font-size: 17px; padding: 5px 0'>" + "لطفا با تغییر فیلترهای ورودی، گراف کوچک‌تری ایجاد نمایید." + "</p>"
+                    Swal.fire({
+                        html: alert_text,
+                        customClass:"swal-wide",
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        showCloseButton: true,
+
+                    })
+                    Nodes_data = []
+                    Edges_data = []
+
+                }
+                else if (Edges_data.length === 0 && Nodes_data.length === 0) {
                     let alert_text = "<p style='font-weight: bold; direction: rtl; font-size: 18px; padding: 5px 0'>هیچ گره و یالی یافت نشد.</p>"
                     alert_text += "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>لطفا با تغییر فیلترهای ورودی، گراف خود را مجددا رسم نمایید.</p>"
                     Swal.fire({
@@ -746,19 +765,25 @@
 
         async function document_document_edge_click(edge_data)
         {
+
+            console.log("__________________ 1 ")
             const label_value = 0
             const country_id = 32;
             const type_id = 0;
             const from_year = 0;
             const to_year = 0;
             const place = "عنوان";
-            const text = edge_data["source_name"] + "__" + edge_data["target_name"];
+
+            const document_id1 = edge_data["source"].split("_")[1]
+            const document_id2 = edge_data["target"].split("_")[1]
+
+            const document_ids = document_id1 + "_" + document_id2 + "__OR";
+            const text = "empty";
             const search_type = "exact";
             const curr_page = 1;
             const rahbari_type = 0
-            const documnet_ids = 0
             const request_link = 'http://' + location.host + "/SearchRahbari_ES/" + country_id + "/" + type_id + "/" +
-                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + documnet_ids + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
+                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + document_ids + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
             let response = await fetch(request_link).then(response => response.json());
 
             document.getElementById("CoLabels_Node_ModalHeader").innerText = text.replace("__", " / ")
@@ -775,10 +800,13 @@
 
         async function document_label_edge_click(edge_data)
         {
-            let document_name = edge_data["source_name"]
-            console.log(edge_data["target_type"])
+            console.log("__________________ 2 ")
+
+            let document_ids = edge_data["source"]
             if (edge_data["target_type"] === "document")
-                document_name = edge_data["target_name"]
+                document_ids = edge_data["target"]
+
+            document_ids = document_ids.split("_")[1]
 
             const label_value = 0
             const country_id = 32;
@@ -786,13 +814,12 @@
             const from_year = 0;
             const to_year = 0;
             const place = "عنوان";
-            const text = document_name
+            const text = "empty"
             const search_type = "exact";
             const curr_page = 1;
             const rahbari_type = 0
-            const documnet_ids = 0
             const request_link = 'http://' + location.host + "/SearchRahbari_ES/" + country_id + "/" + type_id + "/" +
-                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + documnet_ids + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
+                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + document_ids + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
             let response = await fetch(request_link).then(response => response.json());
 
             document.getElementById("CoLabels_Node_ModalHeader").innerText = text.replace("__", " / ")
@@ -823,7 +850,7 @@
             else if (edge_data.source_type === "document" && edge_data.target_type === "document")
                 await document_document_edge_click(edge_data)
             else
-                await document_document_edge_click(edge_data)
+                await document_label_edge_click(edge_data)
         }
 
         async function showDocumentInformation(documents_information_result, mode, where, total_hits, text, curr_page, max_score) {

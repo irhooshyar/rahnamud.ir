@@ -4012,7 +4012,7 @@ def filter_judge_fields(res_query, JudgeName, SubjectTypeDisplayName, Judgmentty
     return res_query
 
 
-def filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, rahbari_type):
+def filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, rahbari_type, document_ids):
     if type_id != 0:
         type_name = Type.objects.get(id=type_id).name
         type_name = arabic_preprocessing(type_name)
@@ -4098,6 +4098,35 @@ def filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, ra
                 label_name_query = {
                     "term": {
                         "labels.keyword": type_name
+                    },
+                }
+                res_query['bool']['filter'].append(label_name_query)
+
+
+    if document_ids.replace("__OR", "") != '0':
+        document_ids = document_ids.split("__")
+
+        if document_ids[-1] == "OR":
+            document_ids = document_ids[:-1]
+            my_query = {
+                "bool": {
+                    "should": []
+                }
+            }
+            for document_id in document_ids:
+                query = {
+                    "term": {
+                        "document_id": document_id
+                    }
+                }
+                my_query['bool']['should'].append(query)
+
+            res_query['bool']['filter'].append(my_query)
+        else:
+            for document_id in document_ids:
+                label_name_query = {
+                    "term": {
+                        "document_id": document_id
                     },
                 }
                 res_query['bool']['filter'].append(label_name_query)
@@ -5950,7 +5979,7 @@ def SearchJudgment_ES(request, country_id, JudgeName,
 
 
 def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_year, rahbari_type, document_ids, place, text, search_type, curr_page, search_result_size):
-    fields = [type_id, label_name, from_year, to_year, rahbari_type]
+    fields = [type_id, label_name, from_year, to_year, rahbari_type, document_ids]
 
     res_query = {
         "bool": {}
@@ -5961,7 +5990,7 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
     if not all(field == 0 for field in fields):
         ALL_FIELDS = False
         res_query['bool']['filter'] = []
-        res_query = filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, rahbari_type)
+        res_query = filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, rahbari_type, document_ids)
 
     if text != "empty":
         res_query["bool"]["must"] = []
