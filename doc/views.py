@@ -4070,34 +4070,23 @@ def filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, ra
                 res_query['bool']['filter'].append(label_name_query)
 
 
-    if document_ids.replace("__OR", "") != '0':
+    if document_ids != '0':
         document_ids = document_ids.split("__")
-
-        if document_ids[-1] == "OR":
-            document_ids = document_ids[0].split("_")
-            my_query = {
-                "bool": {
-                    "should": []
+        my_query = {
+            "bool": {
+                "should": []
+            }
+        }
+        for document_id in document_ids:
+            query = {
+                "term": {
+                    "document_id": document_id
                 }
             }
-            for document_id in document_ids:
-                query = {
-                    "term": {
-                        "document_id": document_id
-                    }
-                }
-                my_query['bool']['should'].append(query)
+            my_query['bool']['should'].append(query)
 
-            res_query['bool']['filter'].append(my_query)
-        else:
-            document_ids = document_ids[0].split("_")
-            for document_id in document_ids:
-                label_name_query = {
-                    "term": {
-                        "document_id": document_id
-                    },
-                }
-                res_query['bool']['filter'].append(label_name_query)
+        res_query['bool']['filter'].append(my_query)
+
 
     return res_query
 
