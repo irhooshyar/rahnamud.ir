@@ -129,42 +129,50 @@
                 <div class="col-8" dir="rtl">
 
                     <div class="d-flex">
-                        <div class="col-md-6 pt-3 col-12 col-lg-5 bg-light mt-5" dir="rtl">
+                        <div class="col-md-6 pt-3 col-12 col-lg-4 bg-light mt-5" dir="rtl">
                             <div class="d-flex">
                                 <label class=" text-right bg-light float-right" style="direction: rtl;;">نوع گراف:</label>
                                 <img style="width: 5%; height: 5%; margin: 0 5px; cursor: pointer; position: relative;"
                                      onclick="showTypeHelp()" src="../../static/icons/help.png">
                             </div>
-                            
+
                             <select id="GraphTypeSelect" name="GraphTypeSelect" onchange="change_graph_type()" class="form-select text-right float-right searchable-select" style="direction: rtl;">
                             </select>
                         </div>
 
-                        <div class="col-md-3 pt-3 col-12 col-lg-5 bg-light mt-5" style="direction: rtl">
-                            <label class=" text-right bg-light float-right" style="direction: rtl;;">حداقل وزن:</label>
-                            <select id="MinimumSimilarity" name="MinimumSimilarity" class="form-select text-right float-right searchable-select"
+                        <div class="col-md-3 pt-3 col-12 col-lg-4 bg-light mt-5" style="direction: rtl">
+                            <label class=" text-right bg-light float-right" style="direction: rtl;;">حداکثر همسایه:</label>
+                            <select id="limit_neighbour_count" name="limit_neighbour_count" class="form-select text-right float-right searchable-select"
                                 style="direction: rtl;">
                             </select>
                         </div>
-                    </div>
 
-                    <div class="d-flex">
-                        <div class="col-md-3 pt-3 col-12 col-lg-5 bg-light mt-5" style="direction: rtl">
-                            <label class=" text-right bg-light float-right" style="direction: rtl;;">جستجو در نام گره:</label>
-                            <input style="direction: rtl;" class="form-control text-right" placeholder="جستجو در نام گره ها ..." type="text" required="" name="SearchNodeText" id="SearchNodeText" value="">
-
-                        </div>
-
-                        <div class="col-md-3 pt-3 col-12 col-lg-5 bg-light mt-5" style="direction: rtl">
+                        <div class="col-md-3 pt-3 col-12 col-lg-4 bg-light mt-5" style="direction: rtl">
                             <label class=" text-right bg-light float-right" style="direction: rtl;;">سطح همسایگی:</label>
                             <select id="SearchNodeLevel" name="SearchNodeLevel" class="form-select text-right float-right searchable-select"
                                 style="direction: rtl;">
                             </select>
                         </div>
 
-                        <div class="col-lg-3 mr-0 col-md-6 pt-5 col-12">
-                            <button type="button" id="graph_show" class="btn d-flex float-right mr-4 mt-5" onclick="ShowResult()">
+                    </div>
 
+                    <div class="d-flex">
+                        <div id="LabelSelectBoxDiv" class="col-md-3 pt-3 col-12 col-lg-4 bg-light mt-3" style="direction: rtl">
+                            <label class=" text-right bg-light float-right" style="direction: rtl;;">انتخاب برچسب:</label>
+                            <select id="LabelSelectBox" name="LabelSelectBox" class="form-select text-right float-right searchable-select"
+                                style="direction: rtl;">
+                            </select>
+                        </div>
+
+                        <div  id="DocumentSelectBoxDiv" class="col-md-3 pt-3 col-12 col-lg-6 bg-light mt-3" style="display:none; direction: rtl">
+                            <label class=" text-right bg-light float-right" style="direction: rtl;;">انتخاب سند:</label>
+                            <select id="DocumentSelectBox" name="DocumentSelectBox" class="form-select text-right float-right searchable-select"
+                                style="direction: rtl;">
+                            </select>
+                        </div>
+
+                        <div class="col-lg-3 mr-0 col-md-6 pt-5 col-12">
+                            <button type="button" id="graph_show" class="btn d-flex float-right mr-4 mt-3" onclick="ShowResult()">
                                 <div class="spinner-border text-light" role="status">
                                     <span class="sr-only">درحال جستجو ...</span>
                                 </div>
@@ -184,7 +192,7 @@
                             <tr>
                                 <th class="text-center" scope="col">نوع گراف</th>
                                 <th class="text-center" scope="col">حداقل وزن</th>
-                                <th class="text-center" scope="col">عبارت جستجو شده</th>
+                                <!--<th class="text-center" scope="col">عبارت جستجو شده</th>-->
                                 <th class="text-center" scope="col">سطح همسایگی</th>
                                 <th class="text-center" scope="col">تعداد گره</th>
                                 <th class="text-center" scope="col">تعداد یال</th>
@@ -193,8 +201,8 @@
                         <tbody>
                             <tr>
                                 <td class="text-center" id="selected_graph_type">-</td>
-                                <td class="text-center" id="selected_min_weight">-</td>
-                                <td class="text-center" id="selected_search_keyword">-</td>
+                                <td class="text-center" id="selected_limit_neighbour_count">-</td>
+                                <!--<td class="text-center" id="selected_search_keyword">-</td>-->
                                 <td class="text-center" id="selected_neighbour_level">-</td>
                                 <td class="text-center" id="selected_node_count">-</td>
                                 <td class="text-center" id="selected_edge_count">-</td>
@@ -491,6 +499,7 @@
 
         async function init()
         {
+
             let request_link = 'http://' + location.host + "/getRahbariGraphType/";
             let response = await fetch(request_link).then(response => response.json());
             let type_list = response["type_list"]
@@ -502,6 +511,29 @@
             }
             syncSelectOptions("GraphTypeSelect", options)
 
+            options = [];
+            for (let w = 1; w <= 5; w+=1) {
+                options.push({value: w, text: w});
+            }
+            syncSelectOptions("limit_neighbour_count", options)
+
+
+            options = [];
+            const LevelSize = 4
+            for(let i=1; i<= LevelSize; i++)
+            {
+                options.push({ value: i, text: i });
+            }
+            syncSelectOptions("SearchNodeLevel", options)
+
+            request_link = 'http://' + location.host + "/getRahbariDocumentAndLabels/";
+            response = await fetch(request_link).then(response => response.json());
+            const rahbari_doc_list = response["document_list"]
+            const rahbari_labels_list = response["labels_list"]
+
+            syncSelectOptions("DocumentSelectBox", rahbari_doc_list)
+            syncSelectOptions("LabelSelectBox", rahbari_labels_list)
+
             graph_type_list = type_list
 
             await change_graph_type()
@@ -512,14 +544,6 @@
             let detail_type = "نمایش پنل"
             form_data.append('detail_type', detail_type);
             UserLog(form_data)
-
-            options = [];
-            const LevelSize = 4
-            for(let i=1; i<= LevelSize; i++)
-            {
-                options.push({ value: i, text: i });
-            }
-            syncSelectOptions("SearchNodeLevel", options)
 
 
         }
@@ -537,15 +561,26 @@
             const type_id = document.getElementById("GraphTypeSelect").value
             const type_object = SearchInJson(parseInt(type_id), graph_type_list)
             if (type_object !== undefined) {
-                const weight_list = type_object.weight_list.split(",")
+                const is_label = type_object.is_label
+                const is_document = type_object.is_document
                 const histogram_list = type_object.histogram_data
                 const histogram_title = type_object.histogram_title
-                let options = [];
-                for (let w of weight_list) {
-                    options.push({value: w, text: w});
+
+                document.getElementById("LabelSelectBox").tomselect.setValue(0)
+                document.getElementById("DocumentSelectBox").tomselect.setValue(0)
+
+                document.getElementById("LabelSelectBoxDiv").style.display = "none"
+                document.getElementById("DocumentSelectBoxDiv").style.display = "none"
+                console.log(is_label, is_document)
+                if (is_label === 1)
+                {
+                    document.getElementById("LabelSelectBoxDiv").style.display = "block"
                 }
-                syncSelectOptions("MinimumSimilarity", options)
-                console.log(histogram_list)
+                if (is_document === 1)
+                {
+                    document.getElementById("DocumentSelectBoxDiv").style.display = "block"
+                }
+
                 await showWeightChart(histogram_list, "weight_histogram", true, "حداقل وزن", histogram_title)
                 document.getElementById("weight_histogram_chart_download_btn").style.display = "none"
             }
@@ -559,55 +594,15 @@
             startFullPageBlockUI()
 
             const GraphTypeSelect = document.getElementById("GraphTypeSelect").value
-            const MinSimilarity = document.getElementById("MinimumSimilarity").value
+            const limit_neighbour_count = document.getElementById("limit_neighbour_count").value
 
-            let keyword = document.getElementById("SearchNodeText").value
-            let level = document.getElementById("SearchNodeLevel").value
-            let keyword_text = document.getElementById("SearchNodeText").value
-            let level_text = document.getElementById("SearchNodeLevel").value
+            let label_id = document.getElementById("LabelSelectBox").value
+            let document_id = document.getElementById("DocumentSelectBox").value
 
-            if (keyword === "")
+
+            if (label_id === "0" && document_id === "0")
             {
-                keyword = 0
-                level = 0
-                keyword_text = "[بدون متن]"
-                level_text = "-"
-            }
-
-            let request_link = 'http://' + location.host + "/getRahbariGraphData/" + GraphTypeSelect + "/" + MinSimilarity + "/" + keyword + "/" + level + "/"
-            let response = await fetch(request_link).then(response => response.json());
-
-            let Nodes_data = response["Nodes_data"]
-            let Edges_data = response["Edges_data"]
-
-            document.getElementById("selected_graph_type").innerText = $("#GraphTypeSelect option:selected").text();
-            document.getElementById("selected_min_weight").innerText = MinSimilarity
-            document.getElementById("selected_search_keyword").innerText = keyword_text
-            document.getElementById("selected_neighbour_level").innerText = level_text
-            document.getElementById("selected_node_count").innerText = Nodes_data.length
-            document.getElementById("selected_edge_count").innerText = Edges_data.length
-
-
-            if (Edges_data.length > 1500) {
-                let alert_text = "<img style='width: 15%; padding: 20px 0' src='../../static/icons/error.ico'>"
-                alert_text += "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>" + "گراف خروجی شامل " + Nodes_data.length + " گره و " + Edges_data.length + " یال است. " + "</p>"
-                alert_text += "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>" + "با توجه به حجم گراف، ممکن است مرورگر شما دچار مشکل شود." + "</p>"
-                alert_text += "<p style='font-weight: bold; direction: rtl; font-size: 17px; padding: 5px 0'>" + "لطفا با جستجوی در نام گره و اعمال فیلتر وزن، گراف کوچک‌تری ایجاد نمایید." + "</p>"
-                Swal.fire({
-                    html: alert_text,
-                    customClass:"swal-wide",
-                    showCancelButton: false,
-                    showConfirmButton: false,
-                    showCloseButton: true,
-
-                })
-                Nodes_data = []
-                Edges_data = []
-
-            }
-            else if (Edges_data.length === 0 && Nodes_data.length === 0) {
-                let alert_text = "<p style='font-weight: bold; direction: rtl; font-size: 18px; padding: 5px 0'>هیچ گره و یالی یافت نشد.</p>"
-                alert_text += "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>لطفا با تغییر فیلترهای ورودی، گراف خود را مجددا رسم نمایید.</p>"
+                let alert_text = "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>لطفا حداقل یک برچسب یا سند را در ورودی انتخاب نمایید.</p>"
                 Swal.fire({
                     html: alert_text,
                     icon: "warning",
@@ -619,21 +614,56 @@
                     showConfirmButton: false,
                     showCloseButton: true,
                 })
-
-                Nodes_data = []
-                Edges_data = []
             }
+            else
+            {
+                let level = document.getElementById("SearchNodeLevel").value
+                let level_text = document.getElementById("SearchNodeLevel").value
 
-            const container = document.getElementById("rahbari_graph_graph_container");
-            const width = 0.88 * window.innerWidth
-            const height = container.scrollHeight || 500;
+                let request_link = 'http://' + location.host + "/getRahbariGraphData/" + GraphTypeSelect + "/" + limit_neighbour_count + "/" + label_id + "/" + document_id + "/" + level + "/"
+                let response = await fetch(request_link).then(response => response.json());
 
-            let Graph_Object = new MyGraph("rahbari_graph_graph_container", Nodes_data, Edges_data, {}, {}, width, height, "force", "rahbari_graph_ChangeLayout", false,
-                "Yellow", "rahbari_graph_DegreeSlider", "rahbari_graph_WeightSlider", 1, 1, "rahbari_graph_selected_node_table", "rahbari_graph_selected_edge_table",
-                "rahbari_graph_SelectNeighbourImg", "rahbari_graph_ShowHideImg", "شباهت", rahbari_graph_node_dbl_click, rahbari_graph_edge_dbl_click,
-                "rahbari_graph_SearchBox", "rahbari_graph_SearchBtn")
+                let Nodes_data = response["Nodes_data"]
+                let Edges_data = response["Edges_data"]
 
-            Graph_Object.show()
+                document.getElementById("selected_graph_type").innerText = $("#GraphTypeSelect option:selected").text();
+                document.getElementById("selected_limit_neighbour_count").innerText = limit_neighbour_count
+                //document.getElementById("selected_search_keyword").innerText = keyword_text
+                document.getElementById("selected_neighbour_level").innerText = level_text
+                document.getElementById("selected_node_count").innerText = Nodes_data.length
+                document.getElementById("selected_edge_count").innerText = Edges_data.length
+
+                if (Edges_data.length === 0 && Nodes_data.length === 0) {
+                    let alert_text = "<p style='font-weight: bold; direction: rtl; font-size: 18px; padding: 5px 0'>هیچ گره و یالی یافت نشد.</p>"
+                    alert_text += "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>لطفا با تغییر فیلترهای ورودی، گراف خود را مجددا رسم نمایید.</p>"
+                    Swal.fire({
+                        html: alert_text,
+                        icon: "warning",
+                        customClass: {
+                            popup: "swal-wide",
+                            icon: "styleSwalIcon"
+                        },
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                    })
+
+                    Nodes_data = []
+                    Edges_data = []
+                }
+
+                const container = document.getElementById("rahbari_graph_graph_container");
+                const width = 0.88 * window.innerWidth
+                const height = container.scrollHeight || 500;
+
+                let Graph_Object = new MyGraph("rahbari_graph_graph_container", Nodes_data, Edges_data, {}, {}, width, height, "force", "rahbari_graph_ChangeLayout", false,
+                    "Yellow", "rahbari_graph_DegreeSlider", "rahbari_graph_WeightSlider", 1, 1, "rahbari_graph_selected_node_table", "rahbari_graph_selected_edge_table",
+                    "rahbari_graph_SelectNeighbourImg", "rahbari_graph_ShowHideImg", "شباهت", rahbari_graph_node_dbl_click, rahbari_graph_edge_dbl_click,
+                    "rahbari_graph_SearchBox", "rahbari_graph_SearchBtn")
+
+                await Graph_Object.show()
+
+            }
 
             stopFullPageBlockUI()
 
@@ -641,10 +671,11 @@
             let form_data = new FormData()
             let detail_type = "نتایج جست و جو"
             let Graph_Type = $("#GraphTypeSelect option:selected").text();
-            let Minimum_Similarity = $("#MinimumSimilarity option:selected").text();
+            let Minimum_Similarity = $("#limit_neighbour_count option:selected").text();
             form_data.append('detail_type', detail_type);
             form_data.append('Graph_Type', Graph_Type);
-            form_data.append('Minimum_Similarity', Minimum_Similarity);
+            form_data.append('limit_neighbour_count', limit_neighbour_count
+            );
             UserLog(form_data)
         }
 
@@ -678,7 +709,8 @@
 
         async function document_node_click(node_data)
         {
-            window.open('http://' + location.host + "/information?id=" + node_data["id"])
+            const document_id = node_data["id"].split("_")[1]
+            window.open('http://' + location.host + "/information?id=" + document_id)
         }
 
         async function label_label_edge_click(edge_data)
@@ -995,19 +1027,6 @@
                 showLabels: true,
                 yAxisTitle: "تعداد یال",
                 onClick: async function (event, data) {
-                    const text = data[0];
-
-                    try {
-                        const select = document.getElementById('MinimumSimilarity');
-                        let control = select.tomselect;
-                        control.setValue(text);
-                    }
-                    catch (error)
-                    {
-                        document.getElementById("MinimumSimilarity").value = text
-                    }
-
-                    $("#graph_show").click();
                 }
             };
 

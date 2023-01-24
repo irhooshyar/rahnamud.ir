@@ -20996,7 +20996,8 @@ def getRahbariGraphType(request):
     result = []
     for row in rahbari_graph_types:
         res = {"id": row.id, "name": row.name, "en_name": row.en_name, "max_weight": row.max_weight,
-               "weight_list": row.weight_list, "histogram_data": row.histogram_data, "histogram_title": row.histogram_title}
+               "weight_list": row.weight_list, "histogram_data": row.histogram_data, "histogram_title": row.histogram_title,
+               "is_label":row.is_label, "is_document": row.is_document}
         result.append(res)
     return JsonResponse({"type_list": result})
 
@@ -21007,41 +21008,73 @@ def graph_search(word, text):
         return True
     return False
 
+def getNeighbourforNode(node_id, edge_data, node_parents, edge_count_limit):
 
-def getRahbariGraphData(request, type_id, min_similarity, keyword, level):
+    edge_list = list(filter(lambda x: (x["source"] == node_id or x["target"] == node_id) and
+                            (x["source"] not in node_parents or x["target"] not in node_parents), edge_data))
+
+    if edge_list.__len__() > edge_count_limit:
+        return sorted(edge_list, key=lambda k: k['weight'], reverse=True)[:edge_count_limit]
+    elif edge_list.__len__() > 0:
+        return sorted(edge_list, key=lambda k: k['weight'], reverse=True)[:edge_count_limit]
+    else:
+        return []
+
+
+def getRahbariGraphData(request, type_id, limit_neighbour_count, label_id, document_id, level):
     graph_data_object = RahbariGraph.objects.get(type_id=type_id)
 
-    Edges_data = list(filter(lambda x: x["weight"] >= min_similarity, graph_data_object.edges_data))
-    if keyword != '0':
-        node_list = list(filter(lambda x: graph_search(keyword, x["name"]), graph_data_object.nodes_data))
-        node_id_list = []
-        if node_list.__len__() > 0:
-            for node in node_list:
-                node_id_list.append(node["id"])
+    node_list = []
+    if label_id != '0':
+        node_list += list(filter(lambda x: x["id"] == "label_" + label_id and x["node_type"] == "label", graph_data_object.nodes_data))
+
+    if document_id != '0':
+        node_list += list(filter(lambda x: x["id"] == "document_" + document_id and x["node_type"] == "document", graph_data_object.nodes_data))
 
 
-        edge_result = []
-        seen_node = node_id_list
-        for i in range(level):
-            new_edge_list = list(filter(lambda x: x["source"] in node_id_list or x["target"] in node_id_list, Edges_data))
-            edge_result += new_edge_list
-            temp_node_id_list = []
-            for row in new_edge_list:
-                temp_node_id_list.append(row["source"])
-                temp_node_id_list.append(row["target"])
-            node_id_list = list(set(temp_node_id_list) - set(seen_node))
-            seen_node += list(set(node_id_list))
-        Edges_data = edge_result
+    print(node_list)
 
+    edges_result = []
     node_id_list = []
-    for row in Edges_data:
-        node_id_list.append(row["source"])
-        node_id_list.append(row["target"])
+    seen_node = []
+    if node_list.__len__() > 0:
+        for node in node_list:
+            node_id_list.append([node["id"], ['0']])
+            seen_node.append(node["id"])
 
-    node_id_list = list(set(node_id_list))
-    Nodes_data = list(filter(lambda x: x["id"] in node_id_list, graph_data_object.nodes_data))
-    return JsonResponse({"Nodes_data": Nodes_data, "Edges_data": Edges_data})
+    for i in range(level):
+        temp_node_id_list = {}
+        for node in node_id_list:
+            node_id = node[0]
+            node_parent = node [1]
+            edge_list = getNeighbourforNode(node_id, graph_data_object.edges_data, node_parent, limit_neighbour_count)
+            for row in edge_list:
+                if row["source"] == node_id:
+                    temp_node_id = row["target"]
+                else:
+                    temp_node_id = row["source"]
 
+                if temp_node_id not in temp_node_id_list:
+                    temp_node_id_list[temp_node_id] = [node_id]
+                else:
+                    temp_node_id_list[temp_node_id].append(node_id)
+            edges_result += edge_list
+
+        node_id_list = []
+        for node, parent_list in temp_node_id_list.items():
+            node_id_list.append([node, parent_list])
+            seen_node.append(node)
+
+    edges_data = []
+    seen_edge = []
+    for edge in edges_result:
+        if edge["id"] not in seen_edge:
+            edges_data.append(edge)
+            seen_edge.append(edge["id"])
+
+    nodes_data = list(filter(lambda x: x["id"] in seen_node, graph_data_object.nodes_data))
+
+    return JsonResponse({"Nodes_data": nodes_data, "Edges_data": edges_data})
 
 def GetRahbariTypes(request):
     rahbari_types = RahbariType.objects.all()
@@ -21106,3 +21139,21 @@ def GetRahbariTypeDetail(request, document_id):
             chart_data.append({"key": rahbari_type.name, "doc_count": 0})
 
     return JsonResponse({"rahbari_type_data": result, "rahbari_type_chart_data": chart_data })
+
+
+
+def getRahbariDocumentAndLabels(request):
+    RahbariList = Rahbari.objects.all()
+    rahbari_result = [{"value": 0, "text": "همه"}]
+    for row in RahbariList:
+        approval_date = row.document_id.approval_date if row.document_id.approval_date is not None else "نامشخص"
+        res = {"value": row.document_id_id, "text": row.document_name + " (تاریخ: " + approval_date + ")"}
+        rahbari_result.append(res)
+
+    LabelsList = RahbariLabel.objects.all()
+    labels_result = [{"value": 0, "text": "همه"}]
+    for row in LabelsList:
+        res = {"value": row.id, "text": row.name}
+        labels_result.append(res)
+
+    return JsonResponse({"document_list": rahbari_result, "labels_list": labels_result })
