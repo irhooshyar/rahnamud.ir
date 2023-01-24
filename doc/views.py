@@ -17382,7 +17382,7 @@ def GetSimilarParagraphs_ByParagraphID(request, paragraph_id):
                                 "_id": str(paragraph_id)
                             }
                         ],
-                        "min_term_freq": 1,
+                        "min_term_freq": 2,
                         "max_query_terms": 400,
                         "min_word_length": 4,
                         "min_doc_freq": 2,
