@@ -499,7 +499,6 @@
 
         async function init()
         {
-            startFullPageBlockUI()
 
             let request_link = 'http://' + location.host + "/getRahbariGraphType/";
             let response = await fetch(request_link).then(response => response.json());
@@ -545,8 +544,6 @@
             let detail_type = "نمایش پنل"
             form_data.append('detail_type', detail_type);
             UserLog(form_data)
-
-            stopFullPageBlockUI()
 
 
         }
