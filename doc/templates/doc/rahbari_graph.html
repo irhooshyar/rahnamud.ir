@@ -524,13 +524,17 @@
             }
             syncSelectOptions("SearchNodeLevel", options)
 
-            request_link = 'http://' + location.host + "/getRahbariDocumentAndLabels/";
+            request_link = 'http://' + location.host + "/getRahbariLabelsList/";
+            response = await fetch(request_link).then(response => response.json());
+            const rahbari_labels_list = response["labels_list"]
+            syncSelectOptions("LabelSelectBox", rahbari_labels_list)
+
+
+            request_link = 'http://' + location.host + "/getRahbariLabelsList/";
             response = await fetch(request_link).then(response => response.json());
             const rahbari_doc_list = response["document_list"]
-            const rahbari_labels_list = response["labels_list"]
-
             syncSelectOptions("DocumentSelectBox", rahbari_doc_list)
-            syncSelectOptions("LabelSelectBox", rahbari_labels_list)
+
 
             graph_type_list = type_list
 

@@ -21143,7 +21143,17 @@ def GetRahbariTypeDetail(request, document_id):
 
 
 
-def getRahbariDocumentAndLabels(request):
+def getRahbariLabelsList(request):
+    LabelsList = RahbariLabel.objects.all()
+    labels_result = [{"value": 0, "text": "همه"}]
+    for row in LabelsList:
+        res = {"value": row.id, "text": row.name}
+        labels_result.append(res)
+
+    return JsonResponse({"labels_list": labels_result})
+
+
+def getRahbariDocumentsList(request):
     RahbariList = Rahbari.objects.all()
     rahbari_result = [{"value": 0, "text": "همه"}]
     for row in RahbariList:
@@ -21151,10 +21161,4 @@ def getRahbariDocumentAndLabels(request):
         res = {"value": row.document_id_id, "text": row.document_name + " (تاریخ: " + approval_date + ")"}
         rahbari_result.append(res)
 
-    LabelsList = RahbariLabel.objects.all()
-    labels_result = [{"value": 0, "text": "همه"}]
-    for row in LabelsList:
-        res = {"value": row.id, "text": row.name}
-        labels_result.append(res)
-
-    return JsonResponse({"document_list": rahbari_result, "labels_list": labels_result })
+    return JsonResponse({"document_list": rahbari_result})

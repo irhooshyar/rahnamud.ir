@@ -1203,6 +1203,6 @@ urlpatterns = [
     path("GetRahbariTypes/", views.GetRahbariTypes, name='GetRahbariTypes'),
     path("GetRahbariLabels/", views.GetRahbariLabels, name='GetRahbariLabels'),
     path('GetRahbariTypeDetail/<int:document_id>/', views.GetRahbariTypeDetail, name='getRahbariGraphData'),
-    path("getRahbariDocumentAndLabels/", views.getRahbariDocumentAndLabels, name='getRahbariDocumentAndLabels'),
-
+    path("getRahbariLabelsList/", views.getRahbariLabelsList, name='getRahbariLabelsList'),
+    path("getRahbariDocumentsList/", views.getRahbariDocumentsList, name='getRahbariDocumentsList'),
 ]
