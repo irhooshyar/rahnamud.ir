@@ -1195,7 +1195,7 @@ urlpatterns = [
 
     path("rahbari_graph/", views.rahbari_graph, name='rahbari_graph'),
     path('getRahbariCoLabelsGraphMinMaxWeight/', views.getRahbariCoLabelsGraphMinMaxWeight, name='getRahbariCoLabelsGraphMinMaxWeight'),
-    path('getRahbariGraphData/<int:type_id>/<int:limit_neighbour_count>/<str:keyword>/<int:level>/',
+    path('getRahbariGraphData/<int:type_id>/<int:limit_neighbour_count>/<str:label_id>/<str:document_id>/<int:level>/',
          views.getRahbariGraphData, name='getRahbariGraphData'),
     path("getRahbariGraphType/", views.getRahbariGraphType, name='getRahbariGraphType'),
 
@@ -1203,6 +1203,6 @@ urlpatterns = [
     path("GetRahbariTypes/", views.GetRahbariTypes, name='GetRahbariTypes'),
     path("GetRahbariLabels/", views.GetRahbariLabels, name='GetRahbariLabels'),
     path('GetRahbariTypeDetail/<int:document_id>/', views.GetRahbariTypeDetail, name='getRahbariGraphData'),
-
+    path("getRahbariDocumentAndLabels/", views.getRahbariDocumentAndLabels, name='getRahbariDocumentAndLabels'),
 
 ]
