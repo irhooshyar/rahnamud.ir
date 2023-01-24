@@ -512,14 +512,14 @@
             syncSelectOptions("GraphTypeSelect", options)
 
             options = [];
-            for (let w = 1; w <= 10; w+=1) {
+            for (let w = 1; w <= 15; w+=1) {
                 options.push({value: w, text: w});
             }
             syncSelectOptions("limit_neighbour_count", options)
 
 
             options = [];
-            const LevelSize = 4
+            const LevelSize = 5
             for(let i=1; i<= LevelSize; i++)
             {
                 options.push({ value: i, text: i });
