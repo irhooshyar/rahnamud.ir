@@ -17382,7 +17382,7 @@ def GetSimilarParagraphs_ByParagraphID(request, paragraph_id):
                                 "_id": str(paragraph_id)
                             }
                         ],
-                        "min_term_freq": 2,
+                        "min_term_freq": 1,
                         "max_query_terms": 400,
                         "min_word_length": 4,
                         "min_doc_freq": 2,
@@ -17411,7 +17411,7 @@ def GetSimilarParagraphs_ByParagraphID(request, paragraph_id):
                              )
 
     similar_paragraphs = response['hits']['hits']
-
+    print(f"similar_paragraphs:\n {similar_paragraphs}")
     return JsonResponse({'similar_paragraphs': similar_paragraphs})
 
 def GetDoticSimDocument_ByTitle(request,document_name):
