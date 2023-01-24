@@ -2857,7 +2857,8 @@ class RahbariGraphType(models.Model):
     weight_list = models.TextField(null=True)
     histogram_data = models.JSONField(null=True)
     histogram_title = models.TextField(null=True)
-
+    is_label = models.IntegerField(default=0)
+    is_document = models.IntegerField(default=0)
 
 class RahbariGraph(models.Model):
     id = models.AutoField(primary_key=True)

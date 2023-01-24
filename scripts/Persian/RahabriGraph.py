@@ -65,12 +65,12 @@ def CoLabelsGraph():
             common_doc = list(set(label1_doc_list) & set(label2_doc_list))
 
             if common_doc.__len__() > 0:
-                node1 = {"id": label1_id, "name": label1_name, "node_type": "label",  "style": {"fill": label_node_color}}
-                node2 = {"id": label2_id, "name": label2_name, "node_type": "label", "style": {"fill": label_node_color}}
+                node1 = {"id": "label_" + label1_id, "name": label1_name, "node_type": "label",  "style": {"fill": label_node_color}}
+                node2 = {"id": "label_" + label2_id, "name": label2_name, "node_type": "label", "style": {"fill": label_node_color}}
                 weight = common_doc.__len__()
                 edge_id = str(label1_id) + "_" + str(label2_id)
-                edge = {"id": edge_id, "source": label1_id, "source_name": label1_name, "source_type": "label",
-                        "target": label2_id, "target_name": label2_name, "target_type": "label", "weight": weight}
+                edge = {"id": edge_id, "source": "label_" + label1_id, "source_name": label1_name, "source_type": "label",
+                        "target": "label_" + label2_id, "target_name": label2_name, "target_type": "label", "weight": weight}
 
                 if label1_id not in added_node:
                     added_node.append(label1_id)
@@ -115,6 +115,8 @@ def CoLabelsGraph():
     graph_type.save()
     graph_type.histogram_title = "توزیع باهم‌آیی برچسب‌ها براساس اسناد مشترک"
     graph_type.save()
+    graph_type.is_label = 1
+    graph_type.save()
 
 
 def DocumentLabelGraph():
@@ -138,7 +140,7 @@ def DocumentLabelGraph():
         document_id = str(doc.document_id.id)
         document_shape = "rect"
 
-        node1 = {"id": document_id, "name": document_name, "node_type": "document", "type": document_shape, "size": 20,
+        node1 = {"id": "document_" + document_id, "name": document_name, "node_type": "document", "type": document_shape, "size": 20,
                  "style": {"fill": document_node_color}}
         nodes_data.append(node1)
 
@@ -151,7 +153,7 @@ def DocumentLabelGraph():
                     label_name = label_object.name
                     label_id = str(label_object.id)
 
-                    node2 = {"id": label_id, "name": label_name, "node_type": "label", "style": {"fill": label_node_color}}
+                    node2 = {"id": "label_" + label_id, "name": label_name, "node_type": "label", "style": {"fill": label_node_color}}
 
                     if label_id not in added_node:
                         added_node.append(label_id)
@@ -159,8 +161,8 @@ def DocumentLabelGraph():
 
                     weight = 1
                     edge_id = str(document_id) + "_" + str(label_id)
-                    edge = {"id": edge_id, "source": document_id, "source_name": document_name, "source_type": "document",
-                            "target": label_id, "target_name": label_name, "target_type": "label", "weight": weight}
+                    edge = {"id": edge_id, "source": "document_" + document_id, "source_name": document_name, "source_type": "document",
+                            "target": "label_" + label_id, "target_name": label_name, "target_type": "label", "weight": weight}
 
                     if [document_id, label_id] not in added_edge and [label_id, document_id] not in added_edge:
                         added_edge.append([document_id, label_id])
@@ -178,6 +180,10 @@ def DocumentLabelGraph():
     graph_type.histogram_data = [{"key": 1, "count": edges_data.__len__()}]
     graph_type.save()
     graph_type.histogram_title = "توزیع میان اسناد و برچسب‌ها"
+    graph_type.save()
+    graph_type.is_label = 1
+    graph_type.save()
+    graph_type.is_document = 1
     graph_type.save()
 
 
@@ -233,7 +239,7 @@ def DocumentDocumentGraph():
         document1_name = rahbari_document_names[document1_id]
         document1_labels = rahbari_document_labels[document1_id]
         document1_shape = "rect"
-        node1 = {"id": document1_id, "name": document1_name, "node_type": "document", "type": document1_shape, "size": 20,
+        node1 = {"id": "document_" + document1_id, "name": document1_name, "node_type": "document", "type": document1_shape, "size": 20,
                  "style": {"fill": document_node_color}}
         nodes_data.append(node1)
 
@@ -248,8 +254,8 @@ def DocumentDocumentGraph():
 
             if weight > 0:
                 edge_id = str(document1_id) + "_" + str(document2_id)
-                edge = {"id": edge_id, "source": document1_id, "source_name": document1_name, "source_type": "document",
-                        "target": document2_id, "target_name": document2_name, "target_type": "document",
+                edge = {"id": edge_id, "source": "document_" + document1_id, "source_name": document1_name, "source_type": "document",
+                        "target": "document_" + document2_id, "target_name": document2_name, "target_type": "document",
                         "weight": weight}
 
                 if [document1_id, document2_id] not in added_edge and [document2_id, document1_id] not in added_edge:
@@ -276,4 +282,6 @@ def DocumentDocumentGraph():
     graph_type.histogram_data = histogram_list
     graph_type.save()
     graph_type.histogram_title = "توزیع اسناد براساس باهم‌آیی برچسب‌ها"
+    graph_type.save()
+    graph_type.is_document = 1
     graph_type.save()

@@ -21019,10 +21019,10 @@ def getRahbariGraphData(request, type_id, limit_neighbour_count, label_id, docum
 
     node_list = []
     if label_id != '0':
-        node_list += list(filter(lambda x: x["id"] == label_id and x["node_type"] == "label", graph_data_object.nodes_data))
+        node_list += list(filter(lambda x: x["id"] == "label_" + label_id and x["node_type"] == "label", graph_data_object.nodes_data))
 
     if document_id != '0':
-        node_list += list(filter(lambda x: x["id"] == document_id and x["node_type"] == "document", graph_data_object.nodes_data))
+        node_list += list(filter(lambda x: x["id"] == "document_" + document_id and x["node_type"] == "document", graph_data_object.nodes_data))
 
 
     print(node_list)
