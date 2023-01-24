@@ -691,8 +691,9 @@
             const search_type = "All";
             const curr_page = 1;
             const rahbari_type = 0
+            const documnet_ids = 0
             const request_link = 'http://' + location.host + "/SearchRahbari_ES/" + country_id + "/" + type_id + "/" +
-                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
+                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + documnet_ids + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
             let response = await fetch(request_link).then(response => response.json());
 
             document.getElementById("CoLabels_Node_ModalHeader").innerText = label_value
@@ -726,8 +727,9 @@
             const curr_page = 1;
 
             const rahbari_type = 0
+            const documnet_ids = 0
             const request_link = 'http://' + location.host + "/SearchRahbari_ES/" + country_id + "/" + type_id + "/" +
-                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
+                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + documnet_ids +  "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
             let response = await fetch(request_link).then(response => response.json());
 
             document.getElementById("CoLabels_Node_ModalHeader").innerText = label_value.replace("__", " / ")
@@ -754,8 +756,9 @@
             const search_type = "exact";
             const curr_page = 1;
             const rahbari_type = 0
+            const documnet_ids = 0
             const request_link = 'http://' + location.host + "/SearchRahbari_ES/" + country_id + "/" + type_id + "/" +
-                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
+                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + documnet_ids + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
             let response = await fetch(request_link).then(response => response.json());
 
             document.getElementById("CoLabels_Node_ModalHeader").innerText = text.replace("__", " / ")
@@ -787,8 +790,9 @@
             const search_type = "exact";
             const curr_page = 1;
             const rahbari_type = 0
+            const documnet_ids = 0
             const request_link = 'http://' + location.host + "/SearchRahbari_ES/" + country_id + "/" + type_id + "/" +
-                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
+                label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + documnet_ids + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
             let response = await fetch(request_link).then(response => response.json());
 
             document.getElementById("CoLabels_Node_ModalHeader").innerText = text.replace("__", " / ")

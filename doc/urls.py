@@ -386,7 +386,7 @@ urlpatterns = [
          name='GetRahbariSearchParameters'),
     path('interpretation_rules_analysis/', views.interpretation_rules_analysis, name='interpretation_rules_analysis'),
     
-    path('SearchRahbari_ES/<int:country_id>/<int:type_id>/<str:label_name>/<int:from_year>/<int:to_year>/<str:rahbari_type>/<str:place>/<str:text>/<str:search_type>/<int:curr_page>/<int:search_result_size>/',
+    path('SearchRahbari_ES/<int:country_id>/<int:type_id>/<str:label_name>/<int:from_year>/<int:to_year>/<str:rahbari_type>/<str:document_ids>/<str:place>/<str:text>/<str:search_type>/<int:curr_page>/<int:search_result_size>/',
         views.SearchRahbari_ES, name='SearchRahbari_ES'),
 
     path(

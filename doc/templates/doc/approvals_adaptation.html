@@ -686,9 +686,9 @@
             console.log(label_name)
 
             const rahbari_type = 0
-
+            const document_ids = 0
             request_link = 'http://' + location.host + "/SearchRahbari_ES/" + country_id + "/" + type_id + "/" +
-                label_name + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + place + "/" + text + "/" + search_type + "/"
+                label_name + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + document_ids + "/" + place + "/" + text + "/" + search_type + "/"
                 + "1" + "/" + "100" + "/";
 
             let response = await fetch(request_link).then(response => response.json());
