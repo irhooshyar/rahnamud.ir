@@ -21001,6 +21001,18 @@ def graph_search(word, text):
         return True
     return False
 
+def getNeighbourforNode(node_id, edge_data, node_parents, edge_count_limit):
+
+    edge_list = list(filter(lambda x: (x["source"] == node_id or x["target"] == node_id) and
+                            (x["source"] not in node_parents or x["target"] not in node_parents), edge_data))
+
+    if edge_list.__len__() > edge_count_limit:
+        return sorted(edge_list, key=lambda k: k['weight'], reverse=True)[:edge_count_limit]
+    elif edge_list.__len__() > 0:
+        return sorted(edge_list, key=lambda k: k['weight'], reverse=True)[:edge_count_limit]
+    else:
+        return []
+
 
 def getRahbariGraphData(request, type_id, limit_neighbour_count, keyword, level):
     graph_data_object = RahbariGraph.objects.get(type_id=type_id)
