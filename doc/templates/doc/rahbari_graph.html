@@ -609,7 +609,7 @@
             let label_id = await GetMultiSelectValue("LabelSelectBox")
             let document_id = await GetMultiSelectValue("DocumentSelectBox")
 
-            if (label_id === "0" && document_id === "0")
+            if ("0" in label_id.split("__") && "0" in document_id.split("__"))
             {
                 let alert_text = "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>لطفا حداقل یک برچسب یا سند را در ورودی انتخاب نمایید.</p>"
                 Swal.fire({
@@ -793,7 +793,7 @@
                 label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + document_ids + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
             let response = await fetch(request_link).then(response => response.json());
 
-            document.getElementById("CoLabels_Node_ModalHeader").innerText = text.replace("__", " / ")
+            document.getElementById("CoLabels_Node_ModalHeader").innerText = edge_data["source_name"] + " / " + edge_data["target_name"]
             $("#CoLabels_Node_Modal_btn").click()
             const total_hits = response["total_hits"]
             const ES_SearchResult = response["result"]
@@ -810,8 +810,10 @@
             console.log("__________________ 2 ")
 
             let document_ids = edge_data["source"]
+            let label_name = edge_data["target_name"]
             if (edge_data["target_type"] === "document")
                 document_ids = edge_data["target"]
+                label_name = edge_data["source_name"]
 
             document_ids = document_ids.split("_")[1]
 
@@ -829,7 +831,7 @@
                 label_value + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + document_ids + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/" + "100" + "/";
             let response = await fetch(request_link).then(response => response.json());
 
-            document.getElementById("CoLabels_Node_ModalHeader").innerText = text.replace("__", " / ")
+            document.getElementById("CoLabels_Node_ModalHeader").innerText = edge_data["source_name"] + " / " + label_name
             $("#CoLabels_Node_Modal_btn").click()
             const total_hits = response["total_hits"]
             const ES_SearchResult = response["result"]
