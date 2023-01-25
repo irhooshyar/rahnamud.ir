@@ -1118,17 +1118,8 @@
                 + UserSearchParameters.search_type + "/"
                 + next_page_number + "/"
 
-            console.log(UserSearchParameters.country_id)
-            console.log(type_name)
-            console.log(label_name_list)
-            console.log(from_year)
-            console.log(to_year)
-            console.log(rahbari_type)
-            console.log(UserSearchParameters.place)
-            console.log(UserSearchParameters.text)
-            console.log(UserSearchParameters.search_type)
-            console.log(next_page_number)
 
+            console.log(request_link)
 
             let response = await fetch(request_link).then(response => response.json());
             result_documents = response['result']
