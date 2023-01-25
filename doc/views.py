@@ -6040,15 +6040,35 @@ def filter_rahbari_fields_COLUMN(res_query, type_name, label_name_list,
         res_query['bool']['filter'].append(type_name_query)
 
     # ---------------------------------------------------------
+    print(label_name_list)
 
-    for label_name in label_name_list:
-        if label_name != 'همه':
-            label_name_query = {
-                "term": {
-                    "labels.keyword": label_name
+    label_name_list = label_name_list.replace(",", "__")
+    if label_name_list.replace("__OR", "") != 'همه' and label_name_list.replace("__OR", "") != "0":
+        label_name_list = label_name_list.split("__")
+        if label_name_list[-1] == "OR":
+            label_name_list = label_name_list[:-1]
+            my_query = {
+                "bool": {
+                    "should": []
                 }
             }
-            res_query['bool']['filter'].append(label_name_query)
+            for label in label_name_list:
+                query = {
+                    "term": {
+                        "labels.keyword": label
+                    }
+                }
+                my_query['bool']['should'].append(query)
+
+            res_query['bool']['filter'].append(my_query)
+        else:
+            for label in label_name_list:
+                query = {
+                    "term": {
+                        "labels.keyword": label
+                    }
+                }
+                res_query['bool']['filter'].append(query)
 
     # ----------------------------------------------------------
     First_Year = 1000
@@ -6114,7 +6134,6 @@ def Search_Rahbari_Column_ES(request, country_id, type_name, label_name_list,
 
     res_query['bool']['filter'] = []
 
-    label_name_list = label_name_list.split(',')
     res_query = filter_rahbari_fields_COLUMN(res_query, type_name, label_name_list,
                                              from_year, to_year, rahbari_type)
 
