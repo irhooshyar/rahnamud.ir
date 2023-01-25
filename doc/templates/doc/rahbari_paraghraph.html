@@ -1067,7 +1067,7 @@
 
                 header = "برچسب: " + column_value
                 if (!label_name_list.includes(column_value))
-                    label_name_list.push(column_value)
+                    label_name_list = [column_value, label_name_list[0]]
 
                 save_file_name += " (مجموعه سند {1} و برچسب {2})".replace("1", "اسناد رهبری").replace("2", column_value)
 
