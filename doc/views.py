@@ -18702,6 +18702,8 @@ def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRul
         if search_type == 'exact':
             res_query = exact_search_text(res_query, place, text, False)
         else:
+            if search_type == 'and':
+                search_type = 'or'
             res_query = boolean_search_text(res_query, place, text, search_type, False)
 
 
