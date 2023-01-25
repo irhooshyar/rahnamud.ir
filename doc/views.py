@@ -6063,12 +6063,13 @@ def filter_rahbari_fields_COLUMN(res_query, type_name, label_name_list,
             res_query['bool']['filter'].append(my_query)
         else:
             for label in label_name_list:
-                query = {
-                    "term": {
-                        "labels.keyword": label
+                if label != "همه":
+                    query = {
+                        "term": {
+                            "labels.keyword": label
+                        }
                     }
-                }
-                res_query['bool']['filter'].append(query)
+                    res_query['bool']['filter'].append(query)
 
     # ----------------------------------------------------------
     First_Year = 1000
