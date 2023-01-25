@@ -1190,6 +1190,11 @@ def leadership_slogan(request):  ###
                   {'countries': country_map, 'slogans': slogan_map, 'slogan_keyword': slogan_map_keyword,
                    'slogan_synonymous_words': slogan_map_synonymous_words})
 
+@allowed_users('document_profile')
+def document_profile(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/rahbari_doc_profile.html', {'countries': country_map})
 
 def GetSyns(request):
     slogan_synonymous_words_list = SloganSynonymousWords.objects.all()

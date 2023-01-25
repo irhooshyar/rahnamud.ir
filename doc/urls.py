@@ -124,6 +124,7 @@ urlpatterns = [
     path('subject_statistics/', views.subject_statistics, name='subject_statistics'),
     path('votes_analysis/', views.votes_analysis, name='votes_analysis'),
     path('leadership_slogan/', views.leadership_slogan, name='leadership_slogan'),
+    path('document_profile/', views.document_profile, name='document_profile'),
     path('adaptation/', views.adaptation, name='adaptation'),
     path('comparison/', views.comparison, name='comparison'),
     path('adaptation_comparison/<int:country_id>/<int:document_id>/<str:draft_name>/<str:searched_keywords>/',
