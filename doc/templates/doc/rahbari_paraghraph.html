@@ -643,8 +643,8 @@
 
                 this.country_id = document.getElementById("country").value;
                 this.type_name = "همه"
-                this.label_name = await GetMultiSelectValue("LabelSelect") + "__OR";
-                if (this.label_name == "0__OR"){
+                this.label_name = await GetMultiSelectValue("LabelSelect");
+                if (this.label_name == "0"){
                     this.label_name = "همه"
                 }
                 this.from_year = "همه"
@@ -728,8 +728,8 @@
             const country_id = document.getElementById("country").value
             const type_id = 0
 
-            let label_name = await GetMultiSelectValue("LabelSelect") + "__OR"
-            if (label_name === '0__OR') {
+            let label_name = await GetMultiSelectValue("LabelSelect")
+            if (label_name === '0') {
                 label_name = 0
             }
             console.log(label_name)
