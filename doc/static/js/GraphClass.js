@@ -128,8 +128,10 @@ class MyGraph {
             });
 
             // Width and Height
-            const width = this.container_width
-            const height = this.container_height
+            // const width = this.container_width
+            // const height = this.container_height
+            const width = document.getElementById(_this.container_id).clientWidth;
+            const height = document.getElementById(_this.container_id).clientHeight;
 
             // Create Graph Object
             this.graph_object = new G6.Graph({
@@ -201,8 +203,8 @@ class MyGraph {
             // Handle Zoom and Scroll Width
             if (typeof window !== 'undefined') {
                 window.onresize = function (event) {
-                    var new_width = document.getElementById(_this.container_id).clientWidth;
-                    var new_height = document.getElementById(_this.container_id).clientHeight;
+                    const new_width = document.getElementById(_this.container_id).clientWidth;
+                    const new_height = document.getElementById(_this.container_id).clientHeight;
                     console.log(new_width, new_height)
                     _this.graph_object.changeSize(new_width, new_height);
                 };
