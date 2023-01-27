@@ -199,12 +199,14 @@ class MyGraph {
             this.graph_object.on('edge:dblclick', handleEdgeClick);
 
             // Handle Zoom and Scroll Width
-            if (typeof window !== 'undefined')
-                window.onresize = () => {
-                    if (!this.graph_object || this.graph_object.get('destroyed')) return;
-                    if (!this.container_id || !this.container_id.scrollWidth || !this.container_id.scrollHeight) return;
-                    this.graph_object.changeSize(this.graph_object.scrollWidth, height);
-            };
+            if (typeof window !== 'undefined') {
+                window.onresize = function (event) {
+                    var new_width = document.getElementById(_this.container_id).clientWidth;
+                    var new_height = document.getElementById(_this.container_id).clientHeight;
+                    console.log(new_width, new_height)
+                    _this.graph_object.changeSize(new_width, new_height);
+                };
+            }
 
             // set MinMax Degree and MinMax Weight
             this.setMinMaxDegree()
