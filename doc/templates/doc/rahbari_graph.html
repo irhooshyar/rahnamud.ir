@@ -189,32 +189,6 @@
                 <div class="col-4">
                         <div id="weight_histogram" chart-height="200px" class="d-none"></div>
                 </div>
-                <div dir="rtl" id="informationBox" class="mt-4" style="visibility: hidden; padding: 0; border: 1px solid #006666;">
-                    <table class="table table-light">
-                        <thead class="table" style="background: #0e3f8b;">
-                            <tr>
-                                <th class="text-center" scope="col">نوع گراف</th>
-                                <th class="text-center" scope="col">حداقل وزن</th>
-                                <!--<th class="text-center" scope="col">عبارت جستجو شده</th>-->
-                                <th class="text-center" scope="col">سطح همسایگی</th>
-                                <th class="text-center" scope="col">تعداد گره</th>
-                                <th class="text-center" scope="col">تعداد یال</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-center" id="selected_graph_type">-</td>
-                                <td class="text-center" id="selected_limit_neighbour_count">-</td>
-                                <!--<td class="text-center" id="selected_search_keyword">-</td>-->
-                                <td class="text-center" id="selected_neighbour_level">-</td>
-                                <td class="text-center" id="selected_node_count">-</td>
-                                <td class="text-center" id="selected_edge_count">-</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-
             </div>
 
             <!-- Constraints -->
@@ -316,9 +290,37 @@
                             </div>
                         </div>
 
-                        <div dir="ltr">
-                            <img style="width: 4%; cursor: pointer; margin-top: 20px;" id="rahbari_graph_SelectNeighbourImg" src="../../static/image/neighbourhood.png">
-                            <img style="width: 3%; cursor: pointer; margin-top: 20px;" id="rahbari_graph_ShowHideImg" src="../../static/image/hide_nodes.png">
+                        <div class="d-flex mt-3">
+                            <div dir="rtl" id="informationBox" class="col-md-11 p-1 col-12 col-lg-11" style="visibility: hidden; padding: 0;">
+                        <table class="table table-light">
+                            <thead class="table" style="background: #0e3f8b;">
+                                <tr>
+                                    <th class="text-center" scope="col">نوع گراف</th>
+                                    <th class="text-center" scope="col">حداقل وزن</th>
+                                    <!--<th class="text-center" scope="col">عبارت جستجو شده</th>-->
+                                    <th class="text-center" scope="col">سطح همسایگی</th>
+                                    <th class="text-center" scope="col">تعداد گره</th>
+                                    <th class="text-center" scope="col">تعداد یال</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" id="selected_graph_type">-</td>
+                                    <td class="text-center" id="selected_limit_neighbour_count">-</td>
+                                    <!--<td class="text-center" id="selected_search_keyword">-</td>-->
+                                    <td class="text-center" id="selected_neighbour_level">-</td>
+                                    <td class="text-center" id="selected_node_count">-</td>
+                                    <td class="text-center" id="selected_edge_count">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                            <div dir="ltr" class="col-md-6 p-1 col-12 col-lg-1 mt-4">
+                                <img style="width: 40%; cursor: pointer; margin-top: 20px;" id="rahbari_graph_SelectNeighbourImg" src="../../static/image/neighbourhood.png">
+                                <img style="width: 30%; cursor: pointer; margin-top: 20px;" id="rahbari_graph_ShowHideImg" src="../../static/image/hide_nodes.png">
+                            </div>
                         </div>
 
                         <div id="rahbari_graph_graph_container" class="border mt-1 position-static" style="height:500px; overflow: hidden;">
@@ -508,8 +510,6 @@
         async function init()
         {
 
-            startFullPageBlockUI()
-
             let request_link = 'http://' + location.host + "/getRahbariGraphType/";
             let response = await fetch(request_link).then(response => response.json());
             let type_list = response["type_list"]
@@ -556,8 +556,6 @@
             let detail_type = "نمایش پنل"
             form_data.append('detail_type', detail_type);
             UserLog(form_data)
-
-            stopFullPageBlockUI()
 
 
         }
@@ -622,6 +620,12 @@
 
             let label_id = await GetMultiSelectValue("LabelSelectBox")
             let document_id = await GetMultiSelectValue("DocumentSelectBox")
+
+            if (label_id === "")
+                label_id = "0"
+            if (document_id === "")
+                document_id = "0"
+
             if (label_id.split("__").includes("0") && document_id.split("__").includes("0"))
             {
                 const type_id = document.getElementById("GraphTypeSelect").value
