@@ -48,6 +48,16 @@ function initSearchableSelects() {
                     this.setValue([Object.values(this.options)[0].value]);
                     this.setCaret(0)
                 }
+            },
+            onItemAdd: function (value, $item) {
+                if (value==="all" || value==="0"){
+                    return
+                }
+
+                this.removeItem("all", true)
+                this.removeItem("0", true)
+
+
             }
         });
     });
