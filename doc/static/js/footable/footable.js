@@ -19,10 +19,10 @@
      */
     $.fn.footable = function(options, ready) {
         options = options || {};
-        console.log(this)
-        $("#"+this[0]["id"]).css("counter-reset", "Serial");
+
         try
         {
+            $("#"+this[0]["id"]).css("counter-reset", "Serial");
             options.rows = options.rows.map(obj => {
                 if ("id" in obj) {
                     obj["id"] = ""
