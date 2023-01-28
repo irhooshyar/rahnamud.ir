@@ -103,6 +103,7 @@
     });
 </script>
 
+
 <!-- Main Container includes: Form Fields, Tab Pills, Tab Panes -->
 <div class="row flex-row-reverse px-0 py-5 px-md-5 py-md-5 m-0 mt-4">
     <div class="d-flex align-items-center rtl flex-row-reverse mx-auto p-1" style="background: linear-gradient(#8693AB, #cbd3da, #e9ecef); box-shadow: 0 0 2px 2px #f8f9fa inset; border: 4px solid #f8f9fa; border-radius: 24px">
@@ -820,6 +821,9 @@
             document.getElementById("SearchResultLable").innerText = "تعداد کل نتایج: " + total_hits + " سند"
             let index = (curr_page - 1) * SEARCH_RESULT_SIZE + 1;
             let document_result = []
+            let detail_btn = true
+            if (text === "empty")
+                detail_btn = false
 
             for (let doc of documents_information_result) {
                 const doc_id = doc['_source']['document_id']
@@ -847,10 +851,8 @@
                 const rahbari_type_detail = '<a type="button" onclick="' + rahbari_type_function + '">'+rahbari_type+'<img style="width: 25px; margin-right: 10px;" src="../../static/image/viewMore.png"></a>'
 
 
-
                 const document_link = 'http://' + location.host + "/information/?id=" + doc_id
                 doc_name = '<a target="blank" href="' + document_link + '">' + doc_name + "</a>"
-
 
 
                 const row = {
@@ -872,12 +874,12 @@
             }
 
             TABLE_INFO = document_result
-            show_table_result()
+            show_table_result(detail_btn)
 
 
         }
 
-        async function show_table_result() {
+        async function show_table_result(detail_btn) {
             selected_columns = ["index", "doc_name", "count", "detail"]
             selected_columns = find_selected_column(selected_columns)
 
@@ -921,14 +923,22 @@
                  "style": {
                      "width": "25%"
                  }
-            },
-                {
-                "name": "detail",
-                "title": "جزئیات",
-                "style": {
-                    "width": "5%"
-                }
             }]
+
+            console.log(detail_btn)
+            if (detail_btn===true)
+            {
+                columns.push({
+                        "name": "detail",
+                        "title": "جزئیات",
+                        "style": {
+                            "width": "5%"
+                        }
+                    })
+            }
+
+
+
             if (!selected_columns.includes("all")) {
                 for (let column of columns) {
                     if (selected_columns.includes(column["name"])) {

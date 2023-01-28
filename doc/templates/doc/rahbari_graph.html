@@ -57,6 +57,7 @@
     <link rel="stylesheet" type="text/css" href="../../static/library/notyf.min-npm.css">
     <script src="../../static/library/notyf.min.js"></script>
 
+
     <script src="./../static/js/graph/g6.min.js"></script>
     <script src="../../static/library/jquery-ui.min-1.11.4.js"></script>
 
@@ -72,6 +73,8 @@
             background-color: #000000 !important;
         }
     </style>
+
+
 
     <title>تحلیل گرافی اسناد رهبری</title>
     {% include "doc/title_icon.html" %}
@@ -486,10 +489,17 @@
     <!-- <script src="../../static/js/graph/graph_tour.js"></script> -->
     <script src="../../static/js/tour.js"></script>
 
+    <!-- Blocking UI -->
+    <script src="../../static/js/blockUI.js"></script>
+    <script src="../../static/js/blockUI_handler.js"></script>
+    <link rel="stylesheet" href="../../static/styles/loader.css">
 
     <script>
 
         initSearchableSelects();
+
+        NeighbourhoodLimit = 100
+        LevelSizeLimit = 5
 
         init()
 
@@ -497,6 +507,8 @@
 
         async function init()
         {
+
+            startFullPageBlockUI()
 
             let request_link = 'http://' + location.host + "/getRahbariGraphType/";
             let response = await fetch(request_link).then(response => response.json());
@@ -510,15 +522,14 @@
             syncSelectOptions("GraphTypeSelect", options)
 
             options = [];
-            for (let w = 1; w <= 15; w+=1) {
+            for (let w = 1; w <= NeighbourhoodLimit; w+=1) {
                 options.push({value: w, text: w});
             }
             syncSelectOptions("limit_neighbour_count", options)
 
 
             options = [];
-            const LevelSize = 5
-            for(let i=1; i<= LevelSize; i++)
+            for(let i=1; i<= LevelSizeLimit; i++)
             {
                 options.push({ value: i, text: i });
             }
@@ -539,7 +550,6 @@
             graph_type_list = type_list
 
             await change_graph_type()
-
 
             //user log
             let form_data = new FormData()
@@ -610,7 +620,6 @@
 
             let label_id = await GetMultiSelectValue("LabelSelectBox")
             let document_id = await GetMultiSelectValue("DocumentSelectBox")
-
             if (label_id.split("__").includes("0") && document_id.split("__").includes("0"))
             {
                 const type_id = document.getElementById("GraphTypeSelect").value
@@ -1191,9 +1200,6 @@
 <script src="../../static/js/tooltip_handler.js"></script>
 
 
-<!-- Blocking UI -->
-<script src="../../static/js/blockUI.js"></script>
-<script src="../../static/js/blockUI_handler.js"></script>
-<link rel="stylesheet" href="../../static/styles/loader.css">
+
 
 </html>
