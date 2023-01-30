@@ -80,6 +80,8 @@
     <script src="../../static/js/GraphClass.js"></script>
 
     <script src="../../static/js/chart.js"></script>
+    <script src="../../static/js/blockUI.js"></script>
+    <script src="../../static/js/logincheck.js"></script>
 
     <title> نمایش اسناد</title>
     {% include "doc/title_icon.html" %}
@@ -88,1133 +90,477 @@
 <nav dir="rtl" class="navbar nav_menu navbar-expand-lg fixed-top p-0 mt-0">
     {% include "doc/header2.html" %}
 </nav>
-<script src="../../static/js/rahbari_doc_profile/rahbari_doc_profile.js"></script>
-
 <div class="row flex-row-reverse px-0 py-5 px-md-5 py-md-5 m-0 mt-4">
 
-        <!-- Form Inputs -->
-        <form autocomplete="on" action="" id="information_form" class="custom-control mx-auto needs-validation"
-            enctype="multipart/form-data" method="post" novalidate>
-            <div class="row flex-row-reverse mx-auto">
+    <!-- Form Inputs -->
+    <form autocomplete="on" action="" id="information_form" class="custom-control mx-auto needs-validation"
+          enctype="multipart/form-data" method="post" novalidate>
+        <div class="row flex-row-reverse mx-auto">
 
-                <!-- Country select -->
-                <div class="col-md-6 col-12 col-lg-2 bg-light pt-3  mt-1" dir="rtl">
-                    <label for="country" class=" text-right bg-light float-right">مجموعه سند:</label>
-                    <select dir="rtl" id="country" name="country"
+            <!-- Country select -->
+            <div class="col-md-6 col-12 col-lg-2 bg-light pt-3  mt-1" dir="rtl">
+                <label for="country" class=" text-right bg-light float-right">مجموعه سند:</label>
+                <select dir="rtl" id="country" name="country"
                         class="form-select text-right float-right searchable-select" onchange="CountryChanged()">
-                        {% for k,v in countries.items %}
+                    {% for k,v in countries.items %}
 
                         <option value="{{ k }}">{{ v }}</option>
 
-                        {% endfor %}
-                    </select>
-                </div>
+                    {% endfor %}
+                </select>
+            </div>
 
-                <!-- selected document -->
-                <div id="document_div" class="col-md-6 pt-3 col-12 col-lg-6 mt-1">
-                    <label for="document" class="text-right bg-light float-right">سند:</label>
-                    <select id="document" dir="rtl" name="document"
+            <!-- selected document -->
+            <div id="document_div" class="col-md-6 pt-3 col-12 col-lg-6 mt-1">
+                <label for="document" class="text-right bg-light float-right">سند:</label>
+                <select id="document" dir="rtl" name="document"
                         class="form-select d-none text-right float-right document_select_box" onchange="ShowResult()"
                         disabled>
-                    </select>
-                    <button dir="rtl" id="document_select" type="button"
+                </select>
+                <button dir="rtl" id="document_select" type="button"
                         class="btn d-inline-block text-truncate w-100 text-right text-black float-right mx-0 bg-white border"
                         data-bs-toggle="modal" data-bs-target="#SelectDocumentModal">
-                        <i class="dropdown_icon bi bi-chevron-down ml-2 bold text-black"></i>
-                        انتخاب نمایید
-                    </button>
-                </div>
+                    <i class="dropdown_icon bi bi-chevron-down ml-2 bold text-black"></i>
+                    انتخاب نمایید
+                </button>
+            </div>
 
-                <!-- Download button -->
-                <div class="col-lg-4 col-md-2 pt-5 col-12 mt-1 px-0">
-                    <button type="button" id="copy_document" data-bs-toggle="tooltip" data-bs-placement="top"
+            <!-- Download button -->
+            <div class="col-lg-4 col-md-2 pt-5 col-12 mt-1 px-0">
+                <button type="button" id="copy_document" data-bs-toggle="tooltip" data-bs-placement="top"
                         title="کپی نام سند" class="float-right text-right p-0 d-none" onclick="copyDocumentName()">
-                        <i class="bi bi-clipboard"></i>
-                    </button>
+                    <i class="bi bi-clipboard"></i>
+                </button>
 
-                    <button type="button" id="document_search" onclick="ShowDocumentContent()"
+                <button type="button" id="document_search" onclick="ShowDocumentContent()"
                         class="btn d-flex float-right  mr-2">
-                        <div class="spinner-border text-light" role="status">
-                            <span class="sr-only">درحال جستجو ...</span>
-                        </div>
-                        نمایش
-                    </button>
+                    <div class="spinner-border text-light" role="status">
+                        <span class="sr-only">درحال جستجو ...</span>
+                    </div>
+                    نمایش
+                </button>
 
-                    <!-- <button type="button" id="document_summary" onclick="ShowDocumentSummary()" disabled
+                <button type="button" id="document_subject_btn" onclick="ShowDocumentSubject()"
                         class="btn d-flex float-right  mr-2">
-                        <div class="spinner-border text-light" role="status">
-                            <span class="sr-only">درحال جستجو ...</span>
-                        </div>
-                        خلاصه سند
-                    </button> -->
-
-                    <button type="button" id="document_subject_btn" onclick="ShowDocumentSubject()"
-                        class="btn d-flex float-right  mr-2">
-                        <div class="spinner-border text-light" role="status">
-                            <span class="sr-only">درحال جستجو ...</span>
-                        </div>
-                        نمایش موضوعی
-                    </button>
+                    <div class="spinner-border text-light" role="status">
+                        <span class="sr-only">درحال جستجو ...</span>
+                    </div>
+                    نمایش موضوعی
+                </button>
 
 
-                    <div dir="rtl" class="dropdown float-right mr-2">
-                        <button id="document_download" class="btn dropdown-toggle float-right text-right" type="button"
+                <div dir="rtl" class="dropdown float-right mr-2">
+                    <button id="document_download" class="btn dropdown-toggle float-right text-right" type="button"
                             id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            دانلود سند
-                        </button>
-                        <ul dir="rtl" class="dropdown-menu px-0 mx-0" aria-labelledby="dropdownMenuButton1">
-                            <li class="text-left" id="pdf_download" onclick="generatePDF()"><a class="dropdown-item"
-                                    href="#">PDF</a></li>
-                            <li class="text-left"><a class="dropdown-item" id="txt_download" download href="#">TXT</a>
-                            </li>
+                        دانلود سند
+                    </button>
+                    <ul dir="rtl" class="dropdown-menu px-0 mx-0" aria-labelledby="dropdownMenuButton1">
+                        <li class="text-left" id="pdf_download" onclick="generatePDF()"><a class="dropdown-item"
+                                                                                           href="#">PDF</a></li>
+                        <li class="text-left"><a class="dropdown-item" id="txt_download" download href="#">TXT</a>
+                        </li>
 
-                        </ul>
-                    </div>
-
+                    </ul>
                 </div>
 
             </div>
 
-            <div dir="rtl" class="doc_info_table mt-5" style="border: 1px solid #006666">
-                <table class="table table-light">
-                    <thead class="table" style="background: #1e56a0;">
-                        <tr>
-                            <th class="text-center" scope="col">مرجع تصویب</th>
-                            <th class="text-center" scope="col">تاریخ تصویب</th>
-                            <th class="text-center" scope="col">سطح سند</th>
-                            <th class="text-center" scope="col">موضوع سند</th>
-                            <th class="text-center" scope="col">نوع سند</th>
-                            <th class="text-center" scope="col">اعتبار سند</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-center" id="approval_reference">-</td>
-                            <td class="text-center" id="approval_date">-</td>
-                            <td class="text-center" id="document_level">-</td>
-                            <td class="text-center" id="document_subject">-</td>
-                            <td class="text-center" id="document_type">-</td>
-                            <td class="text-center" id="document_validation_type">-</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        </div>
 
-        </form>
+        <div dir="rtl" class="doc_info_table mt-5" style="border: 1px solid #006666">
+            <table class="table table-light">
+                <thead class="table" style="background: #1e56a0;">
+                <tr>
+                    <th class="text-center" scope="col">تاریخ سند</th>
+                    {#                    <th class="text-center" scope="col">موضوع سند</th>#}
+                    <th class="text-center" scope="col">نوع سند</th>
+                    <th class="text-center" scope="col">برچسب های سند</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="text-center" id="document_date">-</td>
+                    {#                    <td class="text-center" id="document_subject">-</td>#}
+                    <td class="text-center" id="document_type">-</td>
+                    <td class="text-center" id="document_labels">-</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <!--Original Tabs: Only show on large screens -->
-        <ul id="original_tabs" class="nav nav-pills  mt-5 mx-auto  pr-3 pr-sm-0  float-right  d-block" id="pills-tab"
-            role="tablist">
-            <li class="nav-item float-right" role="presentation">
-                <button id="def_keywords_tab" class="nav-link active" data-bs-toggle="pill"
+    </form>
+
+    <!--Original Tabs: Only show on large screens -->
+    <ul id="original_tabs" class="nav nav-pills  mt-5 mx-auto  pr-3 pr-sm-0  float-right  d-block" id="pills-tab"
+        role="tablist">
+        <li class="nav-item float-right" role="presentation">
+            <button id="def_keywords_tab" class="nav-link active" data-bs-toggle="pill"
                     data-bs-target="#def_keywords_pane" type="button" role="tab" aria-controls="def_keywords_pane"
-                    aria-selected="false">تحلیل بخش تعاریف</button>
-            </li>
-            <li class="nav-item float-right" role="presentation">
-                <button id="references_graph_tab" class="nav-link" data-bs-toggle="pill"
+                    aria-selected="false">نمودار آماری احکام
+            </button>
+        </li>
+        <li class="nav-item float-right" role="presentation">
+            <button id="references_graph_tab" class="nav-link" data-bs-toggle="pill"
                     data-bs-target="#references_graph_pane" type="button" role="tab"
-                    aria-controls="references_graph_pane" aria-selected="false">گراف ارجاعات</button>
-            </li>
-            <li class="nav-item float-right" role="presentation">
-                <button id="references_table_tab" class="nav-link" data-bs-toggle="pill"
+                    aria-controls="references_graph_pane" aria-selected="false">کنشگران
+            </button>
+        </li>
+        <li class="nav-item float-right" role="presentation">
+            <button id="references_table_tab" class="nav-link" data-bs-toggle="pill"
                     data-bs-target="#references_table_pane" type="button" role="tab"
-                    aria-controls="references_table_pane" aria-selected="false">جدول ارجاعات</button>
-            </li>
-            <li class="nav-item float-right" role="presentation">
-                <button id="subject_analysis_tab" class="nav-link" data-bs-toggle="pill"
+                    aria-controls="references_table_pane" aria-selected="false">افراد حقیقی
+            </button>
+        </li>
+        <li class="nav-item float-right" role="presentation">
+            <button id="subject_analysis_tab" class="nav-link" data-bs-toggle="pill"
                     data-bs-target="#subject_analysis_pane" type="button" role="tab"
-                    aria-controls="subject_analysis_pane" aria-selected="false">تحلیل موضوعی</button>
-            </li>
-            <li class="nav-item float-right" role="presentation">
-                <button id="actor_analysis_tab" class="nav-link" data-bs-toggle="pill"
+                    aria-controls="subject_analysis_pane" aria-selected="false">اماکن
+            </button>
+        </li>
+        <li class="nav-item float-right" role="presentation">
+            <button id="actor_analysis_tab" class="nav-link" data-bs-toggle="pill"
                     data-bs-target="#actor_analysis_pane" type="button" role="tab" aria-controls="actor_analysis_pane"
-                    aria-selected="false">تحلیل کنش‌گران</button>
-            </li>
-            <li class="nav-item float-right" role="presentation">
-                <button id="frequency_tab" class="nav-link" data-bs-toggle="pill" data-bs-target="#frequency_pane"
-                    type="button" role="tab" aria-controls="frequency_pane" aria-selected="false">تحلیل تواتر
-                    محور</button>
-            </li>
-            <li class="nav-item float-right" role="presentation">
-                <button id="advisory_opinions_tab" class="nav-link" data-bs-toggle="pill"
-                    data-bs-target="#advisory_opinions_pane" type="button" role="tab"
-                    aria-controls="advisory_opinions_pane" aria-selected="false">تحلیل نظرات مشورتی</button>
-            </li>
-            <li class="nav-item float-right" role="presentation">
-                <button id="find_similarity_tab" class="nav-link" data-bs-toggle="pill"
-                    data-bs-target="#find_similarity_pane" type="button" role="tab" aria-controls="find_similarity_pane"
-                    aria-selected="false">مشابهت یابی</button>
-            </li>
-            <li class="nav-item float-right" role="presentation">
-                <button id="user_comments" class="nav-link" data-bs-toggle="pill" data-bs-target="#user_comments_pane"
-                    type="button" role="tab" aria-controls="user_comments_pane" aria-selected="false">نظرات
-                    کاربری</button>
-            </li>
-            <li class="nav-item float-right" role="presentation">
-                <button id="user_notes" class="nav-link" data-bs-toggle="pill" data-bs-target="#user_notes_pane"
-                    type="button" role="tab" aria-controls="user_notes_pane" aria-selected="false">یادداشت‌های
-                    شخصی</button>
-            </li>
-        </ul>
+                    aria-selected="false">پیام سند
+            </button>
+        </li>
+        {#            <li class="nav-item float-right" role="presentation">#}
+        {#                <button id="frequency_tab" class="nav-link" data-bs-toggle="pill" data-bs-target="#frequency_pane"#}
+        {#                    type="button" role="tab" aria-controls="frequency_pane" aria-selected="false">تحلیل تواتر#}
+        {#                    محور</button>#}
+        {#            </li>#}
+        {#            <li class="nav-item float-right" role="presentation">#}
+        {#                <button id="advisory_opinions_tab" class="nav-link" data-bs-toggle="pill"#}
+        {#                    data-bs-target="#advisory_opinions_pane" type="button" role="tab"#}
+        {#                    aria-controls="advisory_opinions_pane" aria-selected="false">تحلیل نظرات مشورتی</button>#}
+        {#            </li>#}
+        {#            <li class="nav-item float-right" role="presentation">#}
+        {#                <button id="find_similarity_tab" class="nav-link" data-bs-toggle="pill"#}
+        {#                    data-bs-target="#find_similarity_pane" type="button" role="tab" aria-controls="find_similarity_pane"#}
+        {#                    aria-selected="false">مشابهت یابی</button>#}
+        {#            </li>#}
+        {#            <li class="nav-item float-right" role="presentation">#}
+        {#                <button id="user_comments" class="nav-link" data-bs-toggle="pill" data-bs-target="#user_comments_pane"#}
+        {#                    type="button" role="tab" aria-controls="user_comments_pane" aria-selected="false">نظرات#}
+        {#                    کاربری</button>#}
+        {#            </li>#}
+        {#            <li class="nav-item float-right" role="presentation">#}
+        {#                <button id="user_notes" class="nav-link" data-bs-toggle="pill" data-bs-target="#user_notes_pane"#}
+        {#                    type="button" role="tab" aria-controls="user_notes_pane" aria-selected="false">یادداشت‌های#}
+        {#                    شخصی</button>#}
+        {#            </li>#}
+    </ul>
 
-        <div id="original_pane" class="tab-content float-right bg-white px-1" style="position: relative;"
-            id="pills-tabContent">
+    <div id="original_pane" class="tab-content float-right bg-white px-1" style="position: relative;"
+         id="pills-tabContent">
 
-            <!-- Definition and keywords Pane -->
-            <div id="def_keywords_pane" class="tab-pane w-100 fade show active float-right  px-0 border-0"
-                role="tabpanel" aria-labelledby="def_keywords_tab">
+        <!-- Definition and keywords Pane -->
+        <div id="def_keywords_pane" class="tab-pane w-100 fade show active float-right  px-0 border-0"
+             role="tabpanel" aria-labelledby="def_keywords_tab">
+            <div class="charts-list-container">
 
-                <div class="accordion">
-
-                    <!-- Definition Segment -->
-                    <div class="accordion-item float-right w-100 mt-4">
-                        <h2 class="accordion-header d-block w-100 float-right">
-                            <button
-                                class="accordion-button accordin_header text-right float-right d-inline-block w-100 pr-1"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#definition_collapse"
-                                aria-expanded="true" aria-controls="definition_collapse">
-                                بخش تعاریف و اصطلاحات
-                                <i class="header_icon bi bi-pin-angle-fill p-1"></i>
-                            </button>
-                        </h2>
-                        <div id="definition_collapse" class="accordion-collapse collapse show w-100 float-right">
-                            <div class="accordion-body bg-light text-right">
-                                <div id="definition_container" dir="rtl" class="text-right bg-light p-4">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- General definition Segment -->
-                    <div class="accordion-item float-right w-100">
-                        <h2 class="accordion-header d-block w-100 float-right">
-                            <button
-                                class="accordion-button collapsed accordin_header text-right float-right d-inline-block w-100 pr-1"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#general_definition_collapse"
-                                aria-expanded="true" aria-controls="general_definition_collapse">
-                                بخش تعاریف کلی
-                                <i class="header_icon bi bi-pin-angle-fill p-1"></i>
-                            </button>
-                        </h2>
-                        <div id="general_definition_collapse" class="accordion-collapse collapse w-100 float-right">
-                            <div class="accordion-body bg-light text-right">
-                                <div id="general_definition_container" dir="rtl" class="text-right bg-light p-4">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- General definition Segment -->
-                    <div class="accordion-item float-right w-100">
-                        <h2 class="accordion-header d-block w-100 float-right">
-                            <button
-                                class="accordion-button collapsed accordin_header text-right float-right d-inline-block w-100 pr-1"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#abbreviation_collapse"
-                                aria-expanded="true" aria-controls="abbreviation_collapse">
-                                بخش اختصارات
-                                <i class="header_icon bi bi-pin-angle-fill p-1"></i>
-                            </button>
-                        </h2>
-                        <div id="abbreviation_collapse" class="accordion-collapse collapse w-100 float-right">
-                            <div class="accordion-body bg-light text-right">
-                                <div id="abbreviation_container" dir="rtl" class="text-right bg-light p-4">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Final Keywords Segment -->
-                    <div class="accordion-item float-right w-100">
-                        <h2 class="accordion-header d-block w-100 float-right">
-                            <button
-                                class="accordion-button collapsed accordin_header text-right float-right d-inline-block w-100 pr-1"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#final_Keywords_collapse"
-                                aria-expanded="true" aria-controls="final_Keywords_collapse">
-                                کلید واژه‌های نهایی
-                                <i class="header_icon bi bi-pin-angle-fill p-1"></i>
-                            </button>
-                        </h2>
-                        <div id="final_Keywords_collapse" class="accordion-collapse collapse w-100 float-right">
-                            <div class="accordion-body bg-light text-right">
-                                <div id="final_Keywords_container" dir="rtl" class="text-right bg-light p-4">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Reference Pane -->
-            <div id="references_graph_pane" class="tab-pane w-100 fade float-right" role="tabpanel"
-                aria-labelledby="references_graph_tab">
-
-                <div class="row mt-4 w-100 flex-row-reverse  mx-auto pb-5 px-4" dir="rtl">
-
-                    <!-- doc colors -->
-                    <div dir="rtl" id="ColorBox" class="w-100 text-right flex-wrap" style="display: inline-flex">
-                    </div>
-
-                    <div id="references_constraints_container"
-                        class="collapse show constraints_container row flex-row-reverse pt-0 mb-0 mt-0 mx-auto">
-
-                        <div id="references_DegreeDiv" class="col-md-3 p-1 col-12 col-lg-6 mt-1">
-                            <div class="source_header bg-white row mx-auto p-1">
-                                <label class="text-center my-0" style="direction: rtl;">فیلتر درجه</label>
-                            </div>
-                            <div class="source_container pb-2 row mx-auto">
-                                <div dir="rtl" class="wrapper mt-5 mb-1" id="references_DegreeSlider"
-                                    style="visibility: hidden;">
-                                    <div class="container" style="display: flex; justify-content: center;">
-                                        <div class="slider-wrapper">
-                                            <div dir="ltr" id="slider-range"></div>
-                                            <div dir="rtl" style="display:flex; width: 300px; justify-content: center"
-                                                class="range-wrapper">
-                                                <div dir="ltr" class="range mt-1"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="references_WeightDiv" class="col-md-3 p-1 col-12 col-lg-6 mt-1">
-                            <div class="source_header bg-white row mx-auto p-1">
-                                <label class="text-center my-0" style="direction: rtl;">فیلتر وزن</label>
-                            </div>
-                            <div class="source_container pb-2 row mx-auto">
-                                <div dir="rtl" class="wrapper mt-5 mb-1" id="references_WeightSlider"
-                                    style="visibility: hidden;">
-                                    <div class="container" style="display: flex; justify-content: center;">
-                                        <div class="slider-wrapper">
-                                            <div dir="ltr" id="slider-range"></div>
-                                            <div dir="rtl" style="display:flex; width: 300px; justify-content: center"
-                                                class="range-wrapper">
-                                                <div dir="ltr" class="range mt-1"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="d-flex">
-                        <div class="col-md-6 p-1 col-12 col-lg-6 mt-3">
-                            <div class="source_header bg-white row mx-auto p-1">
-                                <label class="text-center my-0" style="direction: rtl;">نحوه نمایش</label>
-                            </div>
-                            <div class="source_container p-4 row mx-auto">
-                                <select id="references_ChangeLayout" name="references_ChangeLayout"
-                                    class="form-select text-right float-right searchable-select"
-                                    style="direction: rtl;">
-                                    <option value="grid">مربعی</option>
-                                    <option value="circular"> دایره ای </option>
-                                    <option value="force">ساده</option>
-                                    <option value="dagre">بالا به پایین</option>
-                                    <option value="radial">شعاعی</option>
-                                    <option value="concentric">متحدالمرکز</option>
-                                    <option value="comboForce">خوشه ای</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 p-1 col-12 col-lg-6 mt-3">
-                            <div class="source_header bg-white row mx-auto p-1">
-                                <label class="text-center my-0" style="direction: rtl;">جستجو در نام گره</label>
-                            </div>
-                            <div class="source_container p-4 d-flex">
-                                <input style="direction: rtl;" class="form-control text-right"
-                                    placeholder="جستجو در نام گره ها ..." type="text" required=""
-                                    name="references_SearchBox" id="references_SearchBox" value="">
-                                <button type="button" id="references_SearchBtn"
-                                    class="btn modal_btn mr-2">جست‌وجو</button>
-                            </div>
-                        </div>
-
-
-                        <div class="col-md-6 p-1 col-12 col-lg-6 mt-1 d-flex">
-
-                        </div>
-                    </div>
-
-                    <div dir="ltr">
-                        <img style="width: 4%; cursor: pointer; margin-top: 20px;" id="references_SelectNeighbourImg"
-                            src="../../static/image/neighbourhood.png">
-                        <img style="width: 3%; cursor: pointer; margin-top: 20px;" id="references_ShowHideImg"
-                            src="../../static/image/hide_nodes.png">
-                    </div>
-
-                    <div id="references_graph_container" class="border mt-1 position-static"
-                        style="height:500px; overflow: hidden;">
-                    </div>
-
-                    <div dir="rtl" style="display: flex; margin-bottom: 50px;">
-                        <div class="col-md-6 px-0 col-12 col-lg-5 pt-1">
-                            <h6 class="table_header text-center  p-2  mb-0">
-                                گره های انتخاب شده
-                            </h6>
-                            <table id="references_selected_node_table" class="table table-striped PopUpTable"
-                                style="width: 95%;margin: auto;">
-
-                            </table>
-                        </div>
-
-                        <div class="col-md-6 px-0 col-12 col-lg-7 pt-1">
-                            <h6 class="table_header text-center  p-2  mb-0">
-                                یال های انتخاب شده
-                            </h6>
-                            <table id="references_selected_edge_table" class="table table-striped PopUpTable"
-                                style="width: 95%;margin: auto;">
-
-                            </table>
-                        </div>
-                    </div>
-
+                <div id="subject_container" class="half">
                 </div>
 
-            </div>
-
-            <div class="tab-pane fade float-right w-100 " id="references_table_pane" role="tabpanel"
-                aria-labelledby="references_table_tab">
-                <div class="accordion">
-                    <!-- References in doc Table -->
-                    <div class="accordion-item float-right w-100 mt-4">
-                        <h2 class="accordion-header d-block w-100 float-right">
-                            <button
-                                class="accordion-button accordin_header text-right float-right d-inline-block w-100 pr-1"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#reference_collapse"
-                                aria-expanded="true" aria-controls="reference_collapse">
-                                جدول ارجاعات موجود در سند
-                                <i class="header_icon bi bi-pin-angle-fill p-1"></i>
-                            </button>
-                        </h2>
-                        <div id="reference_collapse" class="accordion-collapse collapse show w-100 float-right">
-                            <div class="accordion-body bg-light text-right">
-                                <table class="table table-striped ReferencesInDocTable" style="min-height: 200px;"
-                                    id="ReferencesInDocTable" dir="rtl">
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Docs referenced to this doc Table -->
-                    <div class="accordion-item float-right w-100 mt-4">
-                        <h2 class="accordion-header d-block w-100 float-right">
-                            <button
-                                class="accordion-button accordin_header text-right float-right d-inline-block w-100 pr-1"
-                                type="button" data-bs-toggle="collapse"
-                                data-bs-target="#DocsReferencedToThisDocTable_collapse" aria-expanded="true"
-                                aria-controls="DocsReferencedToThisDocTable_collapse">
-                                اسناد ارجاع داده به سند
-                                <i class="header_icon bi bi-pin-angle-fill p-1"></i>
-                            </button>
-                        </h2>
-                        <div id="DocsReferencedToThisDocTable_collapse"
-                            class="accordion-collapse collapse show w-100 float-right">
-                            <div class="accordion-body bg-light text-right">
-                                <table class="table table-striped DocsReferencedToThisDocTable"
-                                    style="min-height: 200px;" id="DocsReferencedToThisDocTable" dir="rtl">
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Docs referenced to this doc Chart -->
-                    <div class="accordion-item float-right w-100 mt-4">
-                        <h2 class="accordion-header d-block w-100 float-right">
-                            <button
-                                class="accordion-button accordin_header text-right float-right d-inline-block w-100 pr-1"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#trend_charts_collapse"
-                                aria-expanded="true" aria-controls="trend_charts_collapse">
-                                اسناد ارجاع داده به سند
-                                <i class="header_icon bi bi-pin-angle-fill p-1"></i>
-                            </button>
-                        </h2>
-                        <div id="trend_charts_collapse" class="accordion-collapse collapse show w-100 float-right">
-                            <div class="accordion-body bg-light text-right">
-                                <div id="trend_charts" dir="rtl" class="text-right bg-light p-4">
-
-                                    <div dir="ltr" id="doc_references_to_chart" style="height: 450px"
-                                        class="bg-white w-100 p-1"></div>
-
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <!-- Frequency Pane -->
-            <div class="tab-pane fade float-right w-100 " id="frequency_pane" role="tabpanel"
-                aria-labelledby="frequency_tab">
-
-                <!-- statistical doc info segment -->
-                <h6 class="Term_count_header pr-2">
-                    <label class="text-right float-right mt-5">داشبورد آماری:</label>
-                </h6>
-                <div dir="rtl" class="doc_info_table mb-3">
-                    <table class="table table-light">
-                        <thead class="table">
-                            <tr>
-                                <th class="text-center" scope="col">کل واژه‌ها</th>
-                                <th class="text-center" scope="col">ایست‌واژه‌ها</th>
-                                <th class="text-center" scope="col">واژه‌های متمایز</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-center" id="total_words">-</td>
-                                <td class="text-center" id="stop_words">-</td>
-                                <td class="text-center" id="distinct_words">-</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div id="location_container" class="half">
                 </div>
 
-                <div class="row mt-4 w-100 flex-row-reverse mx-auto">
-                    <!-- container for 1-gram words whit (h and table) -->
-                    <div dir="rtl" class="col-md-6 px-0 col-12 col-lg-2 pt-1">
-                        <h6 class="table_header text-center  p-2  mb-0">
-                            عبارات مهم تک-کلمه‌ای
-                        </h6>
-                        <div class=" mt-0 pl-2">
-                            <table class="table table-light table-striped table-bordered border-secondary">
-                                <thead class="table bg-success">
-                                    <tr>
-                                        <th class="text-center" scope="col"> ردیف</th>
-                                        <th class="text-center" scope="col">واژه</th>
-                                        <th class="text-center" scope="col">فراوانی</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody id="1gram_frequency_table">
-                                </tbody>
-
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- container for 2-gram words whit (h and table) -->
-                    <div dir="rtl" class="col-md-6 px-0 col-12 col-lg-5 pt-1">
-                        <h6 class="table_header text-center  p-2  mb-0">
-                            عبارات مهم 2-کلمه‌ای
-                        </h6>
-                        <div class=" mt-0 pl-2">
-                            <table class="table table-light table-striped table-bordered border-secondary">
-                                <thead class="table">
-                                    <tr>
-                                        <th class="text-center" scope="col"> ردیف</th>
-                                        <th class="text-center" scope="col">واژه</th>
-                                        <th class="text-center" scope="col">امتیاز</th>
-                                        <th class="text-center" scope="col">فراوانی</th>
-                                        <th class="text-center" scope="col"> تایید</th>
-                                        <th class="text-center" scope="col">حذف</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody id="2gram_frequency_table">
-                                </tbody>
-
-                            </table>
-                        </div>
-
-                        <!-- 2Gram txt box and save btn -->
-                        <div class="ngram-div">
-                            <input class="float-left form-control text-right ngram-textbox"
-                                placeholder="کلیدواژه اول/ کلیدواژه دوم/ ..." type="text" required=""
-                                name="2gram_TextBox" id="2gram_TextBox" value="">
-
-                            <button id="save_2Gram" type="button" onclick="SaveGram_function('2gram')"
-                                class="btn float-right mx-0">
-                                ذخیره
-                            </button>
-                        </div>
-
-                    </div>
-
-                    <!-- container for 3-gram words with (h and table) -->
-                    <div dir="rtl" class="col-md-6 px-0 col-12 col-lg-5 pt-1">
-                        <h6 class="table_header text-center  p-2  mb-0">
-                            عبارات مهم 3-کلمه‌ای
-                        </h6>
-                        <div class="mt-0 pr-2">
-                            <table class="table table-light table-striped table-bordered border-secondary">
-                                <thead class="table bg-secondary">
-                                    <tr>
-                                        <th class="text-center" scope="col"> ردیف</th>
-                                        <th class="text-center" scope="col">واژه</th>
-                                        <th class="text-center" scope="col">امتیاز</th>
-                                        <th class="text-center" scope="col">فراوانی</th>
-                                        <th class="text-center" scope="col"> تایید</th>
-                                        <th class="text-center" scope="col">حذف</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="3gram_frequency_table">
-                                </tbody>
-
-                            </table>
-                        </div>
-
-                        <!-- 3Gram txt box and save btn -->
-                        <div class="ngram-div">
-                            <input class="float-left form-control text-right ngram-textbox"
-                                placeholder="کلیدواژه اول/ کلیدواژه دوم/ ..." type="text" required=""
-                                name="3gram_TextBox" id="3gram_TextBox" value="">
-
-                            <button id="save_2Gram" type="button" onclick="SaveGram_function('3gram')"
-                                class="btn float-right mx-0">
-                                ذخیره
-                            </button>
-                        </div>
-
-                    </div>
-
-
+                <div id="organization_container" class="half">
                 </div>
 
-            </div>
-
-            <!-- Advisory opinions to this doc Pane -->
-            <div class="tab-pane fade float-right w-100" id="advisory_opinions_pane" role="tabpanel"
-                aria-labelledby="advisory_opinions_tab">
-                <div class="accordion">
-                    <!-- Download Buttons -->
-                    <button type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="دانلود اسناد"
-                        class="btn float-left p-0 px-1 mt-2" id="DownloadBtn" onclick="DownloadSerachResultFunction()"
-                        type="button">
-                        <i class="far fa-file-archive m-0" style="font-size: 25px;margin: 0px;"></i>
-
-                    </button>
-
-                    <button class="btn float-left p-0 px-1 mt-2" id="ExportExcel" data-bs-toggle="tooltip"
-                        data-bs-placement="top" title="خروجی اکسل" onclick="ExportExcelSerachResultFunction()"
-                        type="button">
-                        <i class="far fa-file-excel text-success m-0" style="font-size: 25px;margin: 0px;"></i>
-                    </button>
-
-                    <!-- Result Count -->
-                    <div class="accordion-item float-right w-100 mt-4">
-                        <h2 class="accordion-header d-block w-100 float-right">
-                            <button
-                                class="accordion-button accordin_header text-right float-right d-inline-block w-100 pr-1"
-                                type="button" data-bs-toggle="collapse"
-                                data-bs-target="#AdvisoryOpinionsReferencedToThisDoc_collapse" aria-expanded="true"
-                                aria-controls="AdvisoryOpinionsReferencedToThisDoc_collapse">
-                                نظرات مشورتی ارجاع داده به سند
-                                <i class="header_icon bi bi-pin-angle-fill p-1"></i>
-                            </button>
-                        </h2>
-                        <div id="AdvisoryOpinionsReferencedToThisDoc_collapse"
-                            class="accordion-collapse collapse show w-100 float-right">
-                            <div class="accordion-body bg-light text-right">
-                                <p id="SearchResultLable" class="text-left float-left text-secondary pl-2"></p>
-                                <table class="table table-striped AdvisoryOpinionsReferencedToThisDocTable"
-                                    style="min-height: 200px;" id="AdvisoryOpinionsReferencedToThisDocTable" dir="rtl">
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
-            </div>
-
-            <!-- user comments pane -->
-            <div class="tab-pane w-100 fade float-right" id="user_comments_pane" role="tabpanel"
-                aria-labelledby="user_comments_tab">
-                <div class="row flex-row-reverse px-0 m-0 mt-5">
-                    <div class="col-9">
-
-                        <div dir="rtl" class="doc_info_table">
-                            <table class="table table-light table-striped cm_table footable">
-                                <thead class="table">
-                                    <tr>
-                                        <th class="text-center" scope="col">ردیف</th>
-                                        <th class="text-center" scope="col">نام کاربر</th>
-                                        <th class="text-center" scope="col">وضعیت</th>
-                                        <th class="text-center" scope="col">نظر</th>
-                                        <th class="text-center" scope="col">موافقت یا مخالفت با نظر کاربر</th>
-                                        <th class="text-center" scope="col">تعداد موافق</th>
-                                        <th class="text-center" scope="col">تعداد مخالف</th>
-                                        <th class="text-center" scope="col">تاریخ</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody id="comments_table_body">
-                                    <tr>
-                                        <td class="text-center">-</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-center">-</td>
-                                        <td class="text-center">-</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                    </div>
-                    <div class="col-3">
-                        <form class="shadow p-4 bg-white" id="comment_form" dir="rtl" method="POST">
-                            <div class="row text">
-                                <div class="mb-3">
-                                    <label for="exampleFormControlTextarea1" class="form-label">لطفا نظر خود را در مورد
-                                        سند انتخابی در کادر زیر وارد نمایید <span style="color: red">*</span>:</label>
-                                    <textarea class="form-control" id="form_comment_text" rows="10"></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <input class="form-check-input p-1" style=" margin:5px " type="checkbox"
-                                        value="true" id="form_comment_show_info" checked>
-                                    <label class="form-check-label" style="margin-right: 28px"
-                                        for="form_comment_show_info">
-                                        نمایش اطلاعات شخصی
-                                    </label>
-                                </div>
-                                <div class="mb-3 d-grid gap-2 col-6 mx-auto">
-                                    <button class="btn btn-primary" value="submit">ثبت نظر</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- user notes Pane -->
-            <div class="tab-pane w-100 fade float-right" id="user_notes_pane" role="tabpanel"
-                aria-labelledby="user_notes_tab">
-                <div class="row flex-row-reverse px-0 m-0 mt-5">
-                    <div class="col-7">
-
-                        <div dir="rtl" class="doc_info_table">
-                            <table class="table table-light table-striped note_table footable">
-                                <thead class="table">
-                                    <tr>
-                                        <th class="text-center" scope="col">ردیف</th>
-                                        <th class="text-center" scope="col">متن یادداشت </th>
-                                        <th class="text-center" scope="col"> تاریخ</th>
-                                        <th class="text-center" scope="col"> برچسب</th>
-                                        <th class="text-center" scope="col"> ستاره دار</th>
-                                        <th class="text-center" scope="col"> دانلود </th>
-                                    </tr>
-                                </thead>
-                                <tbody id="notes_table_body">
-                                    <tr>
-                                        <td class="text-center" id="note_number">-</td>
-                                        <td class="text-center" id="note_text">-</td>
-                                        <td class="text-center" id="note_time">-</td>
-                                        <td class="text-center" id="note_label">-</td>
-                                        <td class="text-center" id="note_starred">-</td>
-                                        <td class="text-center" id="note_download">-</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="col-5">
-                        <form class="shadow p-4 bg-white" id="note_form" dir="rtl" method="POST">
-                            <div class="row text">
-                                <div class="mb-3">
-                                    <label for="exampleFormControlTextarea1" class="form-label">لطفا یادداشت خود را در
-                                        مورد سند انتخابی در کادر زیر وارد نمایید <span
-                                            style="color: red">*</span>:</label>
-                                    <textarea class="form-control" id="form_note_text" rows="10"></textarea>
-                                </div>
-
-                                <div class="ngram-div">
-                                    <input class="float-left form-control text-right ngram-textbox mr-3"
-                                        placeholder="برچسب یادداشت" type="text" name="form_note_label"
-                                        id="form_note_label" value="">
-                                </div>
-
-                                <div class="mt-3 d-grid gap-2 col-6 mx-auto">
-                                    <button class="btn btn-primary" value="submit">ثبت یادداشت</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Subject Pane -->
-            <div class="tab-pane fade float-right w-100" id="subject_analysis_pane" role="tabpanel"
-                aria-labelledby="subject_analysis_tab">
-                <!-- Subject distribution segment -->
-
-                <div class="charts-list-container">
-                <div id="subject_chart_container" chart-height="450px" class="full"></div>
-                </div>
-                <!-- Keywords for each subject segment -->
-                <h6 class="subject_keywords pr-2">
-                    <label for="doc_info" class="text-right float-right mt-5">واژه‌های کلیدی سند در هر موضوع</label>
-                </h6>
-                <div dir="rtl" class="table-responsive">
-                    <table class="table table-light table-striped  caption-top">
-                        <thead class="table">
-                            <tr>
-                                <th class="text-center" scope="col">ردیف</th>
-                                <th class="text-center" scope="col"> موضوع</th>
-                                <th class="text-center" scope="col">واژه‌های کلیدی در متن ( تعداد تکرار )</th>
-                                <th class="text-center" scope="col">واژه‌های کلیدی در عنوان ( تعداد تکرار )</th>
-                                <th class="text-center" scope="col">مرجع تخصصی</th>
-                            </tr>
-                        </thead>
-                        <tbody id="subject_table">
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
-
-
-            <!-- Actors Pane -->
-            <div class="tab-pane fade float-right w-100" id="actor_analysis_pane" role="tabpanel"
-                aria-labelledby="actor_analysis_tab">
-
-                <!-- Acotrs distribution segment -->
-                <div class="charts-list-container">
-                <div id="actors_chart_container" chart-height="450px" class="full"></div>
-                </div>
-                <!-- Actors paragraphs-->
-
-                <div class="accordion" id="actors_paragraph_container">
-
-                    <!-- Motevalian paragraphs -->
-                    <div class="accordion-item float-right w-100">
-
-                        <h2 class="accordion-header d-block w-100 float-right" id="motevalian_hader">
-                            <button
-                                class="accordion-button accordin_header text-right float-right d-inline-block w-100 pr-1"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#motevalian_collapse"
-                                aria-expanded="true" aria-controls="motevalian_collapse">
-                                متولیان اجرا
-                                <i class="header_icon bi bi-pin-angle-fill p-1"></i>
-                            </button>
-                        </h2>
-
-                        <div id="motevalian_collapse" class="accordion-collapse w-100 collapse show float-right"
-                            aria-labelledby="motevalian_hader">
-
-                            <div class="accordion-body bg-light text-right">
-
-                                <ul dir="rtl" class="" id="motevalian_list">
-
-                                </ul>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Hamkaran paragraphs -->
-                    <div class="accordion-item float-right w-100">
-                        <h2 class="accordion-header d-block w-100 float-right" id="hamkaran_header">
-                            <button
-                                class="accordion-button accordin_header text-right float-right d-inline-block w-100 collapsed pr-1"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#hamkaran_collapse"
-                                aria-expanded="true" aria-controls="hamkaran_collapse">
-                                همکاران
-                                <i class="header_icon bi bi-pin-angle-fill p-1"></i>
-                            </button>
-                        </h2>
-                        <div id="hamkaran_collapse" class="accordion-collapse collapse  w-100 float-right"
-                            aria-labelledby="hamkaran_header">
-                            <div class="accordion-body bg-light text-right">
-                                <ul dir="rtl" class="" id="hamkaran_list">
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Salahiat paragraphs -->
-                    <div class="accordion-item float-right w-100">
-                        <h2 class="accordion-header d-block w-100 float-right" id="salahiat_header">
-                            <button
-                                class="accordion-button accordin_header text-right float-right d-inline-block w-100 collapsed pr-1"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#salahiat_collapse"
-                                aria-expanded="true" aria-controls="salahiat_collapse">
-                                دارای صلاحیت اختیاری
-                                <i class="header_icon bi bi-pin-angle-fill p-1"></i>
-                            </button>
-                        </h2>
-                        <div id="salahiat_collapse" class="accordion-collapse collapse w-100 float-right"
-                            aria-labelledby="salahiat_header">
-                            <div class="accordion-body bg-light text-right">
-
-                                <ul dir="rtl" class="" id="salahiat_list">
-
-                                </ul>
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-
-
-
-            </div>
-
-            <!-- Similarity Pane -->
-            <div class="tab-pane fade float-right w-100" id="find_similarity_pane" role="tabpanel"
-                aria-labelledby="find_similarity_tab">
-
-                {% comment %}
-                <!-- statistical doc info segment -->
-                <h6 class="Term_count_header pr-2">
-                    <label class="text-right float-right mt-5">داشبورد آماری:</label>
-                </h6> {% endcomment %}
-
-                <!-- Search Result Pane -->
-                <div dir="rtl" id="search_result_pane" class="tab-pane w-100 fade show active float-right"
-                    role="tabpanel" aria-labelledby="search_result_tab">
-                    <!-- Search Result table -->
-                    <div class="table-responsive search_result_table mt-4">
-                        <table class="table table-striped SearchTable" style="min-height: 200px;" id="SearchTable">
-                        </table>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-        <!-- show document content modal -->
-        <!-- Modal Container for detail  -->
-        <div class="modal fade" id="documentContent">
-            <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                <div class="modal-content">
-
-                    <!-- Modal Header -->
-                    <div style="direction: rtl !important;" class="modal-header">
-                        <h5 id="documentContentHeader" class="modal-title">نام سند</h5>
-                        <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <!-- Modal body -->
-                    <div class="modal-body bg-light text-justify">
-                        <div class="container" id="DocumentContentBody">
-
-                        </div>
-                    </div>
-
-                    <!-- Modal footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
-                    </div>
-
+                <div id="person_container" class="full">
                 </div>
             </div>
         </div>
 
-        <div class="modal fade" id="documentSummary">
-            <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                <div class="modal-content">
+        <!-- Reference Pane -->
+        <div id="references_graph_pane" class="tab-pane w-100 fade float-right" role="tabpanel"
+             aria-labelledby="references_graph_tab">
 
-                    <!-- Modal Header -->
-                    <div style="direction: rtl !important;" class="modal-header">
-                        <h5 id="documentSummaryHeader" class="modal-title">نام سند</h5>
-                        <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <!-- Modal body -->
-                    <div class="modal-body bg-light text-justify">
-                        <div class="container" id="DocumentSummaryBody">
-
-                        </div>
-                    </div>
-
-                    <!-- Modal footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
-                    </div>
-
-                </div>
-            </div>
         </div>
 
-        <!-- Modal Container for subject  -->
-        <div class="modal fade" id="subjectContent">
-            <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                <div class="modal-content">
-
-                    <!-- Modal Header -->
-                    <div style="direction: rtl !important;" class="modal-header">
-                        <h5 id="subjectContentHeader" class="modal-title">نام سند</h5>
-                        <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <!-- Modal body -->
-                    <div class="modal-body bg-light text-justify">
-                        <div class="container" id="subjectContentBody">
-
-                        </div>
-                    </div>
-
-                    <!-- Modal footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
-                    </div>
-
-                </div>
-            </div>
+        <div class="tab-pane fade float-right w-100 " id="references_table_pane" role="tabpanel"
+             aria-labelledby="references_table_tab">
         </div>
 
-        <!-- Modal Container -->
-        <div class="modal fade" id="SelectDocumentModal">
-            <div style="max-width: 1200px !important;" class="modal-dialog modal-dialog-scrollable">
-                <div class="modal-content">
+        <div class="tab-pane fade float-right w-100" id="subject_analysis_pane" role="tabpanel"
+             aria-labelledby="subject_analysis_tab">
+            <!-- Subject distribution segment -->
 
-                    <!-- Modal Header -->
-                    <div style="direction: rtl !important;" class="modal-header">
-                        <h5 id="ModalHeader" class="modal-title">انتخاب سند</h5>
-                        <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+        </div>
+
+
+        <!-- Actors Pane -->
+        <div class="tab-pane fade float-right w-100" id="actor_analysis_pane" role="tabpanel"
+             aria-labelledby="actor_analysis_tab">
+
+        </div>
+        <!-- Frequency Pane -->
+        {#            <div class="tab-pane fade float-right w-100 " id="frequency_pane" role="tabpanel"#}
+        {#                aria-labelledby="frequency_tab">#}
+        {##}
+        {#                <!-- statistical doc info segment -->#}
+        {#            </div>#}
+        {##}
+        {#            <!-- Advisory opinions to this doc Pane -->#}
+        {#            <div class="tab-pane fade float-right w-100" id="advisory_opinions_pane" role="tabpanel"#}
+        {#                aria-labelledby="advisory_opinions_tab">#}
+        {#            </div>#}
+        {##}
+        {#            <!-- user comments pane -->#}
+        {#            <div class="tab-pane w-100 fade float-right" id="user_comments_pane" role="tabpanel"#}
+        {#                aria-labelledby="user_comments_tab">#}
+        {#            </div>#}
+        {##}
+        {#            <!-- user notes Pane -->#}
+        {#            <div class="tab-pane w-100 fade float-right" id="user_notes_pane" role="tabpanel"#}
+        {#                aria-labelledby="user_notes_tab">#}
+        {#                #}
+        {#            </div>#}
+
+        <!-- Subject Pane -->
+
+
+        <!-- Similarity Pane -->
+        {#            <div class="tab-pane fade float-right w-100" id="find_similarity_pane" role="tabpanel"#}
+        {#                aria-labelledby="find_similarity_tab">#}
+        {##}
+        {#            </div>#}
+
+    </div>
+    <!-- show document content modal -->
+    <!-- Modal Container for detail  -->
+    <div class="modal fade" id="documentContent">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div style="direction: rtl !important;" class="modal-header">
+                    <h5 id="documentContentHeader" class="modal-title">نام سند</h5>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body bg-light text-justify">
+                    <div class="container" id="DocumentContentBody">
+
                     </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="documentSummary">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div style="direction: rtl !important;" class="modal-header">
+                    <h5 id="documentSummaryHeader" class="modal-title">نام سند</h5>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body bg-light text-justify">
+                    <div class="container" id="DocumentSummaryBody">
+
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Container for subject  -->
+    <div class="modal fade" id="subjectContent">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div style="direction: rtl !important;" class="modal-header">
+                    <h5 id="subjectContentHeader" class="modal-title">نام سند</h5>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body bg-light text-justify">
+                    <div class="container" id="subjectContentBody">
+
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Container -->
+    <div class="modal fade" id="SelectDocumentModal">
+        <div style="max-width: 1200px !important;" class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div style="direction: rtl !important;" class="modal-header">
+                    <h5 id="ModalHeader" class="modal-title">انتخاب سند</h5>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+                </div>
 
 
-                    <!-- Modal body -->
-                    <div id="ModalBody" class="modal-body text-justify">
-                        <div class="container">
+                <!-- Modal body -->
+                <div id="ModalBody" class="modal-body text-justify">
+                    <div class="container">
 
 
-                            <div class="d-flex col-12 mb-2">
-                                <input
+                        <div class="d-flex col-12 mb-2">
+                            <input
                                     style="direction: rtl;width: 90%; border-bottom-left-radius: 0;border-top-left-radius: 0;"
                                     class="form-control text-right" placeholder="جستجو سند ..." type="text" required=""
                                     name="SearchBox" id="SearchBox" value="" onkeyup="processSearch()">
 
-                                <button class="btn mr-0"
+                            <button class="btn mr-0"
                                     style="border-bottom-right-radius: 0;border-top-right-radius: 0;" type="button"
                                     id="document_search" onclick="Search_Document_ByName()"
                                     class="btn d-flex float-right mr-4">
-                                    <i class="bi bi-search" style="font-size: 16px;position: relative; top: -5px;"></i>
-                                </button>
+                                <i class="bi bi-search" style="font-size: 16px;position: relative; top: -5px;"></i>
+                            </button>
 
-                                <div class="col-md-6  pt-3 col-12 col-lg-3" style="padding-top: 0px!important;" dir="rtl">
-                                    <select name="load_count" id="LoadCount" class="form-select text-right float-right searchable-select"
+                            <div class="col-md-6  pt-3 col-12 col-lg-3" style="padding-top: 0px!important;" dir="rtl">
+                                <select name="load_count" id="LoadCount"
+                                        class="form-select text-right float-right searchable-select"
                                         onchange="pagingchange()">
-                                        <option value="10">۱۰</option>
-                                        <option value="20">۲۰</option>
-                                        <option value="30">۳۰</option>
-                                        <option value="40">۴۰</option>
-                                        <option value="50">۵۰</option>
-                                    </select>
-                                </div>
-
-                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="تازه‌سازی"
-                                    style="font-size: 25px; text-align: center; cursor: pointer;color: var(--menu_color);"
-                                    class="fa fa-refresh mr-3 mt-2" onclick="CountryChanged()"></span>
+                                    <option value="10">۱۰</option>
+                                    <option value="20">۲۰</option>
+                                    <option value="30">۳۰</option>
+                                    <option value="40">۴۰</option>
+                                    <option value="50">۵۰</option>
+                                </select>
                             </div>
 
-                            <table id="PopUpTable" class="table table-striped PopUpTable" style="counter-reset: Serial;">
-                            </table>
-
-                            <p>
-                                <span>از میان </span>
-                                <span style="color: #1A01CC" id="all_doc_count"></span>
-                                <span> سند، </span>
-                                <span style="color: #3e8f3e" id="load_doc_count"></span>
-                                <span> سند بازیابی شده است </span>
-                            </p>
-
-                            <span class="add-row"></span>
-
+                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="تازه‌سازی"
+                                  style="font-size: 25px; text-align: center; cursor: pointer;color: var(--menu_color);"
+                                  class="fa fa-refresh mr-3 mt-2" onclick="CountryChanged()"></span>
                         </div>
-                    </div>
 
-                </div>
-            </div>
-        </div>
+                        <table id="PopUpTable" class="table table-striped PopUpTable" style="counter-reset: Serial;">
+                        </table>
 
+                        <p>
+                            <span>از میان </span>
+                            <span style="color: #1A01CC" id="all_doc_count"></span>
+                            <span> سند، </span>
+                            <span style="color: #3e8f3e" id="load_doc_count"></span>
+                            <span> سند بازیابی شده است </span>
+                        </p>
 
-        <!-- ChartModal Container -->
-        <button type="button" id="actors_modal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
-            data-bs-target="#actors_modal"></button>
-        <div class="modal fade" id="actors_modal">
-            <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                <div class="modal-content">
+                        <span class="add-row"></span>
 
-                    <!-- Modal Header -->
-                    <div style="direction: rtl !important;" class="modal-header">
-                        <h5 id="modal_header" class="modal-title">عنوان</h5>
-                        <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
-                    </div>
-                    <!-- Modal body -->
-                    <div id="actor_paragraphs" class="modal-body text-justify">
-                        <div id="actor_modal_body">
-                        </div>
-                    </div>
-
-                    <!-- Modal footer -->
-                    <div id="modal_footer" class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن
-                        </button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <!-- ReferencesModal Container -->
-        <button type="button" id="references_modal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
-            data-bs-target="#references_modal"></button>
-        <div class="modal fade" id="references_modal">
-            <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                <div class="modal-content">
-
-                    <!-- Modal Header -->
-                    <div style="direction: rtl !important;" class="modal-header">
-                        <h5 id="references_modal_header" class="modal-title">عنوان</h5>
-                        <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
-                    </div>
-                    <!-- Modal body -->
-                    <div id="references_modal_paragraphs" class="modal-body text-justify">
-
-                    </div>
-
-                    <!-- Modal footer -->
-                    <div id="refrences_modal_footer" class="modal-footer">
-                        <button class="btn btn-secondary" id="references_modal_footer_btn" data-bs-dismiss="modal">بستن
-                        </button>
-                    </div>
-                    <!-- <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
-                    </div> -->
-
-                </div>
-            </div>
-        </div>
-
-        <!-- ReferencesGraphModal Container -->
-        <button type="button" id="references_graph_modal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
-            data-bs-target="#references_graph_modal"></button>
-        <div class="modal fade" id="references_graph_modal">
-            <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                <div class="modal-content">
-                    <!-- Modal Header -->
-                    <div style="direction: rtl !important;" class="modal-header">
-                        <h5 id="references_graph_modal_header" class="modal-title">عنوان</h5>
-                        <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
-                    </div>
-                    <!-- Modal body -->
-                    <div id="references_graph_modal_paragraphs" class="modal-body text-justify">
-                    </div>
-                    <!-- Modal footer -->
-                    <div id="references_graph_modal_footer" class="modal-footer">
-                        <button class="btn btn-secondary" id="references_graph_modal_footer_btn"
-                            data-bs-dismiss="modal">بستن
-                        </button>
                     </div>
                 </div>
+
             </div>
         </div>
-
     </div>
 
+
+    <!-- ChartModal Container -->
+    <button type="button" id="actors_modal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
+            data-bs-target="#actors_modal"></button>
+    <div class="modal fade" id="actors_modal">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div style="direction: rtl !important;" class="modal-header">
+                    <h5 id="modal_header" class="modal-title">عنوان</h5>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal body -->
+                <div id="actor_paragraphs" class="modal-body text-justify">
+                    <div id="actor_modal_body">
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div id="modal_footer" class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ReferencesModal Container -->
+    <button type="button" id="references_modal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
+            data-bs-target="#references_modal"></button>
+    <div class="modal fade" id="references_modal">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div style="direction: rtl !important;" class="modal-header">
+                    <h5 id="references_modal_header" class="modal-title">عنوان</h5>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal body -->
+                <div id="references_modal_paragraphs" class="modal-body text-justify">
+
+                </div>
+
+                <!-- Modal footer -->
+                <div id="refrences_modal_footer" class="modal-footer">
+                    <button class="btn btn-secondary" id="references_modal_footer_btn" data-bs-dismiss="modal">بستن
+                    </button>
+                </div>
+                <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                </div> -->
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ReferencesGraphModal Container -->
+    <button type="button" id="references_graph_modal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
+            data-bs-target="#references_graph_modal"></button>
+    <div class="modal fade" id="references_graph_modal">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div style="direction: rtl !important;" class="modal-header">
+                    <h5 id="references_graph_modal_header" class="modal-title">عنوان</h5>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal body -->
+                <div id="references_graph_modal_paragraphs" class="modal-body text-justify">
+                </div>
+                <!-- Modal footer -->
+                <div id="references_graph_modal_footer" class="modal-footer">
+                    <button class="btn btn-secondary" id="references_graph_modal_footer_btn"
+                            data-bs-dismiss="modal">بستن
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 </body>
+<script src="../../static/js/rahbari_doc_profile/rahbari_document_profile_statistic.js"></script>
+<script src="../../static/js/rahbari_doc_profile/rahbari_doc_profile.js"></script>
 </html>
