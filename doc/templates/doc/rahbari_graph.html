@@ -57,6 +57,7 @@
     <link rel="stylesheet" type="text/css" href="../../static/library/notyf.min-npm.css">
     <script src="../../static/library/notyf.min.js"></script>
 
+
     <script src="./../static/js/graph/g6.min.js"></script>
     <script src="../../static/library/jquery-ui.min-1.11.4.js"></script>
 
@@ -72,6 +73,8 @@
             background-color: #000000 !important;
         }
     </style>
+
+
 
     <title>تحلیل گرافی اسناد رهبری</title>
     {% include "doc/title_icon.html" %}
@@ -186,32 +189,6 @@
                 <div class="col-4">
                         <div id="weight_histogram" chart-height="200px" class="d-none"></div>
                 </div>
-                <div dir="rtl" id="informationBox" class="mt-4" style="visibility: hidden; padding: 0; border: 1px solid #006666;">
-                    <table class="table table-light">
-                        <thead class="table" style="background: #0e3f8b;">
-                            <tr>
-                                <th class="text-center" scope="col">نوع گراف</th>
-                                <th class="text-center" scope="col">حداقل وزن</th>
-                                <!--<th class="text-center" scope="col">عبارت جستجو شده</th>-->
-                                <th class="text-center" scope="col">سطح همسایگی</th>
-                                <th class="text-center" scope="col">تعداد گره</th>
-                                <th class="text-center" scope="col">تعداد یال</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-center" id="selected_graph_type">-</td>
-                                <td class="text-center" id="selected_limit_neighbour_count">-</td>
-                                <!--<td class="text-center" id="selected_search_keyword">-</td>-->
-                                <td class="text-center" id="selected_neighbour_level">-</td>
-                                <td class="text-center" id="selected_node_count">-</td>
-                                <td class="text-center" id="selected_edge_count">-</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-
             </div>
 
             <!-- Constraints -->
@@ -313,9 +290,37 @@
                             </div>
                         </div>
 
-                        <div dir="ltr">
-                            <img style="width: 4%; cursor: pointer; margin-top: 20px;" id="rahbari_graph_SelectNeighbourImg" src="../../static/image/neighbourhood.png">
-                            <img style="width: 3%; cursor: pointer; margin-top: 20px;" id="rahbari_graph_ShowHideImg" src="../../static/image/hide_nodes.png">
+                        <div class="d-flex mt-3">
+                            <div dir="rtl" id="informationBox" class="col-md-11 p-1 col-12 col-lg-11" style="visibility: hidden; padding: 0;">
+                        <table class="table table-light">
+                            <thead class="table" style="background: #0e3f8b;">
+                                <tr>
+                                    <th class="text-center" scope="col">نوع گراف</th>
+                                    <th class="text-center" scope="col">حداقل وزن</th>
+                                    <!--<th class="text-center" scope="col">عبارت جستجو شده</th>-->
+                                    <th class="text-center" scope="col">سطح همسایگی</th>
+                                    <th class="text-center" scope="col">تعداد گره</th>
+                                    <th class="text-center" scope="col">تعداد یال</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" id="selected_graph_type">-</td>
+                                    <td class="text-center" id="selected_limit_neighbour_count">-</td>
+                                    <!--<td class="text-center" id="selected_search_keyword">-</td>-->
+                                    <td class="text-center" id="selected_neighbour_level">-</td>
+                                    <td class="text-center" id="selected_node_count">-</td>
+                                    <td class="text-center" id="selected_edge_count">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                            <div dir="ltr" class="col-md-6 p-1 col-12 col-lg-1 mt-4">
+                                <img style="width: 40%; cursor: pointer; margin-top: 20px;" id="rahbari_graph_SelectNeighbourImg" src="../../static/image/neighbourhood.png">
+                                <img style="width: 30%; cursor: pointer; margin-top: 20px;" id="rahbari_graph_ShowHideImg" src="../../static/image/hide_nodes.png">
+                            </div>
                         </div>
 
                         <div id="rahbari_graph_graph_container" class="border mt-1 position-static" style="height:500px; overflow: hidden;">
@@ -486,10 +491,17 @@
     <!-- <script src="../../static/js/graph/graph_tour.js"></script> -->
     <script src="../../static/js/tour.js"></script>
 
+    <!-- Blocking UI -->
+    <script src="../../static/js/blockUI.js"></script>
+    <script src="../../static/js/blockUI_handler.js"></script>
+    <link rel="stylesheet" href="../../static/styles/loader.css">
 
     <script>
 
         initSearchableSelects();
+
+        NeighbourhoodLimit = 100
+        LevelSizeLimit = 5
 
         init()
 
@@ -510,15 +522,14 @@
             syncSelectOptions("GraphTypeSelect", options)
 
             options = [];
-            for (let w = 1; w <= 15; w+=1) {
+            for (let w = 1; w <= NeighbourhoodLimit; w+=1) {
                 options.push({value: w, text: w});
             }
             syncSelectOptions("limit_neighbour_count", options)
 
 
             options = [];
-            const LevelSize = 5
-            for(let i=1; i<= LevelSize; i++)
+            for(let i=1; i<= LevelSizeLimit; i++)
             {
                 options.push({ value: i, text: i });
             }
@@ -539,7 +550,6 @@
             graph_type_list = type_list
 
             await change_graph_type()
-
 
             //user log
             let form_data = new FormData()
@@ -611,6 +621,11 @@
             let label_id = await GetMultiSelectValue("LabelSelectBox")
             let document_id = await GetMultiSelectValue("DocumentSelectBox")
 
+            if (label_id === "")
+                label_id = "0"
+            if (document_id === "")
+                document_id = "0"
+
             if (label_id.split("__").includes("0") && document_id.split("__").includes("0"))
             {
                 const type_id = document.getElementById("GraphTypeSelect").value
@@ -676,7 +691,7 @@
                     Edges_data = []
 
                 }
-                else if (Edges_data.length === 0 && Nodes_data.length === 0) {
+                else if (Edges_data.length === 0) {
                     let alert_text = "<p style='font-weight: bold; direction: rtl; font-size: 18px; padding: 5px 0'>هیچ گره و یالی یافت نشد.</p>"
                     alert_text += "<p style='font-weight: bold; direction: rtl; font-size: 16px; padding: 5px 0'>لطفا با تغییر فیلترهای ورودی، گراف خود را مجددا رسم نمایید.</p>"
                     Swal.fire({
@@ -1191,9 +1206,6 @@
 <script src="../../static/js/tooltip_handler.js"></script>
 
 
-<!-- Blocking UI -->
-<script src="../../static/js/blockUI.js"></script>
-<script src="../../static/js/blockUI_handler.js"></script>
-<link rel="stylesheet" href="../../static/styles/loader.css">
+
 
 </html>

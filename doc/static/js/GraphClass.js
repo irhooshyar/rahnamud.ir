@@ -128,8 +128,10 @@ class MyGraph {
             });
 
             // Width and Height
-            const width = this.container_width
-            const height = this.container_height
+            // const width = this.container_width
+            // const height = this.container_height
+            const width = document.getElementById(_this.container_id).clientWidth;
+            const height = document.getElementById(_this.container_id).clientHeight;
 
             // Create Graph Object
             this.graph_object = new G6.Graph({
@@ -199,12 +201,14 @@ class MyGraph {
             this.graph_object.on('edge:dblclick', handleEdgeClick);
 
             // Handle Zoom and Scroll Width
-            if (typeof window !== 'undefined')
-                window.onresize = () => {
-                    if (!this.graph_object || this.graph_object.get('destroyed')) return;
-                    if (!this.container_id || !this.container_id.scrollWidth || !this.container_id.scrollHeight) return;
-                    this.graph_object.changeSize(this.graph_object.scrollWidth, height);
-            };
+            if (typeof window !== 'undefined') {
+                window.onresize = function (event) {
+                    const new_width = document.getElementById(_this.container_id).clientWidth;
+                    const new_height = document.getElementById(_this.container_id).clientHeight;
+                    console.log(new_width, new_height)
+                    _this.graph_object.changeSize(new_width, new_height);
+                };
+            }
 
             // set MinMax Degree and MinMax Weight
             this.setMinMaxDegree()
