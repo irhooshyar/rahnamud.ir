@@ -18713,7 +18713,7 @@ def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRul
             }
             should_query.append(res)
         res_query['bool']['should'] = should_query
-        res_query['bool']['minimum_should_match'] = 0
+        res_query['bool']['minimum_should_match'] = 1
 
 
     if text != "empty":
