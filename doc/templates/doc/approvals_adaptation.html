@@ -981,7 +981,7 @@
         async function showDetailsDataExact(sim_doc_list, document_id, document_name, table_id) {
 
             /* Title Text */
-            const src_document_link = 'http://' + location.host + "/document_profile/?id=" + document_id;
+            const src_document_link = 'http://' + location.host + "/information/?id=" + document_id;
             let src_document_tag = "<a target='to_blank' href='" + src_document_link + "'>" + document_name + "</a>";
 
             /* Body Text */
@@ -1031,7 +1031,7 @@
 
                 }
 
-                const document_link = 'http://' + location.host + "/document_profile/?id=" + doc_id
+                const document_link = 'http://' + location.host + "/information/?id=" + doc_id
                 doc_name = '<a target="blank" href="' + document_link + '">' + doc_name + "</a>"
 
 
@@ -1173,7 +1173,7 @@
             $('#LabelSimModal').modal('show');
 
             /* Title Text */
-            const selected_document_link = 'http://' + location.host + "/document_profile/?id=" + doc2_id;
+            const selected_document_link = 'http://' + location.host + "/information/?id=" + doc2_id;
             let selected_document_tag = "<a target='to_blank' href='" + selected_document_link + "'>" + doc2_name + "</a>";
 
             document.getElementById("LabelSimModalHeader").innerHTML = "<span class='text-secondary'>" + " سند انتخابی: " + "</span>" + selected_document_tag
@@ -1216,7 +1216,7 @@
             document.getElementById("LabelSimModalBody").innerHTML = ""
             startFullPageBlockUI();
             /* Title Text */
-            const dest_document_link = 'http://' + location.host + "/document_profile/?id=" + doc2_id;
+            const dest_document_link = 'http://' + location.host + "/information/?id=" + doc2_id;
             let dest_document_tag = "<a target='to_blank' href='" + dest_document_link + "'>" + doc2_name + "</a>";
             document.getElementById("LabelSimModalHeader").innerHTML = "<span class='text-secondary'>" + " سند انتخابی: " + "</span>" + dest_document_tag
             

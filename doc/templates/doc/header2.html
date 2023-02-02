@@ -78,6 +78,14 @@
             </li>
 
             <!-- Rahbari -->
+            <li class="nav-item" id="document_profile" style="display: none;">
+                <a class="nav-link" id="Rahbari_profile_link" role="button"
+                   href="{% url 'document_profile' %}" aria-expanded="false">
+                    <img width="25px" src="{% static 'icons/AI1.png' %}" alt="">
+                    پروفایل اسناد رهبری
+                </a>
+            </li>
+
             <li class="nav-item dropdown" id="rahbari_analysis" style="display: none;">
                 <a class="nav-link dropdown-toggle" href="#" id="RahbariDropdown" role="button"
                    data-bs-toggle="dropdown" aria-expanded="false">
@@ -86,11 +94,7 @@
                     تحلیل اسناد رهبری
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="RahbariDropdown">
-                    <li style="list-style: none;"><a id="leadership_slogan" class="dropdown-item text-right"
-                                                     href="{% url 'document_profile' %}"
-                                                     style="display: none;">
-                        پروفایل اسناد</a>
-                    </li>
+
                     <li><a id="rahbari_paraghraph" class="dropdown-item text-right"
                            href="{% url 'rahbari_paraghraph' %}"
                            style="display: none;">تحلیل فرامین رهبری</a>
@@ -121,13 +125,7 @@
                 </ul>
             </li>
 
-            <li class="nav-item dropdown" id="rahbari_profile" style="display: none;">
-                <a class="nav-link dropdown-toggle" id="Rahbari_profile_link" role="button"
-                   href="{% url 'document_profile' %}" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img width="25px" src="{% static 'icons/AI1.png' %}" alt="">
-                    پروفایل اسناد رهبری
-                </a>
-            </li>
+
         </ul>
 
 
