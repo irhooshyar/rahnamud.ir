@@ -1190,7 +1190,7 @@ def leadership_slogan(request):  ###
                    'slogan_synonymous_words': slogan_map_synonymous_words})
 
 
-# @allowed_users('document_profile')
+@allowed_users('document_profile')
 def document_profile(request):
     country_list = Country.objects.all().filter(name="اسناد رهبری")
     country_map = get_country_maps(country_list)
