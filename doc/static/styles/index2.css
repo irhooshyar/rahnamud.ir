@@ -222,15 +222,17 @@ a#download_link {
 } */
 
 .welcometext {
+  padding: 8rem;
+}
+
+.welcometext p{
   direction: rtl;
-  text-align: center;
-  width: 50%;
-  line-height: 3;
-  font-size: 18px;
+  text-align: justify;
+  line-height: 2.5;
+  font-size: 21px;
   font-weight: bold;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 5%;
+  margin: 0;
+  padding: 0;
 }
 
 .helptext {
@@ -1278,4 +1280,22 @@ table .footable {
 
 .swal-wide{
     width:600px !important;
+}
+
+.index-background {
+  background-image: url('../image/index_background.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 94vh;
+  padding: 0;
+  margin: 0;
+}
+
+.index-container {
+  background: linear-gradient(180deg, #F8F9FA 0%, #CBD3DA 54.18%, #F8F9FA 100%);
+  margin: 0;
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 0;
 }
