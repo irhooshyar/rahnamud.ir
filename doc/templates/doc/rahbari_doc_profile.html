@@ -82,6 +82,8 @@
     <script src="../../static/js/chart.js"></script>
     <script src="../../static/js/blockUI.js"></script>
     <script src="../../static/js/logincheck.js"></script>
+    <script src="../../static/js/column.js"></script>
+    <script src="../../static/js/ChartColumnInteractivity.js"></script>
 
     <title> نمایش اسناد</title>
     {% include "doc/title_icon.html" %}
@@ -172,7 +174,7 @@
                 <thead class="table" style="background: #1e56a0;">
                 <tr>
                     <th class="text-center" scope="col">تاریخ سند</th>
-                    {#                    <th class="text-center" scope="col">موضوع سند</th>#}
+                    <th class="text-center" scope="col">موضوع سند براساس کلیدواژه</th>
                     <th class="text-center" scope="col">نوع سند</th>
                     <th class="text-center" scope="col">برچسب های سند</th>
                 </tr>
@@ -180,7 +182,7 @@
                 <tbody>
                 <tr>
                     <td class="text-center" id="document_date">-</td>
-                    {#                    <td class="text-center" id="document_subject">-</td>#}
+                    <td class="text-center" id="document_subject">-</td>
                     <td class="text-center" id="document_type">-</td>
                     <td class="text-center" id="document_labels">-</td>
                 </tr>
@@ -223,31 +225,6 @@
                     aria-selected="false">پیام سند
             </button>
         </li>
-        {#            <li class="nav-item float-right" role="presentation">#}
-        {#                <button id="frequency_tab" class="nav-link" data-bs-toggle="pill" data-bs-target="#frequency_pane"#}
-        {#                    type="button" role="tab" aria-controls="frequency_pane" aria-selected="false">تحلیل تواتر#}
-        {#                    محور</button>#}
-        {#            </li>#}
-        {#            <li class="nav-item float-right" role="presentation">#}
-        {#                <button id="advisory_opinions_tab" class="nav-link" data-bs-toggle="pill"#}
-        {#                    data-bs-target="#advisory_opinions_pane" type="button" role="tab"#}
-        {#                    aria-controls="advisory_opinions_pane" aria-selected="false">تحلیل نظرات مشورتی</button>#}
-        {#            </li>#}
-        {#            <li class="nav-item float-right" role="presentation">#}
-        {#                <button id="find_similarity_tab" class="nav-link" data-bs-toggle="pill"#}
-        {#                    data-bs-target="#find_similarity_pane" type="button" role="tab" aria-controls="find_similarity_pane"#}
-        {#                    aria-selected="false">مشابهت یابی</button>#}
-        {#            </li>#}
-        {#            <li class="nav-item float-right" role="presentation">#}
-        {#                <button id="user_comments" class="nav-link" data-bs-toggle="pill" data-bs-target="#user_comments_pane"#}
-        {#                    type="button" role="tab" aria-controls="user_comments_pane" aria-selected="false">نظرات#}
-        {#                    کاربری</button>#}
-        {#            </li>#}
-        {#            <li class="nav-item float-right" role="presentation">#}
-        {#                <button id="user_notes" class="nav-link" data-bs-toggle="pill" data-bs-target="#user_notes_pane"#}
-        {#                    type="button" role="tab" aria-controls="user_notes_pane" aria-selected="false">یادداشت‌های#}
-        {#                    شخصی</button>#}
-        {#            </li>#}
     </ul>
 
     <div id="original_pane" class="tab-content float-right bg-white px-1" style="position: relative;"
@@ -264,7 +241,7 @@
                 <div id="location_container" class="half">
                 </div>
 
-                <div id="organization_container" class="half">
+                <div id="organization_container" class="full">
                 </div>
 
                 <div id="person_container" class="full">
@@ -274,57 +251,86 @@
 
         <!-- Reference Pane -->
         <div id="references_graph_pane" class="tab-pane w-100 fade float-right" role="tabpanel"
-             aria-labelledby="references_graph_tab">
+             aria-labelledby="references_graph_tab" dir="rtl">
+
+            <div class="mt-4">
+                <p id="ActorColumnSelection" class="text-left text-secondary float-right">فهرست براساس:</p>
+                <!-- Column select -->
+                <div class="col-md-6 col-12 col-lg-2 float-right" dir="rtl">
+
+                    <select id="ActorColumnSelect" onchange="actor_table_show_result()"
+                            class="form-select text-right float-right searchable-multi-select"
+                            style="direction: rtl;">
+
+                    </select>
+
+                </div>
+
+                <button class="btn float-left p-0 px-1" id="actor_ExportExcel" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="خروجی اکسل" onclick="actor_tableExportExcel()" type="button">
+                    <i class="far fa-file-excel text-success m-0" style="font-size: 25px;margin: 0px;"></i>
+                </button>
+            </div>
+            <table id="DocProfileActorsTable" class="table table-striped PopUpTable">
+            </table>
 
         </div>
 
         <div class="tab-pane fade float-right w-100 " id="references_table_pane" role="tabpanel"
-             aria-labelledby="references_table_tab">
+             aria-labelledby="references_table_tab" dir="rtl">
+            <div class="mt-4">
+                <p id="PersonColumnSelection" class="text-left text-secondary float-right">فهرست براساس:</p>
+                <!-- Column select -->
+                <div class="col-md-6 col-12 col-lg-2 float-right" dir="rtl">
+
+                    <select id="PersonColumnSelect" onchange="table_show_result()"
+                            class="form-select text-right float-right searchable-multi-select"
+                            style="direction: rtl;">
+
+                    </select>
+
+                </div>
+
+                <button class="btn float-left p-0 px-1" id="ExportExcel" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="خروجی اکسل" onclick="tableExportExcel()" type="button">
+                    <i class="far fa-file-excel text-success m-0" style="font-size: 25px;margin: 0px;"></i>
+                </button>
+            </div>
+            <table id="DocProfilePersonsTable" class="table table-striped PopUpTable">
+            </table>
         </div>
 
         <div class="tab-pane fade float-right w-100" id="subject_analysis_pane" role="tabpanel"
-             aria-labelledby="subject_analysis_tab">
+             aria-labelledby="subject_analysis_tab" dir="rtl">
             <!-- Subject distribution segment -->
+            <div class="mt-4">
+                <p id="LocationColumnSelection" class="text-left text-secondary float-right">فهرست براساس:</p>
+                <!-- Column select -->
+                <div class="col-md-6 col-12 col-lg-2 float-right" dir="rtl">
 
+                    <select id="LocationColumnSelect" onchange="location_table_show_result()"
+                            class="form-select text-right float-right searchable-multi-select"
+                            style="direction: rtl;">
+
+                    </select>
+
+                </div>
+
+                <button class="btn float-left p-0 px-1" id="ExportExcel" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="خروجی اکسل" onclick="location_tableExportExcel()" type="button">
+                    <i class="far fa-file-excel text-success m-0" style="font-size: 25px;margin: 0px;"></i>
+                </button>
+            </div>
+            <table id="DocProfileLocationTable" class="table table-striped PopUpTable">
+            </table>
         </div>
 
 
         <!-- Actors Pane -->
         <div class="tab-pane fade float-right w-100" id="actor_analysis_pane" role="tabpanel"
-             aria-labelledby="actor_analysis_tab">
-
+             aria-labelledby="actor_analysis_tab" dir="rtl">
+            <p id="summary_text" style="padding-block: 3rem; padding-inline: 1rem; white-space: pre-line;"></p>
         </div>
-        <!-- Frequency Pane -->
-        {#            <div class="tab-pane fade float-right w-100 " id="frequency_pane" role="tabpanel"#}
-        {#                aria-labelledby="frequency_tab">#}
-        {##}
-        {#                <!-- statistical doc info segment -->#}
-        {#            </div>#}
-        {##}
-        {#            <!-- Advisory opinions to this doc Pane -->#}
-        {#            <div class="tab-pane fade float-right w-100" id="advisory_opinions_pane" role="tabpanel"#}
-        {#                aria-labelledby="advisory_opinions_tab">#}
-        {#            </div>#}
-        {##}
-        {#            <!-- user comments pane -->#}
-        {#            <div class="tab-pane w-100 fade float-right" id="user_comments_pane" role="tabpanel"#}
-        {#                aria-labelledby="user_comments_tab">#}
-        {#            </div>#}
-        {##}
-        {#            <!-- user notes Pane -->#}
-        {#            <div class="tab-pane w-100 fade float-right" id="user_notes_pane" role="tabpanel"#}
-        {#                aria-labelledby="user_notes_tab">#}
-        {#                #}
-        {#            </div>#}
-
-        <!-- Subject Pane -->
-
-
-        <!-- Similarity Pane -->
-        {#            <div class="tab-pane fade float-right w-100" id="find_similarity_pane" role="tabpanel"#}
-        {#                aria-labelledby="find_similarity_tab">#}
-        {##}
-        {#            </div>#}
 
     </div>
     <!-- show document content modal -->
@@ -354,34 +360,6 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="documentSummary">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl">
-            <div class="modal-content">
-
-                <!-- Modal Header -->
-                <div style="direction: rtl !important;" class="modal-header">
-                    <h5 id="documentSummaryHeader" class="modal-title">نام سند</h5>
-                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
-                </div>
-
-                <!-- Modal body -->
-                <div class="modal-body bg-light text-justify">
-                    <div class="container" id="DocumentSummaryBody">
-
-                    </div>
-                </div>
-
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Container for subject  -->
     <div class="modal fade" id="subjectContent">
         <div class="modal-dialog modal-dialog-scrollable modal-xl">
             <div class="modal-content">
@@ -407,8 +385,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal Container -->
     <div class="modal fade" id="SelectDocumentModal">
         <div style="max-width: 1200px !important;" class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
@@ -452,7 +428,7 @@
 
                             <span data-bs-toggle="tooltip" data-bs-placement="top" title="تازه‌سازی"
                                   style="font-size: 25px; text-align: center; cursor: pointer;color: var(--menu_color);"
-                                  class="fa fa-refresh mr-3 mt-2" onclick="CountryChanged()"></span>
+                                  class="fa fa-refresh mr-3 mt-2" onclick="Reload()"></span>
                         </div>
 
                         <table id="PopUpTable" class="table table-striped PopUpTable" style="counter-reset: Serial;">
@@ -475,85 +451,43 @@
         </div>
     </div>
 
-
-    <!-- ChartModal Container -->
-    <button type="button" id="actors_modal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
-            data-bs-target="#actors_modal"></button>
-    <div class="modal fade" id="actors_modal">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+    <button type="button" id="ChartModalBtn_2" class="btn d-none modal_btn" data-bs-toggle="modal"
+            data-bs-target="#ChartModal_2"></button>
+    <div class="modal fade" id="ChartModal_2">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
             <div class="modal-content">
 
                 <!-- Modal Header -->
                 <div style="direction: rtl !important;" class="modal-header">
-                    <h5 id="modal_header" class="modal-title">عنوان</h5>
+                    <h5 id="ChartModalHeader_2" class="modal-title">عنوان</h5>
                     <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
                 </div>
+
                 <!-- Modal body -->
-                <div id="actor_paragraphs" class="modal-body text-justify">
-                    <div id="actor_modal_body">
+                <div id="ChartModalText_2" class="modal-body text-justify">
+                    <h6 id="DocsCount_2" class='text-secondary'></h6>
+                    <div id="ChartModalBodyText_2">
                     </div>
-                </div>
 
-                <!-- Modal footer -->
-                <div id="modal_footer" class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن
+                    <button id="LoadMoreDocuments_2" class="btn btn-white w-100 mb-1 float-left"
+                            style="color: #0e3f8b"><i class="fa fa-plus pl-2"
+                                                      style="position:relative;top:3px;"></i>نمایش بیش‌تر
                     </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- ReferencesModal Container -->
-    <button type="button" id="references_modal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
-            data-bs-target="#references_modal"></button>
-    <div class="modal fade" id="references_modal">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl">
-            <div class="modal-content">
-
-                <!-- Modal Header -->
-                <div style="direction: rtl !important;" class="modal-header">
-                    <h5 id="references_modal_header" class="modal-title">عنوان</h5>
-                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
-                </div>
-                <!-- Modal body -->
-                <div id="references_modal_paragraphs" class="modal-body text-justify">
 
                 </div>
 
                 <!-- Modal footer -->
-                <div id="refrences_modal_footer" class="modal-footer">
-                    <button class="btn btn-secondary" id="references_modal_footer_btn" data-bs-dismiss="modal">بستن
+                <div dir="rtl" class="modal-footer">
+
+                    <input type="number" id="ColumnModalPaginationInput_2" min="1" max="1" value="1"
+                           class="form-select text-right float-right d-none">
+
+
+                    <button id="ExportExcel_2" class="btn btn-primary"><i class="fa fa-download"></i> خروجی
+                        اکسل
                     </button>
                 </div>
-                <!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
-                </div> -->
 
-            </div>
-        </div>
-    </div>
-
-    <!-- ReferencesGraphModal Container -->
-    <button type="button" id="references_graph_modal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
-            data-bs-target="#references_graph_modal"></button>
-    <div class="modal fade" id="references_graph_modal">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div style="direction: rtl !important;" class="modal-header">
-                    <h5 id="references_graph_modal_header" class="modal-title">عنوان</h5>
-                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
-                </div>
-                <!-- Modal body -->
-                <div id="references_graph_modal_paragraphs" class="modal-body text-justify">
-                </div>
-                <!-- Modal footer -->
-                <div id="references_graph_modal_footer" class="modal-footer">
-                    <button class="btn btn-secondary" id="references_graph_modal_footer_btn"
-                            data-bs-dismiss="modal">بستن
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -563,4 +497,8 @@
 </body>
 <script src="../../static/js/rahbari_doc_profile/rahbari_document_profile_statistic.js"></script>
 <script src="../../static/js/rahbari_doc_profile/rahbari_doc_profile.js"></script>
+<script src="../../static/js/rahbari_doc_profile/rahbari_document_real_person.js"></script>
+<script src="../../static/js/rahbari_doc_profile/rahbari_document_locations.js"></script>
+<script src="../../static/js/rahbari_doc_profile/rahbari_document_actors.js"></script>
+<script src="../../static/js/rahbari_doc_profile/rahbari_document_summary.js"></script>
 </html>

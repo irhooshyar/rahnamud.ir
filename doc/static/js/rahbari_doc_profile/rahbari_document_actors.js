@@ -1,16 +1,24 @@
-let person_rows = []
-init()
+let actors_rows = []
+actor_init()
 
-function init() {
-    const menu_columns = {
-        "all_repetition": 'تعداد احکام حاوی نام',
-        "person_name": 'نام فرد',
-    }
-    append_column(menu_columns, "PersonColumnSelect")
+async function find_rahbari_document_actors(document_id) {
+
+    const request_link = 'http://' + location.host + "/get_rahbari_document_actor/" + document_id + "/";
+    let response = await fetch(request_link).then(response => response.json());
+
+    get_document_profile_actors(response['result']);
 }
 
-async function get_document_profile_real_persons(generated_persons) {
-    person_rows = generateRows(generated_persons)
+function actor_init() {
+    const menu_columns = {
+        "all_repetition": 'تعداد احکام حاوی نام',
+        "actor_name": 'نام کنشگر',
+    }
+    append_column(menu_columns, "ActorColumnSelect")
+}
+
+async function get_document_profile_actors(generated_locations) {
+    actors_rows = actor_generateRows(generated_locations)
 
     // const paragraph_table_tab = document.getElementById("paragraph_person_info_tab")
     // if (paragraph_table_tab.classList.contains("active")) {
@@ -21,25 +29,24 @@ async function get_document_profile_real_persons(generated_persons) {
     // })
 
     startBlockUI('paragraph_info_pane');
-    table_show_result();
+    actor_table_show_result();
     stopBlockUI()
 
 }
 
-function generateRows(persons) {
+function actor_generateRows(actors) {
     const rows = []
 
     let counter = 1
-    for (const person of persons) {
-        if(person['key'] === "بدون شخص حقیقی") continue
-        const modal_function = `show_detail_modal('${person['key']}', 'احکام دارای شخص حقیقی')`
+    for (const actor of actors) {
+        const modal_function = `show_detail_modal('${actor[0]}', 'احکام دارای کنشگر')`
         const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" onclick="' + modal_function + '" data-bs-target="#ChartModal_2">جزئیات</button>'
 
 
         const row = {}
         row['id'] = counter
-        row['person_name'] = person['key']
-        row['all_repetition'] = person['doc_count'];
+        row['actor_name'] = actor[0]
+        row['all_repetition'] = actor[1];
         row['detail'] = detail
 
         rows.push(row)
@@ -49,13 +56,13 @@ function generateRows(persons) {
     return rows
 }
 
-async function tableExportExcel() {
-    let csv = FooTable.get('#DocProfilePersonsTable').toCSV();
+async function actor_tableExportExcel() {
+    let csv = FooTable.get('#DocProfileActorsTable').toCSV();
     const btn_regex = new RegExp('<button.*</button>', 'g')
     csv = csv.replaceAll("#", "")
     csv = csv.replaceAll(btn_regex, "")
     const document_name = document.getElementById('document_select').title
-    let save_file_name = "افراد حقیقی {" + document_name + "}"
+    let save_file_name = "کنشگران {" + document_name + "}"
 
     let csvContent = "data:text/csv;charset=utf-8,%EF%BB%BF" + encodeURI(csv);
     const link = document.createElement("a");
@@ -65,13 +72,11 @@ async function tableExportExcel() {
     link.click()
 }
 
-function table_show_result() {
-
-
+function actor_table_show_result() {
     let selected_columns = ["id", "detail"]
-    selected_columns = find_selected_column(selected_columns, "PersonColumnSelect")
+    selected_columns = find_selected_column(selected_columns, "ActorColumnSelect")
 
-    const PersonTableColumns = [
+    const ActorTableColumns = [
         {
             "name": "id",
             "title": "ردیف",
@@ -82,8 +87,8 @@ function table_show_result() {
             }
         },
         {
-            "name": "person_name",
-            "title": "نام فرد",
+            "name": "actor_name",
+            "title": "کنشگر",
         },
         {
             "name": "all_repetition",
@@ -151,7 +156,7 @@ function table_show_result() {
     ]
 
     if (!selected_columns.includes("all")) {
-        for (let column of PersonTableColumns) {
+        for (let column of ActorTableColumns) {
             if (selected_columns.includes(column["name"])) {
                 column["visible"] = true
             } else {
@@ -161,8 +166,8 @@ function table_show_result() {
     }
 
 
-    $('#DocProfilePersonsTable').empty();
-    $('#DocProfilePersonsTable').footable({
+    $('#DocProfileActorsTable').empty();
+    $('#DocProfileActorsTable').footable({
         "paging": {
             "enabled": true,
             strings: {
@@ -174,14 +179,15 @@ function table_show_result() {
         },
         "filtering": {
             "enabled": true,
-            "placeholder": "نام فرد...."
+            "placeholder": "نام کنشگر...."
         },
         "sorting": {
             "enabled": true
         },
-        "empty": "فردی یافت نشد.",
+        "empty": "در این سند هیچ کنشگری یافت نشد.",
 
-        "columns": PersonTableColumns,
-        "rows": person_rows
+        "columns": ActorTableColumns,
+        "rows": actors_rows
     })
 }
+

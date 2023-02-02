@@ -1015,6 +1015,9 @@ urlpatterns = [
     path('GetParagraphWithAreaKeywords/<int:document_id>/', views.GetParagraphWithAreaKeywords,
          name='GetParagraphWithAreaKeywords'),
 
+    path('get_rahbari_document_actor/<int:document_id>/', views.get_rahbari_document_actor,
+         name='get_rahbari_document_actor'),
+
     path('trial_law_import/<int:id>/', views.trial_law_import, name='trial_law_import'),
     path('GetTrialLawByCountryId/<int:country_id>/<str:host>/', views.GetTrialLawByCountryId,
          name='GetTrialLawByCountryId'),
@@ -1028,6 +1031,17 @@ urlpatterns = [
     path("ManualClustering/", views.ManualClustering, name='ManualClustering'),
     path("BoostingSearchParagraph_ES/<int:country_id>/<int:curr_page>/<int:result_size>/",
          views.BoostingSearchParagraph_ES, name='BoostingSearchParagraph_ES'),
+    path(
+        "rahbari_document_classification_chart_column/<int:document_id>/<str:subject>/<int:curr_page>/<int:result_size>/",
+        views.rahbari_document_classification_chart_column, name='rahbari_document_classification_chart_column'),
+
+    path(
+        "rahbari_document_name_chart_column/<int:document_id>/<str:name>/<int:curr_page>/<int:result_size>/",
+        views.rahbari_document_name_chart_column, name='rahbari_document_name_chart_column'),
+
+    path(
+        "export_rahbari_document_chart_column/<int:document_id>/<str:text>/<str:keyword>/<int:curr_page>/<int:result_size>/",
+        views.export_rahbari_document_chart_column, name='export_rahbari_document_chart_column'),
 
     path(
         "BoostingSearchKnowledgeGraph_ES/<int:country_id>/<str:field_name>/<str:field_value>/<str:language>/<str:search_type>/<int:curr_page>/<int:result_size>/",

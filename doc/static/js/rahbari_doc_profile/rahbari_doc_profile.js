@@ -49,6 +49,22 @@ const ft = FooTable.init('#PopUpTable', {
     }],
 });
 
+// const notyf = new Notyf({
+//     duration: 5000,
+//     position: {
+//         x: "left",
+//         y: "bottom",
+//     },
+//     dismissible: true,
+// });
+
+/* Search after press Enter */
+$("#SearchBox").keyup(function (event) {
+    if (event.keyCode === 13) {
+        Search_Document_ByName();
+    }
+});
+
 $(document).ready(function () {
     $('#ApprovalsDropdown').addClass('active');
     $('#information').addClass('active');
@@ -76,34 +92,10 @@ init();
 async function init() {
     await initSearchableSelects();
 
-    /* Get Actors List */
-    // let request_link = 'http://' + location.host + "/GetActorsList/";
-    // let response = await fetch(request_link).then(response => response.json());
-    // actors_list = response["actorsList"]
-
     const url = new URL(window.location.href);
     var document_id = url.searchParams.get("id");
 
     if (document_id) {
-        // const request_link = 'http://' + location.host + "/GetDocumentById/" + document_id + "/";
-        // let response = await fetch(request_link).then(response => response.json());
-        // response = response["document_information"][0]
-        //
-        // document.getElementById("document").innerHTML = "<option value=" + response["id"] + " >" + response["name"] + "</option>";
-        //
-        // document_select_tag = '<i class="dropdown_icon bi bi-chevron-down ml-2 bold text-black"></i>' + response['name']
-        // document.getElementById('document_select').innerHTML = document_select_tag;
-        // document.getElementById('document_select').title = response['name'];
-        //
-        // /* disable country , document */
-        // document.getElementById("document_select").disabled = true;
-        // document.getElementById("country").disabled = true;
-        //
-        //
-        // const select = document.getElementById("country");
-        // let control = select.tomselect;
-        // control.setValue(response["country_id"])
-
         await SelectDocumentFunction(document_id)
 
     } else {
@@ -128,43 +120,11 @@ async function init() {
         setTimeout(loadMoreDoc, 1000)
     }
 
-    // $("#document_select").click(function () {
-    //         if ($('.add-row-1').length === 0) {
-    //             window.setTimeout(function () {
-    //                 $(".pagination").append("<li class='footable-page visible'><a class='add-row-1' href='#' onclick='loadMoreDoc()'>+</a></li>");
-    //             }, 1000);
-    //         }
-    //
-    //     });
-
-    // syncAllSelects(true);
-
     // user log
     let form_data = new FormData()
     let detail_type = "نمایش پنل"
     form_data.append('detail_type', detail_type);
     UserLog(form_data)
-
-
-    // const country_id = document.getElementById('country').value
-    //
-    // request_link = 'http://' + location.host + "/GetTypeByCountryId/" + country_id + "/";
-    // response = await fetch(request_link).then(response => response.json());
-    // response = response["documents_type_list"]
-    // document.getElementById("ColorBox").innerHTML = "";
-    // for (var i = 0; i < response.length; i++) {
-    //     const type_id = response[i]["id"]
-    //     const type_name = response[i]["type"]
-    //     const type_color = response[i]["color"]
-    //
-    //     let tag = '<div class="form-check pt-2 pb-2"> <input type="checkbox" id="' + type_id + '" checked disabled>'
-    //     tag += '<label class="form-check-label bold" style="padding: 0px 25px; color: ' + type_color + '" for="flexCheckChecked">' + type_name + '</label></div>'
-    //
-    //
-    //     document.getElementById("ColorBox").innerHTML += tag
-    // }
-
-
 }
 
 async function ShowResult() {
@@ -281,8 +241,7 @@ async function generatePDF() {
     let response = await fetch(request_link).then(response => response.json());
     response = response["document_paragraphs"];
     const document_name = response[0]["document_name"];
-    let element = //"<div7 class='d-flex' style='justify-content: space-between;width: 100%'></div7> " +
-        "<div8 class='d-flex'> <span>&nbsp;</span>  </div8>" +
+    let element = "<div8 class='d-flex'> <span>&nbsp;</span>  </div8>" +
         "<div1 class='container-fluid' style='direction: rtl'> " +
         "<div2 class='row p-4 mx-auto' style='border: 4px solid #ccc; border-radius: 20px;'> " +
         "<div6 style='margin: auto;text-align: center'> " +
@@ -297,15 +256,6 @@ async function generatePDF() {
 
         "<div3 class='d-flex' style='justify-content: space-between;width: 100%'>" + "<div4 > <p>سامانه رهنمود</p> </div4> " +
         "<div5> <span>www.virtualjuristic.datakaveh.com</span> </div5> </div3> </div2> </div1>"
-
-    /*"<div1 class='container-fluid' style='direction: rtl'> " +
-    "<div2 class='row p-4 mx-auto' style='border: 4px solid #ccc; border-radius: 20px;'> " +
-    "<div3 class='d-flex' style='justify-content: space-between;width: 100%'> <div4 > <p>سامانه هوشیاران</p> </div4> " +
-    "<div5> <span>www.virtualjuristic.datakaveh.com</span> </div5> </div3> <div6 style='margin: auto;text-align: center'> " +
-    "<h5 style='padding-bottom: 10px'>" + document_name + "</h5> </div6> " +
-    "<div7 class='d-flex' style='justify-content: space-between;width: 100%'> " +
-    "<div8 class='d-flex'> <span> تاریخ تصویب  </span> <span> " + approval_date + " </span> </div8> " +
-    "<div9 class='d-flex'> <span>مرجع تصویب:   </span> <span> " + approval_reference + " </span> </div9> </div7> </div2> </div1>"*/
 
     for (let i = 0; i < response.length; i++) {
         const paragraph_text = response[i]["paragraph_text"]
@@ -322,8 +272,6 @@ async function generatePDF() {
         html2canvas: {scale: 2},
         jsPDF: {unit: 'in', format: 'letter', orientation: 'portrait'},
         pagebreak: {mode: ['avoid-all', 'css', 'legacy'], after: 'firstPage'}
-
-
     };
     html2pdf().set(opt).from(element).save();
 
@@ -372,52 +320,26 @@ async function DownloadLinkSet() {
     }
 }
 
-async function CountryChanged() {
-
+async function Reload() {
     startBlockUI();
+    counter = 0;
+    loaded_doc = 0
+    first_loading = true
 
+    $(".add-row-1").css('visibility', 'visible');
 
-    // counter = 0;
-    // loaded_doc = 0
-    // first_loading = true
-    //
-    // $(".add-row-1").css('visibility', 'visible');
-    //
-    // document.getElementById("document_select").disabled = true;
-    // await setTimeout(loaddata, 1000)
-    // document.getElementById("document_select").disabled = false;
-    // // new
-    // if ($('.add-row-1').length === 0) {
-    //     window.setTimeout(function () {
-    //         $(".pagination").append("<li class='footable-page visible'><a class='add-row-1' href='#' onclick='loadMoreDoc()'>+</a></li>");
-    //     }, 1000);
-    // }
-    // stopBlockUI()
+    document.getElementById("SearchBox").value = ""
 
-    // /******************************** Get Type Color *****************************************/
-    // country_id = document.getElementById('country').value
-    //
-    // request_link = 'http://' + location.host + "/GetTypeByCountryId/" + country_id + "/";
-    // response = await fetch(request_link).then(response => response.json());
-    // response = response["documents_type_list"]
-    // document.getElementById("ColorBox").innerHTML = "";
-    // for (var i = 0; i < response.length; i++) {
-    //     const type_id = response[i]["id"]
-    //     const type_name = response[i]["type"]
-    //     const type_color = response[i]["color"]
-    //
-    //     tag = '<div class="form-check pt-2 pb-2"> <input type="checkbox" id="' + type_id + '" checked disabled>'
-    //     tag += '<label class="form-check-label bold" style="padding: 0px 25px; color: ' + type_color + '" for="flexCheckChecked">' + type_name + '</label></div>'
-    //
-    //
-    //     document.getElementById("ColorBox").innerHTML += tag
-    // }
-
-
-}
-
-function startTimer() {
-    startTime = new Date();
+    document.getElementById("document_select").disabled = true;
+    setTimeout(loadMoreDoc, 1000)
+    document.getElementById("document_select").disabled = false;
+    // new
+    if ($('.add-row-1').length === 0) {
+        window.setTimeout(function () {
+            $(".pagination").append("<li class='footable-page visible'><a class='add-row-1' href='#' onclick='loadMoreDoc()'>+</a></li>");
+        }, 1000);
+    }
+    stopBlockUI()
 }
 
 function endTimer() {
@@ -444,7 +366,7 @@ function startBlockUI() {
             paddingTop: '5px'
         }
     });
-    startTimer();
+    startTime = new Date();
 }
 
 function stopBlockUI() {
@@ -452,20 +374,6 @@ function stopBlockUI() {
     elapsed_time = endTimer();
     toast_message = '<span class="text-secondary"> ' + 'زمان سپری شده: ' + '</span>' + '<span class="bold" style="color:var(--menu_color)">' + elapsed_time + ' ثانیه' + '</span>'
 }
-
-// function showToastMessage(message_text) {
-//     document.getElementById('toast_message').innerHTML = message_text
-//     var toastElList = [].slice.call(document.querySelectorAll('.toast'))
-//     var toastList = toastElList.map(function (toastEl) {
-//         return new bootstrap.Toast(toastEl)
-//     });
-//     toastList.forEach(toast => toast.show())
-// }
-
-// function loaddata() {
-//     $('.add-row').trigger('click');
-//     stopBlockUI();
-// }
 
 async function UserLog(form_data) {
     if (getCookie("username") !== "") {
@@ -477,8 +385,6 @@ async function UserLog(form_data) {
         if (page_url === "") {
             page_url = "/0";
         }
-
-
         let link_request = 'http://' + location.host + "/UserLogSaved/" + user_name + page_url + "/" + user_ip + "/";
 
         $.ajax({
@@ -546,6 +452,7 @@ async function SelectDocumentFunction(document_id) {
     const country_id = document.getElementById('country').value
     const request_link = 'http://' + location.host + "/GetRahbariDocumentById/" + country_id + "/" + document_id + "/";
     let response = await fetch(request_link).then(response => response.json());
+    document.getElementById("document_subject").innerHTML = response['subject']
     const result = response["result"][0]['_source']
     document.getElementById("document").innerHTML = "<option value=" + result["document_id"] + " >" + result["document_name"] + "</option>";
 
@@ -556,5 +463,162 @@ async function SelectDocumentFunction(document_id) {
     document.getElementById('document_date').innerHTML = result['rahbari_date']
     document.getElementById('document_type').innerHTML = result['type']
     document.getElementById('document_labels').innerHTML = result['labels']
+    document.getElementById("document_subject").innerHTML = response['subject']
+    GetTextSummary()
     ShowResult();
+    find_rahbari_document_actors(document_id)
+}
+
+function debounce(func, timeout = 300) {
+    let timer;
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            func.apply(this, args);
+        }, timeout);
+    };
+}
+
+const processSearch = debounce(() => Search_Document_ByName(), 500);
+
+async function Search_Document_ByName() {
+    const country_id = document.getElementById("country").value
+    let text = document.getElementById("SearchBox").value
+    let level_id = 0
+    let subject_id = 0
+    let type_id = 0
+    let approval_reference_id = 0
+    let from_year = 0
+    let to_year = 0
+    let place = 'عنوان'
+    let search_type = 'exact'
+
+    if (!text) {
+        Reload();
+        return;
+    }
+
+
+    const from_advisory_opinion_count = 0
+    const from_interpretation_rules_count = 0
+    const curr_page = 1
+
+    const request_link = 'http://' + location.host + "/SearchDocument_ES/" + country_id + "/" + level_id + "/" + subject_id + "/" + type_id + "/" +
+        approval_reference_id + "/" + from_year + "/" + to_year + "/" + from_advisory_opinion_count + "/" + from_interpretation_rules_count + "/" + "0" + "/" + place + "/" + text + "/" + search_type + "/" + curr_page + "/"
+
+
+    let response = await fetch(request_link).then(response => response.json());
+    let documentsList = response["result"]
+    let document_count = response["total_hits"]
+
+    document.getElementById("all_doc_count").innerText = document_count.toString()
+
+    const result_documentsList = []
+    for (const doc of documentsList) {
+        let id = doc['_id']
+        let approval_reference = doc['_source']['approval_reference_name']
+        let approval_date = doc['_source']['approval_date']
+        let subject = doc['_source']['subject_name']
+        let document_name = doc['_source']['name']
+        let tag = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" onclick="SelectDocumentFunction(' + id + ')">انتخاب</button>'
+        const row = {
+            "id": id,
+            "document_name": document_name,
+            "subject": subject,
+            "approval_reference": approval_reference,
+            "approval_date": approval_date,
+            "tag": tag
+        }
+        result_documentsList.push(row)
+    }
+
+
+    ft.rows.load(result_documentsList);
+
+    loaded_doc = document_count;
+
+    document.getElementById("load_doc_count").innerText = loaded_doc.toString()
+
+    if (loaded_doc === document_count)
+        $(".add-row-1").css('visibility', 'hidden');
+    else {
+        window.setTimeout(function () {
+            $(".pagination").append("<li class='footable-page visible'><a href='#' class='add-row-1' onclick='loadMoreDoc()'>+</a></li>");
+        }, 1000);
+    }
+
+}
+
+async function show_detail_modal(Key , chart_name) {
+    const document_id = document.getElementById("document").value
+
+    click_name_chart(document_id, Key, chart_name)
+}
+
+async function click_name_chart(document_id, text, chart_name) {
+    const request_link = 'http://' + location.host + "/rahbari_document_name_chart_column/" + document_id + "/" + text + "/";
+
+    document.getElementById("ChartModalBodyText_2").innerHTML = ""
+    document.getElementById("ChartModalHeader_2").innerHTML = ""
+
+    // set modal header
+    modal_header = chart_name + ": " + text
+    document.getElementById("ChartModalHeader_2").innerHTML = modal_header
+    // define request link without curr_page & search_result_size
+
+    request_configs = {
+        "link": request_link,
+        "search_result_size": SEARCH_RESULT_SIZE,
+        "max_result_window": MAX_RESULT_WINDOW,
+        "data_type": "url_parameters",
+        "form_data": null
+    }
+
+     export_link = 'http://' + location.host + "/export_rahbari_document_chart_column/"
+        + document_id + "/"
+        + text + "/"
+        + "attachment.content" + "/"
+
+    export_configs = {
+        "link": export_link,
+        "btn_id": "ExportExcel_2"
+    }
+
+    highlight_configs = {
+        "parameters": null,
+        "highlight_enabled": false,
+        "custom_function": null
+    }
+
+    modal_configs = {
+        "body_id": "ChartModalBodyText_2",
+        "modal_load_more_btn_id": "LoadMoreDocuments_2",
+        "result_size_container_id": "DocsCount_2",
+        "result_size_message": "حکم",
+        "list_type": "ordered",
+        "custom_body_function": null,
+        "body_parameters": null
+
+    }
+
+    segmentation_config = {
+        "parameters": ["احساس بسیار منفی", "بدون ابراز احساسات", "احساس منفی", "احساس خنثی یا ترکیبی از مثبت و منفی", "احساس مثبت", "احساس بسیار مثبت"],
+        "keyword": "sentiment",
+        "enable": false,
+        "aggregation_keyword": "rahbari-sentiment-agg"
+    }
+
+
+    column_interactivity_obj = new ColumnInteractivity("paragraphs",
+        request_configs, export_configs, modal_configs, highlight_configs, segmentation_config)
+
+    result = await column_interactivity_obj.load_content();
+    console.log(result)
+
+    $('#ChartModalBtn_2').click()
+    // stopFullPageBlockUI('کلیک روی نمودار');
+
+    $('#ExportExcel_2').on('click', async function () {
+        await column_interactivity_obj.download_content();
+    })
 }

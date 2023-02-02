@@ -1,16 +1,16 @@
-let person_rows = []
-init()
+let location_rows = []
+location_init()
 
-function init() {
+function location_init() {
     const menu_columns = {
         "all_repetition": 'تعداد احکام حاوی نام',
-        "person_name": 'نام فرد',
+        "person_name": 'موقعیت مکانی',
     }
-    append_column(menu_columns, "PersonColumnSelect")
+    append_column(menu_columns, "LocationColumnSelect")
 }
 
-async function get_document_profile_real_persons(generated_persons) {
-    person_rows = generateRows(generated_persons)
+async function get_document_profile_locations(generated_locations) {
+    location_rows = location_generateRows(generated_locations)
 
     // const paragraph_table_tab = document.getElementById("paragraph_person_info_tab")
     // if (paragraph_table_tab.classList.contains("active")) {
@@ -21,25 +21,25 @@ async function get_document_profile_real_persons(generated_persons) {
     // })
 
     startBlockUI('paragraph_info_pane');
-    table_show_result();
+    location_table_show_result();
     stopBlockUI()
 
 }
 
-function generateRows(persons) {
+function location_generateRows(locations) {
     const rows = []
 
     let counter = 1
-    for (const person of persons) {
-        if(person['key'] === "بدون شخص حقیقی") continue
-        const modal_function = `show_detail_modal('${person['key']}', 'احکام دارای شخص حقیقی')`
+    for (const location of locations) {
+        if(location['key'] === "بدون موقعیت مکانی") continue
+        const modal_function = `show_detail_modal('${location['key']}', 'احکام دارای موقعیت مکانی')`
         const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" onclick="' + modal_function + '" data-bs-target="#ChartModal_2">جزئیات</button>'
 
 
         const row = {}
         row['id'] = counter
-        row['person_name'] = person['key']
-        row['all_repetition'] = person['doc_count'];
+        row['location_name'] = location['key']
+        row['all_repetition'] = location['doc_count'];
         row['detail'] = detail
 
         rows.push(row)
@@ -49,13 +49,21 @@ function generateRows(persons) {
     return rows
 }
 
-async function tableExportExcel() {
-    let csv = FooTable.get('#DocProfilePersonsTable').toCSV();
+// async function show_person_modal(personKey) {
+//     const field_name = CHART_FIELD_DICT['person_container'] + '.keyword'
+//     const chart_name = CHART_NAME_DICT['person_container']
+//
+//     GetClickedColumnParagraphs(chart_name, field_name, personKey.replaceAll("#", "*"), false, true)
+// }
+
+
+async function location_tableExportExcel() {
+    let csv = FooTable.get('#DocProfileLocationTable').toCSV();
     const btn_regex = new RegExp('<button.*</button>', 'g')
     csv = csv.replaceAll("#", "")
     csv = csv.replaceAll(btn_regex, "")
     const document_name = document.getElementById('document_select').title
-    let save_file_name = "افراد حقیقی {" + document_name + "}"
+    let save_file_name = "موقعیت های مکانی {" + document_name + "}"
 
     let csvContent = "data:text/csv;charset=utf-8,%EF%BB%BF" + encodeURI(csv);
     const link = document.createElement("a");
@@ -65,13 +73,13 @@ async function tableExportExcel() {
     link.click()
 }
 
-function table_show_result() {
+function location_table_show_result() {
 
 
     let selected_columns = ["id", "detail"]
-    selected_columns = find_selected_column(selected_columns, "PersonColumnSelect")
+    selected_columns = find_selected_column(selected_columns, "LocationColumnSelect")
 
-    const PersonTableColumns = [
+    const LocationTableColumns = [
         {
             "name": "id",
             "title": "ردیف",
@@ -82,8 +90,8 @@ function table_show_result() {
             }
         },
         {
-            "name": "person_name",
-            "title": "نام فرد",
+            "name": "location_name",
+            "title": "موقعیت مکانی",
         },
         {
             "name": "all_repetition",
@@ -151,7 +159,7 @@ function table_show_result() {
     ]
 
     if (!selected_columns.includes("all")) {
-        for (let column of PersonTableColumns) {
+        for (let column of LocationTableColumns) {
             if (selected_columns.includes(column["name"])) {
                 column["visible"] = true
             } else {
@@ -161,8 +169,8 @@ function table_show_result() {
     }
 
 
-    $('#DocProfilePersonsTable').empty();
-    $('#DocProfilePersonsTable').footable({
+    $('#DocProfileLocationTable').empty();
+    $('#DocProfileLocationTable').footable({
         "paging": {
             "enabled": true,
             strings: {
@@ -174,14 +182,14 @@ function table_show_result() {
         },
         "filtering": {
             "enabled": true,
-            "placeholder": "نام فرد...."
+            "placeholder": "موقعیت مکانی...."
         },
         "sorting": {
             "enabled": true
         },
-        "empty": "فردی یافت نشد.",
+        "empty": "در این سند هیچ موقعیت مکانی یافت نشد.",
 
-        "columns": PersonTableColumns,
-        "rows": person_rows
+        "columns": LocationTableColumns,
+        "rows": location_rows
     })
 }

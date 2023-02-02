@@ -1446,8 +1446,14 @@ def GetRahbariDocumentById(request, country_id, document_id):
     result = response['hits']['hits']
     total_hits = response['hits']['total']['value']
 
+    document = Document.objects.get(id=document_id)
+    subject_name = "نامشخص"
+    if document.subject_id is not None:
+        subject_name = document.subject_id.name
+
     return JsonResponse({
         "result": result,
+        "subject": subject_name,
         'total_hits': total_hits,
     })
 
@@ -1500,7 +1506,6 @@ def rahbari_document_get_full_profile_analysis(request, country_id, document_id)
                              aggregations=res_agg,
                              size=search_result_size)
 
-
     result = response['hits']['hits']
     total_hits = response['hits']['total']['value']
     aggregations = response['aggregations']
@@ -1511,9 +1516,9 @@ def rahbari_document_get_full_profile_analysis(request, country_id, document_id)
         }, index=index_name, doc_type='_doc')['count']
 
     response = client.search(index=index_name,
-                         request_timeout=40,
-                         query=res_query
-                         )
+                             request_timeout=40,
+                             query=res_query
+                             )
     max_score = response['hits']['hits'][0]['_score'] if total_hits > 0 else 1
     max_score = max_score if max_score > 0 else 1
     print(aggregations)
@@ -1522,6 +1527,185 @@ def rahbari_document_get_full_profile_analysis(request, country_id, document_id)
         'total_hits': total_hits,
         'max_score': max_score,
         'aggregations': aggregations})
+
+
+def get_rahbari_document_actor(request, document_id):
+    actor_contains = []
+    actor_names = []
+
+    paragraphs = DocumentParagraphs.objects.filter(document_id=document_id)
+    actors = Actor.objects.all()
+
+    for actor in actors:
+        actor_forms = actor.forms.split("/")
+        actor_names.extend(actor_forms)
+
+    for actor in actor_names:
+        actor_counter = 0
+        for paragraph in paragraphs:
+            if paragraph.text.__contains__(" "+actor+" "):
+                actor_counter += 1
+        if actor_counter > 0:
+            actor_contains.append((actor, actor_counter))
+
+    return JsonResponse({'result': actor_contains})
+
+
+def rahbari_document_classification_chart_column(request, document_id, subject, curr_page, result_size):
+    res_query = {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "document_id": document_id
+                    }
+                },
+                {
+                    "term": {
+                        "classification_subject.keyword": subject
+                    }
+                }
+            ]
+        }
+    }
+
+    country_obj = Document.objects.get(id=document_id).country_id
+    index_name = standardIndexName(country_obj, FullProfileAnalysis.__name__)
+
+    # ---------------------- Get Chart Data -------------------------
+    from_value = (curr_page - 1) * result_size
+    response = client.search(index=index_name,
+                             _source_includes=['attachment.content', 'document_name'],
+                             request_timeout=40,
+                             query=res_query,
+                             from_=from_value,
+                             size=result_size
+                             )
+
+    result = response['hits']['hits']
+    total_hits = response['hits']['total']['value']
+
+    if total_hits == 10000:
+        total_hits = client.count(body={
+            "query": res_query
+        }, index=index_name, doc_type='_doc')['count']
+
+    return JsonResponse({
+        "result": result,
+        'total_hits': total_hits,
+        "curr_page": curr_page,
+    })
+
+
+def rahbari_document_name_chart_column(request, document_id, name, curr_page, result_size):
+    res_query = {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "document_id": document_id
+                    }
+                },
+                {
+                    "match_phrase": {
+                        "attachment.content": name
+                    }
+                }
+            ]
+        }
+    }
+
+    country_obj = Document.objects.get(id=document_id).country_id
+    index_name = standardIndexName(country_obj, FullProfileAnalysis.__name__)
+
+    # ---------------------- Get Chart Data -------------------------
+    from_value = (curr_page - 1) * result_size
+    response = client.search(index=index_name,
+                             _source_includes=['attachment.content', 'document_name'],
+                             request_timeout=40,
+                             query=res_query,
+                             from_=from_value,
+                             size=result_size,
+                             highlight={
+                                 "order": "score",
+                                 "fields": {
+                                     "attachment.content":
+                                         {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
+                                          "number_of_fragments": 0
+                                          }
+                                 }}
+                             )
+
+    result = response['hits']['hits']
+    total_hits = response['hits']['total']['value']
+
+    if total_hits == 10000:
+        total_hits = client.count(body={
+            "query": res_query
+        }, index=index_name, doc_type='_doc')['count']
+
+    return JsonResponse({
+        "result": result,
+        'total_hits': total_hits,
+        "curr_page": curr_page,
+    })
+
+def export_rahbari_document_chart_column(request, document_id, text, keyword, curr_page, result_size):
+    res_query = {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "document_id": document_id
+                    }
+                },
+                {
+                    "match_phrase": {
+                        keyword: text
+                    }
+                }
+            ]
+        }
+    }
+
+    country_obj = Document.objects.get(id=document_id).country_id
+    index_name = standardIndexName(country_obj, FullProfileAnalysis.__name__)
+
+    # ---------------------- Get Chart Data -------------------------
+    from_value = (curr_page - 1) * result_size
+    response = client.search(index=index_name,
+                             _source_includes=['attachment.content', 'document_name'],
+                             request_timeout=40,
+                             query=res_query,
+                             from_=from_value,
+                             size=result_size,
+                             highlight={
+                                 "order": "score",
+                                 "fields": {
+                                     "attachment.content":
+                                         {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
+                                          "number_of_fragments": 0
+                                          }
+                                 }}
+                             )
+
+    result = response['hits']['hits']
+
+    result_range = str(from_value) + " تا " + str(from_value + len(result))
+
+    paragraph_list = [
+        [doc['_source']['document_name']
+            , doc['_source']['attachment']['content']] for doc in result]
+
+    file_dataframe = pd.DataFrame(paragraph_list, columns=["نام سند", "متن پاراگراف"])
+
+    file_name = country_obj.name + " - " + keyword.replace(".keyword",
+                                                              "") + " : " + text + " - " + result_range + ".xlsx"
+
+    file_path = os.path.join(config.MEDIA_PATH, file_name)
+    file_dataframe.to_excel(file_path, index=False)
+
+    return JsonResponse({"file_name": file_name})
 
 
 def GetBookDocumentById(request, document_id):
