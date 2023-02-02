@@ -917,7 +917,7 @@
             console.log(paragraph)
             document_name = paragraph['document_name'];
             document_id = paragraph['document_id'];
-            document_address = 'http://' + location.host + "/information/?id=" + document_id
+            document_address = 'http://' + location.host + "/document_profile/?id=" + document_id
             document_link = '<a target="blank" href = "' + document_address + '">' + document_name + ':</a>'
 
             doc_tag = '<h6 class="bold">' + document_link + '</h6>'
@@ -961,7 +961,7 @@
             let document_regulators = doc_info["regulators"]
             document_regulators = document_regulators.toString().replaceAll(',', '<br>');
 
-            const document_link = 'http://' + location.host + "/information/?id=" + document_id
+            const document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
             const doc_name = '<a target="blank" href="' + document_link + '">' + document_name + "</a>"
 
             const detail_function = "DetailFunction(" + document_id + "," + area_id + "," + regulator_id + ")"
@@ -1066,7 +1066,7 @@
 
     async function showDetailsModal(document_id, document_name, paragraphs_list) {
         /* Title Text */
-        const link = 'http://' + location.host + "/information/?id=" + document_id
+        const link = 'http://' + location.host + "/document_profile/?id=" + document_id
         let title_tag = "<a target='blank' href='" + link + "'>" + document_name + "</a>"
         document.getElementById("ModalHeader").innerHTML = title_tag
 
@@ -1398,7 +1398,7 @@
 
             document_name = paragraph['document_name'];
             document_id = paragraph['document_id'];
-            document_address = 'http://' + location.host + "/information/?id=" + document_id
+            document_address = 'http://' + location.host + "/document_profile/?id=" + document_id
             document_link = '<a target = "blank" href = "' + document_address + '">' + document_name + ':</a>'
 
             doc_tag = '<h6 class="bold">' + document_link + '</h6>'

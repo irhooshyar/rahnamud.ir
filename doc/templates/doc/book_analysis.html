@@ -1532,7 +1532,7 @@
             response = await fetch(request_link).then(response => response.json());
             const document_name = response["document_information"][0]["name"]
 
-            const link = 'http://' + location.host + "/information?id=" + document_id
+            const link = 'http://' + location.host + "/document_profile?id=" + document_id
             document.getElementById("references_modal_header").innerHTML = "ارجاع داده شده به:" + "<a href=" + link + ">" + document_name + "</a>"
 
             /* References Between 2 Doc */
@@ -1564,7 +1564,7 @@
             response = await fetch(request_link).then(response => response.json());
             const document_name = response["document_information"][0]["name"]
 
-            const link = 'http://' + location.host + "/information?id=" + document_id
+            const link = 'http://' + location.host + "/document_profile?id=" + document_id
             document.getElementById("references_modal_header").innerHTML = "ارجاع شده توسط:" + "<a href=" + link + ">" + document_name + "</a>"
 
             /* References Between 2 Doc */

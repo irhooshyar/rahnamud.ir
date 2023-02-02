@@ -756,7 +756,7 @@ yAxis.title().fontWeight("bold");
                 let filtered_result_tag = ""
                 let list_of_docId = ""
                 for (const doc of filtered_result) {
-                    const link = 'http://' + location.host + "/information/?id=" + doc["document_id"]
+                    const link = 'http://' + location.host + "/document_profile/?id=" + doc["document_id"]
                     let tag = "<li class='mt-3' id=" + doc["document_id"] + "><a target='blank' href='" + link + "'>" + doc["document_name"] + "</a></li>"
                     filtered_result_tag += tag
                     list_of_docId += doc["document_id"] + "_"
@@ -953,7 +953,7 @@ yAxis.title().fontWeight("bold");
                 document_id = doc_id
                 document_name = doc_info['document_name']
 
-                document_link = 'http://' + location.host + "/information/?id=" + document_id
+                document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
                 doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
                 paragraph_list = doc_info['paragraph_list']
@@ -1067,7 +1067,7 @@ yAxis.title().fontWeight("bold");
             document_paragraphs_list = response["document_paragraphs_result"]
             document_name = response["document_name"]
 
-            document_address = 'http://' + location.host + "/information/?id=" + document_id
+            document_address = 'http://' + location.host + "/document_profile/?id=" + document_id
             document_link = '<a target = "to_blank" href = "' + document_address + '">' + document_name + '</a>'
 
 
@@ -1648,7 +1648,7 @@ yAxis.title().fontWeight("bold");
 
                 doc_name = references_info['doc_name']
                 doc_id = references_info['doc_id']
-                document_link = 'http://' + location.host + "/information/?id=" + doc_id
+                document_link = 'http://' + location.host + "/document_profile/?id=" + doc_id
                 reference_tag = '<a class="d-inline-block text-primary" target="to_blank" href="' + document_link + '">' + doc_name + "</a>"
 
                 if (paragraph.search(doc_name) > 0) {

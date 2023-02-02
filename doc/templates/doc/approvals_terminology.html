@@ -1050,7 +1050,7 @@
             let i = (curr_page - 1) * SEARCH_RESULT_SIZE + 1;
             for (let index = 0; index < document_general_definitions.length; index++) {
                 const element = document_general_definitions[index];
-                const document_link = 'http://' + location.host + "/information/?id=" + element["document_id"]
+                const document_link = 'http://' + location.host + "/document_profile/?id=" + element["document_id"]
                 const doc_name = '<a target="blank" href="' + document_link + '">' + element["document_name"] + "</a>"
                 const row = {
                     "id": i, 
@@ -1152,7 +1152,7 @@
                 let detail_dic = {}
                 for (let i = 0; i < info_array.length; i++) {
                     const json_element = info_array[i];
-                    const document_link = 'http://' + location.host + "/information/?id=" + json_element["document_id"]
+                    const document_link = 'http://' + location.host + "/document_profile/?id=" + json_element["document_id"]
                     const doc_name = '<a target="blank" href="' + document_link + '">' + (i + 1) + ". " + json_element["document_name"] + " (" + (json_element["is_abbreviation"] ? "اختصار" : "تعریف") + ")" + "</a>"
                     const def_in_doc = json_element["definition"]
                     docs += doc_name // + "<br>"
@@ -1563,7 +1563,7 @@
             let filtered_result_tag = ""
             let list_of_docId = ""
             for (const doc of filtered_result) {
-                const link = 'http://' + location.host + "/information/?id=" + doc["document_id"]
+                const link = 'http://' + location.host + "/document_profile/?id=" + doc["document_id"]
                 let tag = "<li class='mt-3' id=" + doc["document_id"] + "><a href='" + link + "'>" + doc["document_name"] + "</a></li>"
                 filtered_result_tag += tag
                 list_of_docId += doc["document_id"] + "_"
@@ -1769,7 +1769,7 @@ yAxis.title().fontWeight("bold");
                 document_id = paragraph_info['document_id']
                 document_name = paragraph_info['document_name']
 
-                document_link = 'http://' + location.host + "/information/?id=" + document_id
+                document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
                 doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
                 paragraph_text = paragraph_info['text']
@@ -1897,7 +1897,7 @@ yAxis.title().fontWeight("bold");
         //         const in_degree = graph_object.getNodeDegree(node_object.id, 'in');
         //         const out_degree = graph_object.getNodeDegree(node_object.id, 'out');
 
-        //         const doc_link = 'http://' + location.host +'/information/?id=' + node_id.toString()
+        //         const doc_link = 'http://' + location.host +'/document_profile/?id=' + node_id.toString()
         //         const doc_tag = '<a class="document_link" target="blank" href="' + doc_link + '">' + node_name +"</a>"
 
         //         const nodeSelection = "NodeSelection(" + node_id + ")"
@@ -1964,12 +1964,12 @@ yAxis.title().fontWeight("bold");
 
         //         const src_node_id = edge_object.source
         //         const src_node_name = edge_object.source_name
-        //         const source_doc_link = 'http://' + location.host +'/information/?id=' + src_node_id.toString()
+        //         const source_doc_link = 'http://' + location.host +'/document_profile/?id=' + src_node_id.toString()
         //         const source_doc_tag = '<a class="document_link" target="blank" href="' + source_doc_link + '">' + src_node_name +"</a>"
 
         //         const target_node_id = edge_object.target
         //         const target_node_name = edge_object.target_name
-        //         const target_doc_link = 'http://' + location.host +'/information/?id=' + target_node_id.toString()
+        //         const target_doc_link = 'http://' + location.host +'/document_profile/?id=' + target_node_id.toString()
         //         const target_doc_tag = '<a class="document_link" target="blank" href="' + target_doc_link + '">' + target_node_name +"</a>"
 
         //         const weight = edge_object.weight
@@ -2254,7 +2254,7 @@ yAxis.title().fontWeight("bold");
             //         const in_degree = graph_object.getNodeDegree(node_object.id, 'in');
             //         const out_degree = graph_object.getNodeDegree(node_object.id, 'out');
 
-            //         const doc_link = 'http://' + location.host +'/information/?id=' + node_id.toString()
+            //         const doc_link = 'http://' + location.host +'/document_profile/?id=' + node_id.toString()
             //         const doc_tag = '<a class="document_link" target="blank" href="' + doc_link + '">' + node_name +"</a>"
 
             //         const nodeSelection = "NodeSelection(" + node_id + ")"
@@ -2322,12 +2322,12 @@ yAxis.title().fontWeight("bold");
 
             //         const src_node_id = edge_object.source
             //         const src_node_name = edge_object.source_name
-            //         const source_doc_link = 'http://' + location.host +'/information/?id=' + src_node_id.toString()
+            //         const source_doc_link = 'http://' + location.host +'/document_profile/?id=' + src_node_id.toString()
             //         const source_doc_tag = '<a class="document_link" target="blank" href="' + source_doc_link + '">' + src_node_name +"</a>"
 
             //         const target_node_id = edge_object.target
             //         const target_node_name = edge_object.target_name
-            //         const target_doc_link = 'http://' + location.host +'/information/?id=' + target_node_id.toString()
+            //         const target_doc_link = 'http://' + location.host +'/document_profile/?id=' + target_node_id.toString()
             //         const target_doc_tag = '<a class="document_link" target="blank" href="' + target_doc_link + '">' + target_node_name +"</a>"
 
             //         const weight = edge_object.weight
@@ -2392,7 +2392,7 @@ yAxis.title().fontWeight("bold");
             function handleEdgeClick(event) {
                 const item = event.item._cfg.model;
                 // window.open('http://' + location.host + "/comparison?id=" + edge_id);
-                window.open('http://' + location.host + "/information?id=" + item["document_id"]);
+                window.open('http://' + location.host + "/document_profile?id=" + item["document_id"]);
             }
             graph_object.on('edge:dblclick', handleEdgeClick);
 
@@ -2523,7 +2523,7 @@ yAxis.title().fontWeight("bold");
             function handleEdgeClick(event) {
                 const item = event.item._cfg.model;
                 // window.open('http://' + location.host + "/comparison?id=" + edge_id);
-                window.open('http://' + location.host + "/information?id=" + item["document_id"]);
+                window.open('http://' + location.host + "/document_profile?id=" + item["document_id"]);
             }
             modal_graph_object.on('edge:dblclick', handleEdgeClick);
 

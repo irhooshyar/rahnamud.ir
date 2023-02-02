@@ -47,7 +47,6 @@ AllPanels = {
 
             'rahbari_paraghraph': 'تحلیل احکام',
             'leadership_slogan': 'تحلیل شعار سال',
-            'document_profile': 'پروفایل اسناد',
             'rahbari_graph': 'تحلیل گرافی',
             'rahbari_subject': 'تحلیل موضوعی',
             'rahbari_organization': 'تحلیل سازمان',
@@ -64,6 +63,11 @@ AllPanels = {
             'approvals_keyword_edition': 'ویراستاری شکلی مصوبات',
             'legal_consultancy': 'مشاوره‌ حقوقی و تنقیحی'
         }
+    },
+
+    'document_profile': {
+        'persian_name': 'پروفایل اسناد رهبری',
+        'sub_panels': {}
     },
 
     'executive_regulations': {

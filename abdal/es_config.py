@@ -2,8 +2,8 @@ import os
 
 ES_URL = os.environ.get('ES_URL')
 if ES_URL is None:
-    # ES_URL = "37.156.144.109:9602"
-    ES_URL = "192.168.50.8:9200"
+    ES_URL = "37.156.144.109:9602"
+    # ES_URL = "192.168.50.8:9200"
 
 INGEST_ENABLED = False
 

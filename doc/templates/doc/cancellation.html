@@ -983,7 +983,7 @@ yAxis.title().fontWeight("bold");
             let filtered_result_tag = ""
             index = 1;
             for (let doc of docs) {
-                const link = 'http://' + location.host + "/information/?id=" + doc[0];
+                const link = 'http://' + location.host + "/document_profile/?id=" + doc[0];
                 let title_tag = "<a href='" + link + "'>" + doc[1] + "</a>";
                 paragraph_tag = "<li class='mt-3'>" + title_tag + "</li>";
                 filtered_result_tag += paragraph_tag;
@@ -1473,7 +1473,7 @@ yAxis.title().fontWeight("bold");
         document_id = 1
         document_name = "فلسفه سیاسی"
 
-        document_link = 'http://' + location.host + "/information/?id=" + document_id
+        document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
         doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
         paragraph_tag += "<li class='mb-3 lh-lg'>" + doc_name + "</li>";
@@ -1482,7 +1482,7 @@ yAxis.title().fontWeight("bold");
         document_id = 1
         document_name = "اثر مرکب"
 
-        document_link = 'http://' + location.host + "/information/?id=" + document_id
+        document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
         doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
         paragraph_tag += "<li class='mb-3 lh-lg'>" + doc_name + "</li>";
@@ -1491,7 +1491,7 @@ yAxis.title().fontWeight("bold");
         document_id = 1
         document_name = "مقاومت در اشعار"
 
-        document_link = 'http://' + location.host + "/information/?id=" + document_id
+        document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
         doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
         paragraph_tag += "<li class='mb-3 lh-lg'>" + doc_name + "</li>";
@@ -1556,7 +1556,7 @@ yAxis.title().fontWeight("bold");
             document_id = paragraph_info['document_id']
             document_name = paragraph_info['document_name']
 
-            document_link = 'http://' + location.host + "/information/?id=" + document_id
+            document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
             doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
             paragraph_text = paragraph_info['paragraph_text'];
@@ -1703,7 +1703,7 @@ yAxis.title().fontWeight("bold");
 
             const doc_name = vote['doc_name'].length < 50 ?  vote['doc_name'] : vote['doc_name'].slice(0,50) + ' ...'
 
-            const document_link = 'http://' + location.host + "/information/?id=" + doc_id
+            const document_link = 'http://' + location.host + "/document_profile/?id=" + doc_id
             const doc_tag = '<a title="' + vote['doc_name'] + '" href="' + document_link + '">' + doc_name + "</a>"
 
             const affected_name = vote['affected_document_name'].length < 50 ?  vote['affected_document_name'] : vote['affected_document_name'].slice(0,50) + ' ...'
@@ -2176,7 +2176,7 @@ yAxis.title().fontWeight("bold");
             let filtered_result_tag = ""
             index = 1;
             for (let doc of docs) {
-                const link = 'http://' + location.host + "/information/?id=" + doc[0];
+                const link = 'http://' + location.host + "/document_profile/?id=" + doc[0];
                 let title_tag = "<a href='" + link + "'>" + doc[1] + "</a>";
                 paragraph_tag = "<li class='mt-3'>" + title_tag + "</li>";
                 filtered_result_tag += paragraph_tag;
@@ -2192,7 +2192,7 @@ yAxis.title().fontWeight("bold");
     async function showDetailsModal(document_id, document_name, paragraphs_dict) {
 
         /* Title Text */
-        const link = 'http://' + location.host + "/information/?id=" + document_id
+        const link = 'http://' + location.host + "/document_profile/?id=" + document_id
         let title_tag = "<a target='blank' href='" + link + "'>" + document_name + "</a>"
         document.getElementById("ModalHeader").innerHTML = title_tag
 
@@ -2399,7 +2399,7 @@ yAxis.title().fontWeight("bold");
             document_id = paragraph_info['document_id']
             document_name = paragraph_info['document_name']
 
-            document_link = 'http://' + location.host + "/information/?id=" + document_id
+            document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
             doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
             paragraph_text = paragraph_info['text']
@@ -2868,7 +2868,7 @@ yAxis.title().fontWeight("bold");
         document_id = 1
         document_name = "فلسفه سیاسی"
 
-        document_link = 'http://' + location.host + "/information/?id=" + document_id
+        document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
         doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
         paragraph_tag += "<li class='mb-3 lh-lg'>" + doc_name + "</li>";
@@ -2877,7 +2877,7 @@ yAxis.title().fontWeight("bold");
         document_id = 1
         document_name = "اثر مرکب"
 
-        document_link = 'http://' + location.host + "/information/?id=" + document_id
+        document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
         doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
         paragraph_tag += "<li class='mb-3 lh-lg'>" + doc_name + "</li>";
@@ -2886,7 +2886,7 @@ yAxis.title().fontWeight("bold");
         document_id = 1
         document_name = "جویای سرنوشت"
 
-        document_link = 'http://' + location.host + "/information/?id=" + document_id
+        document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
         doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
         paragraph_tag += "<li class='mb-3 lh-lg'>" + doc_name + "</li>";
@@ -2966,7 +2966,7 @@ yAxis.title().fontWeight("bold");
         // for (const [paragraph_id, paragraph_info] of Object.entries(actor_paragraphs_result)) {
         //     document_id = paragraph_info['document_id']
         //     document_name = paragraph_info['document_name']
-        //     document_link = 'http://' + location.host + "/information/?id=" + document_id
+        //     document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
         //     doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
         //     paragraph_text = paragraph_info['text']
         //     actor_form = paragraph_info['actor_form']
@@ -3341,7 +3341,7 @@ yAxis.title().fontWeight("bold");
                 document_id = paragraph_info['document_id']
                 document_name = paragraph_info['document_name']
 
-                document_link = 'http://' + location.host + "/information/?id=" + document_id
+                document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
                 doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
                 paragraph_text = paragraph_info['text']

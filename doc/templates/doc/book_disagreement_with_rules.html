@@ -1292,7 +1292,7 @@ yAxis.title().fontWeight("bold");
                 document_id = paragraph_info['document_id']
                 document_name = paragraph_info['document_name']
 
-                document_link = 'http://' + location.host + "/information/?id=" + document_id
+                document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
                 doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
                 paragraph_text = paragraph_info['text']
@@ -1794,7 +1794,7 @@ yAxis.title().fontWeight("bold");
 
         async function showDetailsDataExact(document_id, document_name, paragraphs_list) {
             /* Title Text */
-            const link = 'http://' + location.host + "/information/?id=" + document_id
+            const link = 'http://' + location.host + "/document_profile/?id=" + document_id
             let title_tag = "<a target='blank' href='" + link + "'>" + document_name + "</a>"
             document.getElementById("ModalHeader").innerHTML = title_tag
 
@@ -1947,7 +1947,7 @@ yAxis.title().fontWeight("bold");
                 for (doc_info of documents_list) {
                     const document_id = doc_info["id"]
                     const document_name = doc_info["name"]
-                    const document_link = 'http://' + location.host + "/information/?id=" + document_id
+                    const document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
                     const doc_name = '<a target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
                     document_node = {
@@ -2033,7 +2033,7 @@ yAxis.title().fontWeight("bold");
                 console.log(click_tag)
                 if (click_tag["type"] === "node") {
 
-                    // window.open('http://' + location.host + "/information?id=" + click_tag["id"]);
+                    // window.open('http://' + location.host + "/document_profile?id=" + click_tag["id"]);
                 } else if (click_tag["type"] === "edge") {
 
                     edge_data = click_tag["id"].split('__');
@@ -2054,7 +2054,7 @@ yAxis.title().fontWeight("bold");
                     paragraph_text = paragraph_text.replaceAll(keyword + ' :', keyword_tag)
 
 
-                    const document_address = 'http://' + location.host + "/information/?id=" + response["doc_id"]
+                    const document_address = 'http://' + location.host + "/document_profile/?id=" + response["doc_id"]
                     const document_link = '<a target = "to_blank" href = "' + document_address + '">' + response["doc_name"] + ':</a>'
 
                     doc_tag = '<h6 class="bold">' + document_link + '</h6>'

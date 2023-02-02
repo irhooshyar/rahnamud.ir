@@ -1095,7 +1095,7 @@ yAxis.title().fontWeight("bold");
         document_id = 1
         document_name = "فلسفه سیاسی"
 
-        document_link = 'http://' + location.host + "/information/?id=" + document_id
+        document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
         doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
         paragraph_tag += "<li class='mb-3 lh-lg'>" + doc_name + "</li>";
@@ -1104,7 +1104,7 @@ yAxis.title().fontWeight("bold");
         document_id = 1
         document_name = "اثر مرکب"
 
-        document_link = 'http://' + location.host + "/information/?id=" + document_id
+        document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
         doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
         paragraph_tag += "<li class='mb-3 lh-lg'>" + doc_name + "</li>";
@@ -1113,7 +1113,7 @@ yAxis.title().fontWeight("bold");
         document_id = 1
         document_name = "مقاومت در اشعار"
 
-        document_link = 'http://' + location.host + "/information/?id=" + document_id
+        document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
         doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
         paragraph_tag += "<li class='mb-3 lh-lg'>" + doc_name + "</li>";
@@ -1178,7 +1178,7 @@ yAxis.title().fontWeight("bold");
             document_id = paragraph_info['document_id']
             document_name = paragraph_info['document_name']
 
-            document_link = 'http://' + location.host + "/information/?id=" + document_id
+            document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
             doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
             paragraph_text = paragraph_info['paragraph_text'];
@@ -1250,7 +1250,7 @@ yAxis.title().fontWeight("bold");
             let document_actors = doc_info["actors"]
             document_actors = document_actors.toString().replaceAll(',', '<br>');
 
-            const document_link = 'http://' + location.host + "/information/?id=" + document_id
+            const document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
             const doc_name = '<a target="blank" href="' + document_link + '">' + document_name + "</a>"
 
             const detail_function = "DetailFunction(" + document_id + "," + area_id + ")"
@@ -1657,7 +1657,7 @@ yAxis.title().fontWeight("bold");
     async function showDetailsModal(document_id, document_name, paragraphs_dict) {
 
         /* Title Text */
-        const link = 'http://' + location.host + "/information/?id=" + document_id
+        const link = 'http://' + location.host + "/document_profile/?id=" + document_id
         let title_tag = "<a target='blank' href='" + link + "'>" + document_name + "</a>"
         document.getElementById("ModalHeader").innerHTML = title_tag
 
@@ -1864,7 +1864,7 @@ yAxis.title().fontWeight("bold");
             document_id = paragraph_info['document_id']
             document_name = paragraph_info['document_name']
 
-            document_link = 'http://' + location.host + "/information/?id=" + document_id
+            document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
             doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
             paragraph_text = paragraph_info['text']
@@ -2333,7 +2333,7 @@ yAxis.title().fontWeight("bold");
         document_id = 1
         document_name = "فلسفه سیاسی"
 
-        document_link = 'http://' + location.host + "/information/?id=" + document_id
+        document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
         doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
         paragraph_tag += "<li class='mb-3 lh-lg'>" + doc_name + "</li>";
@@ -2342,7 +2342,7 @@ yAxis.title().fontWeight("bold");
         document_id = 1
         document_name = "اثر مرکب"
 
-        document_link = 'http://' + location.host + "/information/?id=" + document_id
+        document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
         doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
         paragraph_tag += "<li class='mb-3 lh-lg'>" + doc_name + "</li>";
@@ -2351,7 +2351,7 @@ yAxis.title().fontWeight("bold");
         document_id = 1
         document_name = "جویای سرنوشت"
 
-        document_link = 'http://' + location.host + "/information/?id=" + document_id
+        document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
         doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
         paragraph_tag += "<li class='mb-3 lh-lg'>" + doc_name + "</li>";
@@ -2431,7 +2431,7 @@ yAxis.title().fontWeight("bold");
         // for (const [paragraph_id, paragraph_info] of Object.entries(actor_paragraphs_result)) {
         //     document_id = paragraph_info['document_id']
         //     document_name = paragraph_info['document_name']
-        //     document_link = 'http://' + location.host + "/information/?id=" + document_id
+        //     document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
         //     doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
         //     paragraph_text = paragraph_info['text']
         //     actor_form = paragraph_info['actor_form']
@@ -2806,7 +2806,7 @@ yAxis.title().fontWeight("bold");
                 document_id = paragraph_info['document_id']
                 document_name = paragraph_info['document_name']
 
-                document_link = 'http://' + location.host + "/information/?id=" + document_id
+                document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
                 doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
                 paragraph_text = paragraph_info['text']

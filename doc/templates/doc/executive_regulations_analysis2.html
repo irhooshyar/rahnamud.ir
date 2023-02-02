@@ -734,7 +734,7 @@
 
 
 
-            const doc_link = 'http://' + location.host + "/information/?id=" + doc_id
+            const doc_link = 'http://' + location.host + "/document_profile/?id=" + doc_id
             const doc_tag = '<a target="blank" href="' + doc_link + '">' + doc_name + "</a>"
 
             clause_info = clause['clause_info']
@@ -913,7 +913,7 @@
         found_pattern = new RegExp(paragraph_info_result['found_pattern'].replaceAll('#','.*?'),'g')
         {#console.log(deadline_date)#}
 
-        const doc_link = 'http://' + location.host + "/information/?id=" + doc_id
+        const doc_link = 'http://' + location.host + "/document_profile/?id=" + doc_id
         const doc_tag = '<a target="blank" href="' + doc_link + '">' + doc_name + "</a>"
 
 
@@ -952,7 +952,7 @@
         if(executive_doc_name == "آیین نامه‌ای برای این بند یافت نشد."){
             exe_doc_tag = executive_doc_name
         }else{
-            var exe_doc_link = 'http://' + location.host + "/information/?id=" + executive_doc_id
+            var exe_doc_link = 'http://' + location.host + "/document_profile/?id=" + executive_doc_id
             exe_doc_tag = '<a target="blank" href="' + exe_doc_link + '">' + executive_doc_name + "</a>"
         }
 
@@ -1057,7 +1057,7 @@
                 let filtered_result_tag = ""
                 let list_of_docId = ""
                 for (const doc of filtered_result) {
-                    const link = 'http://' + location.host + "/information/?id=" + doc["doc_id"]
+                    const link = 'http://' + location.host + "/document_profile/?id=" + doc["doc_id"]
                     let tag = "<li class='mt-3' id=" + doc["doc_id"] + "><a href='" + link + "'>" + doc["doc_name"] + " (" + doc["clause_info"] + ")" +"</a></li>"
                     filtered_result_tag += tag
                     list_of_docId += doc["doc_id"] + "_"
