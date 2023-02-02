@@ -1,20 +1,20 @@
-
 from django.http import JsonResponse, HttpResponse
 from transformers import MT5ForConditionalGeneration, MT5Tokenizer, AutoTokenizer, AutoModelForTokenClassification, \
     pipeline, AutoModelForSequenceClassification, AutoModelForSeq2SeqLM
 
 # ---------- Huggingface configs ---------------
 from abdal.config import HUGGINGFACE_CONFIGS
+
 print(f"HUGGINGFACE_CONFIGS: \n {HUGGINGFACE_CONFIGS}")
 auto_translator_model_name = None
 auto_translator_tokenizer = None
 auto_translator_model = None
 
-taggingSentenceTokenizer =None
+taggingSentenceTokenizer = None
 taggingSentenceModel = None
 taggingSentencePipeline = None
 
-classificationSentenceTokenizer =None
+classificationSentenceTokenizer = None
 classificationSentenceModel = None
 classificationSentencePipeline = None
 
@@ -47,24 +47,23 @@ if HUGGINGFACE_CONFIGS['classificationAnalyser'] == "global":
     classificationSentenceModel = AutoModelForSequenceClassification.from_pretrained(
         "m3hrdadfi/albert-fa-base-v2-clf-persiannews")
     classificationSentencePipeline = pipeline('text-classification', model=classificationSentenceModel,
-                                            tokenizer=classificationSentenceTokenizer, top_k=None)
+                                              tokenizer=classificationSentenceTokenizer, top_k=None)
 
 if HUGGINGFACE_CONFIGS['summarizer'] == "global":
     summary_tokenizer = AutoTokenizer.from_pretrained("alireza7/ARMAN-SH-persian-base-perkey-summary")
     summary_model = AutoModelForSeq2SeqLM.from_pretrained("alireza7/ARMAN-SH-persian-base-perkey-summary")
 
 
-
 def auto_translator(request, text, **generator_args):
     local_auto_translator_model_name = auto_translator_model_name
     local_auto_translator_tokenizer = auto_translator_tokenizer
     local_auto_translator_model = auto_translator_model
-    
+
     if HUGGINGFACE_CONFIGS['machineTranslator'] == "local":
         local_auto_translator_model_name = "persiannlp/mt5-base-parsinlu-opus-translation_fa_en"
         local_auto_translator_tokenizer = MT5Tokenizer.from_pretrained(local_auto_translator_model_name)
         local_auto_translator_model = MT5ForConditionalGeneration.from_pretrained(local_auto_translator_model_name)
-    
+
     try:
         input_ids = local_auto_translator_tokenizer.encode(text, return_tensors="pt")
         res = local_auto_translator_model.generate(input_ids, **generator_args)
@@ -80,7 +79,8 @@ def sentiment_analyser(request, text, **generator_args):
     local_sentimentAnalyserModel = sentimentAnalyserModel
 
     if HUGGINGFACE_CONFIGS['sentimentAnalyser'] == "local":
-        local_sentimentAnalyserTokenizer = MT5Tokenizer.from_pretrained("persiannlp/mt5-base-parsinlu-sentiment-analysis")
+        local_sentimentAnalyserTokenizer = MT5Tokenizer.from_pretrained(
+            "persiannlp/mt5-base-parsinlu-sentiment-analysis")
         local_sentimentAnalyserModel = MT5ForConditionalGeneration.from_pretrained(
             "persiannlp/mt5-base-parsinlu-sentiment-analysis")
 
@@ -93,13 +93,14 @@ def sentiment_analyser(request, text, **generator_args):
 def tagging_analyser(request, text):
     local_taggingSentenceTokenizer = taggingSentenceTokenizer
     local_taggingSentenceModel = taggingSentenceModel
-    local_taggingSentencePipeline =  taggingSentencePipeline
+    local_taggingSentencePipeline = taggingSentencePipeline
 
     if HUGGINGFACE_CONFIGS['taggingAnalyser'] == "local":
         local_taggingSentenceTokenizer = AutoTokenizer.from_pretrained("HooshvareLab/bert-base-parsbert-ner-uncased")
         local_taggingSentenceModel = AutoModelForTokenClassification.from_pretrained(
             "HooshvareLab/bert-base-parsbert-ner-uncased")
-        local_taggingSentencePipeline = pipeline('ner', model=local_taggingSentenceModel, tokenizer=local_taggingSentenceTokenizer)
+        local_taggingSentencePipeline = pipeline('ner', model=local_taggingSentenceModel,
+                                                 tokenizer=local_taggingSentenceTokenizer)
 
     try:
         output = local_taggingSentencePipeline(text)
@@ -146,18 +147,18 @@ def tagging_analyser(request, text):
         return JsonResponse({"result": str(result)})
 
 
-
 def classification_analyser(request, text):
     local_classificationSentenceTokenizer = classificationSentenceTokenizer
     local_classificationSentenceModel = classificationSentenceModel
     local_classificationSentencePipeline = classificationSentencePipeline
 
     if HUGGINGFACE_CONFIGS['classificationAnalyser'] == "local":
-        local_classificationSentenceTokenizer = AutoTokenizer.from_pretrained("m3hrdadfi/albert-fa-base-v2-clf-persiannews")
+        local_classificationSentenceTokenizer = AutoTokenizer.from_pretrained(
+            "m3hrdadfi/albert-fa-base-v2-clf-persiannews")
         local_classificationSentenceModel = AutoModelForSequenceClassification.from_pretrained(
             "m3hrdadfi/albert-fa-base-v2-clf-persiannews")
         local_classificationSentencePipeline = pipeline('text-classification', model=local_classificationSentenceModel,
-                                                tokenizer=local_classificationSentenceTokenizer, top_k=None)
+                                                        tokenizer=local_classificationSentenceTokenizer, top_k=None)
 
     try:
         output = local_classificationSentencePipeline(text)
@@ -219,15 +220,37 @@ def GetTextSummary(request):
         local_summary_tokenizer = AutoTokenizer.from_pretrained("alireza7/ARMAN-SH-persian-base-perkey-summary")
         local_summary_model = AutoModelForSeq2SeqLM.from_pretrained("alireza7/ARMAN-SH-persian-base-perkey-summary")
 
-
     input_text = request.POST.get('text')
-    
+
+    text_summery = ""
     try:
         tokens = local_summary_tokenizer(input_text, return_tensors="pt")
         generated_tokens = local_summary_model.generate(tokens['input_ids'])
-        result = " ".join(local_summary_tokenizer.convert_ids_to_tokens(generated_tokens[0], skip_special_tokens=True)).replace(
+        text_summery = " ".join(
+            local_summary_tokenizer.convert_ids_to_tokens(generated_tokens[0], skip_special_tokens=True)).replace(
             "▁", "").replace("< n >", "").replace("n >", "")
     except:
-        result = "متن وارد شده طولانی است."
-    print(f'result= {result}')
-    return JsonResponse({"text_summary": result})
+        text_parts = input_text.split("\n\r")
+        text_parts = text_parts[:-1]
+        print(len(text_parts))
+        counter = 0
+        for text_part in text_parts:
+            model_result = ""
+            try:
+                tokens = local_summary_tokenizer(text_part, return_tensors="pt")
+                generated_tokens = local_summary_model.generate(tokens['input_ids'])
+                model_result = " ".join(
+                    local_summary_tokenizer.convert_ids_to_tokens(generated_tokens[0],
+                                                                  skip_special_tokens=True)).replace(
+                    "▁", "").replace("< n >", "").replace("n >", "")
+
+            except:
+                model_result = "متن وارد شده طولانی است."
+
+            model_result = model_result + "\n\r"
+            text_summery += model_result
+            counter += 1
+            print(counter)
+
+    print(f'result= {text_summery}')
+    return JsonResponse({"text_summary": text_summery})

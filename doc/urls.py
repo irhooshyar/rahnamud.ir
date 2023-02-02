@@ -34,7 +34,8 @@ urlpatterns = [
     path('operators_static_data_to_db/<int:id>/', views.operators_static_data_to_db,
          name='operators_static_data_to_db'),
     path('search_parameters_to_db/<int:id>/', views.search_parameters_to_db, name='search_parameters_to_db'),
-    path('rahbari_search_parameters_to_db/<int:id>/', views.rahbari_search_parameters_to_db, name='rahbari_search_parameters_to_db'),
+    path('rahbari_search_parameters_to_db/<int:id>/', views.rahbari_search_parameters_to_db,
+         name='rahbari_search_parameters_to_db'),
 
     path('create_judgments_table/<int:id>/', views.create_judgments_table, name='create_judgments_table'),
     path('create_standards_table/<int:id>/', views.create_standards_table, name='create_standards_table'),
@@ -124,10 +125,15 @@ urlpatterns = [
     path('subject_statistics/', views.subject_statistics, name='subject_statistics'),
     path('votes_analysis/', views.votes_analysis, name='votes_analysis'),
     path('leadership_slogan/', views.leadership_slogan, name='leadership_slogan'),
+    path('document_profile/', views.document_profile, name='document_profile'),
     path('adaptation/', views.adaptation, name='adaptation'),
     path('comparison/', views.comparison, name='comparison'),
     path('adaptation_comparison/<int:country_id>/<int:document_id>/<str:draft_name>/<str:searched_keywords>/',
          views.adaptation_comparison, name='adaptation_comparison'),
+    path('GetRahbariDocumentById/<int:country_id>/<int:document_id>/',
+         views.GetRahbariDocumentById, name='GetRahbariDocumentById'),
+    path('rahbari_document_get_full_profile_analysis/<int:country_id>/<int:document_id>/',
+         views.rahbari_document_get_full_profile_analysis, name='rahbari_document_get_full_profile_analysis'),
     path('subject_graph/', views.subject_graph, name='subject_graph'),
     path("signup/", views.signup, name="signup"),
     path("login/", views.login, name="login"),
@@ -225,8 +231,8 @@ urlpatterns = [
          name='GetParagraphSimilarity'),
 
     path('GetBM25Similarity/<int:document_id>/', views.GetBM25Similarity, name='GetBM25Similarity'),
-    path('GetSimilarParagraphs_ByParagraphID/<int:paragraph_id>/', views.GetSimilarParagraphs_ByParagraphID, name='GetSimilarParagraphs_ByParagraphID'),
-
+    path('GetSimilarParagraphs_ByParagraphID/<int:paragraph_id>/', views.GetSimilarParagraphs_ByParagraphID,
+         name='GetSimilarParagraphs_ByParagraphID'),
 
     # standard
     path('standard_information/', views.standard_information, name='standard_information'),
@@ -385,8 +391,9 @@ urlpatterns = [
     path('GetRahbariSearchParameters/<int:country_id>/', views.GetRahbariSearchParameters,
          name='GetRahbariSearchParameters'),
     path('interpretation_rules_analysis/', views.interpretation_rules_analysis, name='interpretation_rules_analysis'),
-    
-    path('SearchRahbari_ES/<int:country_id>/<int:type_id>/<str:label_name>/<int:from_year>/<int:to_year>/<str:rahbari_type>/<str:document_ids>/<str:place>/<str:text>/<str:search_type>/<int:curr_page>/<int:search_result_size>/',
+
+    path(
+        'SearchRahbari_ES/<int:country_id>/<int:type_id>/<str:label_name>/<int:from_year>/<int:to_year>/<str:rahbari_type>/<str:document_ids>/<str:place>/<str:text>/<str:search_type>/<int:curr_page>/<int:search_result_size>/',
         views.SearchRahbari_ES, name='SearchRahbari_ES'),
 
     path(
@@ -958,7 +965,6 @@ urlpatterns = [
     path('rahbari_update_fields_from_file/<int:id>/', views.rahbari_update_fields_from_file,
          name='rahbari_update_fields_from_file'),
 
-
     path('clustering_algorithms_to_db/<int:id>/', views.clustering_algorithms_to_db,
          name='clustering_algorithms_to_db'),
 
@@ -982,11 +988,12 @@ urlpatterns = [
          name='remove_unknown_standard_doc'),
 
     path('GetDoticSimDocument/<int:document_id>/', views.GetDoticSimDocument, name='GetDoticSimDocument'),
-    path('GetDoticSimDocument_ByTitle/<str:document_name>/', views.GetDoticSimDocument_ByTitle, name='GetDoticSimDocument_ByTitle'),
-    path('GetDoticSimDocument_ByLabels/<int:document_id>/', views.GetDoticSimDocument_ByLabels, name='GetDoticSimDocument_ByLabels'),
-    path('GetDetail_DoticSimDocument_ByLabels/<int:src_document_id>/<int:dest_document_id>/', views.GetDetail_DoticSimDocument_ByLabels, name='GetDetail_DoticSimDocument_ByLabels'),
-    
-
+    path('GetDoticSimDocument_ByTitle/<str:document_name>/', views.GetDoticSimDocument_ByTitle,
+         name='GetDoticSimDocument_ByTitle'),
+    path('GetDoticSimDocument_ByLabels/<int:document_id>/', views.GetDoticSimDocument_ByLabels,
+         name='GetDoticSimDocument_ByLabels'),
+    path('GetDetail_DoticSimDocument_ByLabels/<int:src_document_id>/<int:dest_document_id>/',
+         views.GetDetail_DoticSimDocument_ByLabels, name='GetDetail_DoticSimDocument_ByLabels'),
 
     path('GetParaSimilarity/<int:doc1_id>/<int:doc2_id>/', views.GetParaSimilarity, name='GetParaSimilarity'),
 
@@ -1008,6 +1015,9 @@ urlpatterns = [
     path('GetParagraphWithAreaKeywords/<int:document_id>/', views.GetParagraphWithAreaKeywords,
          name='GetParagraphWithAreaKeywords'),
 
+    path('get_rahbari_document_actor/<int:document_id>/', views.get_rahbari_document_actor,
+         name='get_rahbari_document_actor'),
+
     path('trial_law_import/<int:id>/', views.trial_law_import, name='trial_law_import'),
     path('GetTrialLawByCountryId/<int:country_id>/<str:host>/', views.GetTrialLawByCountryId,
          name='GetTrialLawByCountryId'),
@@ -1021,10 +1031,21 @@ urlpatterns = [
     path("ManualClustering/", views.ManualClustering, name='ManualClustering'),
     path("BoostingSearchParagraph_ES/<int:country_id>/<int:curr_page>/<int:result_size>/",
          views.BoostingSearchParagraph_ES, name='BoostingSearchParagraph_ES'),
+    path(
+        "rahbari_document_classification_chart_column/<int:document_id>/<str:subject>/<int:curr_page>/<int:result_size>/",
+        views.rahbari_document_classification_chart_column, name='rahbari_document_classification_chart_column'),
 
-    path("BoostingSearchKnowledgeGraph_ES/<int:country_id>/<str:field_name>/<str:field_value>/<str:language>/<str:search_type>/<int:curr_page>/<int:result_size>/",
+    path(
+        "rahbari_document_name_chart_column/<int:document_id>/<str:name>/<int:curr_page>/<int:result_size>/",
+        views.rahbari_document_name_chart_column, name='rahbari_document_name_chart_column'),
+
+    path(
+        "export_rahbari_document_chart_column/<int:document_id>/<str:text>/<str:keyword>/<int:curr_page>/<int:result_size>/",
+        views.export_rahbari_document_chart_column, name='export_rahbari_document_chart_column'),
+
+    path(
+        "BoostingSearchKnowledgeGraph_ES/<int:country_id>/<str:field_name>/<str:field_value>/<str:language>/<str:search_type>/<int:curr_page>/<int:result_size>/",
         views.BoostingSearchKnowledgeGraph_ES, name='BoostingSearchKnowledgeGraph_ES'),
-
 
     path(
         "BoostingSearchParagraph_Column_ES/<int:country_id>/<str:field_name>/<str:field_value>/<int:curr_page>/<int:result_size>/",
@@ -1138,8 +1159,6 @@ urlpatterns = [
     path('auto_translator/<str:text>/', views.auto_translator,
          name='auto_translator'),
 
-
-
     path('GetParagraphBy_ID/<int:paragraph_id>/', views.GetParagraphBy_ID,
          name='GetParagraphBy_ID'),
 
@@ -1166,39 +1185,43 @@ urlpatterns = [
     path('GetTextSummary/', views.GetTextSummary,
          name='GetTextSummary'),
 
-     #/****** Rahbari Labels ******/
-    path('GetLabelTimeSeries_ChartData/<str:label_name>/', views.GetLabelTimeSeries_ChartData, name='GetLabelTimeSeries_ChartData'),
-    path('GetAffinityLabels_ByLabelName/<str:label_name>/', views.GetAffinityLabels_ByLabelName, name='GetAffinityLabels_ByLabelName'),
+    # /****** Rahbari Labels ******/
+    path('GetLabelTimeSeries_ChartData/<str:label_name>/', views.GetLabelTimeSeries_ChartData,
+         name='GetLabelTimeSeries_ChartData'),
+    path('GetAffinityLabels_ByLabelName/<str:label_name>/', views.GetAffinityLabels_ByLabelName,
+         name='GetAffinityLabels_ByLabelName'),
 
-    path('GetCorrelatedLabels_ByLabelName/<str:label_name>/', views.GetCorrelatedLabels_ByLabelName, name='GetCorrelatedLabels_ByLabelName'),
-    path('GetCorrelatedLabels_TimeSeries_ChartData/<str:source_label_name>/<str:dest_label_name>/', views.GetCorrelatedLabels_TimeSeries_ChartData, name='GetCorrelatedLabels_TimeSeries_ChartData'),
+    path('GetCorrelatedLabels_ByLabelName/<str:label_name>/', views.GetCorrelatedLabels_ByLabelName,
+         name='GetCorrelatedLabels_ByLabelName'),
+    path('GetCorrelatedLabels_TimeSeries_ChartData/<str:source_label_name>/<str:dest_label_name>/',
+         views.GetCorrelatedLabels_TimeSeries_ChartData, name='GetCorrelatedLabels_TimeSeries_ChartData'),
 
+    # /****** Advanced ARIMA ******/
 
-
-    #/****** Advanced ARIMA ******/
-
-    path('GetActorTimeSeries_ChartDataAdvance/<int:country_id>/<int:actor_id>/', views.GetActorTimeSeries_ChartDataAdvance, name='GetActorTimeSeries_ChartDataAdvance'),
+    path('GetActorTimeSeries_ChartDataAdvance/<int:country_id>/<int:actor_id>/',
+         views.GetActorTimeSeries_ChartDataAdvance, name='GetActorTimeSeries_ChartDataAdvance'),
     path('ARIMA_Prediction_TO_DB_2/<int:id>/', views.ARIMA_Prediction_TO_DB_2, name='ARIMA_Prediction_TO_DB_2'),
 
-    #/****** AnalysisKnowledgeGraph ******/
+    # /****** AnalysisKnowledgeGraph ******/
     path('DocAnalysisKnowledgeGraph/<int:id>/', views.DocAnalysisKnowledgeGraph, name='DocAnalysisKnowledgeGraph'),
 
-    path('DocAnalysisKnowledgeGraphPOS/<int:id>/', views.DocAnalysisKnowledgeGraphPOS, name='DocAnalysisKnowledgeGraphPOS'),
+    path('DocAnalysisKnowledgeGraphPOS/<int:id>/', views.DocAnalysisKnowledgeGraphPOS,
+         name='DocAnalysisKnowledgeGraphPOS'),
 
     path('RahabriCoLabelsGraph/<int:id>/', views.RahabriCoLabelsGraph, name='RahabriCoLabelsGraph'),
     path('RahbariGraphUpload/<int:id>/', views.RahbariGraphUpload, name='RahbariGraphUpload'),
     path('RahbariTypeExtractor/<int:id>/', views.RahbariTypeExtractor, name='RahbariTypeExtractor'),
-    path('rahbari_correlated_labels_extractor/<int:id>/', views.rahbari_correlated_labels_extractor, name='rahbari_correlated_labels_extractor'),
-    path('insert_docs_to_rahbari_table/<int:id>/', views.insert_docs_to_rahbari_table, name='insert_docs_to_rahbari_table'),
-
-
+    path('rahbari_correlated_labels_extractor/<int:id>/', views.rahbari_correlated_labels_extractor,
+         name='rahbari_correlated_labels_extractor'),
+    path('insert_docs_to_rahbari_table/<int:id>/', views.insert_docs_to_rahbari_table,
+         name='insert_docs_to_rahbari_table'),
 
     path("rahbari_graph/", views.rahbari_graph, name='rahbari_graph'),
-    path('getRahbariCoLabelsGraphMinMaxWeight/', views.getRahbariCoLabelsGraphMinMaxWeight, name='getRahbariCoLabelsGraphMinMaxWeight'),
+    path('getRahbariCoLabelsGraphMinMaxWeight/', views.getRahbariCoLabelsGraphMinMaxWeight,
+         name='getRahbariCoLabelsGraphMinMaxWeight'),
     path('getRahbariGraphData/<int:type_id>/<int:limit_neighbour_count>/<str:label_id>/<str:document_id>/<int:level>/',
          views.getRahbariGraphData, name='getRahbariGraphData'),
     path("getRahbariGraphType/", views.getRahbariGraphType, name='getRahbariGraphType'),
-
 
     path("GetRahbariTypes/", views.GetRahbariTypes, name='GetRahbariTypes'),
     path("GetRahbariLabels/", views.GetRahbariLabels, name='GetRahbariLabels'),

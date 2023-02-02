@@ -63,6 +63,7 @@ doctic_para_index = es_config.DOTIC_PARA_INDEX
 
 from doc.huggingface_views import *
 
+
 @after_response.enable
 def extractor(newdoc, newDoc, tasks_list):
     ZipFileExtractor.extractor(newdoc, newDoc, tasks_list, "")
@@ -179,7 +180,6 @@ def update_doc(request, id, language, ):
     host_url = urlparse(request.build_absolute_uri()).netloc
 
     file = get_object_or_404(Country, id=id)
-    
 
     # file = Country.objects.get(file_id=id)
     # deleter(file.name, file.file.name, True)
@@ -195,7 +195,9 @@ def update_doc(request, id, language, ):
         StratAutomating.apply.after_response(folder_name, file, "DocsAreaGraphCubeData", host_url)
     else:
 
-        StratAutomating.apply.after_response(folder_name, file, "DocsParagraphsClustering_AIParagraphTopicLDA_LDAGraphData",host_url)  # AdvanceARIMAExtractor_ ActorTimeSeriesPrediction _DocsSubjectExtractor_DocsLevelExtractor_DocsReferencesExtractor_DocsActorsTimeSeriesDataExtractor_DocsCreateDocumentsListCubeData_DocsCreateSubjectCubeData_DocsCreateVotesCubeData_DocsCreateSubjectStatisticsCubeData_DocsCreateTemplatePanelsCubeData_DocsAnalysisLeadershipSlogan_DocsCreatePrinciplesCubeData_DocCreateBusinessAdvisorCubeData_DocsCreateRegularityLifeCycleCubeData_DocsExecutiveParagraphsExtractor_DocsClauseExtractor_DocsGraphCubeData_DocsCreateMandatoryRegulationsCubeData_DocsExecutiveClausesExtractor_DocsCreateActorInformationStackChartCubeData
+        StratAutomating.apply.after_response(folder_name, file,
+                                             "DocsParagraphsClustering_AIParagraphTopicLDA_LDAGraphData",
+                                             host_url)  # AdvanceARIMAExtractor_ ActorTimeSeriesPrediction _DocsSubjectExtractor_DocsLevelExtractor_DocsReferencesExtractor_DocsActorsTimeSeriesDataExtractor_DocsCreateDocumentsListCubeData_DocsCreateSubjectCubeData_DocsCreateVotesCubeData_DocsCreateSubjectStatisticsCubeData_DocsCreateTemplatePanelsCubeData_DocsAnalysisLeadershipSlogan_DocsCreatePrinciplesCubeData_DocCreateBusinessAdvisorCubeData_DocsCreateRegularityLifeCycleCubeData_DocsExecutiveParagraphsExtractor_DocsClauseExtractor_DocsGraphCubeData_DocsCreateMandatoryRegulationsCubeData_DocsExecutiveClausesExtractor_DocsCreateActorInformationStackChartCubeData
 
         # StratAutomating.apply.after_response(folder_name, file, "IngestDocumentsToElastic_IngestParagraphsToElastic", host_url)#_DocsSubjectExtractor_DocsLevelExtractor_DocsReferencesExtractor_DocsActorsTimeSeriesDataExtractor_DocsCreateDocumentsListCubeData_DocsCreateSubjectCubeData_DocsCreateVotesCubeData_DocsCreateSubjectStatisticsCubeData_DocsCreateTemplatePanelsCubeData_DocsAnalysisLeadershipSlogan_DocsCreatePrinciplesCubeData_DocCreateBusinessAdvisorCubeData_DocsCreateRegularityLifeCycleCubeData_DocsExecutiveParagraphsExtractor_DocsClauseExtractor_DocsGraphCubeData_DocsCreateMandatoryRegulationsCubeData_DocsExecutiveClausesExtractor_DocsCreateActorInformationStackChartCubeData
 
@@ -237,8 +239,8 @@ def UploadFile(request, country, language, tasks_list):
             return JsonResponse({"response": "wrong format"})
         else:
             country_object = Country(name=country, language=language, file=inputFile, file_name=inputFile.name,
-                                         status="Running")
-            
+                                     status="Running")
+
             country_object.save()
             ZipFileExtractor.extractor(country_object, country_object, tasks_list, host_url)
             return JsonResponse({"response": "Ok"})
@@ -265,10 +267,8 @@ def static_data_import_db(request, id, language):
     return redirect('zip')
 
 
-
 def insert_docs_to_rahbari_table(request, id):
     file = get_object_or_404(Country, id=id)
-
 
     from scripts.Persian import StaticDataImportDB
     StaticDataImportDB.Rahbari_Insert_fromExcel(file)
@@ -320,7 +320,6 @@ def revoked_types_to_db(request, id):
 
 
 def rahbari_update_fields_from_file(request, id):
-
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import StaticDataImportDB
 
@@ -329,9 +328,10 @@ def rahbari_update_fields_from_file(request, id):
     dot_index = my_file.rfind('.')
     folder_name = my_file[:dot_index]
 
-    StaticDataImportDB.Rahbari_Update_Fields_From_File(folder_name,file)
+    StaticDataImportDB.Rahbari_Update_Fields_From_File(folder_name, file)
 
     return redirect('zip')
+
 
 def clustering_algorithms_to_db(request, id):
     file = get_object_or_404(Country, id=id)
@@ -347,6 +347,7 @@ def rahbari_labels_to_db(request, id):
 
     StaticDataImportDB.rahbari_labels_to_db(Country)
     return redirect('zip')
+
 
 def trial_law_import(request, id):
     file = get_object_or_404(Country, id=id)
@@ -451,6 +452,7 @@ def rahbari_search_parameters_to_db(request, id):
     StaticDataImportDB.Rahbari_Search_Parameters_Insert(file)
     return redirect('zip')
 
+
 def subject_area_keywords_to_db(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import StaticDataImportDB
@@ -521,11 +523,13 @@ def actors_time_series_extractor(request, id):
     DocsActorsTimeSeriesDataExtractor.apply(None, file)
     return redirect('zip')
 
+
 def rahbari_labels_time_series_extractor(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import RahbariLabelsTimeSeriesExtractor
     RahbariLabelsTimeSeriesExtractor.apply(None, file)
     return redirect('zip')
+
 
 def ARIMA_Prediction_TO_DB(request, id):
     file = get_object_or_404(Country, id=id)
@@ -550,7 +554,6 @@ def actors_new_graph_extractor(request, id):
 
 
 def ingest_documents_to_index(request, id, language):
-    
     file = get_object_or_404(Country, id=id)
 
     from es_scripts import IngestDocumentsToElastic
@@ -565,7 +568,6 @@ def ingest_documents_to_index(request, id, language):
 
 
 def ingest_document_actor_to_index(request, id, language):
-    
     file = get_object_or_404(Country, id=id)
 
     from es_scripts import IngestDocumentActorToElastic
@@ -580,7 +582,6 @@ def ingest_document_actor_to_index(request, id, language):
 
 
 def ingest_actor_supervisor_to_index(request, id, language):
-    
     file = get_object_or_404(Country, id=id)
 
     from es_scripts import IngestActorSupervisorToElastic
@@ -609,7 +610,6 @@ def ingest_spatiotemporal_to_index(request, id):
 
 
 def ingest_judgments_to_index(request, id, language):
-    
     file = get_object_or_404(Country, id=id)
 
     from es_scripts import IngestJudgmentsToElastic
@@ -624,7 +624,6 @@ def ingest_judgments_to_index(request, id, language):
 
 
 def ingest_revoked_documents(request, id, language):
-    
     file = get_object_or_404(Country, id=id)
 
     from es_scripts import IngestRevokedDocument
@@ -639,7 +638,6 @@ def ingest_revoked_documents(request, id, language):
 
 
 def ingest_paragraphs_to_index(request, id, language, is_for_ref):
-    
     file = get_object_or_404(Country, id=id)
 
     from es_scripts import IngestParagraphsToElastic
@@ -654,7 +652,6 @@ def ingest_paragraphs_to_index(request, id, language, is_for_ref):
 
 
 def ingest_clustering_paragraphs_to_index(request, id, language):
-    
     file = get_object_or_404(Country, id=id)
 
     from es_scripts import IngestClusteringParagraphsToElastic
@@ -669,7 +666,6 @@ def ingest_clustering_paragraphs_to_index(request, id, language):
 
 
 def ingest_standard_documents_to_index(request, id, language):
-    
     file = get_object_or_404(Country, id=id)
 
     from es_scripts import IngestStandardDocumentsToElastic
@@ -684,7 +680,6 @@ def ingest_standard_documents_to_index(request, id, language):
 
 
 def ingest_standard_documents_to_sim_index(request, id, language):
-    
     file = get_object_or_404(Country, id=id)
 
     from es_scripts import IngestDocumentsToSimilarityIndex
@@ -702,7 +697,6 @@ def ingest_standard_documents_to_sim_index(request, id, language):
 
 
 def ingest_terminology_to_index(request, id, language):
-    
     file = get_object_or_404(Country, id=id)
 
     from es_scripts import IngestTerminologyToElastic
@@ -939,7 +933,7 @@ def create_CUBE_MaxMinEffectActorsInArea(request, id):
 def delete_doc(request, id, language):
     # Country.objects.filter(id=id).delete()
     # return redirect('zip')
-    
+
     file = Country.objects.get(id=id)
 
     deleter(file.name, file.file.name, False)
@@ -1104,6 +1098,7 @@ def rahbari_search(request):
     country_map = get_country_maps(country_list)
     return render(request, 'doc/rahbari_search.html', {'countries': country_map})
 
+
 @allowed_users('rahbari_paraghraph')
 def rahbari_paraghraph(request):
     country_list = Country.objects.all()
@@ -1117,11 +1112,13 @@ def rahbari_subject(request):
     country_map = get_country_maps(country_list)
     return render(request, 'doc/rahbari_subject.html', {'countries': country_map})
 
+
 @allowed_users('rahbari_organization')
 def rahbari_organization(request):
     country_list = Country.objects.all()
     country_map = get_country_maps(country_list)
     return render(request, 'doc/rahbari_organization.html', {'countries': country_map})
+
 
 @allowed_users('rahbari_problem_system')
 def rahbari_problem_system(request):
@@ -1129,11 +1126,13 @@ def rahbari_problem_system(request):
     country_map = get_country_maps(country_list)
     return render(request, 'doc/rahbari_problem_system.html', {'countries': country_map})
 
+
 @allowed_users('rahbari_topic')
 def rahbari_topic(request):
     country_list = Country.objects.all()
     country_map = get_country_maps(country_list)
     return render(request, 'doc/rahbari_topic.html', {'countries': country_map})
+
 
 @allowed_users('rahbari_search')
 def rahbari_labels(request):
@@ -1189,6 +1188,13 @@ def leadership_slogan(request):  ###
     return render(request, 'doc/leadership_slogan.html',
                   {'countries': country_map, 'slogans': slogan_map, 'slogan_keyword': slogan_map_keyword,
                    'slogan_synonymous_words': slogan_map_synonymous_words})
+
+
+@allowed_users('document_profile')
+def document_profile(request):
+    country_list = Country.objects.all().filter(name="اسناد رهبری")
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/rahbari_doc_profile.html', {'countries': country_map})
 
 
 def GetSyns(request):
@@ -1329,9 +1335,11 @@ def actors_graph(request):
     country_map = get_country_maps(country_list)
     return render(request, 'doc/actors_graph.html', {'countries': country_map})
 
+
 @allowed_users('rahbari_graph')
 def rahbari_graph(request):
     return render(request, 'doc/rahbari_graph.html')
+
 
 def Cancellationـanalysis(request):
     country_list = Country.objects.all()
@@ -1419,6 +1427,285 @@ def GetDocumentById(request, id):
               "actors_chart_data": document_actors_chart_data
               }
     return JsonResponse({'document_information': [result]})
+
+
+def GetRahbariDocumentById(request, country_id, document_id):
+    country_obj = Country.objects.get(id=country_id)
+    index_name = standardIndexName(country_obj, FullProfileAnalysis.__name__)
+
+    res_query = {
+        "term": {
+            "document_id": document_id
+        }
+    }
+
+    response = client.search(index=index_name,
+                             _source_includes=['document_id', 'rahbari_date', 'type', 'labels', 'document_name'],
+                             request_timeout=40,
+                             query=res_query)
+    result = response['hits']['hits']
+    total_hits = response['hits']['total']['value']
+
+    document = Document.objects.get(id=document_id)
+    subject_name = "نامشخص"
+    if document.subject_id is not None:
+        subject_name = document.subject_id.name
+
+    return JsonResponse({
+        "result": result,
+        "subject": subject_name,
+        'total_hits': total_hits,
+    })
+
+
+def rahbari_document_get_full_profile_analysis(request, country_id, document_id):
+    res_query = {
+        "term": {
+            "document_id": document_id
+        }
+    }
+
+    country_obj = Country.objects.get(id=country_id)
+    index_name = standardIndexName(country_obj, FullProfileAnalysis.__name__)
+
+    # ---------------------- Get Chart Data -------------------------
+    res_agg = {
+        "rahbari-classification-subject-agg":
+            {
+                "terms": {
+                    "field": "classification_subject.keyword",
+                    "size": bucket_size
+                }
+            },
+        "rahbari-person-agg":
+            {
+                "terms": {
+                    "field": "persons.keyword",
+                    "size": 10000
+                }
+            },
+        "rahbari-location-agg":
+            {
+                "terms": {
+                    "field": "locations.keyword",
+                    "size": bucket_size
+                }
+            },
+        "rahbari-organization-agg":
+            {
+                "terms": {
+                    "field": "organizations.keyword",
+                    "size": bucket_size
+                }
+            }
+    }
+
+    response = client.search(index=index_name,
+                             request_timeout=40,
+                             query=res_query,
+                             aggregations=res_agg,
+                             size=search_result_size)
+
+    result = response['hits']['hits']
+    total_hits = response['hits']['total']['value']
+    aggregations = response['aggregations']
+
+    if total_hits == 10000:
+        total_hits = client.count(body={
+            "query": res_query
+        }, index=index_name, doc_type='_doc')['count']
+
+    response = client.search(index=index_name,
+                             request_timeout=40,
+                             query=res_query
+                             )
+    max_score = response['hits']['hits'][0]['_score'] if total_hits > 0 else 1
+    max_score = max_score if max_score > 0 else 1
+    print(aggregations)
+    return JsonResponse({
+        "result": result,
+        'total_hits': total_hits,
+        'max_score': max_score,
+        'aggregations': aggregations})
+
+
+def get_rahbari_document_actor(request, document_id):
+    actor_contains = []
+    actor_names = []
+
+    paragraphs = DocumentParagraphs.objects.filter(document_id=document_id)
+    actors = Actor.objects.all()
+
+    for actor in actors:
+        actor_forms = actor.forms.split("/")
+        actor_names.extend(actor_forms)
+
+    for actor in actor_names:
+        actor_counter = 0
+        for paragraph in paragraphs:
+            if paragraph.text.__contains__(" "+actor+" "):
+                actor_counter += 1
+        if actor_counter > 0:
+            actor_contains.append((actor, actor_counter))
+
+    return JsonResponse({'result': actor_contains})
+
+
+def rahbari_document_classification_chart_column(request, document_id, subject, curr_page, result_size):
+    res_query = {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "document_id": document_id
+                    }
+                },
+                {
+                    "term": {
+                        "classification_subject.keyword": subject
+                    }
+                }
+            ]
+        }
+    }
+
+    country_obj = Document.objects.get(id=document_id).country_id
+    index_name = standardIndexName(country_obj, FullProfileAnalysis.__name__)
+
+    # ---------------------- Get Chart Data -------------------------
+    from_value = (curr_page - 1) * result_size
+    response = client.search(index=index_name,
+                             _source_includes=['attachment.content', 'document_name'],
+                             request_timeout=40,
+                             query=res_query,
+                             from_=from_value,
+                             size=result_size
+                             )
+
+    result = response['hits']['hits']
+    total_hits = response['hits']['total']['value']
+
+    if total_hits == 10000:
+        total_hits = client.count(body={
+            "query": res_query
+        }, index=index_name, doc_type='_doc')['count']
+
+    return JsonResponse({
+        "result": result,
+        'total_hits': total_hits,
+        "curr_page": curr_page,
+    })
+
+
+def rahbari_document_name_chart_column(request, document_id, name, curr_page, result_size):
+    res_query = {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "document_id": document_id
+                    }
+                },
+                {
+                    "match_phrase": {
+                        "attachment.content": name
+                    }
+                }
+            ]
+        }
+    }
+
+    country_obj = Document.objects.get(id=document_id).country_id
+    index_name = standardIndexName(country_obj, FullProfileAnalysis.__name__)
+
+    # ---------------------- Get Chart Data -------------------------
+    from_value = (curr_page - 1) * result_size
+    response = client.search(index=index_name,
+                             _source_includes=['attachment.content', 'document_name'],
+                             request_timeout=40,
+                             query=res_query,
+                             from_=from_value,
+                             size=result_size,
+                             highlight={
+                                 "order": "score",
+                                 "fields": {
+                                     "attachment.content":
+                                         {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
+                                          "number_of_fragments": 0
+                                          }
+                                 }}
+                             )
+
+    result = response['hits']['hits']
+    total_hits = response['hits']['total']['value']
+
+    if total_hits == 10000:
+        total_hits = client.count(body={
+            "query": res_query
+        }, index=index_name, doc_type='_doc')['count']
+
+    return JsonResponse({
+        "result": result,
+        'total_hits': total_hits,
+        "curr_page": curr_page,
+    })
+
+def export_rahbari_document_chart_column(request, document_id, text, keyword, curr_page, result_size):
+    res_query = {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "document_id": document_id
+                    }
+                },
+                {
+                    "match_phrase": {
+                        keyword: text
+                    }
+                }
+            ]
+        }
+    }
+
+    country_obj = Document.objects.get(id=document_id).country_id
+    index_name = standardIndexName(country_obj, FullProfileAnalysis.__name__)
+
+    # ---------------------- Get Chart Data -------------------------
+    from_value = (curr_page - 1) * result_size
+    response = client.search(index=index_name,
+                             _source_includes=['attachment.content', 'document_name'],
+                             request_timeout=40,
+                             query=res_query,
+                             from_=from_value,
+                             size=result_size,
+                             highlight={
+                                 "order": "score",
+                                 "fields": {
+                                     "attachment.content":
+                                         {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
+                                          "number_of_fragments": 0
+                                          }
+                                 }}
+                             )
+
+    result = response['hits']['hits']
+
+    result_range = str(from_value) + " تا " + str(from_value + len(result))
+
+    paragraph_list = [
+        [doc['_source']['document_name']
+            , doc['_source']['attachment']['content']] for doc in result]
+
+    file_dataframe = pd.DataFrame(paragraph_list, columns=["نام سند", "متن پاراگراف"])
+
+    file_name = country_obj.name + " - " + keyword.replace(".keyword",
+                                                              "") + " : " + text + " - " + result_range + ".xlsx"
+
+    file_path = os.path.join(config.MEDIA_PATH, file_name)
+    file_dataframe.to_excel(file_path, index=False)
+
+    return JsonResponse({"file_name": file_name})
 
 
 def GetBookDocumentById(request, document_id):
@@ -1979,7 +2266,7 @@ def GetGraphEdgesByDocumentsList_AdvisoryOpinions(request, measure_id):
 
 def create_advisory_opinion_count(request, id, language):
     file = get_object_or_404(Country, id=id)
-    
+
     from scripts.Persian import CreateAdvisoryOpinionsReferences
 
     CreateAdvisoryOpinionsReferences.apply(file)
@@ -1987,9 +2274,7 @@ def create_advisory_opinion_count(request, id, language):
 
 
 def create_interpretation_rules_count(request, id, language):
-    
     file = get_object_or_404(Country, id=id)
-    
 
     from scripts.Persian import CreateInterpretationRulesReferences
 
@@ -4037,7 +4322,6 @@ def filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, ra
 
         res_query['bool']['filter'].append(year_query)
 
-
     # ----------------------------------------------------------
     if rahbari_type.replace("__OR", "") != '0':
         rahbari_type_list = rahbari_type.split("__")
@@ -4069,7 +4353,6 @@ def filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, ra
                 }
                 res_query['bool']['filter'].append(label_name_query)
 
-
     if document_ids != '0':
         document_ids = document_ids.split("__")
         my_query = {
@@ -4086,7 +4369,6 @@ def filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, ra
             my_query['bool']['should'].append(query)
 
         res_query['bool']['filter'].append(my_query)
-
 
     return res_query
 
@@ -5935,7 +6217,8 @@ def SearchJudgment_ES(request, country_id, JudgeName,
     })
 
 
-def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_year, rahbari_type, document_ids, place, text, search_type, curr_page, search_result_size):
+def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_year, rahbari_type, document_ids, place,
+                     text, search_type, curr_page, search_result_size):
     fields = [type_id, label_name, from_year, to_year, rahbari_type, document_ids]
 
     res_query = {
@@ -5947,7 +6230,8 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
     if not all(field == 0 for field in fields):
         ALL_FIELDS = False
         res_query['bool']['filter'] = []
-        res_query = filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, rahbari_type, document_ids)
+        res_query = filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, rahbari_type,
+                                          document_ids)
 
     if text != "empty":
         res_query["bool"]["must"] = []
@@ -5994,7 +6278,7 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
     response = client.search(index=index_name,
                              _source_includes=['document_id', 'name', 'raw_file_name',
                                                'rahbari_date', 'rahbari_year',
-                                               'labels', 'type' , 'rahbari_type'],
+                                               'labels', 'type', 'rahbari_type'],
                              request_timeout=40,
                              query=res_query,
                              aggregations=res_agg,
@@ -6089,7 +6373,7 @@ def filter_rahbari_fields_COLUMN(res_query, type_name, label_name_list,
         }
 
         res_query['bool']['filter'].append(year_query)
-    
+
     # ----------------------------------------------------------
     if rahbari_type.replace("__OR", "") != '0':
         rahbari_type_list = rahbari_type.split("__")
@@ -6178,7 +6462,8 @@ def Search_Rahbari_Column_ES(request, country_id, type_name, label_name_list,
 
 
 def Search_Rahbari_Paragraph_Column_ES(request, country_id, type_name, label_name_list,
-                                       from_year, to_year, place, text, search_type, field_name, field_value, sentiment, curr_page,
+                                       from_year, to_year, place, text, search_type, field_name, field_value, sentiment,
+                                       curr_page,
                                        result_size):
     res_query = {
         "bool": {}
@@ -6203,10 +6488,10 @@ def Search_Rahbari_Paragraph_Column_ES(request, country_id, type_name, label_nam
 
     if sentiment != "empty":
         res_query['bool']['filter'].append({
-        "term": {
-            "sentiment.keyword": sentiment
-        }
-    })
+            "term": {
+                "sentiment.keyword": sentiment
+            }
+        })
 
     label_name_list = label_name_list.split(',')
     res_query = filter_rahbari_fields_COLUMN(res_query, type_name, label_name_list,
@@ -6219,7 +6504,7 @@ def Search_Rahbari_Paragraph_Column_ES(request, country_id, type_name, label_nam
             res_query = exact_search_text(res_query, place, text, ALL_FIELDS)
         else:
             res_query = boolean_search_text(res_query, place, text, search_type, ALL_FIELDS)
-    
+
     print(res_query)
 
     country_obj = Country.objects.get(id=country_id)
@@ -6262,7 +6547,8 @@ def Search_Rahbari_Paragraph_Column_ES(request, country_id, type_name, label_nam
 
 
 def Export_Rahbari_Paragraph_Column_ES(request, country_id, type_name, label_name_list,
-                                       from_year, to_year, place, text, search_type, field_name, field_value, sentiment, curr_page,
+                                       from_year, to_year, place, text, search_type, field_name, field_value, sentiment,
+                                       curr_page,
                                        result_size):
     res_query = {
         "bool": {}
@@ -6278,10 +6564,10 @@ def Export_Rahbari_Paragraph_Column_ES(request, country_id, type_name, label_nam
 
     if sentiment != "empty":
         res_query['bool']['filter'].append({
-        "term": {
-            "sentiment.keyword": sentiment
-        }
-    })
+            "term": {
+                "sentiment.keyword": sentiment
+            }
+        })
 
     label_name_list = label_name_list.split(',')
     res_query = filter_rahbari_fields_COLUMN(res_query, type_name, label_name_list,
@@ -13545,11 +13831,9 @@ def load_stop_words():
     return stop_words
 
 
-
-
 def get_stopword_list(file_name):
     stop_words = []
-    
+
     stop_words_file = str(Path(config.PERSIAN_PATH, file_name))
     with open(stop_words_file, encoding="utf-8") as f:
         lines = f.readlines()
@@ -13558,7 +13842,6 @@ def get_stopword_list(file_name):
             stop_words.append(line)
     f.close()
     return stop_words
-
 
 
 # def preprocess(text):
@@ -17361,7 +17644,6 @@ def GetSimilarParagraphs_ByParagraphID(request, paragraph_id):
     index_name = standardIndexName(country_obj, DocumentParagraphs.__name__)
     # index_name = "doticfull_documentparagraphs"
 
-
     para_stopword_list = get_stopword_list('rahbari_stopwords.txt')
     doc_stopword_list = get_stopword_list('rahbari_doc_name_stopwords.txt')
     res_stopword_list = list(set(para_stopword_list + doc_stopword_list))
@@ -17393,7 +17675,7 @@ def GetSimilarParagraphs_ByParagraphID(request, paragraph_id):
                         "min_word_length": 4,
                         "min_doc_freq": 2,
                         "minimum_should_match": "55%",
-                        "stop_words":res_stopword_list
+                        "stop_words": res_stopword_list
                     }
                 }
             ]
@@ -17404,32 +17686,33 @@ def GetSimilarParagraphs_ByParagraphID(request, paragraph_id):
                              _source_includes=['document_id', 'document_name', 'attachment.content'],
                              request_timeout=40,
                              query=sim_query
-                            # ,highlight={
-                            #     "type": "fvh",
-                            #     "fields": {
-                            #         "attachment.content":
-                            #         {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
-                            #         "number_of_fragments": 0
-                            #         }
-                            #     }
-                            # }
-                             
+                             # ,highlight={
+                             #     "type": "fvh",
+                             #     "fields": {
+                             #         "attachment.content":
+                             #         {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
+                             #         "number_of_fragments": 0
+                             #         }
+                             #     }
+                             # }
+
                              )
 
     similar_paragraphs = response['hits']['hits']
     print(f"similar_paragraphs:\n {similar_paragraphs}")
     return JsonResponse({'similar_paragraphs': similar_paragraphs})
 
-def GetDoticSimDocument_ByTitle(request,document_name):
+
+def GetDoticSimDocument_ByTitle(request, document_name):
     res_query = {
-        'bool':{
-            'must':[],
-            'filter':[
-               {
-                 'terms':{
-                    'level_name.keyword':['قانون','اسناد بالادستی']
+        'bool': {
+            'must': [],
+            'filter': [
+                {
+                    'terms': {
+                        'level_name.keyword': ['قانون', 'اسناد بالادستی']
+                    }
                 }
-               }
             ]
         }
     }
@@ -17439,35 +17722,35 @@ def GetDoticSimDocument_ByTitle(request,document_name):
         "more_like_this": {
             "analyzer": "persian_custom_analyzer",
             "fields": ["name"],
-            "like":document_name,
+            "like": document_name,
             "min_term_freq": 1,
             "max_query_terms": 200,
             "min_doc_freq": 1,
             "max_doc_freq": 150000,
             "min_word_length": 3,
-            "minimum_should_match":"40%",
-            "stop_words":stopword_list
+            "minimum_should_match": "40%",
+            "stop_words": stopword_list
         }
     }
 
     res_query['bool']['must'].append(like_query)
     response = client.search(index=doctic_doc_index,
-                            _source_includes = ['name'],
-                            request_timeout=40,
-                            query=res_query,
-                            size=10,
-                            highlight={
-                                         "type": "fvh",
-                                         "fields": {
-                                             "name":
-                                             {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
-                                              "number_of_fragments": 0
-                                              }
-                                         }
-                                        }
-                                        
-                            )
-    
+                             _source_includes=['name'],
+                             request_timeout=40,
+                             query=res_query,
+                             size=10,
+                             highlight={
+                                 "type": "fvh",
+                                 "fields": {
+                                     "name":
+                                         {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
+                                          "number_of_fragments": 0
+                                          }
+                                 }
+                             }
+
+                             )
+
     result_doc = response['hits']['hits']
     print(response)
     result_doc_list = []
@@ -17475,15 +17758,13 @@ def GetDoticSimDocument_ByTitle(request,document_name):
         doc_id = doc['_id']
         doc_name = doc["highlight"]["name"][0]
         doc_score = doc['_score']
-        result_doc_list.append([doc_id,doc_name,doc_score])
+        result_doc_list.append([doc_id, doc_name, doc_score])
 
     return JsonResponse({'result_doc_list': result_doc_list})
 
 
-
-
-def GetDoticSimDocument_ByLabels(request,document_id):
-    labels = Rahbari.objects.get(document_id__id = document_id).labels
+def GetDoticSimDocument_ByLabels(request, document_id):
+    labels = Rahbari.objects.get(document_id__id=document_id).labels
 
     if labels[-1] == "؛":
         labels = labels[:-1]
@@ -17492,20 +17773,19 @@ def GetDoticSimDocument_ByLabels(request,document_id):
     if '' in label_list:
         label_list.remove('')
 
-
     res_query = {
-        'bool':{
-            'filter':[
-            {
-                'terms':
+        'bool': {
+            'filter': [
                 {
-                    'level_name.keyword': ['اسناد بالادستی','قانون']
+                    'terms':
+                        {
+                            'level_name.keyword': ['اسناد بالادستی', 'قانون']
+                        }
                 }
-            }
             ],
-            'must':{
-                'bool':{
-                    'should':[]
+            'must': {
+                'bool': {
+                    'should': []
                 }
             }
         }
@@ -17516,52 +17796,51 @@ def GetDoticSimDocument_ByLabels(request,document_id):
         for label in label_list:
             if label.strip() != '':
                 attachment_content_query = {
-                    'match_phrase':{
-                        "attachment.content":label.strip()
+                    'match_phrase': {
+                        "attachment.content": label.strip()
                     }
                 }
                 res_query['bool']['must']['bool']['should'].append(attachment_content_query)
 
         response = client.search(index=doctic_doc_index,
-                                _source_includes = ['name'],
-                                request_timeout=40,
-                                query=res_query,
-                                size=10
-                                )
-        
+                                 _source_includes=['name'],
+                                 request_timeout=40,
+                                 query=res_query,
+                                 size=10
+                                 )
+
         result_doc = response['hits']['hits']
-        
+
         for doc in result_doc:
             doc_id = doc['_id']
             doc_name = doc['_source']['name']
             doc_score = doc['_score']
-            result_doc_list.append([doc_id,doc_name,doc_score])
+            result_doc_list.append([doc_id, doc_name, doc_score])
 
     return JsonResponse({'result_doc_list': result_doc_list,
-    'labels':labels})
+                         'labels': labels})
 
 
-def GetDetail_DoticSimDocument_ByLabels(request,src_document_id,dest_document_id):
-    labels = Rahbari.objects.get(document_id__id = src_document_id).labels
+def GetDetail_DoticSimDocument_ByLabels(request, src_document_id, dest_document_id):
+    labels = Rahbari.objects.get(document_id__id=src_document_id).labels
 
     if labels[-1] == "؛":
         labels = labels[:-1]
     label_list = labels.split("؛")
 
-
     res_query = {
-        'bool':{
-            'filter':[
-            {
-                'term':
+        'bool': {
+            'filter': [
                 {
-                    'document_id': dest_document_id
+                    'term':
+                        {
+                            'document_id': dest_document_id
+                        }
                 }
-            }
             ],
-            'must':{
-                'bool':{
-                    'should':[]
+            'must': {
+                'bool': {
+                    'should': []
                 }
             }
         }
@@ -17571,35 +17850,33 @@ def GetDetail_DoticSimDocument_ByLabels(request,src_document_id,dest_document_id
         for label in label_list:
             if label.strip() != '':
                 attachment_content_query = {
-                    'match_phrase':{
-                        "attachment.content":label.strip()
+                    'match_phrase': {
+                        "attachment.content": label.strip()
                     }
                 }
                 res_query['bool']['must']['bool']['should'].append(attachment_content_query)
 
         print(res_query)
         response = client.search(index=doctic_para_index,
-                                request_timeout=40,
-                                query=res_query,
-                                size=100,
-                                highlight={
-                                         "order": "score",
-                                         "fields": {
-                                             "attachment.content":
-                                             {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
+                                 request_timeout=40,
+                                 query=res_query,
+                                 size=100,
+                                 highlight={
+                                     "order": "score",
+                                     "fields": {
+                                         "attachment.content":
+                                             {"pre_tags": ["<span class='text-primary fw-bold'>"],
+                                              "post_tags": ["</span>"],
                                               "number_of_fragments": 0
                                               }
-                                         }
-                                        }
-                                        
-                            
-                            )
-        
+                                     }
+                                 }
+
+                                 )
+
         result_para = response['hits']['hits']
 
     return JsonResponse({'result_para': result_para})
-
-
 
 
 def get_TFIDF_similarity_for_2_document(request, document1, document2):
@@ -18572,13 +18849,13 @@ def GetDoticSimDocument(request, document_id):
 
     for i in range(len(sim_doc_list)):
         doc2_id = sim_doc_list[i][0]
-        res_para_count = RahbariParagraphSimilarity.objects.filter(para1__document_id__id=document_id, para2__document_id__id=doc2_id).count()
+        res_para_count = RahbariParagraphSimilarity.objects.filter(para1__document_id__id=document_id,
+                                                                   para2__document_id__id=doc2_id).count()
 
-        if res_para_count > 0:   
+        if res_para_count > 0:
             temp_list = list(sim_doc_list[i])
             temp_list.append(res_para_count)
             result_similar_docs.append(temp_list)
-
 
     print(result_similar_docs)
     return JsonResponse({'result_similar_docs': result_similar_docs})
@@ -18715,7 +18992,6 @@ def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRul
         res_query['bool']['should'] = should_query
         res_query['bool']['minimum_should_match'] = 1
 
-
     if text != "empty":
         res_query["bool"]["must"] = []
 
@@ -18725,7 +19001,6 @@ def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRul
             if search_type == 'and':
                 search_type = 'or'
             res_query = boolean_search_text(res_query, place, text, search_type, False)
-
 
     h_query1 = {
         "bool": {
@@ -18750,7 +19025,6 @@ def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRul
         }
     }
 
-
     response = client.search(index=local_index,
                              _source_includes=['document_id', 'paragraph_id', 'document_name', 'attachment.content'],
                              request_timeout=40,
@@ -18759,12 +19033,12 @@ def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRul
                                  "order": "score",
                                  "fields": {
                                      "attachment.content":
-                                     {
-                                         "pre_tags": ["<span class='text-primary fw-bold'>"],
-                                         "post_tags": ["</span>"],
-                                         "number_of_fragments": 0,
-                                         # "highlight_query": h_query1
-                                     },
+                                         {
+                                             "pre_tags": ["<span class='text-primary fw-bold'>"],
+                                             "post_tags": ["</span>"],
+                                             "number_of_fragments": 0,
+                                             # "highlight_query": h_query1
+                                         },
                                  },
                              }
                              )
@@ -18806,7 +19080,6 @@ def GetRahbariTypeDetails_ES(request, document_id, rahbari_type_id):
     res_query['bool']['should'] = should_query
     res_query['bool']['minimum_should_match'] = 0
 
-
     response = client.search(index=local_index,
                              _source_includes=['document_id', 'paragraph_id', 'document_name', 'attachment.content'],
                              request_timeout=40,
@@ -18815,12 +19088,12 @@ def GetRahbariTypeDetails_ES(request, document_id, rahbari_type_id):
                                  "order": "score",
                                  "fields": {
                                      "attachment.content":
-                                     {
-                                         "pre_tags": ["<span class='text-primary fw-bold'>"],
-                                         "post_tags": ["</span>"],
-                                         "number_of_fragments": 0,
-                                         # "highlight_query": h_query1
-                                     },
+                                         {
+                                             "pre_tags": ["<span class='text-primary fw-bold'>"],
+                                             "post_tags": ["</span>"],
+                                             "number_of_fragments": 0,
+                                             # "highlight_query": h_query1
+                                         },
                                  },
                              }
                              )
@@ -20350,11 +20623,10 @@ def sentiment_analysis_panel(request):
     return render(request, 'doc/sentiment_analysis.html')
 
 
-
 def GetParagraphBy_ID(request, paragraph_id):
     paragraph_text = DocumentParagraphs.objects.get(id=paragraph_id).text
     country_name = DocumentParagraphs.objects.get(id=paragraph_id).document_id.country_id.name
-    return JsonResponse({"paragraph_text": str(paragraph_text),"country_name":country_name})
+    return JsonResponse({"paragraph_text": str(paragraph_text), "country_name": country_name})
 
 
 def findActor(request, id):
@@ -20419,6 +20691,7 @@ def ingest_full_profile_analysis_to_elastic(request, id):
     IngestFullProfileAnalysisToElastic.apply(folder_name, file)
     return redirect('zip')
 
+
 def clause_extractor(request, id):
     file = get_object_or_404(Country, id=id)
     from es_scripts.persian_automate import ClauseExtractor
@@ -20433,8 +20706,8 @@ def executive_clauses_extractor(request, id):
     return redirect('zip')
 
 
-
-def rahbari_get_full_profile_analysis(request, country_id, type_id, label_name, from_year, to_year, rahbari_type, place, text,
+def rahbari_get_full_profile_analysis(request, country_id, type_id, label_name, from_year, to_year, rahbari_type, place,
+                                      text,
                                       search_type, curr_page):
     fields = [type_id, label_name, from_year, to_year]
 
@@ -20689,6 +20962,7 @@ def DocAnalysisKnowledgeGraph(request, id):
     DocAnalysisKnowledgeGraph.apply(None, file)
     return redirect('zip')
 
+
 def DocAnalysisKnowledgeGraphPOS(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import DocAnalysisKnowledgeGraphPOS
@@ -20702,11 +20976,13 @@ def RahabriCoLabelsGraph(request, id):
     RahabriCoLabelsGraph.apply.after_response(None, file)
     return redirect('zip')
 
+
 def RahbariGraphUpload(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import RahabriGraph
     RahabriGraph.apply.after_response()
     return redirect('zip')
+
 
 def RahbariTypeExtractor(request, id):
     file = get_object_or_404(Country, id=id)
@@ -20720,7 +20996,6 @@ def rahbari_correlated_labels_extractor(request, id):
     from scripts.Persian import RahabriCorrelatedTimeSeriesExtractor
     RahabriCorrelatedTimeSeriesExtractor.apply(file)
     return redirect('zip')
-
 
 
 def GetActorTimeSeries_ChartDataAdvance(request, country_id, actor_id):
@@ -20805,20 +21080,20 @@ def GetActorTimeSeries_ChartDataAdvance(request, country_id, actor_id):
 
 
 # /****** Advanced ARIMA ******/
-def GetLabelTimeSeries_ChartData(request,label_name):
-    label_id = RahbariLabel.objects.get(name = label_name).id
-    time_series_data = RahbariLabelsTimeSeries.objects.get(rahbari_label__id = label_id).time_series_data
+def GetLabelTimeSeries_ChartData(request, label_name):
+    label_id = RahbariLabel.objects.get(name=label_name).id
+    time_series_data = RahbariLabelsTimeSeries.objects.get(rahbari_label__id=label_id).time_series_data
     chart_data = []
-    for year,count in time_series_data.items():
-        chart_data.append([year,count])
+    for year, count in time_series_data.items():
+        chart_data.append([year, count])
 
     return JsonResponse({"chart_data": chart_data})
 
-def GetAffinityLabels_ByLabelName(request,label_name):
-    
+
+def GetAffinityLabels_ByLabelName(request, label_name):
     result_labels = RahbariLabelsGraph.objects.filter(
         Q(source_label=label_name) | Q(target_label=label_name)).order_by('-common_document_count').values()
-    index= 1
+    index = 1
     table_data = []
 
     for row in result_labels:
@@ -20833,39 +21108,35 @@ def GetAffinityLabels_ByLabelName(request,label_name):
         else:
             other_label = target_label
 
-        
-
         function = "AffinityFunction('" + other_label + "')"
 
         detail_btn = '<button ' \
-                'type="button" ' \
-                'class="btn modal_btn" ' \
-                'data-bs-toggle="modal" ' \
-                'data-bs-target="#detailModal" ' \
-                'onclick="' + function + '"' \
-                                        '>' + 'جزئیات' + '</button>'
+                     'type="button" ' \
+                     'class="btn modal_btn" ' \
+                     'data-bs-toggle="modal" ' \
+                     'data-bs-target="#detailModal" ' \
+                     'onclick="' + function + '"' \
+                                              '>' + 'جزئیات' + '</button>'
 
-        table_row = {"index":index,
-        "label_name":other_label,
-        "common_document_count":common_document_count,
-        "detail":detail_btn}
-        index +=1
+        table_row = {"index": index,
+                     "label_name": other_label,
+                     "common_document_count": common_document_count,
+                     "detail": detail_btn}
+        index += 1
         table_data.append(table_row)
-
 
     return JsonResponse({"table_data": table_data})
 
 
-
-
-def GetCorrelatedLabels_ByLabelName(request,label_name):
-    label_id = RahbariLabel.objects.get(name = label_name).id
+def GetCorrelatedLabels_ByLabelName(request, label_name):
+    label_id = RahbariLabel.objects.get(name=label_name).id
 
     result_labels = RahbariLabelsTimeSeriesGraph.objects.filter(
         Q(source_label__id=label_id) | Q(target_label__id=label_id)).annotate(
-            source_label_name = F('source_label__name'),target_label_name = F('target_label__name')).order_by('-correlation_score').values()
-    
-    index= 1
+        source_label_name=F('source_label__name'), target_label_name=F('target_label__name')).order_by(
+        '-correlation_score').values()
+
+    index = 1
     table_data = []
 
     for row in result_labels:
@@ -20880,50 +21151,47 @@ def GetCorrelatedLabels_ByLabelName(request,label_name):
         else:
             other_label = target_label
 
-
         function = "ComparisonFunction('" + other_label + "')"
 
         detail_btn = '<button ' \
-                'type="button" ' \
-                'class="btn modal_btn" ' \
-                'data-bs-toggle="modal" ' \
-                'data-bs-target="#Correlation_Comparison_Modal" ' \
-                'onclick="' + function + '"' \
-                                        '>' + 'جزئیات' + '</button>'
+                     'type="button" ' \
+                     'class="btn modal_btn" ' \
+                     'data-bs-toggle="modal" ' \
+                     'data-bs-target="#Correlation_Comparison_Modal" ' \
+                     'onclick="' + function + '"' \
+                                              '>' + 'جزئیات' + '</button>'
 
-        table_row = {"index":index,"label_name":other_label,
-        "correlation_score":correlation_score,
-        "detail":detail_btn}
-        index +=1
+        table_row = {"index": index, "label_name": other_label,
+                     "correlation_score": correlation_score,
+                     "detail": detail_btn}
+        index += 1
         table_data.append(table_row)
-
 
     return JsonResponse({"table_data": table_data})
 
-def GetCorrelatedLabels_TimeSeries_ChartData(request,source_label_name,dest_label_name):
-    source_label_id = RahbariLabel.objects.get(name = source_label_name).id
-    source_time_series_data = RahbariLabelsTimeSeries.objects.get(rahbari_label__id = source_label_id).time_series_data
-    
-    dest_label_id = RahbariLabel.objects.get(name = dest_label_name).id    
-    dest_time_series_data = RahbariLabelsTimeSeries.objects.get(rahbari_label__id = dest_label_id).time_series_data
-    
-    comaparison_chart_data = []
-    for year,src_count in source_time_series_data.items():
-        dest_count = dest_time_series_data[year]
-        comaparison_chart_data.append([year,src_count,dest_count])
 
+def GetCorrelatedLabels_TimeSeries_ChartData(request, source_label_name, dest_label_name):
+    source_label_id = RahbariLabel.objects.get(name=source_label_name).id
+    source_time_series_data = RahbariLabelsTimeSeries.objects.get(rahbari_label__id=source_label_id).time_series_data
+
+    dest_label_id = RahbariLabel.objects.get(name=dest_label_name).id
+    dest_time_series_data = RahbariLabelsTimeSeries.objects.get(rahbari_label__id=dest_label_id).time_series_data
+
+    comaparison_chart_data = []
+    for year, src_count in source_time_series_data.items():
+        dest_count = dest_time_series_data[year]
+        comaparison_chart_data.append([year, src_count, dest_count])
 
     year_vector_1 = pd.Series(list(source_time_series_data.values()))
     year_vector_2 = pd.Series(list(dest_time_series_data.values()))
     correlation_value = round(year_vector_1.corr(year_vector_2), 2)
 
     return JsonResponse({"comaparison_chart_data": comaparison_chart_data,
-    "correlation_value":correlation_value})
+                         "correlation_value": correlation_value})
 
 
-
-
-def SearchRahbariRule_ES(request, country_id, type_id, label_name, from_year, to_year, rahbari_type, place, text, search_type,
+def SearchRahbariRule_ES(request, country_id, type_id, label_name, from_year, to_year, rahbari_type, place, text,
+                         search_type,
                          curr_page):
     fields = [type_id, label_name, from_year, to_year]
 
@@ -21000,13 +21268,13 @@ def getRahbariCoLabelsGraphMinMaxWeight(request):
     weight_list = []
     histogram_list = []
     step = 10
-    for i in range(1,max_weight, step):
-        inc = i if i == 1 else i-1
+    for i in range(1, max_weight, step):
+        inc = i if i == 1 else i - 1
         weight_list.append(inc)
         histogram_count = list(filter(lambda x: x >= inc, weight_data_list)).__len__()
         histogram_list.append({"key": inc, "edge_count": histogram_count})
 
-    return JsonResponse({"weight_list":  weight_list, "histogram_list": histogram_list})
+    return JsonResponse({"weight_list": weight_list, "histogram_list": histogram_list})
 
 
 def getRahbariGraphType(request):
@@ -21014,10 +21282,12 @@ def getRahbariGraphType(request):
     result = []
     for row in rahbari_graph_types:
         res = {"id": row.id, "name": row.name, "en_name": row.en_name, "max_weight": row.max_weight,
-               "weight_list": row.weight_list, "histogram_data": row.histogram_data, "histogram_title": row.histogram_title,
-               "is_label":row.is_label, "is_document": row.is_document}
+               "weight_list": row.weight_list, "histogram_data": row.histogram_data,
+               "histogram_title": row.histogram_title,
+               "is_label": row.is_label, "is_document": row.is_document}
         result.append(res)
     return JsonResponse({"type_list": result})
+
 
 def graph_search(word, text):
     word = arabic_preprocessing(word)
@@ -21026,10 +21296,10 @@ def graph_search(word, text):
         return True
     return False
 
-def getNeighbourforNode(node_id, edge_data, node_parents, edge_count_limit):
 
+def getNeighbourforNode(node_id, edge_data, node_parents, edge_count_limit):
     edge_list = list(filter(lambda x: (x["source"] == node_id or x["target"] == node_id) and
-                            (x["source"] not in node_parents or x["target"] not in node_parents), edge_data))
+                                      (x["source"] not in node_parents or x["target"] not in node_parents), edge_data))
 
     if edge_list.__len__() > edge_count_limit:
         return sorted(edge_list, key=lambda k: k['weight'], reverse=True)[:edge_count_limit]
@@ -21041,7 +21311,6 @@ def getNeighbourforNode(node_id, edge_data, node_parents, edge_count_limit):
 
 def getRahbariGraphData(request, type_id, limit_neighbour_count, label_id, document_id, level):
     graph_data_object = RahbariGraph.objects.get(type_id=type_id)
-
 
     node_list = []
 
@@ -21069,7 +21338,7 @@ def getRahbariGraphData(request, type_id, limit_neighbour_count, label_id, docum
         temp_node_id_list = {}
         for node in node_id_list:
             node_id = node[0]
-            node_parent = node [1]
+            node_parent = node[1]
             edge_list = getNeighbourforNode(node_id, graph_data_object.edges_data, node_parent, limit_neighbour_count)
             for row in edge_list:
                 if row["source"] == node_id:
@@ -21099,6 +21368,7 @@ def getRahbariGraphData(request, type_id, limit_neighbour_count, label_id, docum
 
     return JsonResponse({"Nodes_data": nodes_data, "Edges_data": edges_data})
 
+
 def GetRahbariTypes(request):
     rahbari_types = RahbariType.objects.all()
     result = []
@@ -21106,6 +21376,7 @@ def GetRahbariTypes(request):
         res = {"id": type.id, "name": type.name}
         result.append(res)
     return JsonResponse({"type_list": result})
+
 
 def GetRahbariLabels(request):
     rahbari_labels = RahbariLabel.objects.all()
@@ -21117,8 +21388,7 @@ def GetRahbariLabels(request):
 
 
 def GetRahbariTypeDetail(request, document_id):
-
-    rahbari_document_keywords = RahbariDocumentKeywords.objects.filter(document_id=document_id)\
+    rahbari_document_keywords = RahbariDocumentKeywords.objects.filter(document_id=document_id) \
         .order_by("-title_count", "-text_count")
     res = {}
     for document_keyword in rahbari_document_keywords:
@@ -21135,7 +21405,6 @@ def GetRahbariTypeDetail(request, document_id):
 
         keyword_data = {"title_count": title_count, "text_count": text_count}
         res[rahbari_type_id]["keywords"][keyword] = keyword_data
-
 
     result = []
     chart_data = []
@@ -21161,8 +21430,7 @@ def GetRahbariTypeDetail(request, document_id):
             result.append(temp)
             chart_data.append({"key": rahbari_type.name, "doc_count": 0})
 
-    return JsonResponse({"rahbari_type_data": result, "rahbari_type_chart_data": chart_data })
-
+    return JsonResponse({"rahbari_type_data": result, "rahbari_type_chart_data": chart_data})
 
 
 def getRahbariLabelsList(request):

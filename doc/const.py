@@ -45,13 +45,14 @@ AllPanels = {
             'rahbari_search': 'جست‌وجوی اسناد رهبری',
             'approvals_adaptation': 'انطباق‌سنجی مصوبات',
 
-            'rahbari_paraghraph':'تحلیل احکام',
+            'rahbari_paraghraph': 'تحلیل احکام',
             'leadership_slogan': 'تحلیل شعار سال',
+            'document_profile': 'پروفایل اسناد',
             'rahbari_graph': 'تحلیل گرافی',
-            'rahbari_subject':'تحلیل موضوعی',
-            'rahbari_organization':'تحلیل سازمان',
-            'rahbari_problem_system':'نظام مسائل رهبری',
-            'rahbari_topic':'تحلیل هوشمند موضوعی',
+            'rahbari_subject': 'تحلیل موضوعی',
+            'rahbari_organization': 'تحلیل سازمان',
+            'rahbari_problem_system': 'نظام مسائل رهبری',
+            'rahbari_topic': 'تحلیل هوشمند موضوعی',
         }
     },
     'Tangih_analysis': {
