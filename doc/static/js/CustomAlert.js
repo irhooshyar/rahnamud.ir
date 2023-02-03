@@ -26,8 +26,8 @@ const html_value = `<button type="button" id="HooshyarModalBtn" class="btn d-non
                     </div>`
 
 setTimeout(() => {
-  document.getElementsByTagName('body')[0].innerHTML += html_value
-}, "2000")
+  document.getElementById("HooshyarAlert").innerHTML = html_value
+}, "1000")
 
 
 function HooshyarAlertShow(alert_header_text, alert_body_text, icon_type)
