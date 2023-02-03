@@ -531,7 +531,7 @@
         let supervisions = response['supervisions']
 
         /* Title Text */
-        const regulator_link = 'http://' + location.host + "/information/?id=" + regulator_id;
+        const regulator_link = 'http://' + location.host + "/document_profile/?id=" + regulator_id;
         let regulator_tag = "<a href='" + regulator_link + "'>" + regulator_name + "</a>";
         document.getElementById("ModalHeader").innerHTML = regulator_tag;
 
@@ -683,7 +683,7 @@
                 let filtered_result_tag = ""
                 let list_of_docId = ""
                 for (const doc of filtered_result) {
-                    const link = 'http://' + location.host + "/information/?id=" + doc["id"]
+                    const link = 'http://' + location.host + "/document_profile/?id=" + doc["id"]
                     let tag = "<li class='mt-3' id=" + doc["id"] + "><a href='" + link + "'>" + doc["name"] + "</a></li>"
                     filtered_result_tag += tag
                     list_of_docId += doc["id"] + "_"

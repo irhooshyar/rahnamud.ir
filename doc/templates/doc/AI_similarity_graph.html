@@ -746,7 +746,7 @@
                 const click_tag = event.domTarget.tag;
                 console.log(click_tag)
                 if (click_tag["type"] === "node") {
-                    window.open('http://' + location.host + "/information?id=" + click_tag["id"]);
+                    window.open('http://' + location.host + "/document_profile?id=" + click_tag["id"]);
                 } else if (click_tag["type"] === "edge") {
                     window.open('http://' + location.host + "/comparison?id=" + click_tag["id"]);
                 }
@@ -832,7 +832,7 @@
                 .attr("r", 8)
                 .style("fill", function (d) { return d.color; })
                 .on("dblclick", function (d) {
-                    window.open('http://' + location.host + "/information?id=" + d.id);
+                    window.open('http://' + location.host + "/document_profile?id=" + d.id);
                 })
                 ;
 
@@ -962,12 +962,12 @@ yAxis.title().fontWeight("bold");
             const name2 = edge["dest_name"];
             const similarity = edge["weight"];
 
-            const document_link1 = 'http://' + location.host + "/information/?id=" + id1;
+            const document_link1 = 'http://' + location.host + "/document_profile/?id=" + id1;
             const doc_name1 = '<a ' +
                 'target="to_blank" href="' + document_link1 + '">' + name1 +
                 "</a>";
 
-            const document_link2 = 'http://' + location.host + "/information/?id=" + id2;
+            const document_link2 = 'http://' + location.host + "/document_profile/?id=" + id2;
             const doc_name2 = '<a ' +
                 'target="to_blank" href="' + document_link2 + '">' + name2 +
                 "</a>";

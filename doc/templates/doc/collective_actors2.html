@@ -575,7 +575,7 @@
             let collective_counts = doc_info["collective_counts"]
             collective_counts = collective_counts.toString().replaceAll(',', '<br>');
 
-            const document_link = 'http://' + location.host + "/information/?id=" + document_id
+            const document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
             const doc_name = '<a target="blank" href="' + document_link + '">' + document_name + "</a>"
 
             const detail_function = "DetailFunction(" + document_id + ",'" + collectives_id + "'," + category_id + ",'" + actors_id + "', '" + membership_type + "', '" + preprocessed_keywords_text + "')"
@@ -669,7 +669,7 @@
 
     async function showDetailsModal(document_id, document_name, paragraphs_dict, preprocessed_keywords_text) {
         /* Title Text */
-        const link = 'http://' + location.host + "/information/?id=" + document_id;
+        const link = 'http://' + location.host + "/document_profile/?id=" + document_id;
         document.getElementById("ModalHeader").innerHTML = "<a target='to_blank' href='" + link + "'>" + document_name + "</a>";
 
         /* Body Text */

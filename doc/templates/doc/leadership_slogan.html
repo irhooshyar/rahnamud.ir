@@ -554,7 +554,7 @@
                 let filtered_result_tag = ""
                 let list_of_docId = ""
                 for (const doc of filtered_result) {
-                    const link = 'http://' + location.host + "/information/?id=" + doc["document_id"]
+                    const link = 'http://' + location.host + "/document_profile/?id=" + doc["document_id"]
                     let tag = "<li class='mt-3' id=" + doc["document_id"] + "><a target='blank' href='" + link + "'>" + doc["document_name"] + "</a></li>"
                     filtered_result_tag += tag
                     list_of_docId += doc["document_id"] + "_"
@@ -629,7 +629,7 @@
                 let filtered_result_tag = ""
                 let list_of_docId = ""
                 for (const doc of filtered_result) {
-                    const link = 'http://' + location.host + "/information/?id=" + doc["document_id"]
+                    const link = 'http://' + location.host + "/document_profile/?id=" + doc["document_id"]
                     let tag = "<li class='mt-3' id=" + doc["document_id"] + "><a target='blank' href='" + link + "'>" + doc["document_name"] + "</a></li>"
                     filtered_result_tag += tag
                     list_of_docId += doc["document_id"] + "_"

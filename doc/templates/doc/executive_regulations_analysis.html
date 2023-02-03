@@ -453,10 +453,10 @@
         last_paragraph = response["last_paragraph"];
 
         /* Title Text */
-        const regulator_link = 'http://' + location.host + "/information/?id=" + regulator_id;
+        const regulator_link = 'http://' + location.host + "/document_profile/?id=" + regulator_id;
         let regulator_tag = "<a href='" + regulator_link + "'>" + regulator_name + "</a>";
         document.getElementById("document_header").innerHTML = regulator_tag;
-        const law_link = 'http://' + location.host + "/information/?id=" + law_id;
+        const law_link = 'http://' + location.host + "/document_profile/?id=" + law_id;
         let law_tag = "<a href='" + law_link + "'>" + law_name + "</a>";
         document.getElementById("draft_header").innerHTML = law_tag;
 

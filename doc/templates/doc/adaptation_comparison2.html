@@ -490,7 +490,7 @@
 
     async function init() {
 
-        let link = 'http://' + location.host + "/information?id=" + "{{comparison_data.document_id}}"
+        let link = 'http://' + location.host + "/document_profile?id=" + "{{comparison_data.document_id}}"
         $('#document_name a').attr('href', link);
         $('#document_motevalian_header label a').attr('href', link);
         $('#document_hamkaran_header label a').attr('href', link);

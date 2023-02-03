@@ -893,7 +893,7 @@
             const approval_date = document_info['approval_date']
             const document_actors = document_info['actors']
 
-            const document_link = 'http://' + location.host + "/information/?id=" + id
+            const document_link = 'http://' + location.host + "/document_profile/?id=" + id
             const doc_name = '<a target="to_blank" href="' + document_link + '">' + name + "</a>"
 
             const detail_function = "DetailFunction(" + id + ",'" + keywords + "')";
@@ -1130,7 +1130,7 @@
     async function showDetailsDataExact(document_id, document_name, paragraphs_list, text) {
 
         /* Title Text */
-        const link = 'http://' + location.host + "/information/?id=" + document_id
+        const link = 'http://' + location.host + "/document_profile/?id=" + document_id
         let title_tag = "<a href='" + link + "'>" + document_name + "</a>"
         document.getElementById("document_header").innerHTML = title_tag
 
@@ -1571,7 +1571,7 @@
             paragraph = info['paragraph'];
             document_name = info['document_name'];
             document_id = info['document_id'];
-            document_address = 'http://' + location.host + "/information/?id=" + document_id
+            document_address = 'http://' + location.host + "/document_profile/?id=" + document_id
             document_link = '<a target = "to_blank" href = "' + document_address + '">' + document_name + ':</a>'
 
             actor_name = info['actor_name'];
