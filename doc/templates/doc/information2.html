@@ -2013,7 +2013,7 @@
                     let tag = "<p onclick='References_Show_Paragraphs(this)' id=" + doc_id + "><a href='#'>" + doc_name + "</a></p>"
                     // document.getElementById("references_list").innerHTML += tag;
 
-                    const doc_link = 'http://' + location.host + "/information/?id=" + doc_id
+                    const doc_link = 'http://' + location.host + "/document_profile/?id=" + doc_id
                     let doc_tag = "<a title = 'پروفایل سند'  target='blank' href='" + doc_link + "'>" + doc_name + "</a>"
 
 
@@ -2128,7 +2128,7 @@
                     let tag = "<p onclick='Citation_Show_Paragraphs(this)' id=" + doc_id + "><a href='#'>" + doc_name + "</a></p>"
                     // document.getElementById("citation_list").innerHTML += tag;
 
-                    const doc_link = 'http://' + location.host + "/information/?id=" + doc_id
+                    const doc_link = 'http://' + location.host + "/document_profile/?id=" + doc_id
                     let doc_tag = "<a title = 'پروفایل سند'  target='blank' href='" + doc_link + "'>" + doc_name + "</a>"
 
 
@@ -2260,7 +2260,7 @@
                         doc_level = "نا‌مشخص"
                     }
 
-                    const doc_link = 'http://' + location.host + "/information/?id=" + doc_id
+                    const doc_link = 'http://' + location.host + "/document_profile/?id=" + doc_id
                     let doc_tag = "<a title = 'پروفایل سند'  target='blank' href='" + doc_link + "'>" + doc_name + "</a>"
 
 
@@ -2450,7 +2450,7 @@
                     const approval_reference_name = response[i]['_source']["approval_reference_name"]
                     const BM25_similarity = Math.round(response[i]["_score"] * 100) / 100
 
-                    const book_link = 'http://' + location.host + "/information?id=" + curr_document_id
+                    const book_link = 'http://' + location.host + "/document_profile?id=" + curr_document_id
                     name = "<a href=" + book_link + ">" + document_name + "</a>"
 
                     const row = {
@@ -2746,7 +2746,7 @@
             response = await fetch(request_link).then(response => response.json());
             const document_name = response["document_information"][0]["name"]
 
-            const link = 'http://' + location.host + "/information?id=" + document_id
+            const link = 'http://' + location.host + "/document_profile?id=" + document_id
             document.getElementById("references_modal_header").innerHTML = "ارجاع داده شده به:" + "<a href=" + link + ">" + document_name + "</a>"
 
             /* References Between 2 Doc */
@@ -2784,7 +2784,7 @@
             response = await fetch(request_link).then(response => response.json());
             const document_name = response["document_information"][0]["name"]
 
-            const link = 'http://' + location.host + "/information?id=" + document_id
+            const link = 'http://' + location.host + "/document_profile?id=" + document_id
             document.getElementById("references_modal_header").innerHTML = "ارجاع شده توسط:" + "<a href=" + link + ">" + document_name + "</a>"
 
             request_link = 'http://' + location.host + "/GetReferences2Doc/" + main_doc_id + "/" + document_id + "/";
@@ -4119,7 +4119,7 @@
     }
 
     function references_node_dbl_click(node_data) {
-        window.open('http://' + location.host + "/information?id=" + node_data["id"]);
+        window.open('http://' + location.host + "/document_profile?id=" + node_data["id"]);
 
     }
     function references_edge_dbl_click(edge_data) {
@@ -4129,8 +4129,8 @@
 
 
     async function References_Graph_Show_Paragraphs(src_id, des_id, src_name, des_name) {
-        const src_link = 'http://' + location.host + "/information?id=" + src_id
-        const des_link = 'http://' + location.host + "/information?id=" + des_id
+        const src_link = 'http://' + location.host + "/document_profile?id=" + src_id
+        const des_link = 'http://' + location.host + "/document_profile?id=" + des_id
         document.getElementById("references_graph_modal_header").innerHTML = "<a href=" + src_link + ">" + src_name + "</a>" +
             "ارجاع داده است به:" +
             "<a href=" + des_link + ">" + des_name + "</a>";

@@ -139,6 +139,15 @@ async function ShowResult() {
     document.getElementById("document_subject_btn").disabled = false;
 
     getDocumentFullProfileInfo(country_id, document_id)
+
+    let form_data = new FormData()
+    let detail_type = "نتایج جست و جو"
+    let country_name = $("#country option:selected").text();
+    let document_select_name = document.getElementById("document_select").title
+    form_data.append('detail_type', detail_type);
+    form_data.append('country_name', country_name);
+    form_data.append('document_select_name', document_select_name);
+    UserLog(form_data)
 }
 
 function copyDocumentName() {
@@ -464,7 +473,7 @@ async function SelectDocumentFunction(document_id) {
     document.getElementById('document_type').innerHTML = result['type']
     document.getElementById('document_labels').innerHTML = result['labels']
     document.getElementById("document_subject").innerHTML = response['subject']
-    GetTextSummary()
+    // GetTextSummary()
     ShowResult();
     find_rahbari_document_actors(document_id)
 }
@@ -549,7 +558,7 @@ async function Search_Document_ByName() {
 
 }
 
-async function show_detail_modal(Key , chart_name) {
+async function show_detail_modal(Key, chart_name) {
     const document_id = document.getElementById("document").value
 
     click_name_chart(document_id, Key, chart_name)
@@ -574,7 +583,7 @@ async function click_name_chart(document_id, text, chart_name) {
         "form_data": null
     }
 
-     export_link = 'http://' + location.host + "/export_rahbari_document_chart_column/"
+    export_link = 'http://' + location.host + "/export_rahbari_document_chart_column/"
         + document_id + "/"
         + text + "/"
         + "attachment.content" + "/"

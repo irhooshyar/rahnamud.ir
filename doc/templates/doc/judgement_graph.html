@@ -536,12 +536,12 @@
 
                     const src_node_id = edge_object.source
                     const src_node_name = edge_object.source_name
-                    const source_doc_link = 'http://' + location.host +'/information/?id=' + src_node_id.toString()
+                    const source_doc_link = 'http://' + location.host +'/document_profile/?id=' + src_node_id.toString()
                     const source_doc_tag = '<a class="document_link" target="blank" href="' + source_doc_link + '">' + src_node_name +"</a>"
 
                     const target_node_id = edge_object.target
                     const target_node_name = edge_object.target_name
-                    const target_doc_link = 'http://' + location.host +'/information/?id=' + target_node_id.toString()
+                    const target_doc_link = 'http://' + location.host +'/document_profile/?id=' + target_node_id.toString()
                     const target_doc_tag = '<a class="document_link" target="blank" href="' + target_doc_link + '">' + target_node_name +"</a>"
 
                     const weight = edge_object.weight
@@ -602,7 +602,7 @@
 
             function handleNodeClick(event) {
               const item = event.item._cfg.model;
-              window.open('http://' + location.host + "/information?id=" + item["id"]);
+              window.open('http://' + location.host + "/document_profile?id=" + item["id"]);
             }
             graph_object.on('node:dblclick', handleNodeClick);
 
@@ -1102,7 +1102,7 @@
 
                 const degree = graph_object.getNodeDegree(node_object.id, 'total');
 
-                const doc_link = 'http://' + location.host +'/information/?id=' + node_id.toString()
+                const doc_link = 'http://' + location.host +'/document_profile/?id=' + node_id.toString()
                 const doc_tag = '<a class="document_link" target="blank" href="' + doc_link + '">' + node_name +"</a>"
 
                 const nodeSelection = "NodeSelection('" + node_id + "')"
@@ -1176,12 +1176,12 @@
 
                 const src_node_id = edge_object.source
                 const src_node_name = edge_object.source_name
-                const source_doc_link = 'http://' + location.host +'/information/?id=' + src_node_id.toString()
+                const source_doc_link = 'http://' + location.host +'/document_profile/?id=' + src_node_id.toString()
                 const source_doc_tag = '<a class="document_link" target="blank" href="' + source_doc_link + '">' + src_node_name +"</a>"
 
                 const target_node_id = edge_object.target
                 const target_node_name = edge_object.target_name
-                const target_doc_link = 'http://' + location.host +'/information/?id=' + target_node_id.toString()
+                const target_doc_link = 'http://' + location.host +'/document_profile/?id=' + target_node_id.toString()
                 const target_doc_tag = '<a class="document_link" target="blank" href="' + target_doc_link + '">' + target_node_name +"</a>"
 
                 const weight = edge_object.weight

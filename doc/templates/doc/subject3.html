@@ -514,7 +514,7 @@
                 const approval_reference = documents_without_subject[i]["_source"]["approval_reference_name"]
                 const approval_date = documents_without_subject[i]["_source"]["approval_date"]
 
-                const document_link = 'http://' + location.host + "/information/?id=" + document_id
+                const document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
                 const doc_name = '<a href="' + document_link + '">' + document_name + "</a>"
 
                 const detail_function = "DetailFunction(" + document_id + ")"
@@ -638,7 +638,7 @@
             response = await fetch(request_link).then(response => response.json());
 
             document_name = response['document_name']
-            document_link = 'http://' + location.host + "/information/?id=" + document_id
+            document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
             document_tag = '<a target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
             response = response["document_subject_list"]
@@ -750,7 +750,7 @@
                     const approval_reference = SearchResultValue[i]["_source"]["approval_reference_name"]
                     const approval_date = SearchResultValue[i]["_source"]["approval_date"]
 
-                    const document_link = 'http://' + location.host + "/information/?id=" + document_id
+                    const document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
                     const doc_name = '<a class="document_link" target="blank" href="' + document_link + '">' + document_name + "</a>"
 
                     const detail_function = "DetailFunction(" + document_id + ")"

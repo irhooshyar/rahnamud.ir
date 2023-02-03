@@ -93,7 +93,14 @@
     {% include "doc/header2.html" %}
 </nav>
 <div class="row flex-row-reverse px-0 py-5 px-md-5 py-md-5 m-0 mt-4">
-
+    <div class="d-flex align-items-center rtl flex-row-reverse mx-auto p-1"
+         style="background: linear-gradient(#8693AB, #cbd3da, #e9ecef); box-shadow: 0 0 2px 2px #f8f9fa inset; border: 4px solid #f8f9fa; border-radius: 24px">
+        <img style="width: 120px;" id="prefix_ShowHideImg" src="../../static/image/rahbar_profile.png">
+        <div class="d-flex flex-column gap-2 rtl mr-2" dir="rtl">
+            <span class="font-weight-bolder">تحلیل اسناد رهبری</span>
+            <span>صفحه پروفایل اسناد</span>
+        </div>
+    </div>
     <!-- Form Inputs -->
     <form autocomplete="on" action="" id="information_form" class="custom-control mx-auto needs-validation"
           enctype="multipart/form-data" method="post" novalidate>
@@ -219,12 +226,12 @@
                     aria-controls="subject_analysis_pane" aria-selected="false">اماکن
             </button>
         </li>
-        <li class="nav-item float-right" role="presentation">
-            <button id="actor_analysis_tab" class="nav-link" data-bs-toggle="pill"
-                    data-bs-target="#actor_analysis_pane" type="button" role="tab" aria-controls="actor_analysis_pane"
-                    aria-selected="false">پیام سند
-            </button>
-        </li>
+        {#        <li class="nav-item float-right" role="presentation">#}
+        {#            <button id="actor_analysis_tab" class="nav-link" data-bs-toggle="pill"#}
+        {#                    data-bs-target="#actor_analysis_pane" type="button" role="tab" aria-controls="actor_analysis_pane"#}
+        {#                    aria-selected="false">پیام سند#}
+        {#            </button>#}
+        {#        </li>#}
     </ul>
 
     <div id="original_pane" class="tab-content float-right bg-white px-1" style="position: relative;"
@@ -327,10 +334,10 @@
 
 
         <!-- Actors Pane -->
-        <div class="tab-pane fade float-right w-100" id="actor_analysis_pane" role="tabpanel"
-             aria-labelledby="actor_analysis_tab" dir="rtl">
-            <p id="summary_text" style="padding-block: 3rem; padding-inline: 1rem; white-space: pre-line;"></p>
-        </div>
+        {#        <div class="tab-pane fade float-right w-100" id="actor_analysis_pane" role="tabpanel"#}
+        {#             aria-labelledby="actor_analysis_tab" dir="rtl">#}
+        {#            <p id="summary_text" style="padding-block: 3rem; padding-inline: 1rem; white-space: pre-line;"></p>#}
+        {#        </div>#}
 
     </div>
     <!-- show document content modal -->

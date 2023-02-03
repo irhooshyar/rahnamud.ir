@@ -215,8 +215,8 @@
             const document2 = await fetch(request_link).then(response => response.json());
             const document2_name = document2["document_information"][0]["name"]
 
-            var link1 = 'http://' + location.host + "/information?id=" + document1_id
-            var link2 = 'http://' + location.host + "/information?id=" + document2_id
+            var link1 = 'http://' + location.host + "/document_profile?id=" + document1_id
+            var link2 = 'http://' + location.host + "/document_profile?id=" + document2_id
 
             document.getElementById("doc1Name").innerHTML = "<a href='" + link1 + "' >" + document1_name + "</a>";
             document.getElementById("doc2Name").innerHTML = "<a href='" + link2 + "'>" + document2_name + "</a>";

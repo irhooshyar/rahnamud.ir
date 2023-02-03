@@ -726,7 +726,7 @@
                 const click_tag = event.domTarget.tag;
                 console.log(click_tag)
                 if (click_tag["type"] === "node") {
-                    window.open('http://' + location.host + "/information?id=" + click_tag["id"]);
+                    window.open('http://' + location.host + "/document_profile?id=" + click_tag["id"]);
                 } else if (click_tag["type"] === "edge") {
                     window.open('http://' + location.host + "/comparison?id=" + click_tag["id"]);
                 }

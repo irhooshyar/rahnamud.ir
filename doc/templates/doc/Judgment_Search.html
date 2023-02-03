@@ -780,7 +780,7 @@
                     const detail_function = `DetailFunction('${doc_id}','${doc_name}','${mode}', '${where}','${text}')`;
                     const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" ' + button_disable + ' onclick="' + detail_function + '" data-bs-target="#myModal">جزئیات</button>'
 
-                    const document_link = 'http://' + location.host + "/information/?id=" + doc_id
+                    const document_link = 'http://' + location.host + "/document_profile/?id=" + doc_id
                     doc_name = '<a href="' + document_link + '">' + doc_name + "</a>"
 
                     const row = {
@@ -1234,7 +1234,7 @@
                         const click_tag = event.domTarget.tag;
                         console.log(click_tag)
                         if (click_tag["type"] === "node") {
-                            window.open('http://' + location.host + "/information?id=" + click_tag["id"]);
+                            window.open('http://' + location.host + "/document_profile?id=" + click_tag["id"]);
                         } else if (click_tag["type"] === "edge") {
                             window.open('http://' + location.host + "/comparison?id=" + click_tag["id"]);
                         }
@@ -1321,7 +1321,7 @@
                     let filtered_result_tag = ""
                     let list_of_docId = ""
                     for (const doc of filtered_result) {
-                        const link = 'http://' + location.host + "/information/?id=" + doc["_source"]["document_id"]
+                        const link = 'http://' + location.host + "/document_profile/?id=" + doc["_source"]["document_id"]
                         let tag = "<li class='mt-3' id=" + doc["_source"]["document_id"] + "><a href='" + link + "'>" + doc["_source"]["name"] + "</a></li>"
                         filtered_result_tag += tag
                         list_of_docId += doc["document_id"] + "_"
@@ -1607,7 +1607,7 @@ yAxis.title().fontWeight("bold");
                     document_id = paragraph_info['document_id']
                     document_name = paragraph_info['name']
 
-                    document_link = 'http://' + location.host + "/information/?id=" + document_id
+                    document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
                     doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
                     paragraph_text = paragraph_info['text']
@@ -2109,7 +2109,7 @@ yAxis.title().fontWeight("bold");
 
             async function showHighlightedParagraphs_Details(document_id, document_name, affected_document_name, paragraphs_list, document_references_list) {
                 /* Title Text */
-                const link = 'http://' + location.host + "/information/?id=" + document_id
+                const link = 'http://' + location.host + "/document_profile/?id=" + document_id
                 let title_tag = "<a class='text-primary my-2' target='blank' href='" + link + "'>" + document_name + "</a>"
                 document.getElementById("DetailText").innerHTML = '<li class="mb-3 lh-lg"> <strong> پیام رأی:</strong>' + title_tag + '</li>'
                 document.getElementById("DetailText").innerHTML += '<li class="mb-3 lh-lg" > <strong>مصوبه ها: </strong>' + affected_document_name + '</li>'
@@ -2120,7 +2120,7 @@ yAxis.title().fontWeight("bold");
                         ref_doc_id = ref_doc['doc_id']
                         ref_doc_name = ref_doc['doc_name']
 
-                        doc_link = 'http://' + location.host + "/information/?id=" + ref_doc_id
+                        doc_link = 'http://' + location.host + "/document_profile/?id=" + ref_doc_id
                         doc_tag = '<a class="d-inline-block text-primary bold" target="to_blank" href="' + doc_link + '">' + ref_doc_name + "</a>"
                         result_doc_tag = "<span class='text-primary bold'>" + doc_tag + "</span>"
 
@@ -2355,7 +2355,7 @@ yAxis.title().fontWeight("bold");
                     for (doc_info of documents_list) {
                         const document_id = doc_info["id"]
                         const document_name = doc_info["name"]
-                        const document_link = 'http://' + location.host + "/information/?id=" + document_id
+                        const document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
                         const doc_name = '<a target="to_blank" href="' + document_link + '">' + document_name + "</a>"
 
                         document_node = {
@@ -2448,7 +2448,7 @@ yAxis.title().fontWeight("bold");
                     console.log(click_tag)
                     if (click_tag["type"] === "node") {
 
-                        // window.open('http://' + location.host + "/information?id=" + click_tag["id"]);
+                        // window.open('http://' + location.host + "/document_profile?id=" + click_tag["id"]);
                     } else if (click_tag["type"] === "edge") {
 
                         edge_data = click_tag["id"].split('__');
@@ -2469,7 +2469,7 @@ yAxis.title().fontWeight("bold");
                         paragraph_text = paragraph_text.replaceAll(keyword + ' :', keyword_tag)
 
 
-                        const document_address = 'http://' + location.host + "/information/?id=" + response["doc_id"]
+                        const document_address = 'http://' + location.host + "/document_profile/?id=" + response["doc_id"]
                         const document_link = '<a target = "to_blank" href = "' + document_address + '">' + response["doc_name"] + ':</a>'
 
                         doc_tag = '<h6 class="bold">' + document_link + '</h6>'
