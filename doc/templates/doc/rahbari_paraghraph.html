@@ -67,8 +67,11 @@
     <!--<script type="text/javascript" src="http://l2.io/ip.js?var=myip">
     </script>-->
 
+
     <title>تحلیل فرامین رهبری</title>
     {% include "doc/title_icon.html" %}
+
+
 
 </head>
 
@@ -80,13 +83,10 @@
 
 <script>
     $(document).ready(function () {
-
         // Active panel
         $('#RahbariDropdown').addClass('active');
         $('#rahbari_paraghraph').addClass('active');
-
         $('select#language').on('change', function (e) {
-
             let selected_language = this.value;
             let current_url = window.location.href;
             if (selected_language === 'England') {
@@ -98,7 +98,6 @@
                 let requested_url = current_url.replace(page_name, 'ru')
                 window.location = requested_url;
             }
-
         });
     });
 </script>
@@ -585,6 +584,18 @@
 
         </div>
     </div>
+
+
+
+    <button type="button" id="alert_modal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
+            data-bs-target="#exampleModal"></button>
+
+
+
+    <div id="limit_edge_node_alert"></div>
+
+
+
 
     <script src="../../static/js/logincheck.js"></script>
 
@@ -1525,3 +1536,4 @@
         }
     }
 </script>
+
