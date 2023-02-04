@@ -103,7 +103,7 @@
                     <li><a id="rahbari_subject" class="dropdown-item text-right" href="{% url 'rahbari_subject' %}"
                            style="display: block;">تحلیل موضوعی</a>
                     </li>
-                    <li><a id="rahbari_graph" class="dropdown-item text-right" href="{% url 'rahbari_graph' %}"
+                    <li class="divider"><a id="rahbari_graph" class="dropdown-item text-right" href="{% url 'rahbari_graph' %}"
                            style="display: block;">تحلیل
                         گرافی</a>
                     </li>
@@ -116,11 +116,11 @@
                     </li>
                     <li><a id="rahbari_organization" class="dropdown-item text-right"
                            href="{% url 'rahbari_organization' %}"
-                           style="display: block; pointer-events: none;">تحلیل سازمان</a>
+                           style="display: block; pointer-events: none;"> تحلیل سازمان <span class="coming-soon">(به زودی)</span></a>
                     </li>
                     <li><a id="rahbari_problem_system" class="dropdown-item text-right"
                            href="{% url 'rahbari_problem_system' %}"
-                           style="display: block; pointer-events: none;">نظام مسائل رهبری</a>
+                           style="display: block; pointer-events: none;">نظام مسائل رهبری <span class="coming-soon">(به زودی)</span></a>
                     </li>
 
                 </ul>
@@ -194,29 +194,29 @@
                     style="min-width: 210px;">
                     <li>
                         <a class="dropdown-item text-right" id="user_profile" href="{% url 'ShowMyUserProfile' %}">
-                            <span>پروفایل</span>
                             <i class="bi bi-person-lines-fill"
-                               style="font-size: 15px;position: relative; top: -5px;font-weight: bold; margin-right: 129px;"></i>
+                            style="font-size: 15px;position: relative; top: -5px;font-weight: bold;"></i>
+                            <span class="mr-1">پروفایل</span>
                         </a>
                     </li>
                     <li>
                         <a onclick="sign_out_function()" class="dropdown-item text-right" id="logout_link" href="#">
-                            <span>خروج</span>
-                            <i class="fa fa-sign-out float-left"></i>
+                            <i class="fa fa-sign-out"></i>
+                            <span class="mr-1">خروج</span>
 
                         </a>
                     </li>
                     <li>
                         <a id="recommendation" class="dropdown-item text-right" href="{% url 'recommendation' %}">
-                            <span>انتقادات و پیشنهادات</span>
-                            <i class="fa fa-lightbulb float-left"></i>
+                            <i class="fa fa-lightbulb"></i>
+                            <span class="mr-1">انتقادات و پیشنهادات</span>
                         </a>
                     </li>
 
                     <li>
                         <a id="report_bug" class="dropdown-item text-right" href="{% url 'report_bug' %}">
-                            <span>گزارش خطا</span>
-                            <i class="fa fa-bug float-left" style="margin-left: -3px"></i>
+                            <i class="fa fa-bug"></i>
+                            <span class="mr-1">گزارش خطا</span>
                         </a>
                     </li>
                 </ul>
