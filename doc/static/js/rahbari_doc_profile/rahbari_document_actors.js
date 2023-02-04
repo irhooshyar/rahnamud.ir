@@ -39,7 +39,7 @@ function actor_generateRows(actors) {
 
     let counter = 1
     for (const actor of actors) {
-        const modal_function = `show_detail_modal('${actor[0]}', 'احکام دارای کنشگر')`
+        const modal_function = `show_detail_modal('${actor[0]}','احکام دارای کنشگر','attachment.content')`
         const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" onclick="' + modal_function + '" data-bs-target="#ChartModal_2">جزئیات</button>'
 
 

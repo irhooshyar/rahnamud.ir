@@ -102,20 +102,26 @@ def apply(folder, Country):
 
     print(len(records))
     counter = 0
+    all_objects = Rahbari.objects.all()
+    print("objects fetched successfully")
+    objects_array = list(all_objects)
+    rahbari_objects_dictionary = {item.document_id.id: item for item in objects_array}
+    print("dictionary is ok")
     for record in records:
         counter += 1
         document_id = record['document_id']
         paragraph_id = record['paragraph_id']
-        print(counter, document_id, paragraph_id)
 
         try:
-            rahbari_record = Rahbari.objects.get(document_id__id=document_id)
+            rahbari_record = rahbari_objects_dictionary[document_id]
             paragraph_document_fields[paragraph_id] = {'date': rahbari_record.rahbari_date,
                                                        'year': rahbari_record.rahbari_year,
                                                        'labels': rahbari_record.labels, 'type': rahbari_record.type}
+            print(counter, document_id, paragraph_id)
         except:
             paragraph_document_fields[paragraph_id] = {'date': 'نامشخص', 'year': 0,
                                                        'labels': 'نامشخس', 'type': 'نامشخص'}
+            print(counter, "------error-------", document_id, paragraph_id)
 
     print("=========== Ingest topics paragraphs ================")
 

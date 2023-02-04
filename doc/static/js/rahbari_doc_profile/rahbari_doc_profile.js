@@ -264,7 +264,7 @@ async function generatePDF() {
         "<div9 class='d-flex'>  <span>&nbsp;</span>  </div9> </div7> " +
 
         "<div3 class='d-flex' style='justify-content: space-between;width: 100%'>" + "<div4 > <p>سامانه رهنمود</p> </div4> " +
-        "<div5> <span>www.virtualjuristic.datakaveh.com</span> </div5> </div3> </div2> </div1>"
+        "<div5> <span>rahnamud.ir:7074</span> </div5> </div3> </div2> </div1>"
 
     for (let i = 0; i < response.length; i++) {
         const paragraph_text = response[i]["paragraph_text"]
@@ -590,10 +590,10 @@ async function Search_Document_ByName() {
 
 }
 
-async function show_detail_modal(Key, chart_name) {
+async function show_detail_modal(Key, chart_name, field_value) {
     const document_id = document.getElementById("document").value
-
-    click_name_chart(document_id, Key, chart_name)
+    const text = " " + Key + " "
+    click_name_chart(document_id, text, chart_name, field_value)
 }
 
 async function click_name_chart(document_id, text, chart_name, field_value) {
@@ -619,7 +619,7 @@ async function click_name_chart(document_id, text, chart_name, field_value) {
     export_link = 'http://' + location.host + "/export_rahbari_document_chart_column/"
         + document_id + "/"
         + text + "/"
-        + "attachment.content" + "/"
+        + field_value + "/"
 
     export_configs = {
         "link": export_link,

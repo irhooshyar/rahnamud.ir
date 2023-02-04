@@ -23,24 +23,27 @@ classificationSentencePipeline = pipeline('text-classification', model=classific
 
 @after_response.enable
 def apply(folder_name, Country):
+    # reading result
     # file = open("result.txt", "r", encoding="utf-8")
     # delimiter = "&!&"
     # text = file.read()
     # items = text.split("\n")
     # counter = 1
-    # country_id = 1
+    # FullProfileAnalysis.objects.filter(country_id=Country.id).delete()
     # for item in items:
     #     itemArray = item.split(delimiter)
     #     pId = itemArray[0]
     #     if pId:
     #         pTagRes = itemArray[3].replace("'", "\"")
+    #         pClassification = itemArray[1]
+    #         pSentiment = itemArray[2]
     #         try:
     #             taggingResult = json.loads(pTagRes)
     #             organizations = taggingResult['organizations']
     #             locations = taggingResult['locations']
     #             persons = taggingResult['persons']
-    #             FullProfileAnalysis.objects.create(country_id=country_id, document_paragraph_id=int(pId),
-    #                                                sentiment="", classification_subject="",
+    #             FullProfileAnalysis.objects.create(country_id=Country.id, document_paragraph_id=int(pId),
+    #                                                sentiment=pSentiment, classification_subject=pClassification,
     #                                                persons=persons, locations=locations, organizations=organizations)
     #             if counter % 500 == 0:
     #                 print(counter, pId)
@@ -49,6 +52,58 @@ def apply(folder_name, Country):
     #
     #         counter += 1
     # file.close()
+
+
+    # update records
+    # analysis = []
+    # print('paragraphs is going to select')
+    # selected_paragraphs = DocumentParagraphs.objects.filter(
+    #     document_id__country_id__id=Country.id).values()
+    # print('paragraphs selected', len(selected_paragraphs))
+    #
+    # print("full profile analysis is going to select")
+    # selected_items = FullProfileAnalysis.objects.all()
+    # objects_array = list(selected_paragraphs)
+    #
+    # print("objects is going to dict")
+    # objects_dictionary = {str(item['id']): item for item in objects_array}
+    #
+    # print("objects is ready:", len(objects_dictionary))
+    #
+    # print('start processing......................................')
+    #
+    # error_count = 0
+    # counter = 0
+    # for item in selected_items:
+    #     counter += 1
+    #
+    #     try:
+    #         record_id = item.document_paragraph_id
+    #         record = objects_dictionary[str(record_id)]
+    #         # classification_model_result = text_classifications_analysis(paragraph['text'])
+    #         tagging_model_result = text_tagging_analysis(record['text'])
+    #         # sentiment_model_result = text_sentiment_analysis(paragraph['text'])
+    #         # classification_result = process_text_classification_model(classification_model_result['result'])
+    #         tagging_result = process_text_tagging_model(tagging_model_result['result'], record['text'])
+    #
+    #         item.moneys = tagging_result['moneys']
+    #         item.dates = tagging_result['dates']
+    #         item.persons = tagging_result['persons']
+    #         item.locations = tagging_result['locations']
+    #         item.organizations = tagging_result['organizations']
+    #
+    #         item.save()
+    #
+    #         # sentiment_result = process_text_sentiment_model(sentiment_model_result['result'][0])
+    #
+    #         # analysis.append((paragraph['id'], sentiment_result, classification_result, tagging_result))
+    #         print(counter)
+    #     except Exception as e:
+    #         print("....................................................")
+    #         print(counter)
+    #         print(".......ERROR: ", "paragraphID: ", item.document_paragraph__id, "id:", item.id)
+    #         print(e)
+    #         print("....................................................")
 
     analysis = []
     print('paragraphs is going to select')
@@ -84,7 +139,7 @@ def apply(folder_name, Country):
             print(e)
             print("....................................................")
 
-        print(counter / selected_paragraphs.__len__())
+        print(counter)
 
     print('processing completed --- ', 'less than 80 characters:', error_count)
 
@@ -249,9 +304,17 @@ def process_text_classification_model(classification_model_result):
 def process_text_tagging_model(tagging_model_result, paragraph_text):
     taggingJson = tagging_model_result
     taggingJson.sort(key=sort_json)
+
     taggingPersonArray = []
     taggingLocationArray = []
     taggingOrganizationArray = []
+    taggingDateArray = []
+    taggingMoneyArray = []
+    taggingTimeArray = []
+    taggingPercentArray = []
+    taggingFacilityArray = []
+    taggingProductArray = []
+    taggingEventArray = []
 
     for i in range(len(taggingJson)):
         item_object = taggingJson[i]
@@ -261,7 +324,8 @@ def process_text_tagging_model(tagging_model_result, paragraph_text):
         if item_object_start == "I":
             continue
 
-        if item_object_end != "person" and item_object_end != "location" and item_object_end != "organization":
+        if item_object_end not in ["person", "location", "organization", "date", "time", "money", "percent", "facility",
+                                   "product", "event"]:
             continue
 
         end_word_index = item_object['end']
@@ -272,8 +336,7 @@ def process_text_tagging_model(tagging_model_result, paragraph_text):
 
             if iObject['entity'][0] == "B":
                 break
-            # if iObject_entity != "person" and iObject_entity != "location" and iObject_entity != "organization":
-            #     break
+
             iObject_entity = iObject['entity'].split("-")[1]
             if iObject_entity != item_object_end:
                 taggingJson[j]['entity'] = taggingJson[j]['entity'].replace("I", "B")
@@ -286,16 +349,35 @@ def process_text_tagging_model(tagging_model_result, paragraph_text):
             end_word_index = iObject['end']
 
         word = paragraph_text[start_word_index:end_word_index]
+        result_item = {'word': word, 'start': start_word_index, 'end': end_word_index}
+
         item_object_entity = item_object['entity'].split("-")[1]
         if item_object_entity == "person":
-            taggingPersonArray.append(word)
+            taggingPersonArray.append(result_item)
         elif item_object_entity == "location":
-            taggingLocationArray.append(word)
+            taggingLocationArray.append(result_item)
         elif item_object_entity == "organization":
-            taggingOrganizationArray.append(word)
+            taggingOrganizationArray.append(result_item)
+        elif item_object_entity == "date":
+            taggingDateArray.append(result_item)
+        elif item_object_entity == "time":
+            taggingTimeArray.append(result_item)
+        elif item_object_entity == "money":
+            taggingMoneyArray.append(result_item)
+        elif item_object_entity == "percent":
+            taggingPercentArray.append(result_item)
+        elif item_object_entity == "facility":
+            taggingFacilityArray.append(result_item)
+        elif item_object_entity == "product":
+            taggingProductArray.append(result_item)
+        elif item_object_entity == "event":
+            taggingEventArray.append(result_item)
 
-    return {'persons': ';'.join(taggingPersonArray), 'locations': ';'.join(taggingLocationArray),
-            'organizations': ';'.join(taggingOrganizationArray)}
+    return {'persons': str(taggingPersonArray), 'locations': str(taggingLocationArray),
+            'organizations': str(taggingOrganizationArray), 'dates': str(taggingDateArray),
+            'times': str(taggingTimeArray), 'moneys': str(taggingMoneyArray),
+            'percents': str(taggingPercentArray), 'facilities': str(taggingFacilityArray),
+            'product': str(taggingProductArray), 'events': str(taggingEventArray)}
 
 
 def sort_json(item):
