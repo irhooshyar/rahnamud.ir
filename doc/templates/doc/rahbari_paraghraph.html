@@ -1036,30 +1036,24 @@
                 xAxisTitle,
                 title,
                 yAxisTitle: yAxisTitle,
-                onClick: async function (event, data) {
+            }
 
+            if (tab_name !== "rahbari_type_detail_chart")
+            {
+                options.onClick = async function (event, data) {
                     const click_tag = event.domTarget.tag;
                     const index = click_tag["index"]
                     const text = data.row(index)[0];
                     const best_result_count = documents_information_result.length
-
                     let filtered_result = []
                     let header = ""
                     let save_file_name = document.getElementById("SearchBox").value;
-
-                    if (tab_name !== "rahbari_type_detail_chart")
-                    {
-                        await GetClickedColumnDocuments(container, text)
-                        $("#ChartModalBtn").click();
-                    }
-
-                
+                    await GetClickedColumnDocuments(container, text)
+                    $("#ChartModalBtn").click();
                 }
-            };
+            }
 
             newBarChart(container, options)
-
-
         }
 
         async function GetClickedColumnDocuments(position, column_value) {
