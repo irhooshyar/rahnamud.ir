@@ -128,8 +128,8 @@ async function init() {
 }
 
 async function ShowResult() {
-    // await DownloadLinkSet();
-    //
+    await DownloadLinkSet();
+
     const document_id = document.getElementById("document").value
     const country_id = document.getElementById('country').value
 
@@ -295,6 +295,38 @@ async function generatePDF() {
     form_data.append('country_name', country_name);
     form_data.append('document_select_name', document_select_name);
     UserLog(form_data)
+}
+
+async function DownloadLinkSet() {
+    const country_id = document.getElementById("country").value;
+    let request_link = 'http://' + location.host + "/GetCountryById/" + country_id + "/";
+    let response = await fetch(request_link).then(response => response.json());
+    response = response["country_information"][0]
+
+    const country_folder = response["folder"];
+    const country_name = response["name"];
+    const document_id = document.getElementById("document").value;
+
+    request_link = 'http://' + location.host + "/GetDocumentById/" + document_id + "/";
+    response = await fetch(request_link).then(response => response.json());
+    const document_file_name = response["document_information"][0]["file_name"]
+
+    if (document_file_name !== "انتخاب نمایید ...") {
+        let file_path = "";
+
+        if (country_name.includes("فاوا")) {
+            file_path = 'http://' + location.host + '/media/data/' + country_folder + '\\' + document_file_name + '.docx';
+        } else {
+            file_path = 'http://' + location.host + '/media/data/' + country_folder + '\\' + document_file_name + '.txt';
+        }
+        document.getElementById("txt_download").href = file_path;
+
+        const document_id = document.getElementById("document").value;
+
+    } else {
+        document.getElementById("txt_download").href = "#";
+        return false;
+    }
 }
 
 async function DownloadLinkSet() {
@@ -564,8 +596,9 @@ async function show_detail_modal(Key, chart_name) {
     click_name_chart(document_id, Key, chart_name)
 }
 
-async function click_name_chart(document_id, text, chart_name) {
-    const request_link = 'http://' + location.host + "/rahbari_document_name_chart_column/" + document_id + "/" + text + "/";
+async function click_name_chart(document_id, text, chart_name, field_value) {
+    startBlockUI("کلیک روی نمودار")
+    const request_link = 'http://' + location.host + "/rahbari_document_name_chart_column/" + document_id + "/" + text + "/" + field_value + "/";
 
     document.getElementById("ChartModalBodyText_2").innerHTML = ""
     document.getElementById("ChartModalHeader_2").innerHTML = ""
@@ -625,7 +658,7 @@ async function click_name_chart(document_id, text, chart_name) {
     console.log(result)
 
     $('#ChartModalBtn_2').click()
-    // stopFullPageBlockUI('کلیک روی نمودار');
+    stopBlockUI('کلیک روی نمودار');
 
     $('#ExportExcel_2').on('click', async function () {
         await column_interactivity_obj.download_content();

@@ -1597,7 +1597,7 @@ def rahbari_document_classification_chart_column(request, document_id, subject, 
     })
 
 
-def rahbari_document_name_chart_column(request, document_id, name, curr_page, result_size):
+def rahbari_document_name_chart_column(request, document_id, name, field_name, curr_page, result_size):
     res_query = {
         "bool": {
             "filter": [
@@ -1608,7 +1608,7 @@ def rahbari_document_name_chart_column(request, document_id, name, curr_page, re
                 },
                 {
                     "match_phrase": {
-                        "attachment.content": name
+                        field_name: name
                     }
                 }
             ]

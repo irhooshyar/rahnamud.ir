@@ -18,20 +18,24 @@ function doc_showChart(chart_data, container, tab_name, sortKeys, xAxisTitle, ti
         xAxisTitle,
         title,
         yAxisTitle: yAxisTitle,
-        onClick: async function (event, data, text) {
+        onClick: async function (event, data) {
             const document_id = document.getElementById("document").value
 
-            // const click_tag = event.domTarget.tag;
-            // const index = click_tag["index"]
-            // const text = data[index][0];
+            const click_tag = event.domTarget.tag;
+            const index = click_tag["index"]
+
             if (container === "subject_container") {
+                const text = data[index][0];
                 click_classification_chart(document_id, text, "احکام با موضوع")
             } else if (container === "person_container") {
-                click_name_chart(document_id, text, "احکام با فرد حقیقی")
+                const text = data.row(index)[0];
+                click_name_chart(document_id, text, "احکام با فرد حقیقی", "persons.keyword")
             } else if (container === "location_container") {
-                click_name_chart(document_id, text, "احکام با موقعیت مکانی")
+                const text = data.row(index)[0];
+                click_name_chart(document_id, text, "احکام با موقعیت مکانی" , "locations.keyword")
             } else {
-                click_name_chart(document_id, text, "احکام با شخص حقوقی")
+                const text = data.row(index)[0];
+                click_name_chart(document_id, text, "احکام با شخص حقوقی" , "organizations.keyword")
             }
         }
     };
@@ -83,16 +87,17 @@ async function getDocumentFullProfileInfo(country_id, document_id) {
     doc_showChart(classification_chart, "subject_container", "", undefined, "موضوع", "توزیع پاراگراف ها براساس موضوع", "تعداد پاراگراف", true)
     doc_showChart(persons_chart, "person_container", "", undefined, "شخص", "توزیع بیانات براساس اشخاص حقیقی")
     doc_showChart(locations_chart, "location_container", "", undefined, "موقعیت مکانی", "توزیع بیانات براساس موقعیت مکانی")
-    doc_showChart(organizations_chart, "organization_container", "", undefined, "سازمان", "توزیع بیانات  براساس اشخاص حقوقی")
+    doc_showChart(organizations_chart, "organization_container", "", undefined, "شخص حقوقی", "توزیع بیانات  براساس اشخاص حقوقی")
 
-    get_document_profile_real_persons(persons_chart)
-    get_document_profile_locations(locations_chart)
+    // get_document_profile_real_persons(persons_chart)
+    // get_document_profile_locations(locations_chart)
     stopBlockUI('paragraph_info_pane', 'داشبورد آماری احکام');
 
 
 }
 
 async function click_classification_chart(document_id, text, chart_name) {
+    startBlockUI("کلیک روی نمودار")
     const request_link = 'http://' + location.host + "/rahbari_document_classification_chart_column/" + document_id + "/" + text + "/";
 
     document.getElementById("ChartModalBodyText_2").innerHTML = ""
@@ -154,7 +159,7 @@ async function click_classification_chart(document_id, text, chart_name) {
     console.log(result)
 
     $('#ChartModalBtn_2').click()
-    // stopFullPageBlockUI('کلیک روی نمودار');
+    stopBlockUI('کلیک روی نمودار');
 
     $('#ExportExcel_2').on('click', async function () {
         await column_interactivity_obj.download_content();
