@@ -1445,7 +1445,7 @@
             document_name = paragraph_info['document_name']
 
             document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-            doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
+            doc_name = '<a class="bold text-secondary" target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
             paragraph_text = paragraph_info['text']
             actor_form = paragraph_info['actor_form']
@@ -1500,7 +1500,7 @@
             document_name = paragraph_info['document_name']
 
             document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-            doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
+            doc_name = '<a class="bold text-secondary" target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
             paragraph_text = paragraph_info['paragraph_text'];
             source_actor_form = paragraph_info['source_actor_form']
@@ -1576,7 +1576,7 @@
             const actor_keyword = actor_info[1]["keywords"]
 
             const actor_link = 'http://' + location.host + "/actors_information/?country_id=" + country_id + "/?actor_id=" + actor_id
-            const actor_tag = '<a  target="to_blank" href="' + actor_link + '">' + actor_name + "</a>"
+            const actor_tag = '<a  target="_blank" href="' + actor_link + '">' + actor_name + "</a>"
 
             const detail_function = "ActorDetailFunction(" + actor_id + ")"
             const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" ' + ' onclick="' + detail_function + '" data-bs-target="#detailModal">جزئیات</button>'
@@ -1690,7 +1690,7 @@
                 document_name = paragraph_info['document_name']
 
                 document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-                doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
+                doc_name = '<a class="bold text-secondary" target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
                 paragraph_text = paragraph_info['text']
                 actor_form = paragraph_info['actor_form']
@@ -1735,7 +1735,7 @@
             document_actors = document_actors.toString().replaceAll(',', '<br>');
 
             const document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-            const doc_name = '<a target="blank" href="' + document_link + '">' + document_name + "</a>"
+            const doc_name = '<a target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
             const detail_function = "DetailFunction(" + document_id + "," + area_id + ")"
             const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" ' + ' onclick="' + detail_function + '" data-bs-target="#detailModal">جزئیات</button>'
@@ -2099,7 +2099,7 @@
             document_name = paragraph_info['document_name']
 
             document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-            doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
+            doc_name = '<a class="bold text-secondary" target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
             paragraph_text = paragraph_info['text']
             actor_form = paragraph_info['actor_form']
@@ -2319,7 +2319,7 @@
                 document_name = paragraph_info['document_name']
 
                 document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-                doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
+                doc_name = '<a class="bold text-secondary" target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
                 paragraph_text = paragraph_info['text']
                 actor_form = paragraph_info['actor_form']

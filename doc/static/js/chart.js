@@ -260,7 +260,7 @@ function newDoughnutChart(container_id, options) {
             document.body.style.cursor = "auto";
         });
 
-        chart.listen('Click', (e) => options.onClick(e, options.data))
+        chart.listen('Click', (e) => {options.onClick(e, options.data)})
     }
 }
 

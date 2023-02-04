@@ -610,7 +610,7 @@ yAxis.title().fontWeight("bold");
 
             document_name = response['document_name']
             document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-            document_tag = '<a target="to_blank" href="' + document_link + '">' + document_name + "</a>"
+            document_tag = '<a target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
             response = response["document_subject_list"]
 

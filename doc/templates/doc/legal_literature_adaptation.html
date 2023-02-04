@@ -528,7 +528,7 @@
 
                 const document_link = 'http://' + location.host + "/document_profile/?id=" + id;
                 const doc_name = '<a ' +
-                                     'target="to_blank" href="' + document_link + '">' + name +
+                                     'target="_blank" href="' + document_link + '">' + name +
                                  "</a>";
                 const row = { "id": index, "name": doc_name, "keywords_count": keywords_count, 'detail': detail }
                 document_result.push(row);

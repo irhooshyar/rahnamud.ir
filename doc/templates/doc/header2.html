@@ -62,6 +62,13 @@
     <div dir="rtl" class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav pr-0 mx-auto mb-2 mb-lg-0">
 
+            <li class="nav-item" id="document_profile" style="display: none;">
+                <a class="nav-link" id="Rahbari_profile_link" role="button"
+                   href="{% url 'document_profile' %}" aria-expanded="false">
+                    <img width="25px" src="{% static 'icons/AI1.png' %}" alt="">
+                    پروفایل اسناد رهبری
+                </a>
+            </li>
 
             <li class="nav-item">
                 <a class="nav-link" id="rahbari_search" data-bs-toggle="tooltip" data-bs-placement="bottom"
@@ -79,13 +86,6 @@
             </li>
 
             <!-- Rahbari -->
-            <li class="nav-item" id="document_profile" style="display: none;">
-                <a class="nav-link" id="Rahbari_profile_link" role="button"
-                   href="{% url 'document_profile' %}" aria-expanded="false">
-                    <img width="25px" src="{% static 'icons/AI1.png' %}" alt="">
-                    پروفایل اسناد رهبری
-                </a>
-            </li>
 
             <li class="nav-item dropdown" id="rahbari_analysis" style="display: none;">
                 <a class="nav-link dropdown-toggle" href="#" id="RahbariDropdown" role="button"

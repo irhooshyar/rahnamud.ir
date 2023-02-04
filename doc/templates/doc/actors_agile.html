@@ -516,7 +516,7 @@
             const proposed_actors = actor['proposed_actors']
 
             const actor_link = 'http://' + location.host + "/actors_information/?country_id=" + country_id + "/?actor_id=" + actor_id
-            const actor_name = '<a target="blank" href="' + actor_link + '">' + name + "</a>"
+            const actor_name = '<a target="_blank" href="' + actor_link + '">' + name + "</a>"
 
             const detail_function = "ActorDetailFunction('" + country_id + "','" + actor_id + "')"
             const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" ' + ' onclick="' + detail_function + '" data-bs-target="#detailModal">جزئیات</button>'
@@ -529,7 +529,7 @@
             proposed_actors_tag = ''
             for (proposed_actor of proposed_actors) {
                 const proposed_actor_link = 'http://' + location.host + "/actors_information/?country_id=" + proposed_actor['country_id'] + "/?actor_id=" + proposed_actor['actor_id']
-                proposed_actors_tag += '<a target="blank" href="' + proposed_actor_link + '">' + proposed_actor['name'] + "</a>"
+                proposed_actors_tag += '<a target="_blank" href="' + proposed_actor_link + '">' + proposed_actor['name'] + "</a>"
             }
             const row = { "index": index, "name": actor_name, "year": year_tag, "time_series_analysis":detail, "proposed_actors": proposed_actors_tag ,'type':type};
 

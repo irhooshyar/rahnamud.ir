@@ -1051,7 +1051,7 @@
             for (let index = 0; index < document_general_definitions.length; index++) {
                 const element = document_general_definitions[index];
                 const document_link = 'http://' + location.host + "/document_profile/?id=" + element["document_id"]
-                const doc_name = '<a target="blank" href="' + document_link + '">' + element["document_name"] + "</a>"
+                const doc_name = '<a target="_blank" href="' + document_link + '">' + element["document_name"] + "</a>"
                 const row = {
                     "id": i, 
                     "word": element["word"],
@@ -1153,10 +1153,10 @@
                 for (let i = 0; i < info_array.length; i++) {
                     const json_element = info_array[i];
                     const document_link = 'http://' + location.host + "/document_profile/?id=" + json_element["document_id"]
-                    const doc_name = '<a target="blank" href="' + document_link + '">' + (i + 1) + ". " + json_element["document_name"] + " (" + (json_element["is_abbreviation"] ? "اختصار" : "تعریف") + ")" + "</a>"
+                    const doc_name = '<a target="_blank" href="' + document_link + '">' + (i + 1) + ". " + json_element["document_name"] + " (" + (json_element["is_abbreviation"] ? "اختصار" : "تعریف") + ")" + "</a>"
                     const def_in_doc = json_element["definition"]
                     docs += doc_name // + "<br>"
-                    detail_dic['<a target="blank" href="' + document_link + '">' + json_element["document_name"] + "</a>"] = {
+                    detail_dic['<a target="_blank" href="' + document_link + '">' + json_element["document_name"] + "</a>"] = {
                         "definition": def_in_doc,
                         // "definition": def_in_doc.substring(0,200)+"...",
                         "type": json_element["is_abbreviation"] ? "اختصار" : "تعریف"
@@ -1770,7 +1770,7 @@ yAxis.title().fontWeight("bold");
                 document_name = paragraph_info['document_name']
 
                 document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-                doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
+                doc_name = '<a class="bold text-secondary" target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
                 paragraph_text = paragraph_info['text']
                 actor_form = paragraph_info['actor_form']
@@ -1898,7 +1898,7 @@ yAxis.title().fontWeight("bold");
         //         const out_degree = graph_object.getNodeDegree(node_object.id, 'out');
 
         //         const doc_link = 'http://' + location.host +'/document_profile/?id=' + node_id.toString()
-        //         const doc_tag = '<a class="document_link" target="blank" href="' + doc_link + '">' + node_name +"</a>"
+        //         const doc_tag = '<a class="document_link" target="_blank" href="' + doc_link + '">' + node_name +"</a>"
 
         //         const nodeSelection = "NodeSelection(" + node_id + ")"
         //         const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" onclick="' + nodeSelection + '" data-bs-target="#detailModal">انتخاب</button>'
@@ -1965,12 +1965,12 @@ yAxis.title().fontWeight("bold");
         //         const src_node_id = edge_object.source
         //         const src_node_name = edge_object.source_name
         //         const source_doc_link = 'http://' + location.host +'/document_profile/?id=' + src_node_id.toString()
-        //         const source_doc_tag = '<a class="document_link" target="blank" href="' + source_doc_link + '">' + src_node_name +"</a>"
+        //         const source_doc_tag = '<a class="document_link" target="_blank" href="' + source_doc_link + '">' + src_node_name +"</a>"
 
         //         const target_node_id = edge_object.target
         //         const target_node_name = edge_object.target_name
         //         const target_doc_link = 'http://' + location.host +'/document_profile/?id=' + target_node_id.toString()
-        //         const target_doc_tag = '<a class="document_link" target="blank" href="' + target_doc_link + '">' + target_node_name +"</a>"
+        //         const target_doc_tag = '<a class="document_link" target="_blank" href="' + target_doc_link + '">' + target_node_name +"</a>"
 
         //         const weight = edge_object.weight
 
@@ -2255,7 +2255,7 @@ yAxis.title().fontWeight("bold");
             //         const out_degree = graph_object.getNodeDegree(node_object.id, 'out');
 
             //         const doc_link = 'http://' + location.host +'/document_profile/?id=' + node_id.toString()
-            //         const doc_tag = '<a class="document_link" target="blank" href="' + doc_link + '">' + node_name +"</a>"
+            //         const doc_tag = '<a class="document_link" target="_blank" href="' + doc_link + '">' + node_name +"</a>"
 
             //         const nodeSelection = "NodeSelection(" + node_id + ")"
             //         const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" onclick="' + nodeSelection + '" data-bs-target="#detailModal">انتخاب</button>'
@@ -2323,12 +2323,12 @@ yAxis.title().fontWeight("bold");
             //         const src_node_id = edge_object.source
             //         const src_node_name = edge_object.source_name
             //         const source_doc_link = 'http://' + location.host +'/document_profile/?id=' + src_node_id.toString()
-            //         const source_doc_tag = '<a class="document_link" target="blank" href="' + source_doc_link + '">' + src_node_name +"</a>"
+            //         const source_doc_tag = '<a class="document_link" target="_blank" href="' + source_doc_link + '">' + src_node_name +"</a>"
 
             //         const target_node_id = edge_object.target
             //         const target_node_name = edge_object.target_name
             //         const target_doc_link = 'http://' + location.host +'/document_profile/?id=' + target_node_id.toString()
-            //         const target_doc_tag = '<a class="document_link" target="blank" href="' + target_doc_link + '">' + target_node_name +"</a>"
+            //         const target_doc_tag = '<a class="document_link" target="_blank" href="' + target_doc_link + '">' + target_node_name +"</a>"
 
             //         const weight = edge_object.weight
 

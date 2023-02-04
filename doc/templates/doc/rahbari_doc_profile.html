@@ -214,18 +214,18 @@
                     aria-controls="references_graph_pane" aria-selected="false">کنشگران
             </button>
         </li>
-        <li class="nav-item float-right" role="presentation">
-            <button id="references_table_tab" class="nav-link" data-bs-toggle="pill"
-                    data-bs-target="#references_table_pane" type="button" role="tab"
-                    aria-controls="references_table_pane" aria-selected="false">افراد حقیقی
-            </button>
-        </li>
-        <li class="nav-item float-right" role="presentation">
-            <button id="subject_analysis_tab" class="nav-link" data-bs-toggle="pill"
-                    data-bs-target="#subject_analysis_pane" type="button" role="tab"
-                    aria-controls="subject_analysis_pane" aria-selected="false">اماکن
-            </button>
-        </li>
+        {#        <li class="nav-item float-right" role="presentation">#}
+        {#            <button id="references_table_tab" class="nav-link" data-bs-toggle="pill"#}
+        {#                    data-bs-target="#references_table_pane" type="button" role="tab"#}
+        {#                    aria-controls="references_table_pane" aria-selected="false">افراد حقیقی#}
+        {#            </button>#}
+        {#        </li>#}
+        {#        <li class="nav-item float-right" role="presentation">#}
+        {#            <button id="subject_analysis_tab" class="nav-link" data-bs-toggle="pill"#}
+        {#                    data-bs-target="#subject_analysis_pane" type="button" role="tab"#}
+        {#                    aria-controls="subject_analysis_pane" aria-selected="false">اماکن#}
+        {#            </button>#}
+        {#        </li>#}
         {#        <li class="nav-item float-right" role="presentation">#}
         {#            <button id="actor_analysis_tab" class="nav-link" data-bs-toggle="pill"#}
         {#                    data-bs-target="#actor_analysis_pane" type="button" role="tab" aria-controls="actor_analysis_pane"#}
@@ -248,10 +248,10 @@
                 <div id="location_container" class="half">
                 </div>
 
-                <div id="organization_container" class="full">
+                <div id="organization_container" class="half" chart-height="650px">
                 </div>
 
-                <div id="person_container" class="full">
+                <div id="person_container" class="half" chart-height="650px">
                 </div>
             </div>
         </div>
@@ -283,54 +283,54 @@
 
         </div>
 
-        <div class="tab-pane fade float-right w-100 " id="references_table_pane" role="tabpanel"
-             aria-labelledby="references_table_tab" dir="rtl">
-            <div class="mt-4">
-                <p id="PersonColumnSelection" class="text-left text-secondary float-right">فهرست براساس:</p>
-                <!-- Column select -->
-                <div class="col-md-6 col-12 col-lg-2 float-right" dir="rtl">
+        {#        <div class="tab-pane fade float-right w-100 " id="references_table_pane" role="tabpanel"#}
+        {#             aria-labelledby="references_table_tab" dir="rtl">#}
+        {#            <div class="mt-4">#}
+        {#                <p id="PersonColumnSelection" class="text-left text-secondary float-right">فهرست براساس:</p>#}
+        {#                <!-- Column select -->#}
+        {#                <div class="col-md-6 col-12 col-lg-2 float-right" dir="rtl">#}
+        {##}
+        {#                    <select id="PersonColumnSelect" onchange="table_show_result()"#}
+        {#                            class="form-select text-right float-right searchable-multi-select"#}
+        {#                            style="direction: rtl;">#}
+        {##}
+        {#                    </select>#}
+        {##}
+        {#                </div>#}
+        {##}
+        {#                <button class="btn float-left p-0 px-1" id="ExportExcel" data-bs-toggle="tooltip"#}
+        {#                        data-bs-placement="top" title="خروجی اکسل" onclick="tableExportExcel()" type="button">#}
+        {#                    <i class="far fa-file-excel text-success m-0" style="font-size: 25px;margin: 0px;"></i>#}
+        {#                </button>#}
+        {#            </div>#}
+        {#            <table id="DocProfilePersonsTable" class="table table-striped PopUpTable">#}
+        {#            </table>#}
+        {#        </div>#}
 
-                    <select id="PersonColumnSelect" onchange="table_show_result()"
-                            class="form-select text-right float-right searchable-multi-select"
-                            style="direction: rtl;">
-
-                    </select>
-
-                </div>
-
-                <button class="btn float-left p-0 px-1" id="ExportExcel" data-bs-toggle="tooltip"
-                        data-bs-placement="top" title="خروجی اکسل" onclick="tableExportExcel()" type="button">
-                    <i class="far fa-file-excel text-success m-0" style="font-size: 25px;margin: 0px;"></i>
-                </button>
-            </div>
-            <table id="DocProfilePersonsTable" class="table table-striped PopUpTable">
-            </table>
-        </div>
-
-        <div class="tab-pane fade float-right w-100" id="subject_analysis_pane" role="tabpanel"
-             aria-labelledby="subject_analysis_tab" dir="rtl">
-            <!-- Subject distribution segment -->
-            <div class="mt-4">
-                <p id="LocationColumnSelection" class="text-left text-secondary float-right">فهرست براساس:</p>
-                <!-- Column select -->
-                <div class="col-md-6 col-12 col-lg-2 float-right" dir="rtl">
-
-                    <select id="LocationColumnSelect" onchange="location_table_show_result()"
-                            class="form-select text-right float-right searchable-multi-select"
-                            style="direction: rtl;">
-
-                    </select>
-
-                </div>
-
-                <button class="btn float-left p-0 px-1" id="ExportExcel" data-bs-toggle="tooltip"
-                        data-bs-placement="top" title="خروجی اکسل" onclick="location_tableExportExcel()" type="button">
-                    <i class="far fa-file-excel text-success m-0" style="font-size: 25px;margin: 0px;"></i>
-                </button>
-            </div>
-            <table id="DocProfileLocationTable" class="table table-striped PopUpTable">
-            </table>
-        </div>
+        {#        <div class="tab-pane fade float-right w-100" id="subject_analysis_pane" role="tabpanel"#}
+        {#             aria-labelledby="subject_analysis_tab" dir="rtl">#}
+        {#            <!-- Subject distribution segment -->#}
+        {#            <div class="mt-4">#}
+        {#                <p id="LocationColumnSelection" class="text-left text-secondary float-right">فهرست براساس:</p>#}
+        {#                <!-- Column select -->#}
+        {#                <div class="col-md-6 col-12 col-lg-2 float-right" dir="rtl">#}
+        {##}
+        {#                    <select id="LocationColumnSelect" onchange="location_table_show_result()"#}
+        {#                            class="form-select text-right float-right searchable-multi-select"#}
+        {#                            style="direction: rtl;">#}
+        {##}
+        {#                    </select>#}
+        {##}
+        {#                </div>#}
+        {##}
+        {#                <button class="btn float-left p-0 px-1" id="ExportExcel" data-bs-toggle="tooltip"#}
+        {#                        data-bs-placement="top" title="خروجی اکسل" onclick="location_tableExportExcel()" type="button">#}
+        {#                    <i class="far fa-file-excel text-success m-0" style="font-size: 25px;margin: 0px;"></i>#}
+        {#                </button>#}
+        {#            </div>#}
+        {#            <table id="DocProfileLocationTable" class="table table-striped PopUpTable">#}
+        {#            </table>#}
+        {#        </div>#}
 
 
         <!-- Actors Pane -->
@@ -504,8 +504,8 @@
 </body>
 <script src="../../static/js/rahbari_doc_profile/rahbari_document_profile_statistic.js"></script>
 <script src="../../static/js/rahbari_doc_profile/rahbari_doc_profile.js"></script>
-<script src="../../static/js/rahbari_doc_profile/rahbari_document_real_person.js"></script>
-<script src="../../static/js/rahbari_doc_profile/rahbari_document_locations.js"></script>
+{#<script src="../../static/js/rahbari_doc_profile/rahbari_document_real_person.js"></script>#}
+{#<script src="../../static/js/rahbari_doc_profile/rahbari_document_locations.js"></script>#}
 <script src="../../static/js/rahbari_doc_profile/rahbari_document_actors.js"></script>
-<script src="../../static/js/rahbari_doc_profile/rahbari_document_summary.js"></script>
+{#<script src="../../static/js/rahbari_doc_profile/rahbari_document_summary.js"></script>#}
 </html>

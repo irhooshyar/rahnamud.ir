@@ -954,7 +954,7 @@ yAxis.title().fontWeight("bold");
                 document_name = doc_info['document_name']
 
                 document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-                doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
+                doc_name = '<a class="bold text-secondary" target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
                 paragraph_list = doc_info['paragraph_list']
                 paragraphs_tag = ''
@@ -1649,7 +1649,7 @@ yAxis.title().fontWeight("bold");
                 doc_name = references_info['doc_name']
                 doc_id = references_info['doc_id']
                 document_link = 'http://' + location.host + "/document_profile/?id=" + doc_id
-                reference_tag = '<a class="d-inline-block text-primary" target="to_blank" href="' + document_link + '">' + doc_name + "</a>"
+                reference_tag = '<a class="d-inline-block text-primary" target="_blank" href="' + document_link + '">' + doc_name + "</a>"
 
                 if (paragraph.search(doc_name) > 0) {
 

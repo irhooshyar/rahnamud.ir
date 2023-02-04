@@ -894,7 +894,7 @@
             const document_actors = document_info['actors']
 
             const document_link = 'http://' + location.host + "/document_profile/?id=" + id
-            const doc_name = '<a target="to_blank" href="' + document_link + '">' + name + "</a>"
+            const doc_name = '<a target="_blank" href="' + document_link + '">' + name + "</a>"
 
             const detail_function = "DetailFunction(" + id + ",'" + keywords + "')";
             const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" ' + ' onclick="' + detail_function + '" data-bs-target="#myModal">جزئیات</button>'

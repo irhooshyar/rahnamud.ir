@@ -1053,7 +1053,7 @@ yAxis.title().fontWeight("bold");
             collective_counts = collective_counts.toString().replaceAll(',', '<br>');
 
             const document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-            const doc_name = '<a target="blank" href="' + document_link + '">' + document_name + "</a>"
+            const doc_name = '<a target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
             const detail_function = "DetailFunction(" + document_id + ",'" + collectives_id + "'," + category_id + ",'" + actors_id + "', '" + membership_type + "', '" + preprocessed_keywords_text + "')"
             const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" ' + ' onclick="' + detail_function + '" data-bs-target="#detailModal">جزئیات</button>'
@@ -1538,12 +1538,12 @@ yAxis.title().fontWeight("bold");
                 const src_node_id = edge_object.source
                 const src_node_name = edge_object.source_name
                 const source_doc_link = 'http://' + location.host + '/standard_information/?id=' + src_node_id.toString()
-                const source_doc_tag = '<a class="document_link" target="blank" href="' + source_doc_link + '">' + src_node_name + "</a>"
+                const source_doc_tag = '<a class="document_link" target="_blank" href="' + source_doc_link + '">' + src_node_name + "</a>"
 
                 const target_node_id = edge_object.target
                 const target_node_name = edge_object.target_name
                 const target_doc_link = 'http://' + location.host + '/standard_information/?id=' + target_node_id.toString()
-                const target_doc_tag = '<a class="document_link" target="blank" href="' + target_doc_link + '">' + target_node_name + "</a>"
+                const target_doc_tag = '<a class="document_link" target="_blank" href="' + target_doc_link + '">' + target_node_name + "</a>"
 
                 const weight = edge_object.weight
 
@@ -2006,7 +2006,7 @@ yAxis.title().fontWeight("bold");
             const degree = graph_object.getNodeDegree(node_object.id, 'total');
 
             const doc_link = 'http://' + location.host + '/standard_information/?id=' + node_id.toString()
-            const doc_tag = '<a class="document_link" target="blank" href="' + doc_link + '">' + node_name + "</a>"
+            const doc_tag = '<a class="document_link" target="_blank" href="' + doc_link + '">' + node_name + "</a>"
 
             const nodeSelection = "NodeSelection('" + node_id + "')"
             const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" onclick="' + nodeSelection + '" data-bs-target="#detailModal">انتخاب</button>'
@@ -2079,12 +2079,12 @@ yAxis.title().fontWeight("bold");
             const src_node_id = edge_object.source
             const src_node_name = edge_object.source_name
             const source_doc_link = 'http://' + location.host + '/standard_information/?id=' + src_node_id.toString()
-            const source_doc_tag = '<a class="document_link" target="blank" href="' + source_doc_link + '">' + src_node_name + "</a>"
+            const source_doc_tag = '<a class="document_link" target="_blank" href="' + source_doc_link + '">' + src_node_name + "</a>"
 
             const target_node_id = edge_object.target
             const target_node_name = edge_object.target_name
             const target_doc_link = 'http://' + location.host + '/standard_information/?id=' + target_node_id.toString()
-            const target_doc_tag = '<a class="document_link" target="blank" href="' + target_doc_link + '">' + target_node_name + "</a>"
+            const target_doc_tag = '<a class="document_link" target="_blank" href="' + target_doc_link + '">' + target_node_name + "</a>"
 
             const weight = edge_object.weight
 

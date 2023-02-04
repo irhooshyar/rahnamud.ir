@@ -1036,7 +1036,7 @@ urlpatterns = [
         views.rahbari_document_classification_chart_column, name='rahbari_document_classification_chart_column'),
 
     path(
-        "rahbari_document_name_chart_column/<int:document_id>/<str:name>/<int:curr_page>/<int:result_size>/",
+        "rahbari_document_name_chart_column/<int:document_id>/<str:name>/<str:field_name>/<int:curr_page>/<int:result_size>/",
         views.rahbari_document_name_chart_column, name='rahbari_document_name_chart_column'),
 
     path(

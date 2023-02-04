@@ -735,7 +735,7 @@
 
 
             const doc_link = 'http://' + location.host + "/document_profile/?id=" + doc_id
-            const doc_tag = '<a target="blank" href="' + doc_link + '">' + doc_name + "</a>"
+            const doc_tag = '<a target="_blank" href="' + doc_link + '">' + doc_name + "</a>"
 
             clause_info = clause['clause_info']
             actors_info = clause['actors_info']
@@ -914,7 +914,7 @@
         {#console.log(deadline_date)#}
 
         const doc_link = 'http://' + location.host + "/document_profile/?id=" + doc_id
-        const doc_tag = '<a target="blank" href="' + doc_link + '">' + doc_name + "</a>"
+        const doc_tag = '<a target="_blank" href="' + doc_link + '">' + doc_name + "</a>"
 
 
         document.getElementById('ParagraphHeader').innerHTML = doc_tag
@@ -953,7 +953,7 @@
             exe_doc_tag = executive_doc_name
         }else{
             var exe_doc_link = 'http://' + location.host + "/document_profile/?id=" + executive_doc_id
-            exe_doc_tag = '<a target="blank" href="' + exe_doc_link + '">' + executive_doc_name + "</a>"
+            exe_doc_tag = '<a target="_blank" href="' + exe_doc_link + '">' + executive_doc_name + "</a>"
         }
 
         document.getElementById('DocumentHeader').innerHTML = exe_doc_tag
