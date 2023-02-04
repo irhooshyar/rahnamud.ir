@@ -395,7 +395,7 @@
           judge_name = value["judge_name"]
           judgements_count = value["judgments_count"]
           const judge_link = 'http://' + location.host + "/specific_judge_profile/?id=" + judge_id
-          const judge_tag = '<a target="blank" href="' + judge_link + '">' + judge_name + "</a>"
+          const judge_tag = '<a target="_blank" href="' + judge_link + '">' + judge_name + "</a>"
           cahrt_data.push({
               x: category + ": " + judge_name,
               y: judgements_count

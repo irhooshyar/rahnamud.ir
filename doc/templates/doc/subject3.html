@@ -639,7 +639,7 @@
 
             document_name = response['document_name']
             document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-            document_tag = '<a target="to_blank" href="' + document_link + '">' + document_name + "</a>"
+            document_tag = '<a target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
             response = response["document_subject_list"]
 
@@ -751,7 +751,7 @@
                     const approval_date = SearchResultValue[i]["_source"]["approval_date"]
 
                     const document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-                    const doc_name = '<a class="document_link" target="blank" href="' + document_link + '">' + document_name + "</a>"
+                    const doc_name = '<a class="document_link" target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
                     const detail_function = "DetailFunction(" + document_id + ")"
                     const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" onclick="' + detail_function + '" data-bs-target="#detailModal">جزئیات</button>'

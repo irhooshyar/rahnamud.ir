@@ -1543,7 +1543,7 @@ def get_rahbari_document_actor(request, document_id):
     for actor in actor_names:
         actor_counter = 0
         for paragraph in paragraphs:
-            if paragraph.text.__contains__(" "+actor+" "):
+            if paragraph.text.__contains__(" " + actor + " "):
                 actor_counter += 1
         if actor_counter > 0:
             actor_contains.append((actor, actor_counter))
@@ -1575,7 +1575,7 @@ def rahbari_document_classification_chart_column(request, document_id, subject, 
     # ---------------------- Get Chart Data -------------------------
     from_value = (curr_page - 1) * result_size
     response = client.search(index=index_name,
-                             _source_includes=['attachment.content', 'document_name'],
+                             _source_includes=['attachment.content', 'document_name', 'paragraph_id', 'document_id'],
                              request_timeout=40,
                              query=res_query,
                              from_=from_value,
@@ -1621,7 +1621,7 @@ def rahbari_document_name_chart_column(request, document_id, name, curr_page, re
     # ---------------------- Get Chart Data -------------------------
     from_value = (curr_page - 1) * result_size
     response = client.search(index=index_name,
-                             _source_includes=['attachment.content', 'document_name'],
+                             _source_includes=['attachment.content', 'document_name', 'paragraph_id', 'document_id'],
                              request_timeout=40,
                              query=res_query,
                              from_=from_value,
@@ -1649,6 +1649,7 @@ def rahbari_document_name_chart_column(request, document_id, name, curr_page, re
         'total_hits': total_hits,
         "curr_page": curr_page,
     })
+
 
 def export_rahbari_document_chart_column(request, document_id, text, keyword, curr_page, result_size):
     res_query = {
@@ -1700,7 +1701,7 @@ def export_rahbari_document_chart_column(request, document_id, text, keyword, cu
     file_dataframe = pd.DataFrame(paragraph_list, columns=["نام سند", "متن پاراگراف"])
 
     file_name = country_obj.name + " - " + keyword.replace(".keyword",
-                                                              "") + " : " + text + " - " + result_range + ".xlsx"
+                                                           "") + " : " + text + " - " + result_range + ".xlsx"
 
     file_path = os.path.join(config.MEDIA_PATH, file_name)
     file_dataframe.to_excel(file_path, index=False)

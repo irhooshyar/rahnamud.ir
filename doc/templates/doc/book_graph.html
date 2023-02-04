@@ -445,7 +445,7 @@
                     const degree = graph_object.getNodeDegree(node_object.id,'total')
 
                     const doc_link = 'http://' + location.host + "/book_information/?id=" + node_id
-                    const doc_tag = '<a class="document_link" target="blank" href="' + doc_link + '">' + node_name +"</a>"
+                    const doc_tag = '<a class="document_link" target="_blank" href="' + doc_link + '">' + node_name +"</a>"
 
                     nodes_data.push({id:id, name: doc_tag, degree:degree})
                     id = id + 1
@@ -505,12 +505,12 @@
                     const src_node_id = edge_object.source
                     const src_node_name = edge_object.source_name
                     const source_doc_link = 'http://' + location.host + "/book_information/?id=" + src_node_id
-                    const source_doc_tag = '<a class="document_link" target="blank" href="' + source_doc_link + '">' + src_node_name +"</a>"
+                    const source_doc_tag = '<a class="document_link" target="_blank" href="' + source_doc_link + '">' + src_node_name +"</a>"
 
                     const target_node_id = edge_object.target
                     const target_node_name = edge_object.target_name
                     const target_doc_link = 'http://' + location.host + "/book_information/?id=" + target_node_id
-                    const target_doc_tag = '<a class="document_link" target="blank" href="' + target_doc_link + '">' + target_node_name +"</a>"
+                    const target_doc_tag = '<a class="document_link" target="_blank" href="' + target_doc_link + '">' + target_node_name +"</a>"
 
                     const weight = edge_object.weight
 

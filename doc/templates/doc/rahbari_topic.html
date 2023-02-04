@@ -1558,12 +1558,12 @@
 
             const document_link = 'http://' + location.host + "/document_profile/?id=" + doc['document_id'];
             const doc_name = '<a ' +
-                'target="to_blank" href="' + document_link + '">' + doc['document_name'] +
+                'target="_blank" href="' + document_link + '">' + doc['document_name'] +
                 "</a>";
 
             const para_link = 'http://' + location.host + "/sentiment_analysis/?id=" + doc['paragraph_id'];
             const para_text = '<a ' +
-                'target="to_blank" href="' + para_link + '">' + doc['paragraph_text'] +
+                'target="_blank" href="' + para_link + '">' + doc['paragraph_text'] +
                 "</a>";
 
             const row = { "index": index, 
@@ -1652,7 +1652,7 @@
 
             const document_link = 'http://' + location.host + "/document_profile/?id=" + doc['doc_id'];
             const doc_name = '<a ' +
-                'target="to_blank" href="' + document_link + '">' + doc['doc_name'] +
+                'target="_blank" href="' + document_link + '">' + doc['doc_name'] +
                 "</a>";
 
             const para_text = '<p>' + doc['paragraph_text'] + "</p>";
@@ -1948,7 +1948,7 @@
 
             const document_link = 'http://' + location.host + "/document_profile/?id=" + paragraph['document_id'];
             const doc_name = '<a ' +
-                'target="to_blank" href="' + document_link + '">' + paragraph['document_name'] +
+                'target="_blank" href="' + document_link + '">' + paragraph['document_name'] +
                 "</a>";
 
             let subject_name = ''
@@ -1976,7 +1976,7 @@
 
             paragraph_link = 'http://' + location.host + "/sentiment_analysis/?id=" + paragraph['paragraph_id'];
             paragraph_tag = '<a ' +
-                'target="to_blank"  href="' + paragraph_link + '">' + paragraph['paragraph_text']+
+                'target="_blank"  href="' + paragraph_link + '">' + paragraph['paragraph_text']+
                 "</a>";
 
             const row = {

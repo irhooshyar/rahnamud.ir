@@ -1,7 +1,7 @@
 MAX_RESULT_WINDOW = 5000
 SEARCH_RESULT_SIZE = 500
 
-function doc_showChart(chart_data, container, tab_name, sortKeys, xAxisTitle, title, yAxisTitle = "تعداد پاراگراف") {
+function doc_showChart(chart_data, container, tab_name, sortKeys, xAxisTitle, title, yAxisTitle = "تعداد پاراگراف", isPie = false) {
     let data = []
     for (column of chart_data) {
         key = column["key"]
@@ -18,12 +18,12 @@ function doc_showChart(chart_data, container, tab_name, sortKeys, xAxisTitle, ti
         xAxisTitle,
         title,
         yAxisTitle: yAxisTitle,
-        onClick: async function (event, data) {
+        onClick: async function (event, data, text) {
             const document_id = document.getElementById("document").value
 
-            const click_tag = event.domTarget.tag;
-            const index = click_tag["index"]
-            const text = data.row(index)[0];
+            // const click_tag = event.domTarget.tag;
+            // const index = click_tag["index"]
+            // const text = data[index][0];
             if (container === "subject_container") {
                 click_classification_chart(document_id, text, "احکام با موضوع")
             } else if (container === "person_container") {
@@ -35,9 +35,11 @@ function doc_showChart(chart_data, container, tab_name, sortKeys, xAxisTitle, ti
             }
         }
     };
-
-    newBarChart(container, options)
-
+    if (isPie) {
+        newDoughnutChart(container, options)
+    } else {
+        newBarChart(container, options)
+    }
 
 }
 
@@ -78,7 +80,7 @@ async function getDocumentFullProfileInfo(country_id, document_id) {
 
 
     // showChartData(sentiment_chart, "sentiment_container", "paragraph_charts", [], undefined, "احساس", "توزیع احکام براساس احساسات", "تعداد احکام")
-    doc_showChart(classification_chart, "subject_container", "", undefined, "موضوع", "توزیع پاراگراف ها براساس موضوع", "تعداد پاراگراف")
+    doc_showChart(classification_chart, "subject_container", "", undefined, "موضوع", "توزیع پاراگراف ها براساس موضوع", "تعداد پاراگراف", true)
     doc_showChart(persons_chart, "person_container", "", undefined, "شخص", "توزیع بیانات براساس اشخاص حقیقی")
     doc_showChart(locations_chart, "location_container", "", undefined, "موقعیت مکانی", "توزیع بیانات براساس موقعیت مکانی")
     doc_showChart(organizations_chart, "organization_container", "", undefined, "سازمان", "توزیع بیانات  براساس اشخاص حقوقی")

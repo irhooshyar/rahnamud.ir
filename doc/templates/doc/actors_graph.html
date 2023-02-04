@@ -848,9 +848,9 @@
                 }
                 let cols_id = key.split("#")
                 let col1_link = 'http://' + location.host + "/actors_information/?country_id=" + country_id + "/?actor_id=" + cols_id[0]
-                let col1 = '<a  target="to_blank" href="' + col1_link + '">' + item['col1'] + "</a>"
+                let col1 = '<a  target="_blank" href="' + col1_link + '">' + item['col1'] + "</a>"
                 let col2_link = 'http://' + location.host + "/actors_information/?country_id=" + country_id + "/?actor_id=" + cols_id[1]
-                let col2 = '<a  target="to_blank" href="' + col2_link + '">' + item['col2'] + "</a>"
+                let col2 = '<a  target="_blank" href="' + col2_link + '">' + item['col2'] + "</a>"
                 documents_information_list.push({
                     'id':count,
                     'col1':col1,

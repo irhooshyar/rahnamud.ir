@@ -32,7 +32,7 @@ async function GetTextSummary(text) {
   })
     .done(
       await function (res) {
-        document.getElementById("summary_text").innerHTML = res["text_summary"];
+        document.getElementById("summary_text").innerHTML = res["text_summary"].replaceAll(" ّ ", "");
       }
     )
     .fail(
@@ -123,9 +123,9 @@ async function getSimilarParagraphs(paragraph_id) {
     }
 
     const doc_link =
-      "http://" + location.host + "/information/?id=" + document_id;
+      "http://" + location.host + "/document_profile/?id=" + document_id;
     const doc_tag =
-      "<a title='پروفایل سند' class='bold text-primary' target='blank' href='" +
+      "<a title='پروفایل سند' class='bold text-primary' target='_blank' href='" +
       doc_link +
       "'>" +
       document_name +
@@ -180,7 +180,7 @@ async function showKeywordSubjectTab(paragraph_id) {
     "</div>";
 
   const doc_link =
-    "http://" + location.host + "/information/?id=" + document_id;
+    "http://" + location.host + "/document_profile/?id=" + document_id;
   let doc_tag =
     "<a style = 'text-decoration:none;' title = 'پروفایل سند' class='bold text-right text-secondary' target='blank' href='" +
     doc_link +
@@ -396,6 +396,10 @@ function getEntityAndColor(entity) {
     case "B-product":
       color = "#EC4899";
       entityWord = "محصول";
+      break;
+    case "B-event":
+      color = "#9900ff";
+      entityWord = "رویداد";
       break;
     default:
       color = "#EC4899";

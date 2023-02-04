@@ -1608,7 +1608,7 @@ yAxis.title().fontWeight("bold");
                     document_name = paragraph_info['name']
 
                     document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-                    doc_name = '<a class="bold text-secondary" target="to_blank" href="' + document_link + '">' + document_name + "</a>"
+                    doc_name = '<a class="bold text-secondary" target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
                     paragraph_text = paragraph_info['text']
                     actor_form = paragraph_info['actor_form']
@@ -2121,7 +2121,7 @@ yAxis.title().fontWeight("bold");
                         ref_doc_name = ref_doc['doc_name']
 
                         doc_link = 'http://' + location.host + "/document_profile/?id=" + ref_doc_id
-                        doc_tag = '<a class="d-inline-block text-primary bold" target="to_blank" href="' + doc_link + '">' + ref_doc_name + "</a>"
+                        doc_tag = '<a class="d-inline-block text-primary bold" target="_blank" href="' + doc_link + '">' + ref_doc_name + "</a>"
                         result_doc_tag = "<span class='text-primary bold'>" + doc_tag + "</span>"
 
                         paragraph = paragraph.replaceAll(ref_doc_name, result_doc_tag);
@@ -2356,7 +2356,7 @@ yAxis.title().fontWeight("bold");
                         const document_id = doc_info["id"]
                         const document_name = doc_info["name"]
                         const document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-                        const doc_name = '<a target="to_blank" href="' + document_link + '">' + document_name + "</a>"
+                        const doc_name = '<a target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
                         document_node = {
                             'id': document_id, 'name': document_name, 'fill': {

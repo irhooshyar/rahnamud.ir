@@ -579,7 +579,7 @@
             life_cycle_name = life_cycle_name.join(", ")
 
             const document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-            const doc_name = '<a target="blank" href="' + document_link + '">' + document_name + "</a>"
+            const doc_name = '<a target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
             const detail_function = "DetailFunction(" + document_id + ")"
             const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" ' + ' onclick="' + detail_function + '" data-bs-target="#detailModal">جزئیات</button>'

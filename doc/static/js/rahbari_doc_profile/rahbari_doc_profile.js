@@ -66,8 +66,8 @@ $("#SearchBox").keyup(function (event) {
 });
 
 $(document).ready(function () {
-    $('#ApprovalsDropdown').addClass('active');
-    $('#information').addClass('active');
+    // $('#ApprovalsDropdown').addClass('active');
+    $('#Rahbari_profile_link').addClass('active');
     $('select#language').on('change', function (e) {
             let selected_language = this.value;
             let current_url = window.location.href;

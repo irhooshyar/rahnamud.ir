@@ -119,7 +119,13 @@ function newBarChart(container_id, options) {
             document.body.style.cursor = "auto";
         });
 
-        chart.listen('Click', (e) => {options.onClick(e, data)})
+        chart.listen('Click', (e) => {
+            const click_tag = e.domTarget.tag;
+            const index = click_tag["index"]
+            const text = data.row(index)[0];
+
+            options.onClick(e, data, text)
+        })
     }
 
 }
@@ -260,7 +266,13 @@ function newDoughnutChart(container_id, options) {
             document.body.style.cursor = "auto";
         });
 
-        chart.listen('Click', (e) => options.onClick(e, options.data))
+        chart.listen('Click', (e) => {
+            const click_tag = e.domTarget.tag;
+            const index = click_tag["index"]
+            const text = options.data[index][0];
+
+            options.onClick(e, options.data, text)
+        })
     }
 }
 

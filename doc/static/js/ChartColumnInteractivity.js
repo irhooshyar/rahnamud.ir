@@ -207,7 +207,7 @@ class ColumnInteractivity {
             const link =
                 "http://" +
                 location.host +
-                "/information/?id=" +
+                "/document_profile/?id=" +
                 doc["_source"]["document_id"];
             let tag =
                 "<li class='mt-3' id=" +
@@ -249,7 +249,7 @@ class ColumnInteractivity {
             }
 
             const doc_link =
-                "http://" + location.host + "/information/?id=" + document_id;
+                "http://" + location.host + "/document_profile/?id=" + document_id;
             let doc_tag =
                 "<a title='پروفایل سند' class='bold text-secondary' target='blank' href='" +
                 doc_link +

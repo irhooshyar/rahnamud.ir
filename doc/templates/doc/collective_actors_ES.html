@@ -711,7 +711,7 @@
             collective_counts = collective_counts.toString().replaceAll(',', '<br>');
 
             const document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-            const doc_name = '<a target="blank" href="' + document_link + '">' + document_name + "</a>"
+            const doc_name = '<a target="_blank" href="' + document_link + '">' + document_name + "</a>"
 
             const detail_function = "DetailFunction(" + document_id + ",'" + collectives_id + "'," + category_id + ",'" + actors_id + "', '" + membership_type + "', '" + preprocessed_keywords_text + "')"
             const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" ' + ' onclick="' + detail_function + '" data-bs-target="#myModal">جزئیات</button>'
@@ -827,7 +827,7 @@
             }
 
             const document_link = 'http://' + location.host + "/document_profile/?id=" + document_id
-            const doc_name = '<a target="blank" href="' + document_link + '">' + document_name + "</a>"
+            const doc_name = '<a target="_blank" href="' + document_link + '">' + document_name + "</a>"
             preprocessed_keywords_text = keywords_text
             const detail_function = "DetailFunction(" + document_id + ",'" + collectives_id + "'," + category_id + ",'" + actors_id + "', '" + membership_type + "', '" + preprocessed_keywords_text + "')"
             const detail = '<button type="button" class="btn modal_btn" data-bs-toggle="modal" ' + ' onclick="' + detail_function + '" data-bs-target="#myModal">جزئیات</button>'
