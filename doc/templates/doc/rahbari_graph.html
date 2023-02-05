@@ -714,13 +714,18 @@
 
             //user log
             let form_data = new FormData()
+            label_select = ""
             let detail_type = "نتایج جست و جو"
             let Graph_Type = $("#GraphTypeSelect option:selected").text();
             let Minimum_Similarity = $("#limit_neighbour_count option:selected").text();
+            $("#LabelSelectBox option:selected").each(function () {
+                label_select += $(this).text() + "، ";
+            });
             form_data.append('detail_type', detail_type);
             form_data.append('Graph_Type', Graph_Type);
             form_data.append('limit_neighbour_count', limit_neighbour_count
             );
+            form_data.append('label', label_select);
             UserLog(form_data)
         }
 
