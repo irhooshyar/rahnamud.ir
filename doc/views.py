@@ -63,11 +63,11 @@ doctic_para_index = es_config.DOTIC_PARA_INDEX
 
 from doc.huggingface_views import *
 
+#preprocessing function
 
 @after_response.enable
 def extractor(newdoc, newDoc, tasks_list):
     ZipFileExtractor.extractor(newdoc, newDoc, tasks_list, "")
-
 
 def arabic_preprocessing(text):
     while "  " in text:
@@ -95,6 +95,410 @@ def deleter(name, filename, only_result):
             os.remove(doc_zip_path)
     except Exception as e:
         print(e)
+
+
+def update_doc(request, id, language, ):
+    host_url = urlparse(request.build_absolute_uri()).netloc
+
+    file = get_object_or_404(Country, id=id)
+
+    # file = Country.objects.get(file_id=id)
+    # deleter(file.name, file.file.name, True)
+    my_file = file.file.path
+    my_file = str(os.path.basename(my_file))
+    dot_index = my_file.rfind('.')
+    folder_name = my_file[:dot_index]
+    # start_automating.apply(folder_name)
+    file.status = "Starting..."
+    file.save()
+
+    if language == 'کتاب':
+        StratAutomating.apply.after_response(folder_name, file, "DocsAreaGraphCubeData", host_url)
+    else:
+
+        StratAutomating.apply.after_response(folder_name, file,
+                                             "DocsParagraphsClustering_AIParagraphTopicLDA_LDAGraphData",
+                                             host_url)  # AdvanceARIMAExtractor_ ActorTimeSeriesPrediction _DocsSubjectExtractor_DocsLevelExtractor_DocsReferencesExtractor_DocsActorsTimeSeriesDataExtractor_DocsCreateDocumentsListCubeData_DocsCreateSubjectCubeData_DocsCreateVotesCubeData_DocsCreateSubjectStatisticsCubeData_DocsCreateTemplatePanelsCubeData_DocsAnalysisLeadershipSlogan_DocsCreatePrinciplesCubeData_DocCreateBusinessAdvisorCubeData_DocsCreateRegularityLifeCycleCubeData_DocsExecutiveParagraphsExtractor_DocsClauseExtractor_DocsGraphCubeData_DocsCreateMandatoryRegulationsCubeData_DocsExecutiveClausesExtractor_DocsCreateActorInformationStackChartCubeData
+
+        # StratAutomating.apply.after_response(folder_name, file, "IngestDocumentsToElastic_IngestParagraphsToElastic", host_url)#_DocsSubjectExtractor_DocsLevelExtractor_DocsReferencesExtractor_DocsActorsTimeSeriesDataExtractor_DocsCreateDocumentsListCubeData_DocsCreateSubjectCubeData_DocsCreateVotesCubeData_DocsCreateSubjectStatisticsCubeData_DocsCreateTemplatePanelsCubeData_DocsAnalysisLeadershipSlogan_DocsCreatePrinciplesCubeData_DocCreateBusinessAdvisorCubeData_DocsCreateRegularityLifeCycleCubeData_DocsExecutiveParagraphsExtractor_DocsClauseExtractor_DocsGraphCubeData_DocsCreateMandatoryRegulationsCubeData_DocsExecutiveClausesExtractor_DocsCreateActorInformationStackChartCubeData
+
+        # DocsSubjectExtractor2_DocsParagraphsClustering_AIParagraphTopicLDA_LDAGraphData
+        # DocsSubjectAreaExtractor.apply(folder_name,file),DocsParagraphsClustering
+        # AIParagraphTopicLDA_LDAGraphData-DocsActorsExtractor
+        # DocsParagraphsClusteringCubeData,ClusteringGraphData
+
+        # from scripts.Persian import DocsSubjectExtractor2
+        # DocsSubjectExtractor2.apply.after_response(folder_name, file)
+
+        # from scripts.Persian import DocProvisionsFullProfileAnalysis
+        # DocProvisionsFullProfileAnalysis.apply.after_response(folder_name, file)
+
+    return redirect('zip')
+
+def Create_Folder():
+    if not os.path.isdir(config.RESULT_PATH):
+        os.mkdir(config.RESULT_PATH)
+    if not os.path.isdir(config.DATA_PATH):
+        os.mkdir(config.DATA_PATH)
+    if not os.path.isdir(config.ZIPS_PATH):
+        os.mkdir(config.ZIPS_PATH)
+
+def UploadFile(request, country, language, tasks_list):
+    Create_Folder()
+
+    host_url = urlparse(request.build_absolute_uri()).netloc
+    if request.method == 'POST':
+        inputFile = request.FILES['inputFile']
+        country_count = Country.objects.filter(name=country).count()
+        file_ext = (inputFile.name).split(".")[-1]
+
+        if country_count > 0:
+            return JsonResponse({"response": "duplicate country"})
+        elif file_ext != "zip":
+            return JsonResponse({"response": "wrong format"})
+        else:
+            country_object = Country(name=country, language=language, file=inputFile, file_name=inputFile.name,
+                                     status="Running")
+
+            country_object.save()
+            ZipFileExtractor.extractor(country_object, country_object, tasks_list, host_url)
+            return JsonResponse({"response": "Ok"})
+
+
+def get_task_list(request):
+    file_path = str(Path(config.PERSIAN_PATH, 'TaskList.json'))
+    data = json.load(open(file_path, encoding='utf-8'))
+    return JsonResponse(data)
+
+
+def get_book_maps(country_objects):
+    dataset_map = {}
+    # country_objects = country_objects.order_by("-id")
+    country_objects = country_objects.order_by("id")
+    for each in country_objects:
+        id = each.id
+        name = each.name
+        language = each.language
+        if language == "کتاب" and "کتاب" in name:
+            dataset_map[id] = name
+    return dataset_map
+
+
+def get_standard_maps(country_objects):
+    dataset_map = {}
+    # country_objects = country_objects.order_by("-id")
+    country_objects = country_objects.order_by("id")
+    for each in country_objects:
+        id = each.id
+        name = each.name
+        language = each.language
+        if language == "استاندارد":
+            dataset_map[id] = name
+    return dataset_map
+
+
+def get_similarity_maps(graph_objects):
+    dataset_map = {}
+    for each in graph_objects:
+        id = each.measure_id_id
+        name = each.measure_id.name
+        if id not in dataset_map:
+            dataset_map[id] = name
+    return dataset_map
+
+# html load function
+
+@allowed_users('admin_accept_user_comments')
+def seeAllComment(request):
+    comments = DocumentComment2.objects.all().order_by('is_accept')
+
+    result = []
+    for c in comments:
+        agreed_count = DocumentCommentVote.objects.filter(document_comment=c.id, agreed=True).count()
+        disagreed_count = DocumentCommentVote.objects.filter(document_comment=c.id, agreed=False).count()
+
+        result.append(
+            {"comment": c.comment, "id": c.id, "first_name": c.user.first_name, "last_name": c.user.last_name,
+             "agreed_count": agreed_count, "disagreed_count": disagreed_count, "document_name": c.document.name,
+             "is_accept": c.is_accept, "time": c.time})
+
+    return render(request, 'doc/admin_accept_user_comments.html', {'comments': result})
+
+
+def seeAllComment2(request):
+    comments = DocumentComment2.objects.all()
+
+    result = []
+    for c in comments:
+        agreed_count = DocumentCommentVote.objects.filter(document_comment=c.id, agreed=True).count()
+        disagreed_count = DocumentCommentVote.objects.filter(document_comment=c.id, agreed=False).count()
+
+        result.append(
+            {"comment": c.comment, "id": c.id, "first_name": c.user.first_name, "last_name": c.user.last_name,
+             "agreed_count": agreed_count, "disagreed_count": disagreed_count, "document_name": c.document.name,
+             "is_accept": c.is_accept})
+
+    return render(request, 'doc/admin_accept_user_comments2.html', {'comments': result})
+
+
+@allowed_users('admin_accepted_user')
+def seeAcceptedUser(request):
+    activated_user = User.objects.all().filter(is_active=1)
+    return render(request, 'doc/admin_accepted_user.html', {'activated_user': activated_user})
+
+
+@allowed_users()
+def admin_submit_book_informations(request):
+    return render(request, "doc/admin_submit_book_informations.html", {})
+
+
+@allowed_users('admin_upload')
+def admin_upload(request):
+    return render(request, 'doc/admin_upload.html')
+
+
+@allowed_users('super_admin_user_log')
+def showUserLogs(request):
+    users = User.objects.all().filter(is_active=1)
+    return render(request, 'doc/admin_user_log.html', {'users': users})
+
+
+@allowed_users('admin_user_recommendation')
+def get_user_recommendation(request):
+    recommendation = Recommendation.objects.all()
+    return render(request, 'doc/admin_user_recommendation.html', {'recommendation': recommendation})
+
+
+@allowed_users('admin_user_report_bug')
+def get_user_report_bug(request):
+    reports = Report_Bug2.objects.order_by('checked', 'date')
+    return render(request, 'doc/admin_user_report_bug.html', {'report_bug': reports})
+
+
+@allowed_users('admin_waiting_user')
+def getRegisteredUser(request):
+    data = User.objects.all().filter(is_active=0)
+    return render(request, 'doc/admin_waiting_user.html', {'data': data})
+
+
+def getRegisteredUser2(request):
+    data = User.objects.all().filter(is_active=0)
+    return render(request, 'doc/admin_waiting_user2.html', {'data': data})
+
+
+@allowed_users('AI_topics')
+def AI_topics(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/AI_topics.html', {'countries': country_map})
+
+
+# @allowed_users('AI_topics')
+def paragrraph_clustering(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/paragraph_clustering2.html', {'countries': country_map})
+
+
+@allowed_users('approvals_adaptation')
+def approvals_adaptation(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/approvals_adaptation.html', {'countries': country_map})
+
+
+@allowed_users('rahbari_graph')
+def rahbari_graph(request):
+    return render(request, 'doc/rahbari_graph.html')
+
+
+def comparison(request):
+    return render(request, 'doc/comparison2.html')
+
+
+def recommendation(request):
+    return render(request, 'doc/recommendation.html')
+
+
+def report_bug(request):
+    return render(request, 'doc/report_bug.html')
+
+
+# @allowed_users('AI_topics')
+def decision_tree(request, country_id, clustering_algorithm_id):
+    country = Country.objects.get(id=country_id)
+
+    result = {"id": country.id,
+              "name": country.name,
+              "folder": str(country.file.name.split("/")[-1].split(".")[0]),
+              "language": country.language,
+              "clustering_algorithm_id": clustering_algorithm_id
+              }
+
+    return render(request, 'doc/decision_tree.html', {"country_info": result})
+
+
+@allowed_users('advanced_graph')
+def graph2(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/graph3.html', {'countries': country_map})
+
+
+@allowed_users('es_search')
+def es_search(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/ES_Search3.html', {'countries': country_map})
+
+
+def dendrogram(request, country_id, ngram_type):
+    country = Country.objects.get(id=country_id)
+    folder = str(country.file.name.split("/")[-1].split(".")[0])
+    file_path = "dendrogram_plots/" + folder + "_" + str(ngram_type) + '_dendrogram.png'
+
+    return render(request, 'doc/dendrogram.html', {"file_path": file_path})
+
+
+@allowed_users('rahbari_search')
+def rahbari_search(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/rahbari_search.html', {'countries': country_map})
+
+
+@allowed_users('rahbari_paraghraph')
+def rahbari_paraghraph(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/rahbari_paraghraph.html', {'countries': country_map})
+
+
+@allowed_users('rahbari_subject')
+def rahbari_subject(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/rahbari_subject.html', {'countries': country_map})
+
+
+@allowed_users('rahbari_organization')
+def rahbari_organization(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/rahbari_organization.html', {'countries': country_map})
+
+
+@allowed_users('rahbari_problem_system')
+def rahbari_problem_system(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/rahbari_problem_system.html', {'countries': country_map})
+
+
+@allowed_users('rahbari_topic')
+def rahbari_topic(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/rahbari_topic.html', {'countries': country_map})
+
+
+@allowed_users('rahbari_search')
+def rahbari_labels(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/rahbari_labels.html', {'countries': country_map})
+
+
+@allowed_users('leadership_slogan')
+def leadership_slogan(request):  ###
+    country_list = Country.objects.all()
+    slogan_list = Slogan.objects.all()
+    slogan_synonymous_words_list = SloganSynonymousWords.objects.all()
+    country_map = get_country_maps(country_list)  # داتیک ، ایران کامل
+    slogan_map = {i.year: f"{i.year} - {i.content}" for i in slogan_list}  # 1383 - پاسخگویی
+    slogan_map_keyword = {i.year: i.keywords for i in slogan_list}  # پاسخگویی-پاسخگو
+    slogan_map_synonymous_words = {i.year: i.words for i in slogan_synonymous_words_list}
+    return render(request, 'doc/leadership_slogan.html',
+                  {'countries': country_map, 'slogans': slogan_map, 'slogan_keyword': slogan_map_keyword,
+                   'slogan_synonymous_words': slogan_map_synonymous_words})
+
+
+@allowed_users('document_profile')
+def document_profile(request):
+    country_list = Country.objects.all().filter(name="اسناد رهبری")
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/rahbari_doc_profile.html', {'countries': country_map})
+
+
+def showDeployLogs(request):
+    return render(request, 'doc/Deploy_server_time.html')
+
+
+def DownloadUnknownDocuments(request):
+    return render(request, 'doc/download_unknown_documents.html')
+
+
+def index(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/index.html', {'countries': country_map})
+
+
+@allowed_users('information')
+def information(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/information2.html', {'countries': country_map})
+
+
+def knowledgeGraph(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/KnowledgeGraph.html', {'countries': country_map})
+
+
+def following_document_comments(request):
+    return render(request, 'doc/following_document_comments.html')
+
+
+def notes(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/notes.html', {'countries': country_map})
+
+
+@unathenticated_user
+def signup(request):
+    return render(request, "doc/signup.html")
+
+
+@unathenticated_user
+def login(request):
+    return render(request, "doc/login.html")
+
+
+@allowed_users()
+def ManageUsersTab(request):
+    return render(request, 'doc/manage_admins.html')
+
+
+@allowed_users('ManualClustering')
+def ManualClustering(request):
+    country_list = Country.objects.all()
+    country_map = get_country_maps(country_list)
+    return render(request, 'doc/manual_clustering.html', {'countries': country_map})
+
+
+def ShowMyUserProfile(request):
+    return render(request, "doc/myprofile.html", {})
+
+
+def ShowUserProfile(request):
+    return render(request, "doc/userprofile.html", {})
+
+
+def sentiment_analysis_panel(request):
+    return render(request, 'doc/sentiment_analysis.html')
 
 
 def upload_zip_file(request):
@@ -176,77 +580,7 @@ def upload_zip_file(request):
     return render(request, 'doc/upload.html', {'form': ZipFileForm(), 'files': documents})
 
 
-def update_doc(request, id, language, ):
-    host_url = urlparse(request.build_absolute_uri()).netloc
-
-    file = get_object_or_404(Country, id=id)
-
-    # file = Country.objects.get(file_id=id)
-    # deleter(file.name, file.file.name, True)
-    my_file = file.file.path
-    my_file = str(os.path.basename(my_file))
-    dot_index = my_file.rfind('.')
-    folder_name = my_file[:dot_index]
-    # start_automating.apply(folder_name)
-    file.status = "Starting..."
-    file.save()
-
-    if language == 'کتاب':
-        StratAutomating.apply.after_response(folder_name, file, "DocsAreaGraphCubeData", host_url)
-    else:
-
-        StratAutomating.apply.after_response(folder_name, file,
-                                             "DocsParagraphsClustering_AIParagraphTopicLDA_LDAGraphData",
-                                             host_url)  # AdvanceARIMAExtractor_ ActorTimeSeriesPrediction _DocsSubjectExtractor_DocsLevelExtractor_DocsReferencesExtractor_DocsActorsTimeSeriesDataExtractor_DocsCreateDocumentsListCubeData_DocsCreateSubjectCubeData_DocsCreateVotesCubeData_DocsCreateSubjectStatisticsCubeData_DocsCreateTemplatePanelsCubeData_DocsAnalysisLeadershipSlogan_DocsCreatePrinciplesCubeData_DocCreateBusinessAdvisorCubeData_DocsCreateRegularityLifeCycleCubeData_DocsExecutiveParagraphsExtractor_DocsClauseExtractor_DocsGraphCubeData_DocsCreateMandatoryRegulationsCubeData_DocsExecutiveClausesExtractor_DocsCreateActorInformationStackChartCubeData
-
-        # StratAutomating.apply.after_response(folder_name, file, "IngestDocumentsToElastic_IngestParagraphsToElastic", host_url)#_DocsSubjectExtractor_DocsLevelExtractor_DocsReferencesExtractor_DocsActorsTimeSeriesDataExtractor_DocsCreateDocumentsListCubeData_DocsCreateSubjectCubeData_DocsCreateVotesCubeData_DocsCreateSubjectStatisticsCubeData_DocsCreateTemplatePanelsCubeData_DocsAnalysisLeadershipSlogan_DocsCreatePrinciplesCubeData_DocCreateBusinessAdvisorCubeData_DocsCreateRegularityLifeCycleCubeData_DocsExecutiveParagraphsExtractor_DocsClauseExtractor_DocsGraphCubeData_DocsCreateMandatoryRegulationsCubeData_DocsExecutiveClausesExtractor_DocsCreateActorInformationStackChartCubeData
-
-        # DocsSubjectExtractor2_DocsParagraphsClustering_AIParagraphTopicLDA_LDAGraphData
-        # DocsSubjectAreaExtractor.apply(folder_name,file),DocsParagraphsClustering
-        # AIParagraphTopicLDA_LDAGraphData-DocsActorsExtractor
-        # DocsParagraphsClusteringCubeData,ClusteringGraphData
-
-        # from scripts.Persian import DocsSubjectExtractor2
-        # DocsSubjectExtractor2.apply.after_response(folder_name, file)
-
-        # from scripts.Persian import DocProvisionsFullProfileAnalysis
-        # DocProvisionsFullProfileAnalysis.apply.after_response(folder_name, file)
-
-    return redirect('zip')
-
-
-def Create_Folder():
-    if not os.path.isdir(config.RESULT_PATH):
-        os.mkdir(config.RESULT_PATH)
-    if not os.path.isdir(config.DATA_PATH):
-        os.mkdir(config.DATA_PATH)
-    if not os.path.isdir(config.ZIPS_PATH):
-        os.mkdir(config.ZIPS_PATH)
-
-
-def UploadFile(request, country, language, tasks_list):
-    Create_Folder()
-
-    host_url = urlparse(request.build_absolute_uri()).netloc
-    if request.method == 'POST':
-        inputFile = request.FILES['inputFile']
-        country_count = Country.objects.filter(name=country).count()
-        file_ext = (inputFile.name).split(".")[-1]
-
-        if country_count > 0:
-            return JsonResponse({"response": "duplicate country"})
-        elif file_ext != "zip":
-            return JsonResponse({"response": "wrong format"})
-        else:
-            country_object = Country(name=country, language=language, file=inputFile, file_name=inputFile.name,
-                                     status="Running")
-
-            country_object.save()
-            ZipFileExtractor.extractor(country_object, country_object, tasks_list, host_url)
-            return JsonResponse({"response": "Ok"})
-
-
-# ---------------- temporary view , will be removed after level detection bug is fixed ----------------#
+# upload page link
 def detect_level(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import DocsLevelExtractor
@@ -371,24 +705,10 @@ def docs_approval_reference_extractor(request, id):
     return redirect('zip')
 
 
-def docs_definitions_extractor(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.English import DocsDefinitionsExtractor
-    DocsDefinitionsExtractor.apply(None, file)
-    return redirect('zip')
-
-
 def docs_general_definitions_extractor(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import DocsGeneralDefinitionsExtractor
     DocsGeneralDefinitionsExtractor.apply(None, file)
-    return redirect('zip')
-
-
-def docs_subject_extractor(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.English import DocsSubjectExtractor
-    DocsSubjectExtractor.apply(None, file)
     return redirect('zip')
 
 
@@ -826,13 +1146,6 @@ def docs_complete_para_extractor(request, id):
     return redirect('zip')
 
 
-# def executive_clause_extractor(request, id):
-#     file = get_object_or_404(Country, id=id)
-#     from scripts.Persian import DocsExecutiveClausesExtractor
-#     ExecutiveClausesExtractor.apply(None, file)
-#     return redirect('zip')
-
-
 def docs_regulators_extractor(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import DocsRegulatorsExtractor3
@@ -931,22 +1244,11 @@ def create_CUBE_MaxMinEffectActorsInArea(request, id):
 
 
 def delete_doc(request, id, language):
-    # Country.objects.filter(id=id).delete()
-    # return redirect('zip')
-
     file = Country.objects.get(id=id)
 
     deleter(file.name, file.file.name, False)
     file.delete()
-    # documents = Country.objects.filter(uploader=request.user)
-    # documents = Country.objects.filter()
     return redirect('zip')
-
-
-def get_task_list(request):
-    file_path = str(Path(config.PERSIAN_PATH, 'TaskList.json'))
-    data = json.load(open(file_path, encoding='utf-8'))
-    return JsonResponse(data)
 
 
 def get_country_maps(country_objects):
@@ -962,84 +1264,8 @@ def get_country_maps(country_objects):
     return dataset_map
 
 
-def get_book_maps(country_objects):
-    dataset_map = {}
-    # country_objects = country_objects.order_by("-id")
-    country_objects = country_objects.order_by("id")
-    for each in country_objects:
-        id = each.id
-        name = each.name
-        language = each.language
-        if language == "کتاب" and "کتاب" in name:
-            dataset_map[id] = name
-    return dataset_map
 
-
-def get_standard_maps(country_objects):
-    dataset_map = {}
-    # country_objects = country_objects.order_by("-id")
-    country_objects = country_objects.order_by("id")
-    for each in country_objects:
-        id = each.id
-        name = each.name
-        language = each.language
-        if language == "استاندارد":
-            dataset_map[id] = name
-    return dataset_map
-
-
-def get_similarity_maps(graph_objects):
-    dataset_map = {}
-    for each in graph_objects:
-        id = each.measure_id_id
-        name = each.measure_id.name
-        if id not in dataset_map:
-            dataset_map[id] = name
-    return dataset_map
-
-
-def index(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/index.html', {'countries': country_map})
-
-
-@allowed_users('information')
-def information(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/information2.html', {'countries': country_map})
-
-
-def knowledgeGraph(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/KnowledgeGraph.html', {'countries': country_map})
-
-
-# -------- test ----------#
-def information3(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/information3.html', {'countries': country_map})
-
-
-def following_document_comments(request):
-    return render(request, 'doc/following_document_comments.html')
-
-
-def notes(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/notes.html', {'countries': country_map})
-
-
-@allowed_users('approvals_terminology')
-def approvals_terminology(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/approvals_terminology.html', {'countries': country_map})
-
+# views function
 
 def GetAllNotesUser(request, username):
     notes = DocumentNote.objects.filter(user__username=username)
@@ -1049,153 +1275,6 @@ def GetAllNotesUser(request, username):
     return JsonResponse({"notes": result})
 
 
-@allowed_users('graph')
-def graph(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/graph2.html', {'countries': country_map})
-
-
-@allowed_users('advanced_graph')
-def graph2(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/graph3.html', {'countries': country_map})
-
-
-@allowed_users('search')
-def search(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/search2.html', {'countries': country_map})
-
-
-@allowed_users('es_search')
-def es_search(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/ES_Search3.html', {'countries': country_map})
-
-
-def dendrogram(request, country_id, ngram_type):
-    country = Country.objects.get(id=country_id)
-    folder = str(country.file.name.split("/")[-1].split(".")[0])
-    file_path = "dendrogram_plots/" + folder + "_" + str(ngram_type) + '_dendrogram.png'
-
-    return render(request, 'doc/dendrogram.html', {"file_path": file_path})
-
-
-@allowed_users('judgment_search1')
-def judgment_search(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/Judgment_Search.html', {'countries': country_map})
-
-
-@allowed_users('rahbari_search')
-def rahbari_search(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/rahbari_search.html', {'countries': country_map})
-
-
-@allowed_users('rahbari_paraghraph')
-def rahbari_paraghraph(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/rahbari_paraghraph.html', {'countries': country_map})
-
-
-@allowed_users('rahbari_subject')
-def rahbari_subject(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/rahbari_subject.html', {'countries': country_map})
-
-
-@allowed_users('rahbari_organization')
-def rahbari_organization(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/rahbari_organization.html', {'countries': country_map})
-
-
-@allowed_users('rahbari_problem_system')
-def rahbari_problem_system(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/rahbari_problem_system.html', {'countries': country_map})
-
-
-@allowed_users('rahbari_topic')
-def rahbari_topic(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/rahbari_topic.html', {'countries': country_map})
-
-
-@allowed_users('rahbari_search')
-def rahbari_labels(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/rahbari_labels.html', {'countries': country_map})
-
-
-@allowed_users('advisory_opinions_analysis')
-def advisory_opinions_analysis(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/advisory_opinions_analysis.html', {'countries': country_map})
-
-
-@allowed_users('interpretation_rules_analysis')
-def interpretation_rules_analysis(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/interpretation_rules_analysis.html', {'countries': country_map})
-
-
-@allowed_users('subject')
-def subject(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/subject3.html', {'countries': country_map})
-
-
-@allowed_users('subject_statistics')
-def subject_statistics(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/subject_statistics3.html', {'countries': country_map})
-
-
-@allowed_users('votes_analysis')
-def votes_analysis(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/vote_analysis2.html', {'countries': country_map})
-
-
-@allowed_users('leadership_slogan')
-def leadership_slogan(request):  ###
-    country_list = Country.objects.all()
-    slogan_list = Slogan.objects.all()
-    slogan_synonymous_words_list = SloganSynonymousWords.objects.all()
-    country_map = get_country_maps(country_list)  # داتیک ، ایران کامل
-    slogan_map = {i.year: f"{i.year} - {i.content}" for i in slogan_list}  # 1383 - پاسخگویی
-    slogan_map_keyword = {i.year: i.keywords for i in slogan_list}  # پاسخگویی-پاسخگو
-    slogan_map_synonymous_words = {i.year: i.words for i in slogan_synonymous_words_list}
-    return render(request, 'doc/leadership_slogan.html',
-                  {'countries': country_map, 'slogans': slogan_map, 'slogan_keyword': slogan_map_keyword,
-                   'slogan_synonymous_words': slogan_map_synonymous_words})
-
-
-@allowed_users('document_profile')
-def document_profile(request):
-    country_list = Country.objects.all().filter(name="اسناد رهبری")
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/rahbari_doc_profile.html', {'countries': country_map})
-
 
 def GetSyns(request):
     slogan_synonymous_words_list = SloganSynonymousWords.objects.all()
@@ -1203,162 +1282,7 @@ def GetSyns(request):
     return JsonResponse({'syns': slogan_map_synonymous_words})
 
 
-@allowed_users('adaptation')
-def adaptation(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/adaptation2.html', {'countries': country_map})
 
-
-def comparison(request):
-    return render(request, 'doc/comparison2.html')
-
-
-@allowed_users('subject_graph')
-def subject_graph(request):
-    return render(request, 'doc/subject_graph2.html')
-
-
-@allowed_users('regularity')
-def regularity(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/regularity.html', {'countries': country_map})
-
-
-@allowed_users('regularity_life_cycle')
-def regularity_life_cycle(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/regularity_life_cycle.html', {'countries': country_map})
-
-
-@allowed_users('window_unit')
-def window_unit(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/window_unit.html', {'countries': country_map})
-
-
-@allowed_users('business_advisor')
-def business_advisor(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/business_advisor.html', {'countries': country_map})
-
-
-@allowed_users('official_references')
-def official_references(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/official_references.html', {'countries': country_map})
-
-
-@allowed_users('principles_analysis')
-def principles_analysis(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/principles_analysis.html', {'countries': country_map})
-
-
-def future_work(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/future_work.html', {'countries': country_map})
-
-
-def recommendation(request):
-    return render(request, 'doc/recommendation.html')
-
-
-def report_bug(request):
-    return render(request, 'doc/report_bug.html')
-
-
-def portal(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/portal.html', {'countries': country_map})
-
-
-@allowed_users('approvals_list')
-def approvals_list(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/approvals_list.html', {'countries': country_map})
-
-
-@allowed_users('document_validation')
-def document_validation(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/document_validation.html', {'countries': country_map})
-
-
-@allowed_users('approvals_adaptation')
-def approvals_adaptation(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/approvals_adaptation.html', {'countries': country_map})
-
-
-@allowed_users('actors_information')
-def actors_information(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/actors_information.html', {'countries': country_map})
-
-
-@allowed_users('actors_agile')
-def actors_agile(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/actors_agile.html', {'countries': country_map})
-
-
-@allowed_users('actors_search')
-def actors_search(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/actors_search.html', {'countries': country_map})
-
-
-def actors_search_es(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/actors_search_es.html', {'countries': country_map})
-
-
-@allowed_users('actors_graph')
-def actors_graph(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/actors_graph.html', {'countries': country_map})
-
-
-@allowed_users('rahbari_graph')
-def rahbari_graph(request):
-    return render(request, 'doc/rahbari_graph.html')
-
-
-def Cancellationـanalysis(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/Cancellation_analysis.html', {'countries': country_map})
-
-
-@allowed_users('judgement_graph1')
-def judgement_graph(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/judgement_graph.html', {'countries': country_map})
-
-
-@allowed_users('compare_document')
-def compare_document(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/compare_document.html', {'countries': country_map})
 
 
 # ---------------- query ------------------------
@@ -7752,119 +7676,6 @@ def getDraftActors(request, country_id, draft_name):
     return JsonResponse({"draft_actors": draft_actors})
 
 
-def adaptation_comparison(request, country_id, document_id, draft_name, searched_keywords):
-    comparison_data = {}
-    common_keywords = []
-    searched_keywords = searched_keywords.replace(',', ' - ')
-
-    document_name = Document.objects.get(id=document_id).name
-    document_motevali_ejra_paragraphs = []
-    document_salahiat_ekhtiar_paragraphs = []
-    document_hamkaran_paragraphs = []
-
-    document_keywords = DocumentKeywords.objects.filter(
-        document_id_id=document_id).annotate(word=F('keyword_id__word')).values("word")
-
-    country_file_name = Country.objects.get(id=country_id).file_name
-    country_file_name = country_file_name.split('.')[0]
-    folder = 'media_cdn/draft/' + country_file_name
-    file_url = folder + '/' + draft_name
-
-    # read draft file and get text of it
-    file_text = docx2txt.process(file_url)
-    preprocessed_file_text = arabic_preprocessing(file_text)
-    draft_paragraphs = preprocessed_file_text.split('\n')
-
-    draft_motevali_ejra_paragraphs = []
-    draft_salahiat_ekhtiar_paragraphs = []
-    draft_hamkaran_paragraphs = []
-    draft_name = draft_name.split('.')[0]
-
-    # find patterns in document paragraphs
-
-    doc_motevali = DocumentActor.objects.filter(document_id__id=document_id,
-                                                actor_type_id__name='متولی اجرا').order_by(
-        '-paragraph_id__number').values(
-        'paragraph_id__text').annotate(
-        text=F('paragraph_id__text')).distinct()
-
-    doc_hamkar = DocumentActor.objects.filter(document_id__id=document_id,
-                                              actor_type_id__name='همکار').order_by(
-        '-paragraph_id__number').values(
-        'paragraph_id__text').annotate(
-        text=F('paragraph_id__text')).distinct()
-
-    doc_salahiat = DocumentActor.objects.filter(document_id__id=document_id,
-                                                actor_type_id__name='دارای صلاحیت اختیاری').order_by(
-        '-paragraph_id__number').values(
-        'paragraph_id__text').annotate(
-        text=F('paragraph_id__text')).distinct()
-
-    for para in doc_motevali:
-        document_motevali_ejra_paragraphs.append(para['text'])
-
-    for para in doc_hamkar:
-        document_hamkaran_paragraphs.append(para['text'])
-
-    for para in doc_salahiat:
-        document_salahiat_ekhtiar_paragraphs.append(para['text'])
-
-    # find patterns in draft paragraphs
-    for paragraph in draft_paragraphs:
-
-        if 'مکلف است' in paragraph or 'موظف است' in paragraph:
-            draft_motevali_ejra_paragraphs.append(paragraph)
-
-        if 'اختیار دارد' in paragraph or 'مختار است' in paragraph or 'مجاز است' in paragraph or 'می‌تواند' in paragraph or 'می تواند' in paragraph or 'میتواند' in paragraph:
-            draft_salahiat_ekhtiar_paragraphs.append(paragraph)
-
-        if 'با همکاری' in paragraph or 'باهمکاری' in paragraph:
-            draft_hamkaran_paragraphs.append(paragraph)
-
-    # find common keywords between document & draft
-    for keyword in document_keywords:
-        for paragraph in draft_paragraphs:
-            if keyword['word'] in paragraph:
-                common_keywords.append(keyword['word'])
-
-    common_keywords = list(set(common_keywords))
-    common_keywords_count = len(common_keywords)
-    common_keywords = ' - '.join(common_keywords)
-
-    document_motevali_ejra_paragraphs = list(
-        set(document_motevali_ejra_paragraphs))
-    document_salahiat_ekhtiar_paragraphs = list(
-        set(document_salahiat_ekhtiar_paragraphs))
-    document_hamkaran_paragraphs = list(set(document_hamkaran_paragraphs))
-
-    draft_motevali_ejra_paragraphs = list(set(draft_motevali_ejra_paragraphs))
-    draft_salahiat_ekhtiar_paragraphs = list(
-        set(draft_salahiat_ekhtiar_paragraphs))
-    draft_hamkaran_paragraphs = list(set(draft_hamkaran_paragraphs))
-
-    comparison_data = {
-        'country_id': country_id,
-        'draft_name': draft_name,
-        'document_name': document_name,
-        'document_id': document_id,
-        'draft_paragraphs': draft_paragraphs,
-
-        'document_motevali_ejra_paragraphs': document_motevali_ejra_paragraphs,
-        'document_salahiat_ekhtiar_paragraphs': document_salahiat_ekhtiar_paragraphs,
-        'document_hamkaran_paragraphs': document_hamkaran_paragraphs,
-
-        'draft_motevali_ejra_paragraphs': draft_motevali_ejra_paragraphs,
-        'draft_salahiat_ekhtiar_paragraphs': draft_salahiat_ekhtiar_paragraphs,
-        'draft_hamkaran_paragraphs': draft_hamkaran_paragraphs,
-
-        'common_keywords': common_keywords,
-        'common_keywords_count': common_keywords_count,
-        'searched_keywords': searched_keywords
-    }
-
-    return render(request, 'doc/adaptation_comparison2.html', {'comparison_data': comparison_data})
-
-
 def GetActorsList(request):
     actorsList = []
     actors = Actor.objects.all().values('forms')
@@ -8139,14 +7950,7 @@ def DeleteNgram(request, gram_id):
     return JsonResponse({"status": "OK"})
 
 
-@unathenticated_user
-def signup(request):
-    return render(request, "doc/signup.html")
 
-
-@unathenticated_user
-def login(request):
-    return render(request, "doc/login.html")
 
 
 def SaveUserLog(user_id, ip, url):
@@ -8208,10 +8012,6 @@ def CheckUserLogin(request, username, password, ip):
 
         return JsonResponse({"status": "found user"})
 
-
-@allowed_users()
-def ManageUsersTab(request):
-    return render(request, 'doc/manage_admins.html')
 
 
 @allowed_users()
@@ -8487,15 +8287,7 @@ def Admin(request):
             return HttpResponse('You are not authorized to view this page')
 
 
-@allowed_users('admin_waiting_user')
-def getRegisteredUser(request):
-    data = User.objects.all().filter(is_active=0)
-    return render(request, 'doc/admin_waiting_user.html', {'data': data})
 
-
-def getRegisteredUser2(request):
-    data = User.objects.all().filter(is_active=0)
-    return render(request, 'doc/admin_waiting_user2.html', {'data': data})
 
 
 @allowed_users('admin_waiting_user', 'admin_accepted_user')
@@ -8543,14 +8335,7 @@ def GetUserRole(request):
     return JsonResponse({"user_roles": result})
 
 
-@allowed_users('admin_accepted_user')
-def seeAcceptedUser(request):
-    activated_user = User.objects.all().filter(is_active=1)
-    return render(request, 'doc/admin_accepted_user.html', {'activated_user': activated_user})
 
-
-def pdf2text(request):
-    return render(request, 'doc/pdf2text.html')
 
 
 def UserLogSaved(request, username, url, sub_url='0', ip='0'):
@@ -8582,19 +8367,7 @@ def UserDeployLogSaved(request, username, detail):
     return JsonResponse({"status": "OK"})
 
 
-@allowed_users('super_admin_user_log')
-def showUserLogs(request):
-    users = User.objects.all().filter(is_active=1)
-    return render(request, 'doc/admin_user_log.html', {'users': users})
 
-
-@allowed_users('admin_upload')
-def admin_upload(request):
-    return render(request, 'doc/admin_upload.html')
-
-
-def showDeployLogs(request):
-    return render(request, 'doc/Deploy_server_time.html')
 
 
 def gregorian_to_jalali(gy, gm, gd):
@@ -10292,13 +10065,6 @@ def GetRegularityParagraphsByToolName_Modal(request, country_id, tool_name, area
     return JsonResponse({"tool_paragraphs_result": tool_paragraphs_result})
 
 
-@allowed_users('definition')
-def definition(request):
-    country = Country.objects.all()
-    country_map = get_country_maps(country)
-    return render(request, 'doc/definition.html', {'countries': country_map})
-
-
 def GetMostRepetitiveKeywords(request, country_id, subject_ids):
     subject_ids = subject_ids.split("_")
     subject_ids = [int(i) for i in subject_ids]
@@ -10480,27 +10246,6 @@ def SearchDocumentsDefinitionByCountryId(request, country_id, subject_ids):
             document_list.append(doc_info)
             keywords_information[keyword] = document_list
     return JsonResponse({'keywords_information': keywords_information})
-
-
-def window_unit(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/window_unit.html', {'countries': country_map})
-
-
-@allowed_users('collective_actors')
-def collective_actors(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    # return render(request, 'doc/collective_actors2.html', {'countries': country_map})
-    return render(request, 'doc/collective_actors_ES.html', {'countries': country_map})
-
-
-def collective_actors_es(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/collective_actors_ES.html', {'countries': country_map})
-
 
 # Window unit
 def searchDocumentsByWindowUnit(request, country_id):
@@ -11310,52 +11055,6 @@ def GetOfficialReferencesParagraphs_Detail_Modal(request, document_id):
 # ##################### General views ##############################
 
 
-# sample tamplate view
-def sample_template(request, panel_name):
-    if panel_name == 'login':
-        return redirect('login')
-
-    else:
-
-        country_list = Country.objects.all()
-        country_map = get_country_maps(country_list)
-
-        panel = Template_Panels_Info.objects.get(panel_name=panel_name)
-        panel_info = {}
-
-        panel_info['panel_name'] = panel.panel_name
-        panel_info['page_title'] = panel.page_title
-        panel_info['keywords_info'] = panel.keywords_info
-        panel_info['optional_keywords_info'] = panel.optional_keywords_info
-
-        keywords_text = ''
-        kw_templates_text = ''
-        optional_keywords_text = ''
-
-        for kw in panel_info['keywords_info']["keyword_list"]:
-            for h_kw in kw['highlight_template']:
-                keywords_text += (h_kw + ':' + str(kw['after_terms_count'])) + ','
-
-            kw_templates_text += kw['searched_template'] + ','
-
-        keywords_text = keywords_text[:-1]
-        kw_templates_text = kw_templates_text[:-1]
-
-        for kw in panel_info['optional_keywords_info']["optional_keyword_list"]:
-            for h_kw in kw['highlight_template']:
-                optional_keywords_text += (h_kw + ':' + str(kw['after_terms_count'])) + ','
-
-        optional_keywords_text = optional_keywords_text[:-1]
-
-        return render(request, 'doc/sample_template.html',
-                      {'countries': country_map,
-                       'panel_info': panel_info,
-                       'kw_templates_text': kw_templates_text,
-                       'keywords_text': keywords_text,
-                       'optional_keywords_text': optional_keywords_text}
-                      )
-
-
 # documents information table view
 def searchDocumentsBy__keyword__(request, panel_name, country_id, subjects):
     documents_information_list = []
@@ -11672,13 +11371,6 @@ def Get_Portal_ActorParagraphs_ByColumn_Modal(request, panel_name, country_id, s
 
 
 # ##################### --------------------------------- ##############################
-
-@allowed_users('legal_literature_adaptation')
-def legal_literature_adaptation(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/legal_literature_adaptation_es.html', {'countries': country_map})
-
 
 # Actor panel
 
@@ -15690,33 +15382,6 @@ def GetPrinciple_ChartsData(request, country, text=''):
     return JsonResponse({'result': result})
 
 
-def executive_regulations_analysis(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/executive_regulations_analysis.html', {'countries': country_map})
-
-
-@allowed_users('executive_regulations_analysis_v2')
-def executive_regulations_analysis2(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/executive_regulations_analysis2.html', {'countries': country_map})
-
-
-@allowed_users('executive_regulations_analysis_v3')
-def executive_regulations_analysis3(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/executive_regulations_analysis3.html', {'countries': country_map})
-
-
-@allowed_users('revoked_document1')
-def revoked_document(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/revoked_search_ES.html', {'countries': country_map})
-
-
 def GetMandatoryRegulations(request, country_id):
     result_data = CUBE_MandatoryRegulations_TableData.objects.filter(country_id_id=country_id)
     documents_information_result = []
@@ -15847,12 +15512,6 @@ def GetMandatoryRegulationsDetail(request, regulator_id):
 
 
 # AI Function
-def AI_similarity_graph(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/AI_similarity_graph.html', {'countries': country_map})
-
-
 def AIGetGraphSimilarityMeasure(request):
     return JsonResponse({'measure_list': [{'id': 1, 'name': 'استفاده از bert'}]})
 
@@ -15930,39 +15589,9 @@ def AIGetGraphEdgesByDocumentIdMeasure(request, country_id, src_doc_id, src_type
     return JsonResponse({'graph_edge_list': result, "graph_type": graph_type})
 
 
-@allowed_users('AI_topics')
-def AI_topics(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/AI_topics.html', {'countries': country_map})
 
 
-# @allowed_users('AI_topics')
-def paragrraph_clustering(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/paragraph_clustering2.html', {'countries': country_map})
 
-
-# @allowed_users('AI_topics')
-def decision_tree(request, country_id, clustering_algorithm_id):
-    country = Country.objects.get(id=country_id)
-
-    result = {"id": country.id,
-              "name": country.name,
-              "folder": str(country.file.name.split("/")[-1].split(".")[0]),
-              "language": country.language,
-              "clustering_algorithm_id": clustering_algorithm_id
-              }
-
-    return render(request, 'doc/decision_tree.html', {"country_info": result})
-
-
-@allowed_users('AI_topics')
-def document_subject_area(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/document_subject_area_ES.html', {'countries': country_map})
 
 
 def AIGetDocSimilarities(request, country_id):
@@ -16247,16 +15876,7 @@ def ChangeReportBugCheckStatus(request, report_bug_id):
     return JsonResponse({"status": "OK"})
 
 
-@allowed_users('admin_user_recommendation')
-def get_user_recommendation(request):
-    recommendation = Recommendation.objects.all()
-    return render(request, 'doc/admin_user_recommendation.html', {'recommendation': recommendation})
 
-
-@allowed_users('admin_user_report_bug')
-def get_user_report_bug(request):
-    reports = Report_Bug2.objects.order_by('checked', 'date')
-    return render(request, 'doc/admin_user_report_bug.html', {'report_bug': reports})
 
 
 @allowed_users('admin_user_report_bug')
@@ -16997,37 +16617,7 @@ def changeCommentState(request, comment_id, state):
     return JsonResponse({"status": state})
 
 
-@allowed_users('admin_accept_user_comments')
-def seeAllComment(request):
-    comments = DocumentComment2.objects.all().order_by('is_accept')
 
-    result = []
-    for c in comments:
-        agreed_count = DocumentCommentVote.objects.filter(document_comment=c.id, agreed=True).count()
-        disagreed_count = DocumentCommentVote.objects.filter(document_comment=c.id, agreed=False).count()
-
-        result.append(
-            {"comment": c.comment, "id": c.id, "first_name": c.user.first_name, "last_name": c.user.last_name,
-             "agreed_count": agreed_count, "disagreed_count": disagreed_count, "document_name": c.document.name,
-             "is_accept": c.is_accept, "time": c.time})
-
-    return render(request, 'doc/admin_accept_user_comments.html', {'comments': result})
-
-
-def seeAllComment2(request):
-    comments = DocumentComment2.objects.all()
-
-    result = []
-    for c in comments:
-        agreed_count = DocumentCommentVote.objects.filter(document_comment=c.id, agreed=True).count()
-        disagreed_count = DocumentCommentVote.objects.filter(document_comment=c.id, agreed=False).count()
-
-        result.append(
-            {"comment": c.comment, "id": c.id, "first_name": c.user.first_name, "last_name": c.user.last_name,
-             "agreed_count": agreed_count, "disagreed_count": disagreed_count, "document_name": c.document.name,
-             "is_accept": c.is_accept})
-
-    return render(request, 'doc/admin_accept_user_comments2.html', {'comments': result})
 
 
 def changeVoteState(request, username, document_comment, state):
@@ -17171,22 +16761,6 @@ def GetUserComments(request, user_id, hashtag_id):
     return JsonResponse({"comments": result})
 
 
-@allowed_users()
-def book_analysis(request):
-    country_list = Country.objects.all()
-    country_map = get_book_maps(country_list)
-    return render(request, 'doc/book_analysis.html', {'countries': country_map})
-
-
-@allowed_users()
-def admin_book_upload(request):
-    return render(request, 'doc/admin_book_upload.html')
-
-
-def ShowMyUserProfile(request):
-    return render(request, "doc/myprofile.html", {})
-
-
 def SetMyUserProfile(request):
     if request.method != 'POST':
         return JsonResponse({"status": "Method not supported"})
@@ -17256,10 +16830,6 @@ def GetMyUserProfile(request):
     }})
 
 
-def ShowUserProfile(request):
-    return render(request, "doc/userprofile.html", {})
-
-
 def GetUserProfile(request, id):
     user = User.objects.get(id=id)
     user_expertise = User_Expertise.objects.filter(user_id=id)
@@ -17296,9 +16866,6 @@ def GetAllUserCommentHashtags(request):
     return JsonResponse({"hash_tags": result})
 
 
-def submit_book_api(request):
-    return render(request, "doc/submit_book_api.html", {})
-
 
 def download_book(request, folder_name, filename):
     dataPath = str(Path(config.DATA_PATH, folder_name))
@@ -17312,62 +16879,6 @@ def download_book(request, folder_name, filename):
     except:
         return HttpResponse(dataPath + '\\' + filename)
 
-
-@allowed_users('submit_book_informations')
-def submit_book_informations(request):
-    return render(request, "doc/submit_book_informations.html", {})
-
-
-@allowed_users()
-def admin_submit_book_informations(request):
-    return render(request, "doc/admin_submit_book_informations.html", {})
-
-
-@allowed_users('book_requests')
-def book_requests(request):
-    return render(request, "doc/book_requests.html", {})
-
-
-@allowed_users('book_information')
-def book_information(request):
-    country_list = Country.objects.all()
-    country_map = get_book_maps(country_list)
-    return render(request, "doc/book_information.html", {'countries': country_map})
-
-
-@allowed_users('book_search')
-def book_search(request):
-    country_list = Country.objects.all()
-    country_map = get_book_maps(country_list)
-    return render(request, "doc/book_search.html", {'countries': country_map})
-
-
-@allowed_users('book_disagreement_with_rules')
-def book_disagreement_with_rules(request):
-    country_list = Country.objects.all()
-    country_map = get_book_maps(country_list)
-    return render(request, "doc/book_disagreement_with_rules.html", {'countries': country_map})
-
-
-@allowed_users('book_graph')
-def book_graph(request):
-    country_list = Country.objects.all()
-    country_map = get_book_maps(country_list)
-    return render(request, "doc/book_graph.html", {'countries': country_map})
-
-
-@allowed_users('flow_detection')
-def flow_detection(request):
-    country_list = Country.objects.all()
-    country_map = get_book_maps(country_list)
-    return render(request, "doc/flow_detection.html", {'countries': country_map})
-
-
-@allowed_users('cancellation')
-def cancellation(request):
-    country_list = Country.objects.all()
-    country_map = get_book_maps(country_list)
-    return render(request, "doc/cancellation.html", {'countries': country_map})
 
 
 def get_all_books(request):
@@ -18096,9 +17607,6 @@ def GetUnknownDocuments(request):
     return JsonResponse({"result": result})
 
 
-def DownloadUnknownDocuments(request):
-    return render(request, 'doc/download_unknown_documents.html')
-
 
 def GetIndictmentDocs(request):
     result = []
@@ -18118,35 +17626,6 @@ def GetIndictmentDocs(request):
         result.append(doc_info)
 
     return JsonResponse({"result": result})
-
-
-@allowed_users('standard_information')
-def standard_information(request):
-    country_list = Country.objects.all()
-    country_map = get_standard_maps(country_list)
-    return render(request, "doc/standard_information.html", {'countries': country_map})
-
-
-@allowed_users('standard_search')
-def standard_search(request):
-    country_list = Country.objects.all()
-    country_map = get_standard_maps(country_list)
-    return render(request, "doc/standard_search.html", {'countries': country_map})
-
-
-@allowed_users('standard_graph')
-def standard_graph(request):
-    country_list = Country.objects.all()
-    country_map = get_standard_maps(country_list)
-    return render(request, "doc/standard_graph.html", {'countries': country_map})
-
-
-@allowed_users('standard_graph_v2')
-def standard_graph_v2(request):
-    country_list = Country.objects.all()
-    country_map = get_standard_maps(country_list)
-    return render(request, "doc/standard_graph_v2.html", {'countries': country_map})
-
 
 def GetStandardDocumentById(request, document_id):
     document = Document.objects.get(id=document_id)
@@ -18298,9 +17777,6 @@ def SearchDocument_ES_Standard(request, country_id, branch, subject_category, st
         'total_hits': total_hits})
 
 
-@allowed_users('admin_standard_upload')
-def admin_standard_upload(request):
-    return render(request, 'doc/admin_standard_upload.html')
 
 
 def GetJudgementTypeByCountryId(request, country_id):
@@ -18380,29 +17856,7 @@ def saw_help(request, url):
     user = User.objects.get(username=username)
     UserHelpSeen.objects.create(user=user, url=url)
     return JsonResponse({})
-    return redirect('zip')
 
-
-@allowed_users('judge_behavior_analysis')
-def judge_dashboard(request):
-    return render(request, 'doc/judge_dashboard.html')
-
-
-@allowed_users('judge_profile')
-def judge_profile(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    judges_map = {}
-    judges = JudgmentJudge.objects.all().values(
-        'id', 'name').distinct().order_by('name')
-    for judge in judges:
-        res = {
-            'id': judge['id'],
-            'name': judge['name']
-        }
-        judges_map[judge['id']] = judge['name']
-
-    return render(request, 'doc/judge_profile.html', {'countries': country_map, 'judges': judges_map})
 
 
 def get_judge_profile_data(request, judge_id):
@@ -18657,15 +18111,6 @@ def get_judge_dashboard_data(request):
         "years": all_years
     })
 
-
-@allowed_users('judge_behavior_analysis')
-def specific_judge_profile(request):
-    return render(request, 'doc/specific_judge_profile.html')
-
-
-# @allowed_users('judge_behavior_analysis')
-# def judge_behavior_analysis(request):
-#     return render(request, 'doc/judge_dashboard.html')
 
 def GetRevokedTableData(request, country_id):
     revoked_data = RevokedDocument.objects.filter(country_id_id=country_id)
@@ -19859,20 +19304,6 @@ def delete_topic_paragraphs(request):
     return HttpResponse("deleted.")
 
 
-# Subject Keyword Graph and Subject Recognition
-@allowed_users('SubjectKeywordGraph')
-def SubjectKeywordGraph(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/SubjectKeywordGraph.html', {'countries': country_map})
-
-
-@allowed_users('ManualClustering')
-def ManualClustering(request):
-    country_list = Country.objects.all()
-    country_map = get_country_maps(country_list)
-    return render(request, 'doc/manual_clustering.html', {'countries': country_map})
-
 
 def BoostingSearchParagraph_ES(request, country_id, curr_page, result_size):
     res_query = {"bool": {
@@ -20619,9 +20050,6 @@ def DeleteKnowledgeGraph(request, graph_id):
     KnowledgeGraphVersion.objects.filter(id=graph_id).delete()
     return JsonResponse({'responce': "OK"})
 
-
-def sentiment_analysis_panel(request):
-    return render(request, 'doc/sentiment_analysis.html')
 
 
 def GetParagraphBy_ID(request, paragraph_id):
