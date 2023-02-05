@@ -1607,7 +1607,7 @@ def rahbari_document_name_chart_column(request, document_id, name, field_name, c
                     }
                 },
                 {
-                    "match_phrase": {
+                    "term": {
                         field_name: name
                     }
                 }
