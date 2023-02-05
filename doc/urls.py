@@ -19,8 +19,6 @@ urlpatterns = [
     path('docs_clause_extractor/<int:id>/', views.docs_clause_extractor, name='docs_clause_extractor'),
     path('docs_approval_reference_extractor/<int:id>/', views.docs_approval_reference_extractor,
          name='docs_approval_reference_extractor'),
-    path('docs_definitions_extractor/<int:id>/', views.docs_definitions_extractor, name='docs_definitions_extractor'),
-    path('docs_subject_extractor/<int:id>/', views.docs_subject_extractor, name='docs_subject_extractor'),
     path('docs_actors_extractor/<int:id>/', views.docs_actors_extractor, name='docs_actors_extractor'),
     path('docs_lda_topic_extraction/<int:id>/', views.docs_lda_topic_extraction, name='docs_lda_topic_extraction'),
     path('template_panels_data_import_db/<int:id>/', views.template_panels_data_import_db,
