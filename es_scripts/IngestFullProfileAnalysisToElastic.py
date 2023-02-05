@@ -1,3 +1,5 @@
+import json
+
 from abdal import es_config
 import base64
 from django.db.models import F
@@ -24,9 +26,16 @@ class FullProfileIndex(ES_Index):
             classification_subject = record['classification_subject']
             sentiment = record['sentiment']
 
-            persons = record['persons'].split(";") if record['persons'] != '' else ['بدون شخص حقیقی']
-            locations = record['locations'].split(";") if record['locations'] != '' else ['بدون موقعیت مکانی']
-            organizations = record['organizations'].split(";") if record['organizations'] != '' else ['بدون ذکر سازمان']
+            persons_list = json.loads(record['persons'].replace("\'", "\""))
+            locations_list = json.loads(record['locations'].replace("\'", "\""))
+            organizations_list = json.loads(record['organizations'].replace("\'", "\""))
+            # moneys_list = json.loads(record['moneys'].replace("\'", "\""))
+            # dates_list = json.loads(record['dates'].replace("\'", "\""))
+
+            persons = [item['word'] for item in persons_list] if len(persons_list) != 0 else ['بدون شخص حقیقی']
+            locations = [item['word'] for item in locations_list] if len(locations_list) != 0 else ['بدون موقعیت مکانی']
+            organizations = [item['word'] for item in organizations_list] if len(organizations_list) != 0 else [
+                'بدون ذکر سازمان']
 
             date = self.paragraph_document_fields[paragraph_id]['date']
             rahbari_date = date if date != None else 'نامشخص'
@@ -55,12 +64,15 @@ class FullProfileIndex(ES_Index):
             new_doc = {
                 "paragraph_id": paragraph_id,
                 "document_id": document_id,
-                "document_name": document_name,
-                'classification_subject': classification_subject,
                 'sentiment': sentiment,
                 'persons': persons,
                 'locations': locations,
+                "document_name": document_name,
                 'organizations': organizations,
+                'persons_object': persons_list,
+                'locations_object': locations_list,
+                'classification_subject': classification_subject,
+                'organizations_object': organizations_list,
                 "rahbari_date": rahbari_date,
                 "rahbari_year": rahbari_year,
                 "labels": rahbari_labels,
