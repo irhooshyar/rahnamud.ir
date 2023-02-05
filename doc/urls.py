@@ -95,25 +95,17 @@ urlpatterns = [
     path('GetUnknownDocuments/', views.GetUnknownDocuments, name='GetUnknownDocuments'),
     path('DownloadUnknownDocuments/', views.DownloadUnknownDocuments, name='DownloadUnknownDocuments'),
     path('information/', views.information, name='information'),
-    path('information3/', views.information3, name='information3'),
     path('following_document_comments/', views.following_document_comments, name='following_document_comments'),
     path('notes/', views.notes, name='notes'),
-    path('approvals_terminology/', views.approvals_terminology, name='approvals_terminology'),
-    path('judge_dashboard/', views.judge_dashboard, name='judge_dashboard'),
     path('get_judge_profile_data/<int:judge_id>/', views.get_judge_profile_data, name='get_judge_profile_data'),
     path('get_all_judges/', views.get_all_judges, name='get_all_judges'),
     path('get_judge_dashboard_data/', views.get_judge_dashboard_data, name='get_judge_dashboard_data'),
-    path('specific_judge_profile/', views.specific_judge_profile, name='specific_judge_profile'),
     #     path('judge_behavior_analysis', views.judge_behavior_analysis, name='judge_behavior_analysis'),
     path('GetAllNotesUser/<str:username>/', views.GetAllNotesUser, name='GetAllNotesUser'),
-    path('graph/', views.graph, name='graph'),
     path('graph2/', views.graph2, name='graph2'),
-    path('search/', views.search, name='search'),
     path('es_search/', views.es_search, name='es_search'),
     path('dendrogram/<int:country_id>/<str:ngram_type>/', views.dendrogram, name='dendrogram'),
     path('decision_tree/<int:country_id>/<int:clustering_algorithm_id>/', views.decision_tree, name='decision_tree'),
-    path('judgment_search/', views.judgment_search, name='judgment_search'),
-    path('judgment_validation/', views.judgment_search, name='judgment_validation'),
     path('rahbari_search/', views.rahbari_search, name='rahbari_search'),
     path('rahbari_paraghraph/', views.rahbari_paraghraph, name='rahbari_paraghraph'),
     path('rahbari_subject/', views.rahbari_subject, name='rahbari_subject'),
@@ -121,20 +113,13 @@ urlpatterns = [
     path('rahbari_problem_system/', views.rahbari_problem_system, name='rahbari_problem_system'),
     path('rahbari_topic/', views.rahbari_topic, name='rahbari_topic'),
     path('rahbari_labels/', views.rahbari_labels, name='rahbari_labels'),
-    path('subject/', views.subject, name='subject'),
-    path('subject_statistics/', views.subject_statistics, name='subject_statistics'),
-    path('votes_analysis/', views.votes_analysis, name='votes_analysis'),
     path('leadership_slogan/', views.leadership_slogan, name='leadership_slogan'),
     path('document_profile/', views.document_profile, name='document_profile'),
-    path('adaptation/', views.adaptation, name='adaptation'),
     path('comparison/', views.comparison, name='comparison'),
-    path('adaptation_comparison/<int:country_id>/<int:document_id>/<str:draft_name>/<str:searched_keywords>/',
-         views.adaptation_comparison, name='adaptation_comparison'),
     path('GetRahbariDocumentById/<int:country_id>/<int:document_id>/',
          views.GetRahbariDocumentById, name='GetRahbariDocumentById'),
     path('rahbari_document_get_full_profile_analysis/<int:country_id>/<int:document_id>/',
          views.rahbari_document_get_full_profile_analysis, name='rahbari_document_get_full_profile_analysis'),
-    path('subject_graph/', views.subject_graph, name='subject_graph'),
     path("signup/", views.signup, name="signup"),
     path("login/", views.login, name="login"),
     path("admin/", views.Admin, name="admin"),
@@ -159,59 +144,15 @@ urlpatterns = [
     path("admin_accept_user_comments/", views.seeAllComment, name="admin_accept_user_comments"),
     path("admin_confirm_user_comments/", views.seeAllComment2, name="admin_confirm_user_comments"),
     path("admin_upload/", views.admin_upload, name="admin_upload"),
-    path("admin_book_upload/", views.admin_book_upload, name="admin_book_upload"),
-    path("pdf2text/", views.pdf2text, name="pdf2text"),
-    path("regularity/", views.regularity, name="regularity"),
-    path("regularity_life_cycle/", views.regularity_life_cycle, name="regularity_life_cycle"),
-    path('definition/', views.definition, name='definition'),
-    path("business_advisor/", views.business_advisor, name='business_advisor'),
-    path("executive_regulations_analysis/", views.executive_regulations_analysis,
-         name='executive_regulations_analysis'),
-    path("executive_regulations_analysis_v2/", views.executive_regulations_analysis2,
-         name='executive_regulations_analysis_v2'),
-    path("executive_regulations_analysis_v3/", views.executive_regulations_analysis3,
-         name='executive_regulations_analysis_v3'),
-    path("revoked_document/", views.revoked_document, name='revoked_document'),
-
-    path("window_unit/", views.window_unit, name='window_unit'),
-    path("collective_actors/", views.collective_actors, name='collective_actors'),
-    path("collective_actors_es/", views.collective_actors_es, name='collective_actors_es'),
-    path("official_references/", views.official_references, name='official_references'),
     path('recommendation/', views.recommendation, name='recommendation'),
     path('report_bug/', views.report_bug, name='report_bug'),
-    path("future_work/", views.future_work, name='future_work'),
-    path("principles_analysis/", views.principles_analysis, name='principles_analysis'),
-    path("portal/", views.portal, name='portal'),
-    path("actors_information/", views.actors_information, name='actors_information'),
-    # path("actors_search/", views.actors_search, name='actors_search'),
-    path("actors_search/", views.actors_search_es, name='actors_search'),
-    path("actors_graph/", views.actors_graph, name='actors_graph'),
-    path("actors_agile/", views.actors_agile, name='actors_agile'),
-    path("approvals_list/", views.approvals_list, name='approvals_list'),
-    path("document_validation/", views.document_validation, name='document_validation'),
     path("approvals_adaptation/", views.approvals_adaptation, name='approvals_adaptation'),
-    path("legal_literature_adaptation/", views.legal_literature_adaptation, name="legal_literature_adaptation"),
-    path("Cancellationـanalysis/", views.Cancellationـanalysis, name='Cancellationـanalysis'),
-    path("compare_document/", views.compare_document, name='compare_document'),
-
-    path('judgement_graph/', views.judgement_graph, name='judgement_graph'),
     path('GetJudgementTypeByCountryId/<int:country_id>/', views.GetJudgementTypeByCountryId,
          name='GetJudgementTypeByCountryId'),
     path('GetJudgementGraphNodesEdges/<int:country_id>/<str:selected_type>/', views.GetJudgementGraphNodesEdges,
          name='GetJudgementGraphNodesEdges'),
-
-    path('book_analysis/', views.book_analysis, name='book_analysis'),
-
-    # books v2
-    path('submit_book_informations/', views.submit_book_informations, name='submit_book_informations'),
     path('admin_submit_book_informations/', views.admin_submit_book_informations,
          name='admin_submit_book_informations'),
-    path('book_requests/', views.book_requests, name='book_requests'),
-    path('book_information/', views.book_information, name='book_information'),
-    path('book_search/', views.book_search, name='book_search'),
-    path('book_graph/', views.book_graph, name='book_graph'),
-    path('book_disagreement_with_rules/', views.book_disagreement_with_rules, name='book_disagreement_with_rules'),
-    path('flow_detection/', views.flow_detection, name='flow_detection'),
     path('GetBookSimilarityMeasureByCountry/<int:country_id>/', views.GetBookSimilarityMeasureByCountry,
          name='GetBookSimilarityMeasureByCountry'),
     path('GetBookGraphDistribution/<int:country_id>/<int:measure_id>/', views.GetBookGraphDistribution,
@@ -235,17 +176,12 @@ urlpatterns = [
          name='GetSimilarParagraphs_ByParagraphID'),
 
     # standard
-    path('standard_information/', views.standard_information, name='standard_information'),
-    path('standard_search/', views.standard_search, name='standard_search'),
-    path('standard_graph/', views.standard_graph, name='standard_graph'),
-    path("admin_standard_upload/", views.admin_standard_upload, name="admin_standard_upload"),
     path('GetStandardDocumentById/<int:document_id>/', views.GetStandardDocumentById, name="GetStandardDocumentById"),
     path('GetStandardsSearchParameters/<int:country_id>/', views.GetStandardsSearchParameters,
          name="GetStandardsSearchParameters"),
     path(
         'SearchDocument_ES_Standard/<int:country_id>/<int:branch>/<int:subject_category>/<int:status>/<int:from_year>/<int:to_year>/<str:place>/<str:text>/<str:search_type>/',
         views.SearchDocument_ES_Standard, name='SearchDocument_ES_Standard'),
-    path('standard_graph_v2/', views.standard_graph_v2, name='standard_graph_v2'),
     path('GetStandardTypeByCountryId/<int:country_id>/', views.GetStandardTypeByCountryId,
          name='GetStandardTypeByCountryId'),
     path('GetStandardGraphNodesEdges/<int:country_id>/<str:selected_type>/', views.GetStandardGraphNodesEdges,
@@ -372,7 +308,6 @@ urlpatterns = [
     path('SearchGeneralDefinitions_ES/<int:country_id>/<str:type>/<int:is_term>/<int:curr_page>/<str:text>/',
          views.SearchGeneralDefinitions_ES, name='SearchGeneralDefinitions_ES'),
 
-    path('advisory_opinions_analysis/', views.advisory_opinions_analysis, name='advisory_opinions_analysis'),
     path('GetAdvisoryOpinionsReferencesByDocumentId/<str:doc_id>/', views.GetAdvisoryOpinionsReferencesByDocumentId,
          name='GetAdvisoryOpinionsReferencesByDocumentId'),
     path('GetAdvisoryChartInformation/<str:doc_id>/', views.GetAdvisoryChartInformation,
@@ -390,8 +325,6 @@ urlpatterns = [
     path('GetBooksSearchParameters/<int:country_id>/', views.GetBooksSearchParameters, name='GetBooksSearchParameters'),
     path('GetRahbariSearchParameters/<int:country_id>/', views.GetRahbariSearchParameters,
          name='GetRahbariSearchParameters'),
-    path('interpretation_rules_analysis/', views.interpretation_rules_analysis, name='interpretation_rules_analysis'),
-
     path(
         'SearchRahbari_ES/<int:country_id>/<int:type_id>/<str:label_name>/<int:from_year>/<int:to_year>/<str:rahbari_type>/<str:document_ids>/<str:place>/<str:text>/<str:search_type>/<int:curr_page>/<int:search_result_size>/',
         views.SearchRahbari_ES, name='SearchRahbari_ES'),
@@ -768,7 +701,6 @@ urlpatterns = [
          views.GetDetailChartSloganAnalysis, name='GetDetailChartSloganAnalysis'),
 
     # Sample template
-    path("sample_template/<str:panel_name>/", views.sample_template, name='sample_template'),
     path('searchDocumentsBy__keyword__/<str:panel_name>/<int:country_id>/<str:subjects>/',
          views.searchDocumentsBy__keyword__, name='searchDocumentsBy__keyword__'),
     path('Generate__keyword__ChartsData/<str:panel_name>/<int:country_id>/<str:subjects>/',
@@ -805,7 +737,6 @@ urlpatterns = [
          views.make_chart_data_business_advisor, name='make_chart_data_business_advisor'),
 
     # AI
-    path("AI_similarity_graph/", views.AI_similarity_graph, name='AI_similarity_graph'),
     path('AIGetGraphSimilarityMeasure/', views.AIGetGraphSimilarityMeasure,
          name='AIGetGraphSimilarityMeasure'),
     path('AI_predict_subject_LDA/<int:country_id>/<int:number_of_topic>/', views.GetDocumentsPredictSubjectLDA,
@@ -871,7 +802,6 @@ urlpatterns = [
     path('reject_follower/<int:id>/', views.reject_follower, name='reject_follower'),
 
     # book
-    path('submit_book_api/', views.submit_book_api, name='submit_book_api'),
     path('download_book/<str:folder_name>/<str:filename>/', views.download_book, name='download_book'),
 
     path('create_expertise_sample/', views.create_expertise_sample, name='create_expertise_sample'),
@@ -881,7 +811,6 @@ urlpatterns = [
 
     path('get_similarity_highlighted_text/<int:doc_id_1>/<int:doc_id_2>/<str:measure>/',
          views.get_similarity_highlighted_text, name='get_similarity_highlighted_text'),
-    path('cancellation/', views.cancellation, name='cancellation'),
     path('indictment_to_db/<int:id>/', views.indictment_to_db, name='indictment_to_db'),
     path('GetIndictmentDocs/', views.GetIndictmentDocs, name='GetIndictmentDocs'),
 
@@ -996,9 +925,6 @@ urlpatterns = [
          views.GetDetail_DoticSimDocument_ByLabels, name='GetDetail_DoticSimDocument_ByLabels'),
 
     path('GetParaSimilarity/<int:doc1_id>/<int:doc2_id>/', views.GetParaSimilarity, name='GetParaSimilarity'),
-
-    path("document_subject_area/", views.document_subject_area, name='document_subject_area'),
-
     path(
         'Get_SubjectArea_Documents/<int:country_id>/<int:SubjectAreaSelect_id>/<str:multiselect_SubjectSubArea_value>/<str:ValidationSelect>/<str:RevokedSizeSelect>/<str:SubTypeSelect>/',
         views.Get_SubjectArea_Documents, name='Get_SubjectArea_Documents'),
@@ -1021,8 +947,6 @@ urlpatterns = [
     path('trial_law_import/<int:id>/', views.trial_law_import, name='trial_law_import'),
     path('GetTrialLawByCountryId/<int:country_id>/<str:host>/', views.GetTrialLawByCountryId,
          name='GetTrialLawByCountryId'),
-
-    path("SubjectKeywordGraph/", views.SubjectKeywordGraph, name='SubjectKeywordGraph'),
     path("SubjectKeywordGraphExtractor/<int:version>/", views.SubjectKeywordGraphExtractor,
          name='SubjectKeywordGraphExtractor'),
     path("TextSubjectExtractor/", views.TextSubjectExtractor, name='TextSubjectExtractor'),
@@ -1034,7 +958,6 @@ urlpatterns = [
     path(
         "rahbari_document_classification_chart_column/<int:document_id>/<str:subject>/<int:curr_page>/<int:result_size>/",
         views.rahbari_document_classification_chart_column, name='rahbari_document_classification_chart_column'),
-
     path(
         "rahbari_document_name_chart_column/<int:document_id>/<str:name>/<str:field_name>/<int:curr_page>/<int:result_size>/",
         views.rahbari_document_name_chart_column, name='rahbari_document_name_chart_column'),
