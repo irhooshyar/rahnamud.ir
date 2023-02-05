@@ -14,17 +14,23 @@ AllPanels = {
 
     'document_profile': {
         'persian_name': 'پروفایل اسناد رهبری',
-        'sub_panels': {}
+        'sub_panels': {
+            'document_profile': 'پروفایل اسناد رهبری',
+        }
     },
 
     'rahbari_search': {
         'persian_name': 'جست‌وجوی در بیانات و ابلاغیه‌ها',
-        'sub_panels': {}
+        'sub_panels': {
+            'rahbari_search': 'جست‌وجوی در بیانات و ابلاغیه‌ها',
+        }
     },
     
-    'document_profile': {
+    'approvals_adaptation': {
         'persian_name': 'انطباق‌سنجی مصوبات',
-        'sub_panels': {}
+        'sub_panels': {
+            'approvals_adaptation': 'انطباق‌سنجی مصوبات',
+        }
     },
 
     'rahbari_analysis': {
