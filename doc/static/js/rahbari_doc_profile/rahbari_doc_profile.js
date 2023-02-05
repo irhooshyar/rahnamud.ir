@@ -596,6 +596,15 @@ async function show_detail_modal(Key, chart_name, field_value) {
     click_name_chart(document_id, text, chart_name, field_value)
 }
 
+function custom_highlight_function(paragraph, highlight_parameters) {
+    let selected_word = highlight_parameters["selected_word"]
+    selected_word = selected_word.trim()
+    let selected_word_tag = '<span class="text-primary fw-bold">' + selected_word + '</span>'
+
+    paragraph = paragraph.replaceAll(selected_word, selected_word_tag)
+    return paragraph;
+}
+
 async function click_name_chart(document_id, text, chart_name, field_value) {
     startBlockUI("کلیک روی نمودار")
     const request_link = 'http://' + location.host + "/rahbari_document_name_chart_column/" + document_id + "/" + text + "/" + field_value + "/";
@@ -626,10 +635,12 @@ async function click_name_chart(document_id, text, chart_name, field_value) {
         "btn_id": "ExportExcel_2"
     }
 
+    highlight_parameters = {"selected_word": text}
+
     highlight_configs = {
-        "parameters": null,
-        "highlight_enabled": false,
-        "custom_function": null
+        "parameters": highlight_parameters,
+        "highlight_enabled": true,
+        "custom_function": custom_highlight_function
     }
 
     modal_configs = {

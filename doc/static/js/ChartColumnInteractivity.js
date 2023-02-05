@@ -60,6 +60,7 @@ class ColumnInteractivity {
         const link = document.createElement("a");
         link.href = path;
         link.click();
+        link.remove()
     }
 
     async load_content() {
