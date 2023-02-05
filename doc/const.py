@@ -12,12 +12,24 @@ AllPanels = {
         }
     },
 
+    'document_profile': {
+        'persian_name': 'پروفایل اسناد رهبری',
+        'sub_panels': {}
+    },
+
+    'rahbari_search': {
+        'persian_name': 'جست‌وجوی در بیانات و ابلاغیه‌ها',
+        'sub_panels': {}
+    },
+    
+    'document_profile': {
+        'persian_name': 'انطباق‌سنجی مصوبات',
+        'sub_panels': {}
+    },
+
     'rahbari_analysis': {
         'persian_name': 'تحلیل اسناد رهبری',
         'sub_panels': {
-            'rahbari_search': 'جست‌وجوی اسناد رهبری',
-            'approvals_adaptation': 'انطباق‌سنجی مصوبات',
-
             'rahbari_paraghraph': 'تحلیل احکام',
             'leadership_slogan': 'تحلیل شعار سال',
             'rahbari_graph': 'تحلیل گرافی',
@@ -27,5 +39,4 @@ AllPanels = {
             'rahbari_topic': 'تحلیل هوشمند موضوعی',
         }
     },
-   
 }
