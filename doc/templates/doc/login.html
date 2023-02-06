@@ -184,13 +184,7 @@
             else if (response.status === "found user") {
                 const username = formElements.username.value;
                 setCookie("username", username, 1)
-                if (username == "std" || username == "standard") {
-                    window.location.href = "{% url 'standard_search' %}"
-                }
-                else {
-                    window.location.href = "{% url 'index' %}"
-                }
-                
+                window.location.href = "{% url 'index' %}"
             }
         }
 
