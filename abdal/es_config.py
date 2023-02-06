@@ -133,7 +133,6 @@ Paragraphs_Settings_3 = {
     "index.max_result_window": "5000"
 }
 
-
 Paragraphs_Mappings = {
     "properties": {
         "document_id": {
@@ -2894,7 +2893,7 @@ Revoked_Mappings = {
                 }
             }
         },
-        
+
         "type_name": {
             "type": "text",
             "analyzer": "persian_custom_analyzer",
@@ -3070,7 +3069,6 @@ Rahbari_Mappings = {
                 }
             }
         },
-        
 
         "data": {
             "type": "text"
@@ -3695,7 +3693,7 @@ ActorSupervisor_Mappings = {
                 }
             }
         },
-        
+
         "attachment": {
             "properties": {
                 "author": {
@@ -3790,6 +3788,18 @@ FullProfileAnalysis_Mappings = {
             }
         },
         "organizations": {
+            "type": "text",
+            "analyzer": "persian_custom_analyzer",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 1024
+                }
+            }
+        },
+        "persons_object": {
+            "properties": {
+                "word": {
                     "type": "text",
                     "analyzer": "persian_custom_analyzer",
                     "fields": {
@@ -3799,6 +3809,95 @@ FullProfileAnalysis_Mappings = {
                         }
                     }
                 },
+                "start": {
+                    "type": "integer",
+                },
+                "end": {
+                    "type": "integer",
+                }
+            },
+
+        },
+        "locations_object": {
+            "properties": {
+                "word": {
+                    "type": "text",
+                    "analyzer": "persian_custom_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 1024
+                        }
+                    }
+                },
+                "start": {
+                    "type": "integer",
+                },
+                "end": {
+                    "type": "integer",
+                }
+            },
+        },
+        "organizations_object": {
+            "properties": {
+                "word": {
+                    "type": "text",
+                    "analyzer": "persian_custom_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 1024
+                        }
+                    }
+                },
+                "start": {
+                    "type": "integer",
+                },
+                "end": {
+                    "type": "integer",
+                }
+            },
+        },
+        "moneys_object": {
+            "properties": {
+                "word": {
+                    "type": "text",
+                    "analyzer": "persian_custom_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 1024
+                        }
+                    }
+                },
+                "start": {
+                    "type": "integer",
+                },
+                "end": {
+                    "type": "integer",
+                }
+            },
+        },
+        "dates_object": {
+            "properties": {
+                "word": {
+                    "type": "text",
+                    "analyzer": "persian_custom_analyzer",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 1024
+                        }
+                    }
+                },
+                "start": {
+                    "type": "integer",
+                },
+                "end": {
+                    "type": "integer",
+                }
+            },
+        },
         "rahbari_date": {
             "type": "text",
             "fields": {
@@ -3851,7 +3950,7 @@ FullProfileAnalysis_Mappings = {
                 }
             }
         },
-        
+
         "attachment": {
             "properties": {
                 "author": {

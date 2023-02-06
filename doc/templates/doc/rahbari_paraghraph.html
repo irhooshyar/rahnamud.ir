@@ -63,6 +63,7 @@
     <link rel="stylesheet" type="text/css" href="../../static/library/notyf.min-npm.css">
     <script src="../../static/library/notyf.min.js"></script>
     <script src="../../static/js/chart.js"></script>
+    <script src="../../static/js/signout_function.js"></script>
 
     <!--<script type="text/javascript" src="http://l2.io/ip.js?var=myip">
     </script>-->
@@ -784,11 +785,17 @@
 
             //user log
             let form_data = new FormData()
+            type = ""
+            label = ""
             let detail_type = "نتایج جست و جو"
             let country_name = $("#country option:selected").text();
+            $("#TypeSelect option:selected").each(function () {
+                type += $(this).text() + "، ";
+            });
+            $("#LabelSelect option:selected").each(function () {
+                label += $(this).text() + "، ";
+            });
             let search_text = text
-            let type = $("#TypeSelect option:selected").text();
-            let label = $("#LabelSelect option:selected").text();
             form_data.append('detail_type', detail_type);
             form_data.append('country_name', country_name);
             form_data.append('search_text', search_text);
