@@ -715,17 +715,23 @@
             //user log
             let form_data = new FormData()
             label_select = ""
+            document_select = ""
             let detail_type = "نتایج جست و جو"
             let Graph_Type = $("#GraphTypeSelect option:selected").text();
             let Minimum_Similarity = $("#limit_neighbour_count option:selected").text();
+            let neighbour_level = $("#SearchNodeLevel option:selected").text();
             $("#LabelSelectBox option:selected").each(function () {
                 label_select += $(this).text() + "، ";
             });
+            $("#DocumentSelectBox option:selected").each(function () {
+                document_select += $(this).text() + "، ";
+            });
             form_data.append('detail_type', detail_type);
             form_data.append('Graph_Type', Graph_Type);
-            form_data.append('limit_neighbour_count', limit_neighbour_count
-            );
+            form_data.append('limit_neighbour_count', Minimum_Similarity);
+            form_data.append('neighbour_level', neighbour_level);
             form_data.append('label', label_select);
+            form_data.append('document', document_select);
             UserLog(form_data)
         }
 
