@@ -161,7 +161,7 @@ class ColumnInteractivity {
                 modal_content = "<ul>" + modal_content + "</ul>";
             }
             document.getElementById(this.modal_body_id).innerHTML += modal_content;
-        }else{
+        } else {
             document.getElementById(this.modal_body_id).firstElementChild.innerHTML += modal_content;
         }
 
@@ -259,7 +259,11 @@ class ColumnInteractivity {
                 "</a>";
 
             if (this.highlight_enabled) {
-                text = this.highlight_function(text);
+                let objects = null;
+                if (this.highlight_parameters['selected_object']) {
+                    objects = para["_source"][this.highlight_parameters['selected_object']]
+                }
+                text = this.highlight_function(text, objects);
             }
 
             const paragraph_link =
@@ -301,10 +305,11 @@ class ColumnInteractivity {
         return body_content;
     }
 
-    highlight_function(paragraph) {
+    highlight_function(paragraph, objects) {
         paragraph = this.custom_highlight_function(
             paragraph,
-            this.highlight_parameters
+            this.highlight_parameters,
+            objects
         );
         return paragraph;
     }

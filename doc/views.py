@@ -63,11 +63,13 @@ doctic_para_index = es_config.DOTIC_PARA_INDEX
 
 from doc.huggingface_views import *
 
-#preprocessing function
+
+# preprocessing function
 
 @after_response.enable
 def extractor(newdoc, newDoc, tasks_list):
     ZipFileExtractor.extractor(newdoc, newDoc, tasks_list, "")
+
 
 def arabic_preprocessing(text):
     while "  " in text:
@@ -135,6 +137,7 @@ def update_doc(request, id, language, ):
 
     return redirect('zip')
 
+
 def Create_Folder():
     if not os.path.isdir(config.RESULT_PATH):
         os.mkdir(config.RESULT_PATH)
@@ -142,6 +145,7 @@ def Create_Folder():
         os.mkdir(config.DATA_PATH)
     if not os.path.isdir(config.ZIPS_PATH):
         os.mkdir(config.ZIPS_PATH)
+
 
 def UploadFile(request, country, language, tasks_list):
     Create_Folder()
@@ -205,6 +209,7 @@ def get_similarity_maps(graph_objects):
         if id not in dataset_map:
             dataset_map[id] = name
     return dataset_map
+
 
 # html load function
 
@@ -1264,7 +1269,6 @@ def get_country_maps(country_objects):
     return dataset_map
 
 
-
 # views function
 
 def GetAllNotesUser(request, username):
@@ -1275,14 +1279,10 @@ def GetAllNotesUser(request, username):
     return JsonResponse({"notes": result})
 
 
-
 def GetSyns(request):
     slogan_synonymous_words_list = SloganSynonymousWords.objects.all()
     slogan_map_synonymous_words = {i.year: i.words for i in slogan_synonymous_words_list}
     return JsonResponse({'syns': slogan_map_synonymous_words})
-
-
-
 
 
 # ---------------- query ------------------------
@@ -1542,6 +1542,54 @@ def rahbari_document_name_chart_column(request, document_id, name, field_name, c
     country_obj = Document.objects.get(id=document_id).country_id
     index_name = standardIndexName(country_obj, FullProfileAnalysis.__name__)
 
+    load_object = field_name.split(".")[0]
+    load_object = load_object + "_object"
+    # ---------------------- Get Chart Data -------------------------
+    from_value = (curr_page - 1) * result_size
+    response = client.search(index=index_name,
+                             _source_includes=['attachment.content', 'document_name', 'paragraph_id', 'document_id',
+                                               load_object],
+                             request_timeout=40,
+                             query=res_query,
+                             from_=from_value,
+                             size=result_size,
+                             )
+
+    result = response['hits']['hits']
+    total_hits = response['hits']['total']['value']
+
+    if total_hits == 10000:
+        total_hits = client.count(body={
+            "query": res_query
+        }, index=index_name, doc_type='_doc')['count']
+
+    return JsonResponse({
+        "result": result,
+        'total_hits': total_hits,
+        "curr_page": curr_page,
+    })
+
+def rahbari_document_actor_chart_column(request, document_id, name, curr_page, result_size):
+    res_query = {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "document_id": document_id
+                    }
+                },
+                {
+                    "match_phrase": {
+                        "attachment.content": name
+                    }
+                }
+            ]
+        }
+    }
+
+    country_obj = Document.objects.get(id=document_id).country_id
+    index_name = standardIndexName(country_obj, FullProfileAnalysis.__name__)
+
     # ---------------------- Get Chart Data -------------------------
     from_value = (curr_page - 1) * result_size
     response = client.search(index=index_name,
@@ -1550,14 +1598,6 @@ def rahbari_document_name_chart_column(request, document_id, name, field_name, c
                              query=res_query,
                              from_=from_value,
                              size=result_size,
-                             highlight={
-                                 "order": "score",
-                                 "fields": {
-                                     "attachment.content":
-                                         {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
-                                          "number_of_fragments": 0
-                                          }
-                                 }}
                              )
 
     result = response['hits']['hits']
@@ -7950,9 +7990,6 @@ def DeleteNgram(request, gram_id):
     return JsonResponse({"status": "OK"})
 
 
-
-
-
 def SaveUserLog(user_id, ip, url):
     date_time = datetime.datetime.now()
     UserLogs.objects.create(user_id_id=user_id, user_ip=ip,
@@ -8011,7 +8048,6 @@ def CheckUserLogin(request, username, password, ip):
         SaveUserLog(user[0].id, ip, "login")
 
         return JsonResponse({"status": "found user"})
-
 
 
 @allowed_users()
@@ -8287,9 +8323,6 @@ def Admin(request):
             return HttpResponse('You are not authorized to view this page')
 
 
-
-
-
 @allowed_users('admin_waiting_user', 'admin_accepted_user')
 def changeUserState(request, user_id, state):
     if state == "accepted":
@@ -8335,9 +8368,6 @@ def GetUserRole(request):
     return JsonResponse({"user_roles": result})
 
 
-
-
-
 def UserLogSaved(request, username, url, sub_url='0', ip='0'):
     # print(request.POST)
 
@@ -8365,9 +8395,6 @@ def UserDeployLogSaved(request, username, detail):
     DeployServer.objects.create(user_id_id=user_id, deploy_time=date_time, detail=detail)
 
     return JsonResponse({"status": "OK"})
-
-
-
 
 
 def gregorian_to_jalali(gy, gm, gd):
@@ -10246,6 +10273,7 @@ def SearchDocumentsDefinitionByCountryId(request, country_id, subject_ids):
             document_list.append(doc_info)
             keywords_information[keyword] = document_list
     return JsonResponse({'keywords_information': keywords_information})
+
 
 # Window unit
 def searchDocumentsByWindowUnit(request, country_id):
@@ -15589,11 +15617,6 @@ def AIGetGraphEdgesByDocumentIdMeasure(request, country_id, src_doc_id, src_type
     return JsonResponse({'graph_edge_list': result, "graph_type": graph_type})
 
 
-
-
-
-
-
 def AIGetDocSimilarities(request, country_id):
     return JsonResponse({
         'regulator_id': []
@@ -15874,9 +15897,6 @@ def ChangeReportBugCheckStatus(request, report_bug_id):
     report_bug.save()
 
     return JsonResponse({"status": "OK"})
-
-
-
 
 
 @allowed_users('admin_user_report_bug')
@@ -16617,9 +16637,6 @@ def changeCommentState(request, comment_id, state):
     return JsonResponse({"status": state})
 
 
-
-
-
 def changeVoteState(request, username, document_comment, state):
     agreed = False
     if state == "agree":
@@ -16866,7 +16883,6 @@ def GetAllUserCommentHashtags(request):
     return JsonResponse({"hash_tags": result})
 
 
-
 def download_book(request, folder_name, filename):
     dataPath = str(Path(config.DATA_PATH, folder_name))
     file = glob.glob(dataPath + '/' + filename)
@@ -16878,7 +16894,6 @@ def download_book(request, folder_name, filename):
             return response
     except:
         return HttpResponse(dataPath + '\\' + filename)
-
 
 
 def get_all_books(request):
@@ -17607,7 +17622,6 @@ def GetUnknownDocuments(request):
     return JsonResponse({"result": result})
 
 
-
 def GetIndictmentDocs(request):
     result = []
 
@@ -17626,6 +17640,7 @@ def GetIndictmentDocs(request):
         result.append(doc_info)
 
     return JsonResponse({"result": result})
+
 
 def GetStandardDocumentById(request, document_id):
     document = Document.objects.get(id=document_id)
@@ -17777,8 +17792,6 @@ def SearchDocument_ES_Standard(request, country_id, branch, subject_category, st
         'total_hits': total_hits})
 
 
-
-
 def GetJudgementTypeByCountryId(request, country_id):
     type_list = JudgmentGraphType.objects.filter(country_id_id=country_id)
     result = []
@@ -17856,7 +17869,6 @@ def saw_help(request, url):
     user = User.objects.get(username=username)
     UserHelpSeen.objects.create(user=user, url=url)
     return JsonResponse({})
-
 
 
 def get_judge_profile_data(request, judge_id):
@@ -19304,7 +19316,6 @@ def delete_topic_paragraphs(request):
     return HttpResponse("deleted.")
 
 
-
 def BoostingSearchParagraph_ES(request, country_id, curr_page, result_size):
     res_query = {"bool": {
         "filter": [
@@ -20049,7 +20060,6 @@ def SaveKnowledgeGraph(request, graph_name, username, graph_id):
 def DeleteKnowledgeGraph(request, graph_id):
     KnowledgeGraphVersion.objects.filter(id=graph_id).delete()
     return JsonResponse({'responce': "OK"})
-
 
 
 def GetParagraphBy_ID(request, paragraph_id):
