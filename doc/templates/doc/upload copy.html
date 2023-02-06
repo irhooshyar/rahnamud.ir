@@ -76,7 +76,169 @@
                 {##---------------- temporary option , will be removed after level detection bug is fixed ----------------##}
                 <a href="{% url 'detect_level' file.pk %}">level</a>
                 <a href="{% url 'static_data_import_db'  file.pk 'English' %}">en-static-data</a>
+                <!-- <a href="{% url 'docs_approval_reference_extractor' file.pk %}">approval-reference</a>
+                <a href="{% url 'docs_definitions_extractor' file.pk %}">definitions</a>
+                <a href="{% url 'docs_subject_extractor' file.pk %}">subjects</a>
 
+                <span class="bold"> | </span>
+
+                <a href="{% url 'docs_actors_extractor' file.pk %}">actors-extractor</a>
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'template_panels_data_import_db' file.pk %}">template-panels-data</a>
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'static_data_import_db'  file.pk 'Persian' %}">fa-static-data</a>
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'slogan_key_synonymous_words' 'Persian' %}">fa-static-slogan</a>
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'leadership_slogan_analysis'  file.pk %}">fa-slogan-analysis</a>
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'docs_general_actors_extractor' file.pk %}">general-actors</a>
+
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'docs_general_definitions_extractor' file.pk %}">general-def</a>
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'document_json_list' file.pk %}">doc_list_json</a>
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'operators_static_data_to_db' file.pk %}">operators-to-db</a>
+
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'docs_regulators_extractor' file.pk %}">regulators-extractor</a>
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'docs_opertators_extractor' file.pk %}">operators-extractor</a>
+
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'docs_clause_extractor' file.pk %}">docs-clause-extractor</a>
+
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'docs_lda_topic_extraction' file.pk %}">LDA</a>
+
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'collective_static_data_to_db' file.pk %}">collectives-to-db</a>
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'docs_collective_extractor' file.pk %}">collectives-extractor</a>
+
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'docs_complete_para_extractor' file.pk %}">complete-para-extractor</a>
+
+                
+                <span class="bold"> | </span>
+
+                <a href="{% url 'actors_static_data_to_db' file.pk %}">actors-static-to-db</a>
+
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'regulators_static_import_db' file.pk %}">regulators-static-import-db</a>
+
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'actors_time_series_extractor' file.pk %}">actors_time_series_extractor</a>
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'actors_graph_extractor' file.pk %}">actors-graph-extractor</a>
+
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'actors_new_graph_extractor' file.pk %}">actors-new-graph-extractor</a>
+
+
+                <span class="bold"> | </span>
+
+
+                <a href="{% url 'search_parameters_to_db' file.pk %}">search_parameters_to_db</a>
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'create_advisory_opinion_count' file.pk file.language %}">create_advisory_opinion_count</a>
+
+                <span class="bold"> | </span>
+
+                <a href="{% url 'create_interpretation_rules_count' file.pk file.language %}">create_interpretation_rules_count</a>
+
+                <span class="bold"> | </span>
+                <a href="{% url 'indictment_to_db' file.pk %}">indictment_to_db</a>
+
+                <span class="bold"> | </span>
+                <a href="{% url 'update_judgment_name' file.pk %}">update_judgment_name</a>
+
+                <span class="bold"> | </span>
+                <a href="{% url 'create_judgments_table' file.pk %}">create_judgments_table</a>
+
+                <span class="bold"> | </span>
+                <a href="{% url 'create_standards_table' file.pk %}">create_standards_table</a>
+
+
+                <span class="bold"> | </span>
+                <a href="{% url 'FindSubjectComplaint' file.pk %}">Find_Subject_Complaint</a>
+
+                
+                <span class="bold"> | </span>
+                <a href="{% url 'ARIMA_Prediction_TO_DB' file.pk %}">ARIMA_Prediction_TO_DB</a>
+
+                <span class="bold"> | </span>
+                <a href="{% url 'revoked_types_to_db' file.pk %}">revoked_types_to_db</a>
+
+
+                <span class="bold"> | </span>
+                <a href="{% url 'subject_area_keywords_to_db' file.pk %}">subject_area_keywords_to_db</a>
+
+
+                <span class="bold"> | </span>
+                <a href="{% url 'clustering_algorithms_to_db' file.pk %}">clustering_algorithms_to_db</a>
+
+                <span class="bold"> | </span>
+                <a href="{% url 'findActor' file.pk %}">find-country-actor</a>
+
+                <span class="bold"> | </span>
+                <a href="{% url 'fullProfileAnalysis' file.pk %}">full-profile-analysis</a>
+
+                 ****** Advanced ARIMA ******
+                <span class="bold"> | </span>
+                <a  href="{% url 'ARIMA_Prediction_TO_DB_2' file.pk %}">ARIMA_Prediction_TO_DB_2</a>
+                ****** Advanced ARIMA ******
+
+                ****** AnalysisKnowledgeGraph ******
+                <span class="bold"> | </span>
+                <a  href="{% url 'DocAnalysisKnowledgeGraph' file.pk %}">DocAnalysisKnowledgeGraph</a>
+
+                <span class="bold"> | </span>
+                <a  href="{% url 'DocAnalysisKnowledgeGraphPOS' file.pk %}">DocAnalysisKnowledgeGraphPOS</a>
+                ****** AnalysisKnowledgeGraph  ******
+
+             -->
           
                 <span class="bold"> | </span>
                 <a href="{% url 'rahbari_labels_to_db' file.pk %}">rahbari_labels_to_db</a>
