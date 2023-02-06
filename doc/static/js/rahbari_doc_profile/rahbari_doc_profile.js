@@ -596,18 +596,39 @@ async function show_detail_modal(Key, chart_name, field_value) {
     click_name_chart(document_id, text, chart_name, field_value)
 }
 
-function custom_highlight_function(paragraph, highlight_parameters) {
+function custom_highlight_function(paragraph, highlight_parameters, items) {
     let selected_word = highlight_parameters["selected_word"]
     selected_word = selected_word.trim()
-    let selected_word_tag = '<span class="text-primary fw-bold">' + selected_word + '</span>'
+    if (!items) {
+        let selected_word_tag = '<span class="text-primary fw-bold">' + selected_word + '</span>'
+        paragraph = paragraph.replaceAll(selected_word, selected_word_tag)
+    } else {
+        let resultText = paragraph
+        let difference = 0;
 
-    paragraph = paragraph.replaceAll(selected_word, selected_word_tag)
+        for (let i = 0; i < items.length; i++) {
+            const object = items[i];
+            if (object['word'] !== selected_word) continue
+
+            const searchText = resultText.substring(object["start"] + difference, object["end"] + difference);
+            const replaceHtml = '<span class="text-primary fw-bold">' + searchText + '</span>';
+
+            resultText =
+                resultText.substring(0, object["start"] + difference) +
+                replaceHtml +
+                resultText.substring(object["end"] + difference, resultText.length);
+
+            difference = resultText.length - paragraph.length;
+        }
+
+        paragraph = resultText
+    }
     return paragraph;
 }
 
 async function click_name_chart(document_id, text, chart_name, field_value) {
     startBlockUI("کلیک روی نمودار")
-    const request_link = 'http://' + location.host + "/rahbari_document_name_chart_column/" + document_id + "/" + text + "/" + field_value + "/";
+    let request_link = 'http://' + location.host + "/rahbari_document_name_chart_column/" + document_id + "/" + text + "/" + field_value + "/";
 
     document.getElementById("ChartModalBodyText_2").innerHTML = ""
     document.getElementById("ChartModalHeader_2").innerHTML = ""
@@ -616,14 +637,6 @@ async function click_name_chart(document_id, text, chart_name, field_value) {
     modal_header = chart_name + ": " + text
     document.getElementById("ChartModalHeader_2").innerHTML = modal_header
     // define request link without curr_page & search_result_size
-
-    request_configs = {
-        "link": request_link,
-        "search_result_size": SEARCH_RESULT_SIZE,
-        "max_result_window": MAX_RESULT_WINDOW,
-        "data_type": "url_parameters",
-        "form_data": null
-    }
 
     export_link = 'http://' + location.host + "/export_rahbari_document_chart_column/"
         + document_id + "/"
@@ -635,12 +648,29 @@ async function click_name_chart(document_id, text, chart_name, field_value) {
         "btn_id": "ExportExcel_2"
     }
 
-    highlight_parameters = {"selected_word": text}
+    let load_object = field_value.split(".")[0]
+    load_object = load_object + "_object"
+
+    if (field_value === "attachment.content") {
+        load_object = null
+        request_link = 'http://' + location.host + "/rahbari_document_actor_chart_column/" + document_id + "/" + text + "/";
+    }
+
+
+    highlight_parameters = {"selected_word": text, "selected_object": load_object}
 
     highlight_configs = {
         "parameters": highlight_parameters,
         "highlight_enabled": true,
         "custom_function": custom_highlight_function
+    }
+
+    request_configs = {
+        "link": request_link,
+        "search_result_size": SEARCH_RESULT_SIZE,
+        "max_result_window": MAX_RESULT_WINDOW,
+        "data_type": "url_parameters",
+        "form_data": null
     }
 
     modal_configs = {
