@@ -21003,6 +21003,90 @@ def getChartLogs_ES(request, user_id, time_start, time_end):
                          'chart_data_graph': graph_chart_data,
                          'month_chart_data_list': month_chart_data_list, 'hour_chart_data_list': hour_chart_data_list})
 
+def get_user_log_query(user_id,time_start,time_end):
+    res_query = {
+        "bool": {
+            "filter":[],
+            "must":{
+                "exists": {
+                    "field": "user.id"
+                }
+            }
+        }
+    }
+
+    if user_id != 0 :
+        user_query = {
+                    "term": {
+                        "user.id": user_id
+                    }
+                }
+
+        res_query['bool']['filter'].append(user_query)
+
+    if time_start != "0" or time_end != "0":
+        time_query = {
+            "range": {
+                        "visit_time": {}
+            }
+        }
+
+
+        if time_start != "0":
+            time_query['range']['visit_time']['gte'] = time_start
+        if time_end != "0":
+            time_query['range']['visit_time']['lte'] = time_end
+
+        res_query['bool']['filter'].append(time_query)
+
+    return res_query
+def getPanelDetailType_Aggregation(user_id, time_start, time_end,panel_name):
+    res_query = get_user_log_query(user_id, time_start, time_end)
+
+    panel_filter = {
+        'term':{
+            'page_url.keyword':panel_name
+        }
+    }
+    res_query['bool']['filter'].append(panel_filter)
+
+    machine_user_name = getpass.getuser()
+    if  machine_user_name == SERVER_USER_NAME:
+        index_name = es_config.SERVE_USER_LOG_INDEX
+    else:
+        index_name = es_config.LOCAL_USER_LOG_INDEX
+
+
+    res_agg = {
+        "detail-type-agg": {
+            "terms": {
+                "field": "detail_json.detail_type",
+                "size": bucket_size
+            }
+        }
+    }
+    response = client.search(index=index_name,
+                             request_timeout=40,
+                             query=res_query,
+                             aggregations=res_agg,
+                             size = 100,
+                             sort= [
+                                    { "visit_time" : {"order" : "desc"}}
+                                ]
+                             )
+    
+    total_hits = response['hits']['total']['value']
+    aggregation_data = response['aggregations']['detail-type-agg']['buckets']
+
+    chart_value_list = []
+
+    for column in aggregation_data:
+
+        key = column["key"]
+        value = column["doc_count"]
+        chart_value_list.append([key, value])
+
+    return  chart_value_list
 
 def getUserLogs_ES(request, user_id, time_start, time_end, curr_page,page_size):
 

@@ -241,6 +241,12 @@ function newDoughnutChart(container_id, options) {
     tooltip.fontFamily("vazir");
     var title = chart.tooltip().title();
     title.fontFamily("vazir");
+
+    chart.labels().enabled(true);
+    chart.labels().fontSize(14);
+    chart.labels().fontFamily('vazir');
+    // chart.labels().fontWeight(600);
+
     chart.tooltip().hAlign('center').format("{%value}");
 
     var legend = chart.legend();
@@ -260,7 +266,7 @@ function newDoughnutChart(container_id, options) {
             document.body.style.cursor = "auto";
         });
 
-        chart.listen('Click', (e) => {options.onClick(e, options.data)})
+        chart.listen('Click', (e) => options.onClick(e, options.data))
     }
 }
 
@@ -443,4 +449,128 @@ function roundedColumnDrawer() {
     path.clear()
     let rectangle = new acgraph.math.Rect(leftX, this.zero - this.value, this.pointWidth, this.value);
     acgraph.vector.primitives.roundedRect(path, rectangle, 6)
+}
+
+
+
+// added line chart
+function newLineChart(container_id, options) {
+    const {chartContainerId, chartDownloadId} = newChartContainer(container_id, options);
+
+    let data = options.data;
+    if (options.sortKeys) {
+        data.sort(function (element_a, element_b) {
+            return element_a[0] - element_b[0];
+        });
+    } else {
+        data.sort(function (element_a, element_b) {
+            return element_a[1] - element_b[1];
+        });
+    }
+
+    data.sort(function (x, y) {
+        return x[0] === 'نامشخص' ? -1 : y[0] === 'نامشخص' ? 1 : 0;
+    });
+
+    if ( data.length > 0 && data[0][0] == 0) {
+        // data[0][0] = 'نامشخص'
+    }
+
+
+    data = anychart.data.set(data)
+
+
+    let chart = anychart.line();
+    document.getElementById(chartDownloadId).onclick = () => {
+        chart.saveAsPng(2000, 1000, 1, options.title)
+    }
+    chart.container(chartContainerId);
+    // create a column series and set the data
+    let series = chart.line(data);
+    chart.animation(true)
+    // .padding([10, 40, 5, 20])
+
+    chart.background().fill('#ffffff');
+    // series.normal().fill("#488FB8", 1);
+    // series.normal().stroke("#488fb8", 0);
+    chart.palette(palette)
+
+    // x axix labels font setting
+    var xAxisLabels = chart.xAxis().labels();
+    xAxisLabels.fontFamily("vazir");
+    xAxisLabels.vAlign("middle");
+    xAxisLabels.hAlign("end");
+    xAxisLabels.height(30);
+    xAxisLabels.wordWrap("normal");
+    xAxisLabels.wordBreak("keep-all");
+    xAxisLabels.textOverflow('...')
+    xAxisLabels.fontColor('#6C757D')
+
+    var yAxisLabels = chart.yAxis().labels();
+    yAxisLabels.fontFamily("vazir");
+
+    // Not allow labels overlapping
+    let xAxis = chart.xAxis();
+    xAxis.overlapMode("allowOverlap");
+    xAxis.staggerMode(false);
+    xAxis.title(options.xAxisTitle);
+    xAxis.title().fontFamily('vazir');
+    xAxis.title().fontWeight("bold");
+
+    var yAxis = chart.yAxis();
+    yAxis.title(options.yAxisTitle);
+    yAxis.title().fontFamily('vazir');
+    yAxis.title().fontWeight("bold");
+    yAxis.title().height(40);
+
+
+    // tooltip content font setting
+    var tooltip = chart.tooltip();
+    tooltip.fontFamily("vazir");
+
+    // tooltip title font setting
+    var title = chart.tooltip().title();
+    title.fontFamily("vazir");
+
+    chart.tooltip().hAlign('center').format("{%value}");
+
+    chart.yAxis().labels().format("{%value}");
+
+
+    const max = options.data.reduce((max, [_, curr]) => (max > curr ? max : curr), 10)
+    chart.yGrid(true);
+
+    chart.xGrid(true);
+    chart.xGrid().fill("#EFEFEF99");
+
+
+    chart.yScale().minimum(0);
+    chart.yScale().ticks().interval(Math.ceil(max / 10)).allowFractional(false);
+
+    // initiate drawing the chart
+    chart.draw();
+    console.log("----------------------------------------------------------------")
+    console.log(options.data.length)
+    if(data.length == 0){
+       
+        document.getElementById(container_id).innerHTML = "نتیجه‌ای یافت نشد"
+    }
+
+    if (options.showLabels) {
+        series.labels().enabled(true)
+        series.labels().enabled(true)
+        series.labels().fontFamily("vazir");
+    }
+
+    if (options.onClick) {
+        series.listen("mouseOver", function () {
+            document.body.style.cursor = "pointer";
+        });
+        series.listen("mouseOut", function () {
+            document.body.style.cursor = "auto";
+        });
+
+        chart.listen('Click', (e) => {options.onClick(e, data)})
+    }
+
 }
