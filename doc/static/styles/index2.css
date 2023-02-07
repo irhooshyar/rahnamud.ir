@@ -3,8 +3,7 @@
   --bg_color: #f8f9fa;
   --nav_link_color: #f2f2f2;
   --brand_name_color: white;
-  --nav_active_color: white;
-  --nav_hover_color: rgb(20, 162, 245);
+  --nav_hover_color: #7FB1CD;
   --header_color: #0e3f8b;
 }
 
@@ -82,8 +81,8 @@ a {
 }
 
 .nav_menu .dropdown-menu a:hover, .nav_menu .dropdown-menu a:focus {
-  color: white !important;
-  background-color: var(--nav_hover_color) !important;
+  color: #0E3F8B !important;
+  border-bottom: 1px solid #0E3F8B;
 }
 
 /* Set the border color */
@@ -1392,4 +1391,9 @@ content:"!"!important;
 
 .coming-soon {
   color: #155FD1;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0; /* remove the gap so it doesn't close */
 }
