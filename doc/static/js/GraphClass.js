@@ -307,10 +307,10 @@ class MyGraph {
                 "paging": {
                     "enabled": true,
                     strings: {
-                        first: '»',
-                        prev: '›',
-                        next: '‹',
-                        last: '«'
+                        last: '»',
+                        next: '›',
+                        prev: '‹',
+                        first: '«'
                     }
                 },
                 "filtering": {
@@ -387,10 +387,10 @@ class MyGraph {
                 "paging": {
                     "enabled": true,
                     strings: {
-                        first: '»',
-                        prev: '›',
-                        next: '‹',
-                        last: '«'
+                        last: '»',
+                        next: '›',
+                        prev: '‹',
+                        first: '«'
                     }
                 },
                 "filtering": {
