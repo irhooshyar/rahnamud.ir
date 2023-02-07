@@ -187,13 +187,3 @@ LOCAL_SETTING = {
 #         'hosts': 'http://37.156.144.109:9200'
 #     },
 # }
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
-EMAIL_HOST_USER = "CyberMap"
-if not (os.environ.get('EMAIL_HOST') is None):
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = os.environ.get('EMAIL_HOST')
-    EMAIL_PORT = os.environ.get('EMAIL_PORT')
-    EMAIL_USE_TLS = True
-    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
