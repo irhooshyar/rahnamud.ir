@@ -2344,8 +2344,7 @@ class DocumentCommentVote(models.Model):
 
 
 class NoteHashTag(models.Model):
-    id = models.AutoField(primary_key=True)
-    hash_tag = models.CharField(max_length=500)
+    hash_tag = models.CharField(max_length=500, primary_key=True)
 
     class Meta:
         app_label = 'doc'
