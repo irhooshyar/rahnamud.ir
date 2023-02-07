@@ -38,7 +38,9 @@ class User(models.Model):
     last_login = models.CharField(max_length=500)
     is_super_user = models.IntegerField(default=0)
     is_active = models.IntegerField(default=0)
-
+    reset_password_token = models.CharField(null=True, max_length=500)
+    reset_password_expire_time = models.DateTimeField(default=datetime.utcnow, blank=True)
+    
     class Meta:
         app_label = 'doc'
 
