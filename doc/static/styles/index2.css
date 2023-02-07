@@ -59,7 +59,7 @@ a {
 
 .nav_menu a.active {
   background-color: var(--nav_active_color);
-  color: rgb(20, 129, 192);
+  color: rgb(145, 233, 247);
   border-bottom: 1px solid var(--menu_color);
 }
 
@@ -1395,4 +1395,13 @@ content:"!"!important;
 .dropdown:hover .dropdown-menu {
   display: block;
   margin-top: 0; /* remove the gap so it doesn't close */
+}
+
+.nav-item {
+  height: 100%;
+}
+
+.dropdown-menu {
+  filter: drop-shadow(10px 10px 20px rgba(137, 149, 167, 0.15));
+  border-radius: 0 .25rem;
 }
