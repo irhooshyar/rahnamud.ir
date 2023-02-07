@@ -8230,7 +8230,7 @@ def forgot_password_by_email(request, email):
 
     در صورتی که قصد بازیابی ندارید این پیام را نادیده بگیرید.
     """
-    template += f'http://rahnamud.ir:7074//reset-password/{user.id}/{token}'
+    template += f'http://rahnamud.ir:7074/reset-password/{user.id}/{token}'
 
     send_mail(
         subject='بازیابی کلمه عبور',
