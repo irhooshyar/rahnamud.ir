@@ -20891,3 +20891,8 @@ def getRahbariDocumentsList(request):
         rahbari_result.append(res)
 
     return JsonResponse({"document_list": rahbari_result})
+
+def self(request):
+    username = request.COOKIES.get('username')
+    user = User.objects.get(username=username)
+    return JsonResponse({"name": user.first_name + ' ' + user.last_name + ' '})
