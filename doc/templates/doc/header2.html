@@ -9,7 +9,7 @@
 
 <script src="../../static/library/select2.min-4.1.0.js"></script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(async function () {
         $('.searchable').select2({
             dir: 'rtl',
         });
@@ -43,10 +43,6 @@
     ::-webkit-scrollbar-corner {
         background: #000;
     }
-
-    #Profile_panels .dropdown-toggle::after {
-        content: none;
-    }
 </style>
 <div class="container-fluid pr-0 mx-0">
     <a class="navbar-brand mr-0 px-1" href="{% url 'index' %}" id="brand_name" style="margin-left:25px">
@@ -66,7 +62,7 @@
             <li class="nav-item" id="document_profile" style="display: none;">
                 <a class="nav-link" id="Rahbari_profile_link" role="button"
                    href="{% url 'document_profile' %}" aria-expanded="false">
-                    <img width="25px" src="{% static 'icons/AI1.png' %}" alt="">
+                    
                     پروفایل اسناد رهبری
                 </a>
             </li>
@@ -74,14 +70,14 @@
             <li class="nav-item">
                 <a class="nav-link" id="rahbari_search" data-bs-toggle="tooltip" data-bs-placement="bottom"
                    href="{% url 'rahbari_search' %}" style="display: none;">
-                    <img width="25px" src="{% static 'icons/search3.png' %}" alt="">
+                    
                     جست‌وجو در بیانات و ابلاغیه‌ها
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="approvals_adaptation" data-bs-toggle="tooltip" data-bs-placement="bottom"
                    href="{% url 'approvals_adaptation' %}" style="display: none;">
-                    <img width="25px" src="{% static 'icons/adaptation2.png' %}" alt="">
+                    
                     انطباق‌سنجی مصوبات
                 </a>
             </li>
@@ -91,7 +87,7 @@
             <li class="nav-item dropdown" id="rahbari_analysis" style="display: none;">
                 <a class="nav-link dropdown-toggle" href="#" id="RahbariDropdown" role="button"
                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <img width="25px" src="{% static 'icons/docs.png' %}" alt="">
+                    
 
                     تحلیل اسناد رهبری
                 </a>
@@ -104,7 +100,7 @@
                     <li><a id="rahbari_subject" class="dropdown-item text-right" href="{% url 'rahbari_subject' %}"
                            style="display: block;">تحلیل موضوعی</a>
                     </li>
-                    <li class="divider"><a id="rahbari_graph" class="dropdown-item text-right" href="{% url 'rahbari_graph' %}"
+                    <li><a id="rahbari_graph" class="dropdown-item text-right" href="{% url 'rahbari_graph' %}"
                            style="display: block;">تحلیل
                         گرافی</a>
                     </li>
@@ -185,11 +181,10 @@
                 </ul>
             </li>
 
-            <li class="nav-item dropdown p-1" id="Profile_panels" style="margin-left: -5px">
-                <a class="nav-link dropdown-toggle" href="#" id="ProfileDropdown" role="button"
-                   data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-person-circle"
-                       style="font-size: 18px;position: relative; top: -5px;font-weight: bold;"></i>
+            <li class="nav-item dropdown p-1" id="Profile_panels" style="margin-left: -5px;">
+                <a class="nav-link dropdown-toggle h-100" href="#" id="ProfileDropdown" role="button"
+                   data-bs-toggle="dropdown" aria-expanded="false" style="padding-top: 13px">
+                    
                 </a>
                 <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="ProfileDropdown"
                     style="min-width: 210px;">
@@ -224,6 +219,12 @@
             </li>
         </ul>
     </div>
-
-
 </div>
+<script>
+    (async function() {
+        let request_link = 'http://' + location.host + "/account/self/";
+        let response = await fetch(request_link).then(response => response.json());
+        let name = response["name"]
+        document.getElementById("ProfileDropdown").innerText = name
+    })()
+</script>
