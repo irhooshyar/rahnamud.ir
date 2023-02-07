@@ -538,6 +538,7 @@
         let UserSearchParameters = {
 
             country_id: "",
+            type_id: "",
             type_name: "",
             label_name: "",
             from_year: "",
@@ -548,10 +549,11 @@
 
 
                 this.country_id = document.getElementById("country").value;
+                this.type_id = document.getElementById("TypeName").value
                 this.type_name = $("#TypeName option:selected").text();
-                this.label_name = $("#LabelsName option:selected").text();
-                this.from_year = $("#YearFrom option:selected").text();
-                this.to_year = $("#YearTo option:selected").text();
+                this.label_name = document.getElementById("LabelsName").value
+                this.from_year = document.getElementById("YearFrom").value
+                this.to_year = document.getElementById("YearTo").value
                 this.table_curr_page = document.getElementById('TablePaginationInput').value
 
             }
@@ -939,6 +941,7 @@
 
         async function NewSearch() {
             await update_table_pagination_input(1, 0);
+            UserSearchParameters.update_parameters();
             await ShowResult()
         }
 
@@ -947,17 +950,17 @@
             clearPrevResults(container_id_list);
             await SpinnerModeFunction("Active");
 
-            const country_id = document.getElementById("country").value;
-            const type_id = document.getElementById("TypeName").value;
-            const label_name = document.getElementById("LabelsName").value;
-            const from_year = document.getElementById("YearFrom").value;
-            const to_year = document.getElementById("YearTo").value;
+            const country_id = UserSearchParameters.country_id
+            const type_id = UserSearchParameters.type_id
+            const label_name = UserSearchParameters.label_name;
+            const from_year = UserSearchParameters.from_year;
+            const to_year = UserSearchParameters.to_year;
+
             const place = document.getElementById("WhereSelect").value;
             let text = document.getElementById("SearchBox").value;
             const search_type = document.getElementById("SearchTypeSelect").value
-            const curr_page = document.getElementById('TablePaginationInput').value
-
-            UserSearchParameters.update_parameters();
+            // update_table_pagination_input(UserSearchParameters.table_curr_page,0)
+            const curr_page = document.getElementById("TablePaginationInput").value
 
 
             if (text.trim().length > 0) {
