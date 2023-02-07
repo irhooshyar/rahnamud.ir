@@ -155,7 +155,7 @@
                     <button id="advanced_search" type="button" class="btn float-right" data-bs-toggle="collapse"
                         data-bs-target="#advanced_fields" aria-expanded="true" aria-controls="advanced_fields">تنظیمات
                         پیشرفته</button>
-                    <button type="button" id="document_search" onclick="ShowResult()"
+                    <button type="button" id="document_search" onclick="NewSearch()"
                         class="btn d-flex float-right mr-4">
                         <div class="spinner-border text-light" role="status">
                             <span class="sr-only">درحال جستجو ...</span>
@@ -273,6 +273,21 @@
                 <!-- Search Result Pane -->
                 <div id="search_result_pane" class="tab-pane w-100 fade show active float-right" role="tabpanel"
                     aria-labelledby="search_result_tab">
+                    <!-- Page select -->
+                    <div class="col-md-6 col-12 col-lg-2 float-left">
+
+                        <input type="number" onchange="TablePaginationChanged(event)" id="TablePaginationInput" min="1"
+                            max="1" value="1" class="form-select text-right float-right" style="direction: rtl;">
+
+                    </div>
+
+
+                    <!-- Result Pagination -->
+                    <p id="ResultPagination" class="text-left text-secondary float-left">صفحه:
+                        <span id="from_page">1</span>
+                        /
+                        <span id="total_page">1</span>
+                    </p>
                     <!-- Search Result table -->
                     <div class="table-responsive search_result_table mt-4">
                         <table class="table table-striped SearchTable" style="min-height: 200px;" id="SearchTable">
@@ -515,7 +530,35 @@
         SearchResultValue = []
         ES_SearchResult = []
 
+        MAX_RESULT_WINDOW = 5000
+        SEARCH_RESULT_SIZE = 500
+
         container_id_list = ['SearchResultLable', 'SearchTable']
+
+        let UserSearchParameters = {
+
+            country_id: "",
+            type_name: "",
+            label_name: "",
+            from_year: "",
+            to_year: "",
+            table_curr_page: "",
+
+            update_parameters: function () {
+
+
+                this.country_id = document.getElementById("country").value;
+                this.type_name = $("#TypeName option:selected").text();
+                this.label_name = $("#LabelsName option:selected").text();
+                this.from_year = $("#YearFrom option:selected").text();
+                this.to_year = $("#YearTo option:selected").text();
+                this.table_curr_page = document.getElementById('TablePaginationInput').value
+
+            }
+        }
+
+
+
 
         function clearPrevResults(container_id_list) {
 
@@ -547,6 +590,8 @@
             document.getElementById("YearTo").innerHTML = "<option value=" + 0 + " >" + "همه" + "</option>" +
                 response['ToYear'];
 
+            UserSearchParameters.update_parameters();
+
 
             syncAllSelectsWithResetExceptions(["country"])
 
@@ -563,6 +608,51 @@
             init()
         }
 
+
+        function TablePaginationChanged(event) {
+
+            input_id = event.target.id
+
+            curr_page_number = parseInt(event.target.value);
+            max_page_number = parseInt(document.getElementById(input_id).max);
+            min_page_number = parseInt(document.getElementById(input_id).min);
+
+
+            if (curr_page_number > max_page_number) {
+                document.getElementById(input_id).value = max_page_number
+            }
+
+            else if (curr_page_number < min_page_number) {
+                document.getElementById(input_id).value = min_page_number
+            }
+
+
+            ShowResult();
+
+        }
+
+        async function update_table_pagination_input(curr_page, total_hits) {
+
+            page_count = 0;
+
+            if (total_hits < SEARCH_RESULT_SIZE) {
+                page_count = 1
+
+            } else if (total_hits < MAX_RESULT_WINDOW) {
+                page_count = Math.ceil(total_hits / SEARCH_RESULT_SIZE)
+
+            } else if (total_hits >= MAX_RESULT_WINDOW) {
+                page_count = MAX_RESULT_WINDOW / SEARCH_RESULT_SIZE
+            }
+
+            document.getElementById("TablePaginationInput").min = 1;
+            document.getElementById("TablePaginationInput").max = page_count;
+            document.getElementById("TablePaginationInput").value = curr_page;
+
+            document.getElementById("from_page").innerText = curr_page;
+            document.getElementById("total_page").innerText = page_count
+
+        }
 
 
         function showDocumentInformation(documents_information_result, mode, where, total_hits, text) {
@@ -676,7 +766,7 @@
             });
         }
 
-        async function GetDocumentsInformation(country_id, type_id, label_name, from_year, to_year, place, text, search_type) {
+        async function GetDocumentsInformation(country_id, type_id, label_name, from_year, to_year, place, text, search_type, curr_page) {
 
             let request_link = '';
             notyf.dismissAll();
@@ -688,7 +778,7 @@
             const document_ids = 0
             request_link = 'http://' + location.host + "/SearchRahbari_ES/" + country_id + "/" + type_id + "/" +
                 label_name + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + document_ids + "/" + place + "/" + text + "/" + search_type + "/"
-                + "1" + "/" + "100" + "/";
+                + curr_page + "/" + SEARCH_RESULT_SIZE + "/";
 
             let response = await fetch(request_link).then(response => response.json());
 
@@ -698,6 +788,9 @@
             total_hits = response["total_hits"]
             ES_SearchResult = response["result"]
             ES_Aggregations = response["aggregations"]
+            curr_page = response["curr_page"]
+
+            update_table_pagination_input(curr_page, total_hits)
 
             showDocumentInformation(ES_SearchResult, search_type, place, total_hits, text)
             stopBlockUI('SearchTable', 'نتایج جست‌وجو');
@@ -844,6 +937,11 @@
 
         }
 
+        async function NewSearch() {
+            await update_table_pagination_input(1, 0);
+            await ShowResult()
+        }
+
         async function ShowResult() {
             await SpinnerModeFunction("Active");
             clearPrevResults(container_id_list);
@@ -857,14 +955,18 @@
             const place = document.getElementById("WhereSelect").value;
             let text = document.getElementById("SearchBox").value;
             const search_type = document.getElementById("SearchTypeSelect").value
+            const curr_page = document.getElementById('TablePaginationInput').value
+
+            UserSearchParameters.update_parameters();
+
 
             if (text.trim().length > 0) {
                 text = text.replaceAll('/', '>')
                 text = text.replaceAll('\\', '<')
-                GetDocumentsInformation(country_id, type_id, label_name, from_year, to_year, place, text, search_type);
+                GetDocumentsInformation(country_id, type_id, label_name, from_year, to_year, place, text, search_type, curr_page);
             }
             else {
-                GetDocumentsInformation(country_id, type_id, label_name, from_year, to_year, place, "empty", "All");
+                GetDocumentsInformation(country_id, type_id, label_name, from_year, to_year, place, "empty", "All", curr_page);
             }
 
             await SpinnerModeFunction("Disable");
@@ -1017,7 +1119,7 @@
                     detail = '<button type="button" class="btn modal_btn" onclick="' + select_function + '">انتخاب</button>'
 
                     if (sim_para_count == 0)
-                    detail = '<button type="button" disabled class="btn modal_btn" onclick="' + select_function + '">انتخاب</button>'
+                        detail = '<button type="button" disabled class="btn modal_btn" onclick="' + select_function + '">انتخاب</button>'
 
                 }
 
@@ -1071,89 +1173,89 @@
 
             if (table_id == 'LabelSimSearchTable' || table_id == 'ParaSimSearchTable') {
                 $('.' + table_id).footable({
-                "paging": {
-                    "enabled": true
-                },
-                "filtering": {
-                    "enabled": false
-                },
-                "sorting": {
-                    "enabled": true
-                },
-                "empty": "سندی یافت نشد.",
-                "columns": [{
-                    "name": "index",
-                    "title": "ردیف",
-                    "breakpoints": "xs sm",
-                    "type": "number",
-                    "style": {
-                        "width": "5%"
+                    "paging": {
+                        "enabled": true
+                    },
+                    "filtering": {
+                        "enabled": false
+                    },
+                    "sorting": {
+                        "enabled": true
+                    },
+                    "empty": "سندی یافت نشد.",
+                    "columns": [{
+                        "name": "index",
+                        "title": "ردیف",
+                        "breakpoints": "xs sm",
+                        "type": "number",
+                        "style": {
+                            "width": "5%"
+                        }
+                    }, {
+                        "name": "doc_name",
+                        "title": "نام سند",
+                        "style": {
+                            "width": "35"
+                        }
                     }
-                }, {
-                    "name": "doc_name",
-                    "title": "نام سند",
-                    "style": {
-                        "width": "35"
+                        // , {
+                        //     "name": "doc_sim",
+                        //     "title": "امتیاز",
+                        //     "style": {
+                        //         "width": "10%"
+                        //     }
+                        // },
+                        , {
+                        "name": "detail",
+                        "title": "جزئیات",
+                        "style": {
+                            "width": "10%"
+                        }
                     }
-                }
-                    // , {
-                    //     "name": "doc_sim",
-                    //     "title": "امتیاز",
-                    //     "style": {
-                    //         "width": "10%"
-                    //     }
-                    // },
-                    , {
-                    "name": "detail",
-                    "title": "جزئیات",
-                    "style": {
-                        "width": "10%"
-                    }
-                }
-                ],
-                "rows": document_result
-            });
+                    ],
+                    "rows": document_result
+                });
 
 
             }
             else {
                 $('.' + table_id).footable({
-                "paging": {
-                    "enabled": true
-                },
-                "filtering": {
-                    "enabled": false
-                },
-                "sorting": {
-                    "enabled": true
-                },
-                "empty": "سندی یافت نشد.",
-                "columns": [{
-                    "name": "index",
-                    "title": "ردیف",
-                    "breakpoints": "xs sm",
-                    "type": "number",
-                    "style": {
-                        "width": "5%"
+                    "paging": {
+                        "enabled": true
+                    },
+                    "filtering": {
+                        "enabled": false
+                    },
+                    "sorting": {
+                        "enabled": true
+                    },
+                    "empty": "سندی یافت نشد.",
+                    "columns": [{
+                        "name": "index",
+                        "title": "ردیف",
+                        "breakpoints": "xs sm",
+                        "type": "number",
+                        "style": {
+                            "width": "5%"
+                        }
+                    }, {
+                        "name": "doc_name",
+                        "title": "نام سند",
+                        "style": {
+                            "width": "35"
+                        }
                     }
-                }, {
-                    "name": "doc_name",
-                    "title": "نام سند",
-                    "style": {
-                        "width": "35"
-                    }
-                }
-                    // , {
-                    //     "name": "doc_sim",
-                    //     "title": "امتیاز",
-                    //     "style": {
-                    //         "width": "10%"
-                    //     }
-                    // },
-                  
-                ],
-                "rows": document_result
-            });
+                        // , {
+                        //     "name": "doc_sim",
+                        //     "title": "امتیاز",
+                        //     "style": {
+                        //         "width": "10%"
+                        //     }
+                        // },
+
+                    ],
+                    "rows": document_result
+                });
 
 
             }
@@ -1219,7 +1321,7 @@
             const dest_document_link = 'http://' + location.host + "/information/?id=" + doc2_id;
             let dest_document_tag = "<a target='to_blank' href='" + dest_document_link + "'>" + doc2_name + "</a>";
             document.getElementById("LabelSimModalHeader").innerHTML = "<span class='text-secondary'>" + " سند انتخابی: " + "</span>" + dest_document_tag
-            
+
             $('#LabelSimModal').modal('show');
             let request_link = 'http://' + location.host + "/GetParaSimilarity/" + doc1_id + '/' + doc2_id + '/';
             let response = await fetch(request_link).then(response => response.json());

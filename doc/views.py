@@ -6183,7 +6183,7 @@ def SearchJudgment_ES(request, country_id, JudgeName,
 
 
 def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_year, rahbari_type, document_ids, place,
-                     text, search_type, curr_page, search_result_size):
+                     text, search_type, curr_page, page_size):
     fields = [type_id, label_name, from_year, to_year, rahbari_type, document_ids]
 
     res_query = {
@@ -6238,7 +6238,7 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
         }
     }
 
-    from_value = (curr_page - 1) * search_result_size
+    from_value = (curr_page - 1) * page_size
 
     response = client.search(index=index_name,
                              _source_includes=['document_id', 'name', 'raw_file_name',
@@ -6248,7 +6248,7 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
                              query=res_query,
                              aggregations=res_agg,
                              from_=from_value,
-                             size=search_result_size
+                             size=page_size
                              )
 
     result = response['hits']['hits']
