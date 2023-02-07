@@ -51,7 +51,6 @@ a {
 
 .nav_menu a:hover,
 .nav_menu a:focus {
-  background-color: var(--nav_hover_color);
   color: white;
   text-decoration: none;
 }
