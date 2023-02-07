@@ -166,10 +166,10 @@ function table_show_result() {
         "paging": {
             "enabled": true,
             strings: {
-                first: '»',
-                prev: '›',
-                next: '‹',
-                last: '«'
+                first: '«',
+                prev: '‹',
+                next: '›',
+                last: '»'
             }
         },
         "filtering": {

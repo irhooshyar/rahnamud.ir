@@ -148,10 +148,10 @@ function show_rule_table_results() {
         "paging": {
             "enabled": true,
             strings: {
-                first: '»',
-                prev: '›',
-                next: '‹',
-                last: '«'
+                first: '«',
+                prev: '‹',
+                next: '›',
+                last: '»'
             }
         },
         "filtering": {
