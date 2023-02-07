@@ -50,3 +50,4 @@ protobuf --no-binary=protobuf
 pytest-django
 num2fawords
 transformers
+persiantools

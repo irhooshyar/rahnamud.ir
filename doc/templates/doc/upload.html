@@ -242,6 +242,9 @@
                 <a href="{% url 'executive_clauses_extractor' file.pk %}">Executive Clauses Extractor</a>
                 <span class="bold"> | </span>
 
+                <a href="{% url 'ingest_userlogs_to_index' file.pk file.language %}">Ingest-UserLogs</a>
+                <span class="bold"> | </span>
+
             </p>
 
         </form>

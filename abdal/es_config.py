@@ -2,8 +2,8 @@ import os
 
 ES_URL = os.environ.get('ES_URL')
 if ES_URL is None:
-    # ES_URL = "37.156.144.109:9602"
-    ES_URL = "192.168.50.8:9200"
+     ES_URL = "37.156.144.109:9602"
+    #ES_URL = "192.168.50.8:9200"
 
 INGEST_ENABLED = False
 
@@ -13,6 +13,9 @@ SEARCH_RESULT_SIZE = 500
 DOTIC_DOC_INDEX = "doticfull_document"
 DOTIC_PARA_INDEX = "doticfull_documentparagraphs_graph"
 
+
+LOCAL_USER_LOG_INDEX = "local_user_log"
+SERVE_USER_LOG_INDEX = "rahnamud_user_log"
 Book_Index = "book_search_index"
 
 Paragraphs_Settings = {
@@ -4000,3 +4003,229 @@ FullProfileAnalysis_Mappings = {
         }
     }
 }
+
+UserLog_Mappings = {
+    "properties": {
+
+        "user_ip": {
+            "type": "text",
+            "analyzer": "persian_custom_analyzer",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 1024
+                }
+            }
+        },
+
+        "page_url": {
+            "type": "text",
+            "analyzer": "persian_custom_analyzer",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 1024
+                }
+            }
+        },
+
+        "visit_time": {
+            "type": "date"
+        },
+
+        "jalili_visit_time": {
+            "properties":{
+                "year":{
+                    "type":"integer"
+                },
+                "month":{
+                    "properties":{
+                        "number":{
+                            "type":"integer"
+                        },
+                        "name":{
+                            "type": "text",
+                            "analyzer": "persian_custom_analyzer",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "ignore_above": 512
+                                }
+                            }
+                        }
+                    }
+                },
+                "day":{
+                    "properties":{
+                        "number":{
+                            "type":"integer"
+                        },
+                        "name":{
+                            "type": "text",
+                            "analyzer": "persian_custom_analyzer",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "ignore_above": 512
+                                }
+                            }
+                        }
+                    }
+                },
+                
+                "hour":{
+                        "type":"integer"
+                },
+            }
+        },
+
+        "user": {
+            "properties":{
+                "id": {
+                    "type": "integer"
+                },
+                "first_name": {
+                    "type": "text",
+                    "analyzer": "persian_custom_analyzer",
+                    "term_vector": "with_positions_offsets",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 1024
+                        }
+                    }
+                },
+                "last_name": {
+                    "type": "text",
+                    "analyzer": "persian_custom_analyzer",
+                    "term_vector": "with_positions_offsets",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 1024
+                        }
+                    }
+                },
+                # "national_code": {
+                #     "type": "text",
+                #     "analyzer": "persian_custom_analyzer",
+                #     "term_vector": "with_positions_offsets",
+                #     "fields": {
+                #         "keyword": {
+                #             "type": "keyword",
+                #             "ignore_above": 1024
+                #         }
+                #     }
+                # },
+                # "email": {
+                #     "type": "text",
+                #     "analyzer": "persian_custom_analyzer",
+                #     "term_vector": "with_positions_offsets",
+                #     "fields": {
+                #         "keyword": {
+                #             "type": "keyword",
+                #             "ignore_above": 1024
+                #         }
+                #     }
+                # },
+                # "mobile": {
+                #     "type": "text",
+                #     "analyzer": "persian_custom_analyzer",
+                #     "term_vector": "with_positions_offsets",
+                #     "fields": {
+                #         "keyword": {
+                #             "type": "keyword",
+                #             "ignore_above": 1024
+                #         }
+                #     }
+                # },
+                # "username": {
+                #     "type": "text",
+                #     "analyzer": "persian_custom_analyzer",
+                #     "term_vector": "with_positions_offsets",
+                #     "fields": {
+                #         "keyword": {
+                #             "type": "keyword",
+                #             "ignore_above": 1024
+                #         }
+                #     }
+                # },
+                # "password": {
+                #     "type": "text",
+                #     "analyzer": "persian_custom_analyzer",
+                #     "term_vector": "with_positions_offsets",
+                #     "fields": {
+                #         "keyword": {
+                #             "type": "keyword",
+                #             "ignore_above": 1024
+                #         }
+                #     }
+                # },
+                # "last_login": {
+                #     "type": "text",
+                #     "analyzer": "persian_custom_analyzer",
+                #     "term_vector": "with_positions_offsets",
+                #     "fields": {
+                #         "keyword": {
+                #             "type": "keyword",
+                #             "ignore_above": 1024
+                #         }
+                #     }
+                # },
+                # "avatar": {
+                #     "type": "text",
+                #     "analyzer": "persian_custom_analyzer",
+                #     "term_vector": "with_positions_offsets",
+                #     "fields": {
+                #         "keyword": {
+                #             "type": "keyword",
+                #             "ignore_above": 1024
+                #         }
+                #     }
+                # },
+                # "is_super_user": {
+                #     "type": "integer"
+                # },
+                # "is_active": {
+                #     "type": "integer"
+                # },
+                # "role": {
+                #     "properties": {
+                #         "persian_name": {
+                #             "type": "text",
+                #             "analyzer": "persian_custom_analyzer",
+                #             "term_vector": "with_positions_offsets",
+                #             "fields": {
+                #                 "keyword": {
+                #                     "type": "keyword",
+                #                     "ignore_above": 1024
+                #                 }
+                #             }
+                #         },
+                #         "english_name": {
+                #             "type": "text",
+                #             "analyzer": "persian_custom_analyzer",
+                #             "term_vector": "with_positions_offsets",
+                #             "fields": {
+                #                 "keyword": {
+                #                     "type": "keyword",
+                #                     "ignore_above": 1024
+                #                 }
+                #             }
+                #         },
+
+                #     }
+                # }
+
+            }
+        },
+
+        "detail_json": {
+            "type": "flattened"
+        },
+
+
+    
+    }
+}
+

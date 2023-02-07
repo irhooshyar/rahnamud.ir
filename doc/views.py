@@ -48,10 +48,14 @@ from elasticsearch import Elasticsearch
 from sklearn.metrics.pairwise import cosine_similarity
 import string
 from scripts.Persian.Preprocessing import standardIndexName
+import getpass
+
 from transformers import MT5ForConditionalGeneration, MT5Tokenizer, AutoTokenizer, AutoModelForTokenClassification, \
     pipeline, AutoModelForSequenceClassification, AutoModelForSeq2SeqLM
+SERVER_USER_NAME = config.SERVER_USER_NAME
 
 # ---------- elastic configs -------------------
+
 es_url = es_config.ES_URL
 client = Elasticsearch(es_url, timeout=30)
 bucket_size = es_config.BUCKET_SIZE
@@ -20891,3 +20895,333 @@ def getRahbariDocumentsList(request):
         rahbari_result.append(res)
 
     return JsonResponse({"document_list": rahbari_result})
+
+def getChartLogs_ES(request, user_id, time_start, time_end):
+
+    res_query = get_user_log_query(user_id, time_start, time_end)
+
+    machine_user_name = getpass.getuser()
+    if  machine_user_name == SERVER_USER_NAME:
+        index_name = es_config.SERVE_USER_LOG_INDEX
+    else:
+        index_name = es_config.LOCAL_USER_LOG_INDEX
+
+
+    response = client.search(index=index_name,
+                             request_timeout=40,
+                             query=res_query,
+                             size = 100,
+                             sort= [
+                                    { "visit_time" : {"order" : "desc"}}
+                                ]
+                             )
+    
+    user_logs = response['hits']['hits']
+    total_hits = response['hits']['total']['value']
+
+
+    if total_hits == 10000:
+        total_hits = client.count(body={
+            "query": res_query
+        }, index=index_name, doc_type='_doc')['count']
+
+
+
+
+    convert_month = {1: 'فروردین', 2: 'اردیبهشت', 3: 'خرداد', 4: 'تیر', 5: 'مرداد',
+                     6: 'شهریور', 7: 'مهر', 8: 'آبان', 9: 'آذر', 10: 'دی',
+                     11: 'بهمن', 12: 'اسفند'}
+
+    month_chart_data = {}
+    hour_chart_data = {}
+    for log in user_logs:
+        time = log['_source']['visit_time']
+        year = int(time[0:4])
+        month = int(time[5:7])
+        day = int(time[8:10])
+        hour = int(time[11:13])
+        print('time===================')
+        print(time)
+        print(f"{year},{month},{day},{hour}")
+        jalali = gregorian_to_jalali(year, month, day)
+        print(JalaliDate.today().strftime('%A',locale = 'fa'))
+        print(JalaliDate.today().strftime('%B',locale = 'fa'))
+
+        date_list = str(JalaliDate.to_jalali(year, month, day).strftime('%B',locale = 'fa')).split('-')
+
+        jalali_date = [int(num) for num in date_list]
+        print(jalali_date)
+        month_name = convert_month[jalali[1]]
+        if month_name not in month_chart_data:
+            month_chart_data[month_name] = 1
+        else:
+            month_chart_data[month_name] += 1
+
+        if hour not in hour_chart_data:
+            hour_chart_data[hour] = 1
+        else:
+            hour_chart_data[hour] += 1
+
+    month_chart_data_list = []
+    for month, count in month_chart_data.items():
+        column = [month, count]
+        month_chart_data_list.append(column)
+
+    hour_chart_data_list = []
+    for hour, count in hour_chart_data.items():
+        column = [hour, count]
+        hour_chart_data_list.append(column)
+
+    chart_data = {}
+    for log in user_logs:
+        url = log['_source']['page_url']
+        if url == None:
+            url = 'home'
+        if url not in chart_data:
+            chart_data[url] = 1
+        else:
+            chart_data[url] += 1
+
+    chart_data_list = []
+    for url, count in chart_data.items():
+        column = [url, count]
+        chart_data_list.append(column)
+
+    panels = {'es_search': {'chart_dict': {}, 'chart_list': []},
+              'graph2': {'chart_dict': {}, 'chart_list': []}
+              }
+
+
+
+    es_search_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end,'es_search')
+    graph_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end,'graph2')
+
+    
+    # 'chart_data_information': panels['information']['chart_list'],
+    return JsonResponse({'chart_data_list': chart_data_list,
+                          'chart_data_search': es_search_chart_data,
+                         'chart_data_graph': graph_chart_data,
+                         'month_chart_data_list': month_chart_data_list, 'hour_chart_data_list': hour_chart_data_list})
+
+
+def getUserLogs_ES(request, user_id, time_start, time_end, curr_page,page_size):
+
+    #time_start = time_start + "T00:00:00"+ 'Z'
+    #time_end = time_end + "T00:00:00"+ 'Z'
+
+
+    res_query = get_user_log_query(user_id, time_start, time_end)
+    
+    machine_user_name = getpass.getuser()
+    if  machine_user_name == SERVER_USER_NAME:
+        index_name = es_config.SERVE_USER_LOG_INDEX
+    else:
+        index_name = es_config.LOCAL_USER_LOG_INDEX
+
+    res_agg = {
+        "panel-agg": {
+            "terms": {
+                "field": "page_url.keyword",
+                "size": bucket_size
+            }
+        },
+        "user-agg": {
+            "terms": {
+                "field": "user.last_name.keyword",
+                "size": bucket_size
+            }
+        },
+        "month-agg": {
+            "terms": {
+                "field": "jalili_visit_time.month.name.keyword",
+                "size": bucket_size
+            }
+        },
+        "day-agg": {
+            "terms": {
+                "field": "jalili_visit_time.day.name.keyword",
+                "size": bucket_size
+            }
+        },
+        "hour-agg": {
+            "terms": {
+                "field": "jalili_visit_time.hour",
+                "size": bucket_size
+            }
+        }
+    }
+
+    from_value = (curr_page - 1) * page_size
+
+    response = client.search(index=index_name,
+                             request_timeout=40,
+                             query=res_query,
+                             aggregations = res_agg,
+                             from_=from_value,
+                             size = page_size,
+                            sort=[
+                                    { "visit_time" : {"order" : "desc"}}
+                                ]
+                             )
+    result = response['hits']['hits']
+    total_hits = response['hits']['total']['value']
+    aggregations = response['aggregations']
+
+    if total_hits == 10000:
+        total_hits = client.count(body={
+            "query": res_query
+        }, index=index_name, doc_type='_doc')['count']
+
+    es_search_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end,'es_search')
+    graph_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end,'graph2')
+
+
+    return  JsonResponse(
+        {
+            "result": result,
+            'total_hits': total_hits,
+            'curr_page': curr_page,
+           'aggregations':aggregations,
+           "es_search_chart_data":es_search_chart_data,
+           "graph_chart_data":graph_chart_data
+        }
+    )
+
+
+def getUserLogs(request, user_id, time_start, time_end):
+    if user_id == 0:
+        if time_start != "0" and time_end != "0":
+            user_logs = UserLogs.objects.all().filter(visit_time__range=(
+                time_start, time_end)).order_by("-visit_time")
+
+        elif time_start == "0" and time_end != "0":
+            user_logs = UserLogs.objects.all().filter(visit_time__lte=time_end).order_by("-visit_time")
+
+        elif time_start != "0" and time_end == "0":
+            user_logs = UserLogs.objects.all().filter(visit_time__gte=time_start).order_by("-visit_time")
+
+        else:
+            user_logs = UserLogs.objects.all().order_by("-visit_time")
+    else:
+        if time_start != "0" and time_end != "0":
+            user_logs = UserLogs.objects.all().filter(visit_time__range=(
+                time_start, time_end), user_id=user_id).order_by("-visit_time")
+
+        elif time_start == "0" and time_end != "0":
+            user_logs = UserLogs.objects.all().filter(visit_time__lte=time_end,
+                                                      user_id=user_id).order_by("-visit_time")
+
+        elif time_start != "0" and time_end == "0":
+            user_logs = UserLogs.objects.all().filter(visit_time__gte=time_start,
+                                                      user_id=user_id).order_by("-visit_time")
+
+        else:
+            user_logs = UserLogs.objects.all().filter(
+                user_id=user_id).order_by("-visit_time")
+
+    user_logs = user_logs.filter(user_id__isnull=False).order_by("-visit_time")[:100]
+
+    result = []
+    for log in user_logs:
+        id = log.id
+        name = log.user_id.first_name + ' ' + log.user_id.last_name
+        url = log.page_url
+        if url == None:
+            url = 'home'
+        time = log.visit_time
+        year = int(time[0:4])
+        month = int(time[5:7])
+        day = int(time[8:10])
+        hours = time[11:19]
+        jalali = gregorian_to_jalali(year, month, day)
+        Date = str(jalali[0]) + '/' + str(jalali[1]) + '/' + str(jalali[2]) + ' ' + hours
+
+        detail = log.detail_json
+
+        result.append({
+            "id": id,
+            "name": name,
+            'url': url,
+            'time': Date,
+            'detail': detail
+        })
+
+    return JsonResponse({'user_logs': result})
+
+def getTableUserLogs_ES(request, user_id, time_start, time_end):
+
+    res_query = get_user_log_query(user_id, time_start, time_end)
+    detail_query = {
+        "match_phrase":{
+            "detail_json.detail_type":"نتایج جست و جو"
+        }
+    }
+    search_query = {
+        "terms":{
+            "page_url.keyword":["es_search","search"]
+        }
+    }
+    res_query['bool']['filter'].append(search_query)
+    res_query['bool']['filter'].append(detail_query)
+    
+    machine_user_name = getpass.getuser()
+    if  machine_user_name == SERVER_USER_NAME:
+        index_name = es_config.SERVE_USER_LOG_INDEX
+    else:
+        index_name = es_config.LOCAL_USER_LOG_INDEX
+
+
+    res_agg = {
+        "detail-type-agg": {
+            "terms": {
+                "field": "detail_json.search_text",
+                "size": bucket_size
+            }
+        }
+    }
+
+    response = client.search(index=index_name,
+                             request_timeout=40,
+                             query=res_query,
+                             aggregations = res_agg,
+                             size = 100,
+                            sort= [{ "visit_time" : {"order" : "desc"}}]
+                             )
+    total_hits = response['hits']['total']['value']
+    aggregations = response['aggregations']
+    
+    if total_hits == 10000:
+        total_hits = client.count(body={
+            "query": res_query
+        }, index=index_name, doc_type='_doc')['count']
+
+
+
+    i = 1
+    keyword_table_data_list = []
+    for column in aggregations['detail-type-agg']['buckets']:
+        keyword_name = column['key']
+        count = column['doc_count']
+        column = [i, keyword_name, count]
+        keyword_table_data_list.append(column)
+        i += 1
+
+    return JsonResponse({'keyword_table_data_list': keyword_table_data_list})
+
+def userlogs_to_index(request, id, language):
+    if language == 'انگلیسی':
+        file = get_object_or_404(en_model.Country, id=id)
+    else:
+        file = get_object_or_404(Country, id=id)
+
+    from es_scripts import IngestUserLogToElastic
+
+    my_file = file.file.path
+    my_file = str(os.path.basename(my_file))
+    dot_index = my_file.rfind('.')
+    folder_name = my_file[:dot_index]
+
+    machine_user_name = getpass.getuser()
+
+    IngestUserLogToElastic.apply(folder_name, file,machine_user_name)
+    return redirect('zip')

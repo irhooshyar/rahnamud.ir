@@ -1152,5 +1152,16 @@ urlpatterns = [
     path("GetRahbariLabels/", views.GetRahbariLabels, name='GetRahbariLabels'),
     path('GetRahbariTypeDetail/<int:document_id>/', views.GetRahbariTypeDetail, name='getRahbariGraphData'),
     path("getRahbariLabelsList/", views.getRahbariLabelsList, name='getRahbariLabelsList'),
+    
+
+
+    path('getChartLogs_ES/<int:user_id>/<str:time_start>/<str:time_end>/', views.getChartLogs_ES, name='getChartLogs_ES'),
+    path('getTableUserLogs_ES/<int:user_id>/<str:time_start>/<str:time_end>/', views.getTableUserLogs_ES,
+         name='getTableUserLogs_ES'),
+     path('getUserLogs/<int:user_id>/<str:time_start>/<str:time_end>/', views.getUserLogs, name='getUserLogs'),
+    path('getUserLogs_ES/<int:user_id>/<str:time_start>/<str:time_end>/<int:curr_page>/<int:page_size>/', views.getUserLogs_ES, name='getUserLogs_ES'),
+     path('ingest_userlogs_to_index/<int:id>/<str:language>/', views.userlogs_to_index,
+         name='ingest_userlogs_to_index'),
+
     path("getRahbariDocumentsList/", views.getRahbariDocumentsList, name='getRahbariDocumentsList'),
 ]
