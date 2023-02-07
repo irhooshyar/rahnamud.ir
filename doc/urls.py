@@ -794,6 +794,7 @@ urlpatterns = [
     path('ChangePassword/<str:old_password>/<str:new_password>/', views.ChangePassword, name='ChangePassword'),
     path('ShowUserProfile/', views.ShowUserProfile, name='ShowUserProfile'),
     path('GetUserProfile/<int:id>/', views.GetUserProfile, name='GetUserProfile'),
+    path('account/self/', views.self, name='self'), 
 
     path('get_pending_followers/', views.get_pending_followers, name='get_pending_followers'),
     path('accept_follower/<int:id>/', views.accept_follower, name='accept_follower'),
