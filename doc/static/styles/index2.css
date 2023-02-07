@@ -1396,3 +1396,12 @@ content:"!"!important;
   display: block;
   margin-top: 0; /* remove the gap so it doesn't close */
 }
+
+.nav-item {
+  height: 100%;
+}
+
+.dropdown-menu {
+  filter: drop-shadow(10px 10px 20px rgba(137, 149, 167, 0.15));
+  border-radius: 0 .25rem;
+}
