@@ -3717,15 +3717,19 @@ def SetMyUserProfile(request):
     email = data["email"]
     phonenumber = data["phonenumber"]
     role = data["role"]
-    avatar = data["avatar"]
 
     username = request.COOKIES.get('username')
+    user = User.objects.get(username=username)
     user_email = User.objects.filter(email=email).exclude(username=username)
     role = UserRole.objects.get(id=role)
 
     if user_email.count() > 0:
         return JsonResponse({"status": "duplicated email"})
     else:
+        if "avatar" in data:
+            avatar = data["avatar"]
+        else:
+            avatar = user.avatar
         User.objects.filter(username=username).update(
             first_name=firstname,
             last_name=lastname,
