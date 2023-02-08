@@ -84,9 +84,16 @@
     <script src="../../static/js/logincheck.js"></script>
     <script src="../../static/js/column.js"></script>
     <script src="../../static/js/ChartColumnInteractivity.js"></script>
+    <script src="../../static/library/notyf.min.js"></script>
 
     <title> نمایش اسناد</title>
     {% include "doc/title_icon.html" %}
+
+    <style>
+        .checked {
+            color: orange;
+        }
+    </style>
 </head>
 <body>
 <nav dir="rtl" class="navbar nav_menu navbar-expand-lg fixed-top p-0 mt-0">
@@ -214,6 +221,19 @@
                     aria-controls="references_graph_pane" aria-selected="false">کنشگران
             </button>
         </li>
+
+        <li class="nav-item float-right" role="presentation">
+            <button id="user_comments" class="nav-link" data-bs-toggle="pill" data-bs-target="#user_comments_pane"
+                    type="button" role="tab" aria-controls="user_comments_pane" aria-selected="false">نظرات
+                کاربری
+            </button>
+        </li>
+        <li class="nav-item float-right" role="presentation">
+            <button id="user_notes" class="nav-link" data-bs-toggle="pill" data-bs-target="#user_notes_pane"
+                    type="button" role="tab" aria-controls="user_notes_pane" aria-selected="false">یادداشت‌های
+                شخصی
+            </button>
+        </li>
         {#        <li class="nav-item float-right" role="presentation">#}
         {#            <button id="references_table_tab" class="nav-link" data-bs-toggle="pill"#}
         {#                    data-bs-target="#references_table_pane" type="button" role="tab"#}
@@ -281,6 +301,123 @@
             <table id="DocProfileActorsTable" class="table table-striped PopUpTable">
             </table>
 
+        </div>
+
+        <div class="tab-pane w-100 fade float-right" id="user_comments_pane" role="tabpanel"
+             aria-labelledby="user_comments_tab">
+            <div class="row flex-row-reverse px-0 m-0 mt-5">
+                <div class="col-9">
+
+                    <div dir="rtl" class="doc_info_table">
+                        <table class="table table-light table-striped cm_table footable">
+                            <thead class="table">
+                            <tr>
+                                <th class="text-center" scope="col">ردیف</th>
+                                <th class="text-center" scope="col">نام کاربر</th>
+                                <th class="text-center" scope="col">وضعیت</th>
+                                <th class="text-center" scope="col">نظر</th>
+                                <th class="text-center" scope="col">موافقت یا مخالفت با نظر کاربر</th>
+                                <th class="text-center" scope="col">تعداد موافق</th>
+                                <th class="text-center" scope="col">تعداد مخالف</th>
+                                <th class="text-center" scope="col">تاریخ</th>
+
+                            </tr>
+                            </thead>
+                            <tbody id="comments_table_body">
+                            <tr>
+                                <td class="text-center">-</td>
+                                <td class="text-center">-</td>
+                                <td class="text-center">-</td>
+                                <td class="text-center">-</td>
+                                <td class="text-center">-</td>
+                                <td class="text-center">-</td>
+                                <td class="text-center">-</td>
+                                <td class="text-center">-</td>
+                                <td class="text-center">-</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="col-3">
+                    <form class="shadow p-4 bg-white" id="comment_form" dir="rtl" method="POST">
+                        <div class="row text">
+                            <div class="mb-3">
+                                <label for="exampleFormControlTextarea1" class="form-label">لطفا نظر خود را در مورد
+                                    سند انتخابی در کادر زیر وارد نمایید <span style="color: red">*</span>:</label>
+                                <textarea class="form-control" id="form_comment_text" rows="10"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <input class="form-check-input p-1" style=" margin:5px " type="checkbox"
+                                       value="true" id="form_comment_show_info" checked>
+                                <label class="form-check-label" style="margin-right: 28px"
+                                       for="form_comment_show_info">
+                                    نمایش اطلاعات شخصی
+                                </label>
+                            </div>
+                            <div class="mb-3 d-grid gap-2 col-6 mx-auto">
+                                <button class="btn btn-primary" value="submit">ثبت نظر</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane w-100 fade float-right" id="user_notes_pane" role="tabpanel"
+             aria-labelledby="user_notes_tab">
+            <div class="row flex-row-reverse px-0 m-0 mt-5">
+                <div class="col-7">
+
+                    <div dir="rtl" class="doc_info_table">
+                        <table class="table table-light table-striped note_table footable">
+                            <thead class="table">
+                            <tr>
+                                <th class="text-center" scope="col">ردیف</th>
+                                <th class="text-center" scope="col">متن یادداشت</th>
+                                <th class="text-center" scope="col"> تاریخ</th>
+                                <th class="text-center" scope="col"> برچسب</th>
+                                <th class="text-center" scope="col"> ستاره دار</th>
+                                <th class="text-center" scope="col"> دانلود</th>
+                            </tr>
+                            </thead>
+                            <tbody id="notes_table_body">
+                            <tr>
+                                <td class="text-center" id="note_number">-</td>
+                                <td class="text-center" id="note_text">-</td>
+                                <td class="text-center" id="note_time">-</td>
+                                <td class="text-center" id="note_label">-</td>
+                                <td class="text-center" id="note_starred">-</td>
+                                <td class="text-center" id="note_download">-</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <form class="shadow p-4 bg-white" id="note_form" dir="rtl" method="POST">
+                        <div class="row text">
+                            <div class="mb-3">
+                                <label for="exampleFormControlTextarea1" class="form-label">لطفا یادداشت خود را در
+                                    مورد سند انتخابی در کادر زیر وارد نمایید <span
+                                            style="color: red">*</span>:</label>
+                                <textarea class="form-control" id="form_note_text" rows="10"></textarea>
+                            </div>
+
+                            <div class="ngram-div">
+                                <input class="float-left form-control text-right ngram-textbox mr-3"
+                                       placeholder="برچسب یادداشت" type="text" name="form_note_label"
+                                       id="form_note_label" value="">
+                            </div>
+
+                            <div class="mt-3 d-grid gap-2 col-6 mx-auto">
+                                <button class="btn btn-primary" value="submit">ثبت یادداشت</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
         {#        <div class="tab-pane fade float-right w-100 " id="references_table_pane" role="tabpanel"#}

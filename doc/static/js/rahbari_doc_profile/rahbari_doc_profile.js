@@ -4,7 +4,7 @@ let first_loading = true;
 let loaded_doc = 0
 let counter = 0
 const load_size = 200;
-
+const notyf = new Notyf({ position: { x: 'left', y: 'bottom' } });
 const ft = FooTable.init('#PopUpTable', {
     "paging": {
         "enabled": true,
@@ -92,6 +92,9 @@ init();
 async function init() {
     await initSearchableSelects();
 
+    document.getElementById("comment_form").addEventListener('submit', SubmitDocumentComment)
+    document.getElementById("note_form").addEventListener('submit', SubmitDocumentNote)
+
     const url = new URL(window.location.href);
     var document_id = url.searchParams.get("id");
 
@@ -129,6 +132,8 @@ async function init() {
 
 async function ShowResult() {
     await DownloadLinkSet();
+    await ShowDocumentComment()
+    await ShowDocumentNote()
 
     const document_id = document.getElementById("document").value
     const country_id = document.getElementById('country').value
@@ -297,37 +302,37 @@ async function generatePDF() {
     UserLog(form_data)
 }
 
-async function DownloadLinkSet() {
-    const country_id = document.getElementById("country").value;
-    let request_link = 'http://' + location.host + "/GetCountryById/" + country_id + "/";
-    let response = await fetch(request_link).then(response => response.json());
-    response = response["country_information"][0]
-
-    const country_folder = response["folder"];
-    const country_name = response["name"];
-    const document_id = document.getElementById("document").value;
-
-    request_link = 'http://' + location.host + "/GetDocumentById/" + document_id + "/";
-    response = await fetch(request_link).then(response => response.json());
-    const document_file_name = response["document_information"][0]["file_name"]
-
-    if (document_file_name !== "انتخاب نمایید ...") {
-        let file_path = "";
-
-        if (country_name.includes("فاوا")) {
-            file_path = 'http://' + location.host + '/media/data/' + country_folder + '\\' + document_file_name + '.docx';
-        } else {
-            file_path = 'http://' + location.host + '/media/data/' + country_folder + '\\' + document_file_name + '.txt';
-        }
-        document.getElementById("txt_download").href = file_path;
-
-        const document_id = document.getElementById("document").value;
-
-    } else {
-        document.getElementById("txt_download").href = "#";
-        return false;
-    }
-}
+// async function DownloadLinkSet() {
+//     const country_id = document.getElementById("country").value;
+//     let request_link = 'http://' + location.host + "/GetCountryById/" + country_id + "/";
+//     let response = await fetch(request_link).then(response => response.json());
+//     response = response["country_information"][0]
+//
+//     const country_folder = response["folder"];
+//     const country_name = response["name"];
+//     const document_id = document.getElementById("document").value;
+//
+//     request_link = 'http://' + location.host + "/GetDocumentById/" + document_id + "/";
+//     response = await fetch(request_link).then(response => response.json());
+//     const document_file_name = response["document_information"][0]["file_name"]
+//
+//     if (document_file_name !== "انتخاب نمایید ...") {
+//         let file_path = "";
+//
+//         if (country_name.includes("فاوا")) {
+//             file_path = 'http://' + location.host + '/media/data/' + country_folder + '\\' + document_file_name + '.docx';
+//         } else {
+//             file_path = 'http://' + location.host + '/media/data/' + country_folder + '\\' + document_file_name + '.txt';
+//         }
+//         document.getElementById("txt_download").href = file_path;
+//
+//         const document_id = document.getElementById("document").value;
+//
+//     } else {
+//         document.getElementById("txt_download").href = "#";
+//         return false;
+//     }
+// }
 
 async function DownloadLinkSet() {
     var country_id = document.getElementById("country").value;
@@ -704,4 +709,312 @@ async function click_name_chart(document_id, text, chart_name, field_value) {
     $('#ExportExcel_2').on('click', async function () {
         await column_interactivity_obj.download_content();
     })
+}
+
+async function SubmitDocumentComment(e) {
+    let date = {year: 'numeric', month: '2-digit', day: '2-digit'};
+    let comment_time = new Date().toLocaleDateString('fa-IR-u-nu-latn', date);
+    comment_time = comment_time.replace("/", "-")
+    comment_time = comment_time.replace("/", "-")
+    console.log(comment_time);
+
+    e.preventDefault()
+    try {
+        const document_id = document.getElementById("document").value
+        const comment_text = document.getElementById("form_comment_text").value
+        const comment_show_info = document.getElementById("form_comment_show_info").checked
+        const username = getCookie("username")
+
+        if (comment_text == '' || document_id == '') {
+            notyf.error('لطفا تمامی فیلد ها را پر نمایید.');
+            return
+        }
+
+        /* Post Comment */
+        const request_link = 'http://' + location.host + "/CreateDocumentComment/" + document_id + "/" + encodeURIComponent(comment_text) + "/" + username + "/" + comment_show_info + "/" + comment_time + "/";
+        const response = await fetch(request_link).then(response => response.json());
+        const comment_id = response["comment_id"]
+
+        let hash_tags_in_document_comment_text = comment_text.match(/#(\S+)/g); // returns an array with the matches. returns null if no match is found.
+        if (hash_tags_in_document_comment_text != null) {
+            for (let i = 0; i < hash_tags_in_document_comment_text.length; i++) {
+                let hash_tag = hash_tags_in_document_comment_text[i];
+                let hash_tag_name = hash_tag.slice(1);
+                let hash_tag_link = 'http://' + location.host + "/CreateHashTagForDocumentComment/" + comment_id + "/" + encodeURIComponent(hash_tag) + "/";
+                const hash_tag_response = await fetch(hash_tag_link).then(response => response.json());
+            }
+        }
+
+
+        notyf.success('نظر شما با موفقیت ثبت شد');
+        document.getElementById("form_comment_text").value = "";
+        await ShowDocumentComment();
+
+    } catch (e) {
+        notyf.error('لطفا دوباره تلاش کنید.');
+    }
+
+}
+
+async function SubmitDocumentNote(e) {
+
+    // var todayFa = new Date().toLocaleDateString('fa-IR');
+    let options = {year: 'numeric', month: '2-digit', day: '2-digit'};
+    let todayFa = new Date().toLocaleDateString('fa-IR-u-nu-latn', options);
+    todayFa = todayFa.replace("/", "-")
+    todayFa = todayFa.replace("/", "-")
+    // console.log(todayFa);
+
+    // var todayEn = new Date();
+    // var dd = todayEn.getDate();
+    // var mm = todayEn.getMonth()+1;
+    // var yyyy = todayEn.getFullYear();
+    // if(dd<10)
+    // {
+    //     dd='0'+dd;
+    // }
+    // if(mm<10)
+    // {
+    //     mm='0'+mm;
+    // }
+    // todayEn = dd+'-'+mm+'-'+yyyy;
+    // console.log(todayEn);
+
+    e.preventDefault()
+    try {
+        const document_id = document.getElementById("document").value
+        const note_text = document.getElementById("form_note_text").value
+        let note_label = document.getElementById("form_note_label").value
+        const username = getCookie("username")
+
+        if (note_label == '') {
+            note_label = "بدون برچسب"
+        }
+        if (note_text == '' || document_id == '') {
+            notyf.error('لطفا تمامی فیلد ها را پر نمایید');
+            return
+        }
+        /* Post Note */
+        let request_link = 'http://' + location.host + "/CreateDocumentNote/" + document_id + "/" + encodeURIComponent(note_text) + "/" + username + "/" + todayFa + "/" + encodeURIComponent(note_label) + "/";
+        // request_link = encodeURIComponent(request_link)
+        const response = await fetch(request_link).then(response => response.json());
+        const n_id = response['note_id']
+        // console.log(n_id);
+
+        let hash_tags_in_text = note_text.match(/#(\S+)/g); // returns an array with the matches. returns null if no match is found.
+        console.log(hash_tags_in_text);
+        if (hash_tags_in_text != null) {
+            for (let i = 0; i < hash_tags_in_text.length; i++) {
+                let hash_tag = hash_tags_in_text[i];
+                let hash_tag_name = hash_tag.slice(1);
+                // let hash_tag_link = 'http://' + location.host + "/CreateHashTagForNote/" + n_id + "/" + hash_tag_name + "/";
+                let hash_tag_link = 'http://' + location.host + "/CreateHashTagForNote/" + n_id + "/" + encodeURIComponent(hash_tag) + "/";
+                console.log(hash_tag_link);
+                const hash_tag_response = await fetch(hash_tag_link).then(response => response.json());
+                console.log(hash_tag_response['hash_tags']);
+            }
+        }
+
+        notyf.success('یادداشت شما با موفقیت ثبت شد.');
+        document.getElementById("form_note_text").value = "";
+        document.getElementById("form_note_label").value = "";
+        await ShowDocumentNote();
+
+    } catch (e) {
+        notyf.error('لطفا دوباره تلاش کنید.');
+    }
+
+}
+
+async function ShowDocumentComment() {
+    const document_id = document.getElementById("document").value
+    const username = getCookie("username")
+
+    const request_link = 'http://' + location.host + "/GetDocumentComments/" + document_id + "/" + username + "/";
+    const response = await fetch(request_link).then(response => response.json());
+    const comments = response['comments']
+
+    let table_data = ''
+    for (let i = 0; i < comments.length; i++) {
+        let color = 'text-success'
+        let commentStatus = 'تایید شده'
+        if (comments[i].accepted === 0) {
+            color = 'text-warning'
+            commentStatus = 'در انتظار تایید'
+        }
+        if (comments[i].accepted === -1) {
+            color = 'text-danger'
+            commentStatus = 'رد شده'
+        }
+        let link = "#"
+        if (comments[i].user_id) {
+            link = 'http://' + location.host + "/ShowUserProfile/?u=" + comments[i].user_id;
+        }
+        table_data += `<tr>
+                                <td class="text-center">${i + 1}</td>
+                                <td class="text-center">
+                                    <a href="${link}">${comments[i].first_name} ${comments[i].last_name}</a></td>
+                                <td class="text-center"><span class="${color}">${commentStatus}</span></td>
+
+                                <td class="text-center">${comments[i].comment}</td>
+                                <td class="text-center">
+                                <div class="">
+                                    <button type="button" onclick="OnVoteClick('agree', ${comments[i].id})"
+                                            class="btn btn-success btn-agree-state">
+                                            <i class="bi bi-hand-thumbs-up-fill" style="position:relative;top:-3px;"
+                                                                         data-bs-toggle="tooltip"
+                                                                         data-bs-placement="top"
+                                                                         title="موافق"></i></button>
+                                    <button type="button" onclick="OnVoteClick('disagree', ${comments[i].id})"
+                                            class="btn btn-danger btn-agree-state">
+                                           <i class="bi bi-hand-thumbs-down-fill" style="position:relative;top:-3px;"
+                                                                         data-bs-toggle="tooltip"
+                                                                         data-bs-placement="top"
+                                                                         title="مخالف"></i></button>
+                                </div>
+                            </td>
+                            <td class="text-center cursor-pointer" id="comment_agree" data-bs-target="#VoteDetailModal" data-bs-toggle="modal" onclick="VoteDetailFunction(${comments[i].id}, true)">${comments[i].agreed_count}</td>
+                            <td class="text-center cursor-pointer" id="comment_disagree" data-bs-target="#VoteDetailModal" data-bs-toggle="modal" onclick="VoteDetailFunction(${comments[i].id}, false)">${comments[i].disagreed_count}</td>
+                            <td class="text-center" id="comment_date" >${comments[i].time}</td>
+                         </tr>`
+    }
+    if (comments.length == 0) {
+        table_data = ` <tr>
+                            <td class="text-center" id="comment_number">-</td>
+                            <td class="text-center" id="comment_first_name">-</td>
+                            <td class="text-center" id="follow">-</td>
+                            <td class="text-center" id="comment_text">-</td>
+                            <td class="text-center">-</td>
+                            <td class="text-center" id="comment_agree">-</td>
+                            <td class="text-center" id="comment_disagree">-</td>
+                            <td class="text-center" id="comment_date">-</td>
+                         </tr>`
+    }
+    document.getElementById('comments_table_body').innerHTML = table_data;
+    $('.cm_table').footable({
+        "paging": {
+            "enabled": true,
+            strings: {
+                first: '«',
+                prev: '‹',
+                next: '›',
+                last: '»'
+            }
+        },
+        "filtering": {
+            "enabled": false
+        },
+        "sorting": {
+            "enabled": true
+        }
+    });
+}
+
+async function ShowDocumentNote() {
+    const document_id = document.getElementById("document").value
+    const username = getCookie("username")
+
+    const request_link = 'http://' + location.host + "/GetDocumentNotes/" + document_id + "/" + username + "/";
+    const response = await fetch(request_link).then(response => response.json());
+    // const notes = response['notes']
+    let notes = response['notes'].sort(function (a, b) {
+        if (a.starred == b.starred) {
+            return 0;
+        } else if (a.starred == true) {
+            return -1;
+        } else {
+            return 1;
+        }
+    })
+
+    let table_data = ''
+    for (let i = 0; i < notes.length; i++) {
+        if (notes[i].label === null) {
+            notes[i].label = "بدون برچسب"
+        }
+        if (notes[i].starred) {
+            table_data += `<tr>
+                                    <td class="text-center" id="note_number_${i + 1}">${i + 1}</td>
+                                    <td class="text-center" id="note_text_${i + 1}">${notes[i].note}</td>
+                                    <td class="text-center" id="note_time_${i + 1}">${notes[i].time}</td>
+                                    <td class="text-center" id="note_label_${i + 1}">${notes[i].label}</td>
+                                    <td class="text-center" >
+                                        <button value="0" style="border: none;" onclick="ToggleStar('${notes[i].id}','note_starred_${i + 1}')" id="note_starred_${i + 1}">
+                                            <span class="fa fa-star checked"></span>
+                                        </button>
+                                    </td>
+                                    <td class="text-center " id="note_download_${i + 1}">
+                                        <div class="text-center">
+                                            <button type="button" id="document_download" onclick="generatePDFNote('${notes[i].document_name}','${notes[i].time}','${notes[i].note}')"
+                                                class="btn d-flex float-center  mr-2 ">
+                                                PDF
+                                            </button>
+                                        </div>
+                                    </td>
+                            </tr>`
+        } else {
+            table_data += `<tr>
+                                    <td class="text-center" id="note_number_${i + 1}">${i + 1}</td>
+                                    <td class="text-center" id="note_text_${i + 1}">${notes[i].note}</td>
+                                    <td class="text-center" id="note_time_${i + 1}">${notes[i].time}</td>
+                                    <td class="text-center" id="note_label_${i + 1}">${notes[i].label}</td>
+                                    <td class="text-center" >
+                                        <button value="1" style="border: none;" onclick="ToggleStar('${notes[i].id}','note_starred_${i + 1}')"  id="note_starred_${i + 1}">
+                                            <span class="fa fa-star"></span>
+                                        </button>
+                                    </td>
+                                    <td class="text-center " id="note_download_${i + 1}">
+                                        <div class="text-center">
+                                            <button type="button" id="document_download" onclick="generatePDFNote('${notes[i].document_name}','${notes[i].time}','${notes[i].note}')"
+                                                class="btn d-flex float-center  mr-2 ">
+                                                PDF
+                                            </button>
+                                        </div>
+                                    </td>
+                            </tr>`
+        }
+    }
+    if (notes.length == 0) {
+        table_data = `<tr>
+                                <td class="text-center" id="note_number">-</td>
+                                <td class="text-center" id="note_text">-</td>
+                                <td class="text-center" id="note_time">-</td>
+                                <td class="text-center" id="note_label">-</td>
+                                <td class="text-center" id="note_starred">-</td>
+                                <td class="text-center" id="note_download">-</td>
+                        </tr>`
+    }
+    document.getElementById('notes_table_body').innerHTML = table_data;
+    $('.note_table').footable({
+        "paging": {
+            "enabled": true,
+            strings: {
+                first: '«',
+                prev: '‹',
+                next: '›',
+                last: '»'
+            }
+        },
+        "filtering": {
+            "enabled": false
+        },
+        "sorting": {
+            "enabled": true
+        }
+    });
+}
+
+async function ToggleStar(note_id, star_id) {
+    const request_link = 'http://' + location.host + "/ToggleNoteStar/" + note_id + "/";
+    console.log(request_link)
+    fetch(request_link).then(response => response.json()).then(response => {
+        if (response['starred']) {
+            document.getElementById(star_id).innerHTML = `<span class="fa fa-star checked"></span>`
+        } else {
+            document.getElementById(star_id).innerHTML = `<span class="fa fa-star"></span>`
+        }
+    }).catch(error => {
+            console.log(error)
+        }
+        ,)
 }
