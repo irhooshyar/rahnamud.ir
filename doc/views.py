@@ -8835,7 +8835,7 @@ def getTableUserLogs_ES(request, user_id, time_start, time_end):
         }
     }
     search_query = {
-        "terms":{
+        "term":{
             "page_url.keyword":"rahbari_search"
         }
     }
