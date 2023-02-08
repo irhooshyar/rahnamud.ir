@@ -8750,8 +8750,8 @@ def getUserLogs_ES(request, user_id, time_start, time_end, curr_page,page_size):
             "query": res_query
         }, index=index_name, doc_type='_doc')['count']
 
-    es_search_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end,'es_search')
-    graph_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end,'graph2')
+    es_search_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end,'rahbari_search')
+    graph_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end,'rahbari_graph')
 
 
     return  JsonResponse(
@@ -8836,7 +8836,7 @@ def getTableUserLogs_ES(request, user_id, time_start, time_end):
     }
     search_query = {
         "terms":{
-            "page_url.keyword":["es_search","search"]
+            "page_url.keyword":"rahbari_search"
         }
     }
     res_query['bool']['filter'].append(search_query)
