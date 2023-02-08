@@ -123,6 +123,24 @@
                 </ul>
             </li>
 
+            <li class="nav-item dropdown" id="UserProfile_panels">
+            <a class="nav-link dropdown-toggle" href="#" id="UserProfileDropdown" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                تعاملات و یادداشت‌ها
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="UserProfileDropdown">
+                <li><a id="following_document_comments" class="dropdown-item text-right"
+                        href="{% url 'following_document_comments' %}">
+                        نظرات تحلیلی دنبال‌شوندگان</a>
+                </li>
+                <li><a id="notes" class="dropdown-item text-right" href="{% url 'notes' %}">
+                        یادداشت‌های شخصی </a>
+                </li>
+
+                <!-- <li><hr class="dropdown-divider"></li> -->
+
+            </ul>
+        </li>
 
         </ul>
 

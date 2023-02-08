@@ -4,7 +4,7 @@ let first_loading = true;
 let loaded_doc = 0
 let counter = 0
 const load_size = 200;
-const notyf = new Notyf({ position: { x: 'left', y: 'bottom' } });
+const notyf = new Notyf({position: {x: 'left', y: 'bottom'}});
 const ft = FooTable.init('#PopUpTable', {
     "paging": {
         "enabled": true,
@@ -1017,4 +1017,21 @@ async function ToggleStar(note_id, star_id) {
             console.log(error)
         }
         ,)
+}
+
+async function OnVoteClick(state, document_comment) {
+    try {
+        const username = getCookie("username")
+        const request_link = 'http://' + location.host + "/changeVoteState/" + username + "/" + document_comment + "/" + state + "/";
+        let response = await fetch(request_link);
+        if (state == "agree") {
+            notyf.success('شما با این نظر موافقت کردید');
+
+        } else if (state == "disagree") {
+            notyf.error('شما با این نظر مخالفت کردید');
+        }
+    } catch (err) {
+        notyf.error('عملیات ناموفق بوده است');
+    }
+    ShowDocumentComment()
 }

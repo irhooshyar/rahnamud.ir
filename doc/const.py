@@ -25,7 +25,7 @@ AllPanels = {
             'rahbari_search': 'جست‌وجوی در بیانات و ابلاغیه‌ها',
         }
     },
-    
+
     'approvals_adaptation': {
         'persian_name': 'انطباق‌سنجی مصوبات',
         'sub_panels': {
@@ -45,4 +45,12 @@ AllPanels = {
             'rahbari_topic': 'تحلیل هوشمند موضوعی',
         }
     },
+
+    'interactions_and_notes': {
+        'persian_name': 'تعاملات و یادداشت ها',
+        'sub_panels': {
+            'recommendation': 'انتقادات و پیشنهادات',
+            'report_bug': 'گزارش خطا',
+        }
+    }
 }
