@@ -6,6 +6,7 @@ from django.shortcuts import redirect, get_object_or_404
 import os
 import re
 from hazm import *
+from django.utils.crypto import get_random_string
 from django.forms import FileField
 from doc.forms import ZipFileForm
 from doc.models import *
@@ -65,6 +66,8 @@ doctic_para_index = es_config.DOTIC_PARA_INDEX
 from doc.huggingface_views import *
 import getpass
 from persiantools.jdatetime import JalaliDate
+
+
 SERVER_USER_NAME = config.SERVER_USER_NAME
 
 # preprocessing function
