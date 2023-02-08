@@ -1392,6 +1392,7 @@
                 + UserSearchParameters.text + "/"
                 + UserSearchParameters.search_type + "/"
                 + next_page_number + "/"
+                + SEARCH_RESULT_SIZE + "/"
 
             let response = await fetch(request_link).then(response => response.json());
             result_documents = response['result']
