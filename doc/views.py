@@ -6,6 +6,9 @@ from django.shortcuts import redirect, get_object_or_404
 import os
 import re
 from hazm import *
+from django.core.mail import send_mail
+from django.utils import timezone
+from django.conf import settings
 from django.utils.crypto import get_random_string
 from django.forms import FileField
 from doc.forms import ZipFileForm
@@ -1701,6 +1704,59 @@ def BoostingSearchParagraph_ES(request, country_id, curr_page, result_size):
         "result": result
     }
     return JsonResponse(response_dict)
+
+def forgot_password(request):
+    return render(request, 'doc/forgot_password.html')
+
+def forgot_password_by_email(request, email):
+    users = User.objects.filter(email=email)
+    if len(users) == 0:
+        return JsonResponse({ "status": "OK" })
+
+    user = users[0]
+    token = get_random_string(length=50)
+    user.reset_password_token = token
+    user.reset_password_expire_time = datetime.datetime.now() + datetime.timedelta(minutes=30)
+    user.save()
+
+    template = """
+    لطفا برای بازیابی کلمه عبور بر روی لینک زیر کلیک کنید.
+
+    در صورتی که قصد بازیابی ندارید این پیام را نادیده بگیرید.
+    """
+    template += f'http://rahnamud.ir:7074/reset-password/{user.id}/{token}'
+
+    send_mail(
+        subject='بازیابی کلمه عبور',
+        message=template,
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[user.email])
+
+    return JsonResponse({ "status": "OK" })
+
+def reset_password_check(request, user_id, token):
+    url_is_valid = False
+    try:
+        user = User.objects.get(pk=user_id)
+        if (not (user.reset_password_token is None)) and user.reset_password_token == token and user.reset_password_expire_time >= timezone.now():
+            url_is_valid = True
+    except:
+        user_id = ""
+
+    return render(request, 'doc/reset_password.html', { "url_is_valid": url_is_valid, "user_id": user_id, "token": token })
+
+def reset_password(request, user_id, token, password):
+    user = User.objects.get(pk=user_id)
+
+    if (not (user.reset_password_token is None)) and user.reset_password_token == token and user.reset_password_expire_time >= timezone.now():
+        user.password = make_password(password)
+        user.reset_password_token = None
+        user.save()
+        return JsonResponse({ "status": "OK" })
+
+    return JsonResponse({ "status": "Not OK" })
+
+
 
 def ChangePassword(request, old_password, new_password):
     username = request.COOKIES.get('username')
