@@ -190,7 +190,6 @@ LOCAL_SETTING = {
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
 EMAIL_HOST = 'mail.irhooshyar.com'
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
