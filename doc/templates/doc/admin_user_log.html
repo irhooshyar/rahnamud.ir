@@ -242,13 +242,13 @@
                             </div>
 
          
-                            <div id="panel_chart_container" chart-height="1200px" class="full">
+                            <div id="panel_chart_container" chart-height="1200px" class="half">
                             </div>
-
-                            <div id="all_user_chart_container">
-                                <div id="user_chart_container" chart-height="1200px" class="full">
-                                </div>
+                            <div id="user_chart_container" chart-height="1200px" class="half">
                             </div>
+                            <!-- <div id="all_user_chart_container"> -->
+                               
+                            <!-- </div> -->
 
 
                         </div>
@@ -697,10 +697,15 @@
 
 
             if (user_id == '0') {
-                $('#all_user_chart_container').removeClass('d-none')
+                $('#user_chart_container').removeClass('d-none');
+                $('#panel_chart_container').removeClass('full');
+                $('#panel_chart_container').addClass('half')
+
             }
             else {
-                $('#all_user_chart_container').addClass('d-none')
+                $('#user_chart_container').addClass('d-none')
+                $('#panel_chart_container').addClass('full');
+                $('#panel_chart_container').removeClass('half')
 
             }
 
