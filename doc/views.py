@@ -70,8 +70,8 @@ from doc.huggingface_views import *
 import getpass
 from persiantools.jdatetime import JalaliDate
 
-
 SERVER_USER_NAME = config.SERVER_USER_NAME
+
 
 # preprocessing function
 
@@ -814,7 +814,6 @@ def Admin(request):
             return HttpResponse('You are not authorized to view this page')
 
 
-
 def create_standards_table(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import StaticDataImportDB
@@ -1134,12 +1133,12 @@ def ARIMA_Prediction_TO_DB_2(request, id):
     AdvanceARIMAExtractor.apply(None, file)
     return redirect('zip')
 
+
 def RahabriCoLabelsGraph(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import RahabriCoLabelsGraph
     RahabriCoLabelsGraph.apply.after_response(None, file)
     return redirect('zip')
-
 
 
 def RahbariTypeExtractor(request, id):
@@ -1148,12 +1147,12 @@ def RahbariTypeExtractor(request, id):
     RahbariTypeExtraction.apply.after_response(file)
     return redirect('zip')
 
+
 def rahbari_correlated_labels_extractor(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import RahabriCorrelatedTimeSeriesExtractor
     RahabriCorrelatedTimeSeriesExtractor.apply(file)
     return redirect('zip')
-
 
 
 def RahbariGraphUpload(request, id):
@@ -1176,6 +1175,7 @@ def getRahbariCoLabelsGraphMinMaxWeight(request):
         histogram_list.append({"key": inc, "edge_count": histogram_count})
 
     return JsonResponse({"weight_list": weight_list, "histogram_list": histogram_list})
+
 
 def rahbari_paragraphs_similarity_calculation(request, id):
     file = get_object_or_404(Country, id=id)
@@ -1382,6 +1382,7 @@ def GetDocumentsPredictSubjectLDA(request, country_id, number_of_topic):
     return JsonResponse(
         {'documentsDifferenceSubjectLDA': result_difference, 'documentsWithoutSubjectLDA': result_without})
 
+
 def AIGet_Topic_Centers_CahrtData(request, country_id, number_of_topic):
     heatmap_chart_data = AILDAResults.objects.get(
         country__id=country_id, number_of_topic=number_of_topic).heatmap_chart_data["data"]
@@ -1398,6 +1399,7 @@ def AIGet_Topic_Centers_CahrtData(request, country_id, number_of_topic):
 
     return JsonResponse({'cluster_size_chart_data': cluster_size_chart_data,
                          "heatmap_chart_data": heatmap_chart_data})
+
 
 def AIGetLDATopic(request, country_id, number_of_topic, username):
     lda_topics = []
@@ -1440,6 +1442,7 @@ def AIGetLDATopic(request, country_id, number_of_topic, username):
         })
         all_para_count += record.paragraph_count
     return JsonResponse({'lda_topics': lda_topics, 'all_para_count': all_para_count})
+
 
 def BoostingSearchParagraph_Column_ES(request, country_id, field_name, field_value, curr_page, result_size):
     res_query = {"bool": {
@@ -1705,13 +1708,15 @@ def BoostingSearchParagraph_ES(request, country_id, curr_page, result_size):
     }
     return JsonResponse(response_dict)
 
+
 def forgot_password(request):
     return render(request, 'doc/forgot_password.html')
+
 
 def forgot_password_by_email(request, email):
     users = User.objects.filter(email=email)
     if len(users) == 0:
-        return JsonResponse({ "status": "OK" })
+        return JsonResponse({"status": "OK"})
 
     user = users[0]
     token = get_random_string(length=50)
@@ -1732,30 +1737,34 @@ def forgot_password_by_email(request, email):
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[user.email])
 
-    return JsonResponse({ "status": "OK" })
+    return JsonResponse({"status": "OK"})
+
 
 def reset_password_check(request, user_id, token):
     url_is_valid = False
     try:
         user = User.objects.get(pk=user_id)
-        if (not (user.reset_password_token is None)) and user.reset_password_token == token and user.reset_password_expire_time >= timezone.now():
+        if (not (
+                user.reset_password_token is None)) and user.reset_password_token == token and user.reset_password_expire_time >= timezone.now():
             url_is_valid = True
     except:
         user_id = ""
 
-    return render(request, 'doc/reset_password.html', { "url_is_valid": url_is_valid, "user_id": user_id, "token": token })
+    return render(request, 'doc/reset_password.html',
+                  {"url_is_valid": url_is_valid, "user_id": user_id, "token": token})
+
 
 def reset_password(request, user_id, token, password):
     user = User.objects.get(pk=user_id)
 
-    if (not (user.reset_password_token is None)) and user.reset_password_token == token and user.reset_password_expire_time >= timezone.now():
+    if (not (
+            user.reset_password_token is None)) and user.reset_password_token == token and user.reset_password_expire_time >= timezone.now():
         user.password = make_password(password)
         user.reset_password_token = None
         user.save()
-        return JsonResponse({ "status": "OK" })
+        return JsonResponse({"status": "OK"})
 
-    return JsonResponse({ "status": "Not OK" })
-
+    return JsonResponse({"status": "Not OK"})
 
 
 def ChangePassword(request, old_password, new_password):
@@ -1774,6 +1783,7 @@ def SaveUserLog(user_id, ip, url):
     date_time = datetime.datetime.now()
     UserLogs.objects.create(user_id_id=user_id, user_ip=ip,
                             page_url=url, visit_time=date_time)
+
 
 def CheckUserLogin(request, username, password, ip):
     user = User.objects.filter(username=username)
@@ -1822,6 +1832,7 @@ def CreateOrDeleteUserPanel(request, panel_name, username):
         )
         return JsonResponse({"status": "created"})
 
+
 def CreateReportBug(request, username, report_bug_text, panel_id, branch_id):
     user = User.objects.get(username=username)
     main_panel = MainPanels.objects.all().get(id=panel_id)
@@ -1834,6 +1845,7 @@ def CreateReportBug(request, username, report_bug_text, panel_id, branch_id):
         date=str(jdatetime.strftime(jdatetime.now(), "%H:%M:%S %Y-%m-%d"))
     )
     return JsonResponse({"status": "OK"})
+
 
 def Excel_Topic_Paragraphs_ES(request, country_id, topic_id, result_size, curr_page, username):
     res_query = {"bool": {
@@ -1996,6 +2008,7 @@ def GetAllPanels(request):
 
     return JsonResponse(ret_res)
 
+
 @is_login
 def GetAllowedPanels(request, username=None):
     if username == None:
@@ -2104,6 +2117,7 @@ def GetPermissionsExcel(request):
         result.append(new_user)
 
     return JsonResponse({"users": result, "panels": persian_panels})
+
 
 def Get_Topic_Paragraphs_ES(request, country_id, topic_id, result_size, curr_page, get_paragraphs, get_aggregations):
     res_query = {"bool": {
@@ -2255,6 +2269,7 @@ def GetAffinityLabels_ByLabelName(request, label_name):
 
     return JsonResponse({"table_data": table_data})
 
+
 def GetAllNotesInTimeRange(request, username, time_start, time_end):
     user_notes = DocumentNote.objects.all().filter(user__username=username)
 
@@ -2297,6 +2312,7 @@ def GetAllNotesInTimeRange(request, username, time_start, time_end):
     #     column = [name, count]
     #     chart_data_list.append(column)
     # return JsonResponse({'user_chart_data_list': chart_data_list})
+
 
 def GetCorrelatedLabels_ByLabelName(request, label_name):
     label_id = RahbariLabel.objects.get(name=label_name).id
@@ -2685,6 +2701,7 @@ def GetRahbariSearchParameters(request, country_id):
 
     return JsonResponse({"parameters_result": parameters_result})
 
+
 def GetRahbariTypeDetails_ES(request, document_id, rahbari_type_id):
     document = Document.objects.get(id=document_id)
     country = Country.objects.get(id=document.country_id.id)
@@ -2736,6 +2753,7 @@ def GetRahbariTypeDetails_ES(request, document_id, rahbari_type_id):
                              )
     result = response['hits']['hits']
     return JsonResponse({"result": result})
+
 
 def GetRahbariTypeDetail(request, document_id):
     rahbari_document_keywords = RahbariDocumentKeywords.objects.filter(document_id=document_id) \
@@ -2907,6 +2925,7 @@ def exact_search_text(res_query, place, text, ALL_FIELDS):
             res_query['bool']['must'].append(title_content_query)
     return res_query
 
+
 def boolean_search_text(res_query, place, text, operator, ALL_FIELDS):
     text = text.replace('>', '/').replace('<', '\\')
 
@@ -3011,6 +3030,7 @@ def boolean_search_text(res_query, place, text, operator, ALL_FIELDS):
             res_query['bool']['must'].append(title_content_query)
 
     return res_query
+
 
 def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRule):
     document = Document.objects.get(id=document_id)
@@ -3215,6 +3235,51 @@ def save_lda_topic_label(request, topic_id, username, label):
     return JsonResponse({
         "result_response": result_response
     })
+
+
+# def slogan_get_chart(request, slogan_year):
+#     slogan = Slogan.objects.get(year=slogan_year)
+#     keywords = slogan.keywords
+#     # synonymous = SloganSynonymousWords.objects.get(id=slogan.id)
+#
+#     index_name = doctic_doc_index
+#     res_query = {
+#         "range": {
+#             "approval_year": {
+#                 "gte": 1375
+#             }
+#         }
+#     }
+#     res_agg = {
+#         "approval-year-agg": {
+#             "terms": {
+#                 "field": "approval_year",
+#                 "size": bucket_size
+#             }
+#         },
+#     }
+#
+#     response = client.search(index=index_name,
+#                              _source_includes=["attachment.content"],
+#                              request_timeout=40,
+#                              query=res_query,
+#                              aggregations=res_agg,
+#                              )
+#
+#     word_array = []
+#     word_array.extend(keywords.split("-"))
+#     # word_array.extend(synonymous.split("-"))
+#
+#     result = response['hits']['hits']
+#     aggregations = response['aggregations']
+#
+#     # total_hits = response['hits']['total']['value']
+#
+#
+#     # if total_hits == 10000:
+#     #     total_hits = client.count(body={
+#     #         "query": res_query
+#     #     }, index=index_name, doc_type='_doc')['count']
 
 
 def save_topic_label(request, topic_id, username, label):
@@ -3504,6 +3569,7 @@ def Search_Rahbari_Paragraph_Column_ES(request, country_id, type_name, label_nam
         "curr_page": curr_page,
         "aggregations": aggregations})
 
+
 def filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, rahbari_type, document_ids):
     if type_id != 0:
         type_name = Type.objects.get(id=type_id).name
@@ -3707,6 +3773,7 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
         "curr_page": curr_page,
         'aggregations': aggregations})
 
+
 def SetMyUserProfile(request):
     if request.method != 'POST':
         return JsonResponse({"status": "Method not supported"})
@@ -3754,7 +3821,7 @@ def UserLogSaved(request, username, url, sub_url='0', ip='0'):
     user_id = User.objects.get(username=username).id
     date_time = datetime.datetime.now()
 
-    visit_time  = str(date_time).replace(' ',"T").split('.')[0] + 'Z'
+    visit_time = str(date_time).replace(' ', "T").split('.')[0] + 'Z'
 
     year = int(visit_time[0:4])
     month = int(visit_time[5:7])
@@ -3762,17 +3829,16 @@ def UserLogSaved(request, username, url, sub_url='0', ip='0'):
     hour = int(visit_time[11:13])
 
     jalili_visit_time = {
-        "year":year,
-        "month":{"number":month,
-                    "name":JalaliDate.to_jalali(year, month, day).strftime('%B',locale = 'fa')},
-        "day":{
-            "number":day,
-            "name":JalaliDate.to_jalali(year, month, day).strftime('%A',locale = 'fa')  
+        "year": year,
+        "month": {"number": month,
+                  "name": JalaliDate.to_jalali(year, month, day).strftime('%B', locale='fa')},
+        "day": {
+            "number": day,
+            "name": JalaliDate.to_jalali(year, month, day).strftime('%A', locale='fa')
         },
-        
-        "hour":hour
-    }
 
+        "hour": hour
+    }
 
     if url == "0":
         url = None
@@ -3786,36 +3852,35 @@ def UserLogSaved(request, username, url, sub_url='0', ip='0'):
     UserLogs.objects.create(user_id_id=user_id, user_ip=ip,
                             page_url=paeg_url, visit_time=date_time,
                             detail_json=request.POST)
-    
-    user_info = User.objects.get(id =user_id)
-    
-    user_object = {"id":user_id,
-                    "first_name":user_info.first_name,
-                    "last_name":user_info.last_name}
 
-    
+    user_info = User.objects.get(id=user_id)
+
+    user_object = {"id": user_id,
+                   "first_name": user_info.first_name,
+                   "last_name": user_info.last_name}
+
     machine_user_name = getpass.getuser()
-    if  machine_user_name == SERVER_USER_NAME:
+    if machine_user_name == SERVER_USER_NAME:
         index_name = es_config.SERVE_USER_LOG_INDEX
     else:
         index_name = es_config.LOCAL_USER_LOG_INDEX
 
     new_log = {
-    "user":user_object,
-    "user_ip":ip,
-    "page_url":paeg_url,
-    "visit_time":visit_time,
-    "jalili_visit_time":jalili_visit_time,
-    "detail_json":request.POST}
+        "user": user_object,
+        "user_ip": ip,
+        "page_url": paeg_url,
+        "visit_time": visit_time,
+        "jalili_visit_time": jalili_visit_time,
+        "detail_json": request.POST}
 
     client.index(
-        index = index_name,
-        document = new_log,
-        op_type = 'create',
-        refresh = True)
-    
+        index=index_name,
+        document=new_log,
+        op_type='create',
+        refresh=True)
+
     # client.indices.flush([index_name])
-    
+
     return JsonResponse({"status": "OK"})
 
 
@@ -3826,6 +3891,7 @@ def UserDeployLogSaved(request, username, detail):
     DeployServer.objects.create(user_id_id=user_id, deploy_time=date_time, detail=detail)
 
     return JsonResponse({"status": "OK"})
+
 
 def gregorian_to_jalali(gy, gm, gd):
     g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
@@ -4174,7 +4240,6 @@ def ChangeReportBugCheckStatus(request, report_bug_id):
     return JsonResponse({"status": "OK"})
 
 
-
 @allowed_users('admin_user_report_bug')
 def GetReportBugByFilter(request, panel_id, branch_id, status):
     if status == "T":
@@ -4212,7 +4277,6 @@ def GetReportBugByFilter(request, panel_id, branch_id, status):
             branches[report.branch_id.panel_persian_name] = 1
 
     return JsonResponse({'report_bug': report_bug, 'branches_count': branches})
-
 
 
 def AILDADocFromTopic(request, topic_id):
@@ -4341,6 +4405,7 @@ def GetLDAForDocByID(request, document_id):
         "_name": _name,
         'topic_documents': topic_documents
     })
+
 
 def get_stopword_list(file_name):
     stop_words = []
@@ -4550,7 +4615,6 @@ def GetDetail_DoticSimDocument_ByLabels(request, src_document_id, dest_document_
         result_para = response['hits']['hits']
 
     return JsonResponse({'result_para': result_para})
-
 
 
 def GetParaSimilarity(request, doc1_id, doc2_id):
@@ -4798,7 +4862,6 @@ def getUserDeployLogs(request):
         })
 
     return JsonResponse({'user_logs': result})
-
 
 
 def GetUnknownDocuments(request):
@@ -5236,6 +5299,7 @@ def filter_doc_actor_fields(res_query, level_id, subject_id, type_id, approval_r
 
     return res_query
 
+
 def exact_search_text_doc_actor(res_query, place, text, ALL_FIELDS):
     text = text.replace('>', '/').replace('<', '\\')
 
@@ -5287,7 +5351,6 @@ def exact_search_text_doc_actor(res_query, place, text, ALL_FIELDS):
             res_query['bool']['must'].append(title_content_query)
 
     return res_query
-
 
 
 def boolean_search_text_doc_actor(res_query, place, text, operator, ALL_FIELDS):
@@ -5355,7 +5418,6 @@ def boolean_search_text_doc_actor(res_query, place, text, operator, ALL_FIELDS):
             res_query['bool']['must'].append(title_content_query)
 
     return res_query
-
 
 
 def entropy(numbers):
@@ -5562,7 +5624,6 @@ def SearchGeneralDocumentsDefinition(request, country_id, mode, text):
     return JsonResponse({'keywords_information': keywords_information})
 
 
-
 def Get_Documents_RefGraph_ES(request, country_id, level_id, subject_id, type_id, approval_reference_id, from_year,
                               to_year, from_advisory_opinion_count,
                               from_interpretation_rules_count, revoked_type_id, place, text, search_type, curr_page):
@@ -5647,6 +5708,7 @@ def Get_Documents_RefGraph_ES(request, country_id, level_id, subject_id, type_id
             added_edge.append([src_id, dest_id])
 
     return JsonResponse({"Nodes_data": nodes_list, "Edges_data": edges_list})
+
 
 def filter_doc_fields_COLUMN(res_query, level_name, subject_name, type_name, approval_reference_name,
                              from_year, to_year, from_advisory_opinion_count, from_interpretation_rules_count,
@@ -5811,7 +5873,6 @@ def SearchDocuments_Column_ES(request, country_id, level_name, subject_name, typ
         "curr_page": curr_page})
 
 
-
 def GetActorsDict(request):
     actorsDict = {}
     actors = Actor.objects.all().values('id', 'name',
@@ -5828,7 +5889,6 @@ def GetActorsDict(request):
         }
 
     return JsonResponse({"actorsDict": actorsDict})
-
 
 
 def GetActorsList(request):
@@ -5913,7 +5973,6 @@ def filter_document_actor_fields(res_query, role_ids=None, area_id=0, actor_id=0
         res_query['bool']['filter'].append(role_name_query)
 
     return res_query
-
 
 
 def GetColumnParagraphsByActorRoleName_Modal_es_2(request, actor_name, role_name, curr_page,
@@ -6046,7 +6105,6 @@ def GetColumnParagraphsByActorRoleName_Modal_es_2(request, actor_name, role_name
                          'max_page': max_page})
 
 
-
 def GetSearchDetails_ES_Rahbari(request, document_id, search_type, text):
     document = Document.objects.get(id=document_id)
     country = Country.objects.get(id=document.country_id.id)
@@ -6101,7 +6159,6 @@ def GetSearchDetails_ES_Rahbari(request, document_id, search_type, text):
     return JsonResponse({"result": result_text})
 
 
-
 def GetSearchDetails_ES_2(request, document_id, search_type, text):
     document = Document.objects.get(id=document_id)
     country = Country.objects.get(id=document.country_id.id)
@@ -6151,7 +6208,6 @@ def GetSearchDetails_ES_2(request, document_id, search_type, text):
     result = response['hits']['hits']
 
     return JsonResponse({"result": result})
-
 
 
 def GetAllUsers_Commented(reauest, user_name, user_type):
@@ -6208,7 +6264,6 @@ def follow(request, follower_username, following_user_id):
         return JsonResponse({"status": "follow_request_sent!"})
 
 
-
 def unfollow(request, follower_username, following_user_id):
     try:
         follow_info = UserFollow.objects.get(follower__username=follower_username, following__id=following_user_id)
@@ -6222,6 +6277,7 @@ def GetUserComments(request, user_id, hashtag_id):
     username = request.COOKIES.get('username')
 
     result = []
+    comments = []
 
     if user_id == 0 and hashtag_id == 0:
         return JsonResponse({"comments": result})
@@ -6288,7 +6344,6 @@ def GetGraphSimilarityMeasureByCountry(request, country_id):
     return JsonResponse({'measure_list': result})
 
 
-
 def GetGraphDistribution(request, country_id, measure_id):
     graph_cube = Graph_Distribution_Cube.objects.filter(country_id_id=country_id, measure_id_id=measure_id)
     result = []
@@ -6332,7 +6387,6 @@ def GetDocumentsByCountryId_Modal(request, country_id=None, start_index=None, en
         data = data[start_index: end_index]
 
     return JsonResponse({'documentsList': data, 'document_count': doc_count})
-
 
 
 def GetPersianDefinitionByDocumentId(request,
@@ -6429,7 +6483,6 @@ def GetNGramByDocumentId(request, document_id, gram):
     return JsonResponse({'document_ngram_list': result})
 
 
-
 def GetReferencesByDocumentId(request, document_id, type):
     if type == 1:
         document_refrences_list = Graph.objects.filter(src_document_id_id=document_id, measure_id_id=2).order_by(
@@ -6474,7 +6527,6 @@ def GetReferencesByDocumentId(request, document_id, type):
             result.append(res)
 
     return JsonResponse({'document_references_list': result})
-
 
 
 def GetSubjectByDocumentId(request, document_id, measure_id):
@@ -6524,7 +6576,6 @@ def GetSubjectByDocumentId(request, document_id, measure_id):
         result.append(res)
 
     return JsonResponse({'document_subject_list': result, 'document_name': document_name})
-
 
 
 def GetActorsPararaphsByDocumentId(request, document_id):
@@ -6603,7 +6654,6 @@ def GetActorsPararaphsByDocumentId(request, document_id):
     return JsonResponse({"actors_paragraphs": actors_paragraphs})
 
 
-
 def GetBM25Similarity(request, document_id):
     sim_docs = []
     # index_name = Document.objects.get(id = document_id).country_id.name.replace(' ','_')
@@ -6636,7 +6686,6 @@ def GetBM25Similarity(request, document_id):
     sim_docs = response['hits']['hits']
 
     return JsonResponse({'docs': sim_docs})
-
 
 
 def GetDocActorParagraphs_Column_Modal(request, document_id, actor_name, role_name):
@@ -6806,7 +6855,6 @@ def GetDocumentSubjectContent(request, document_id, version_id):
     return JsonResponse({'document_paragraphs': document_paragraphs})
 
 
-
 def SearchDocument_ES2(request, country_id, level_id, subject_id, type_id, approval_reference_id, from_year, to_year,
                        from_advisory_opinion_count,
                        from_interpretation_rules_count, revoked_type_id, place, text, search_type):
@@ -6965,7 +7013,6 @@ def GetDocumentNotes(request, document, username):
     return JsonResponse({"notes": result})
 
 
-
 def changeVoteState(request, username, document_comment, state):
     agreed = False
     if state == "agree":
@@ -6985,7 +7032,6 @@ def changeVoteState(request, username, document_comment, state):
     return JsonResponse({})
 
 
-
 def GetFollowings(request, follower_username):
     followings = UserFollow.objects.filter(follower__username=follower_username, accepted=True)
     follows = {}
@@ -6993,7 +7039,6 @@ def GetFollowings(request, follower_username):
         follows[f.following.id] = {"first_name": f.following.first_name, "last_name": f.following.last_name,
                                    "id": f.following.id}
     return JsonResponse({"follows": list(follows.values())})
-
 
 
 def GetGraphEdgesForDocument(request, measure_id, document_id):
@@ -7032,7 +7077,6 @@ def GetGraphEdgesForDocument(request, measure_id, document_id):
     graph_type = Measure.objects.get(id=measure_id).type
 
     return JsonResponse({'graph_edge_list': result, "graph_type": graph_type})
-
 
 
 def GetAllKnowledgeGraphList(request, username):
@@ -7246,7 +7290,6 @@ def BoostingSearchKnowledgeGraph_ES(request, country_id, field_name, field_value
     return JsonResponse(response_dict)
 
 
-
 def GetChartSloganAnalysis(request, country_id, slogan_year):
     slogan_map = SloganAnalysis.objects.filter(country_id_id=country_id, sloganYear=slogan_year).order_by('docYear')
     res1 = []
@@ -7261,7 +7304,6 @@ def GetChartSloganAnalysis(request, country_id, slogan_year):
     for s in slogan_map_synonym:
         res3.append([s.docYear, s.number_per_doc])
     return JsonResponse({"slogan_analysis1": res1, "slogan_analysis2": res2, "slogan_analysis3": res3})
-
 
 
 def GetInfoChartSloganAnalysis(request, country_id, slogan_year):
@@ -7282,7 +7324,6 @@ def GetInfoChartSloganAnalysis(request, country_id, slogan_year):
                          'approval_references_chart_data': approval_reference_chart_data,
                          'level_chart_data': level_chart_data,
                          })
-
 
 
 def GetActorsByDocumentIdActorType(document_id, actor_type_name):
@@ -7403,8 +7444,6 @@ def GetDetailChartSloganAnalysis(request, country_id, slogan_year, chart_type, c
     return JsonResponse({'document_list': document_list})
 
 
-
-
 def Get_Clustering_Vocabulary(request, country_id, vector_type, ngram_type):
     res_features = ParagraphsFeatures.objects.get(country__id=country_id,
                                                   feature_extractor=vector_type,
@@ -7488,7 +7527,6 @@ def Get_ClusteringAlgorithm_DiscriminatWords_ChartData(request, country_id, algo
     })
 
 
-
 def Get_ClusteringEvaluation_Silhouette_ChartData(request, country_id, algorithm_name, vector_type, ngram_type):
     eval_result = ClusteringEvaluationResults.objects.get(
         country__id=country_id,
@@ -7504,7 +7542,6 @@ def Get_ClusteringEvaluation_Silhouette_ChartData(request, country_id, algorithm
         'silhouette_score_chart_data': silhouette_score_chart_data,
         "elbow_inertia_chart_data": elbow_inertia_chart_data
     })
-
 
 
 def Get_ANOVA_Word_Paragraphs_Column_ES(request, country_id, topic_id, word, curr_page, result_size):
@@ -7736,7 +7773,6 @@ def Get_Topic_Paragraphs_Column_ES(request, country_id, topic_id, field_name, fi
     return JsonResponse(response_dict)
 
 
-
 def Get_Topic_Anova_ChartData(request, country_id, topic_id):
     discriminant_words_chart_data = TopicDiscriminantWords.objects.get(
         country__id=country_id,
@@ -7747,7 +7783,6 @@ def Get_Topic_Anova_ChartData(request, country_id, topic_id):
     return JsonResponse({
         "discriminant_words_chart_data": discriminant_words_chart_data
     })
-
 
 
 def Get_Topic_TagCloud_ChartData(request, country_id, topic_id):
@@ -7810,7 +7845,6 @@ def GetKeywordClustersData(request, country_id, algorithm_name, algorithm_vector
     return JsonResponse({
         "table_data": result_table_data
     })
-
 
 
 def Export_Rahbari_Paragraph_Column_ES(request, country_id, type_name, label_name_list,
@@ -7907,7 +7941,6 @@ def GetRahbariDocumentById(request, country_id, document_id):
         "subject": subject_name,
         'total_hits': total_hits,
     })
-
 
 
 def rahbari_document_get_full_profile_analysis(request, country_id, document_id):
@@ -8097,6 +8130,7 @@ def rahbari_document_name_chart_column(request, document_id, name, field_name, c
         "curr_page": curr_page,
     })
 
+
 def rahbari_document_actor_chart_column(request, document_id, name, curr_page, result_size):
     res_query = {
         "bool": {
@@ -8201,7 +8235,6 @@ def export_rahbari_document_chart_column(request, document_id, text, keyword, cu
     return JsonResponse({"file_name": file_name})
 
 
-
 def GetSearchDetails_ES(request, document_id, search_type, text):
     document = Document.objects.get(id=document_id)
     country = Country.objects.get(id=document.country_id.id)
@@ -8265,8 +8298,6 @@ def GetSearchDetails_ES(request, document_id, search_type, text):
 
     return JsonResponse({
         "result": result_text})
-
-
 
 
 def SearchRahbariRule_ES(request, country_id, type_id, label_name, from_year, to_year, rahbari_type, place, text,
@@ -8481,7 +8512,6 @@ def GetParagraphBy_ID(request, paragraph_id):
     return JsonResponse({"paragraph_text": str(paragraph_text), "country_name": country_name})
 
 
-
 def GetParagraphSubjectContent(request, paragraph_id, version_id):
     para_obj = DocumentParagraphs.objects.get(id=paragraph_id)
     para_text = para_obj.text
@@ -8549,36 +8579,30 @@ def GetParagraphSubjectContent(request, paragraph_id, version_id):
 # ES_USER_LOG
 
 def getChartLogs_ES(request, user_id, time_start, time_end):
-
     res_query = get_user_log_query(user_id, time_start, time_end)
 
     machine_user_name = getpass.getuser()
-    if  machine_user_name == SERVER_USER_NAME:
+    if machine_user_name == SERVER_USER_NAME:
         index_name = es_config.SERVE_USER_LOG_INDEX
     else:
         index_name = es_config.LOCAL_USER_LOG_INDEX
 
-
     response = client.search(index=index_name,
                              request_timeout=40,
                              query=res_query,
-                             size = 100,
-                             sort= [
-                                    { "visit_time" : {"order" : "desc"}}
-                                ]
+                             size=100,
+                             sort=[
+                                 {"visit_time": {"order": "desc"}}
+                             ]
                              )
-    
+
     user_logs = response['hits']['hits']
     total_hits = response['hits']['total']['value']
-
 
     if total_hits == 10000:
         total_hits = client.count(body={
             "query": res_query
         }, index=index_name, doc_type='_doc')['count']
-
-
-
 
     convert_month = {1: 'فروردین', 2: 'اردیبهشت', 3: 'خرداد', 4: 'تیر', 5: 'مرداد',
                      6: 'شهریور', 7: 'مهر', 8: 'آبان', 9: 'آذر', 10: 'دی',
@@ -8596,10 +8620,10 @@ def getChartLogs_ES(request, user_id, time_start, time_end):
         print(time)
         print(f"{year},{month},{day},{hour}")
         jalali = gregorian_to_jalali(year, month, day)
-        print(JalaliDate.today().strftime('%A',locale = 'fa'))
-        print(JalaliDate.today().strftime('%B',locale = 'fa'))
+        print(JalaliDate.today().strftime('%A', locale='fa'))
+        print(JalaliDate.today().strftime('%B', locale='fa'))
 
-        date_list = str(JalaliDate.to_jalali(year, month, day).strftime('%B',locale = 'fa')).split('-')
+        date_list = str(JalaliDate.to_jalali(year, month, day).strftime('%B', locale='fa')).split('-')
 
         jalali_date = [int(num) for num in date_list]
         print(jalali_date)
@@ -8643,23 +8667,21 @@ def getChartLogs_ES(request, user_id, time_start, time_end):
               'graph2': {'chart_dict': {}, 'chart_list': []}
               }
 
+    es_search_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end, 'es_search')
+    graph_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end, 'graph2')
 
-
-    es_search_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end,'es_search')
-    graph_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end,'graph2')
-
-    
     # 'chart_data_information': panels['information']['chart_list'],
     return JsonResponse({'chart_data_list': chart_data_list,
-                          'chart_data_search': es_search_chart_data,
+                         'chart_data_search': es_search_chart_data,
                          'chart_data_graph': graph_chart_data,
                          'month_chart_data_list': month_chart_data_list, 'hour_chart_data_list': hour_chart_data_list})
 
-def get_user_log_query(user_id,time_start,time_end):
+
+def get_user_log_query(user_id, time_start, time_end):
     res_query = {
         "bool": {
-            "filter":[],
-            "must":{
+            "filter": [],
+            "must": {
                 "exists": {
                     "field": "user.id"
                 }
@@ -8667,22 +8689,21 @@ def get_user_log_query(user_id,time_start,time_end):
         }
     }
 
-    if user_id != 0 :
+    if user_id != 0:
         user_query = {
-                    "term": {
-                        "user.id": user_id
-                    }
-                }
+            "term": {
+                "user.id": user_id
+            }
+        }
 
         res_query['bool']['filter'].append(user_query)
 
     if time_start != "0" or time_end != "0":
         time_query = {
             "range": {
-                        "visit_time": {}
+                "visit_time": {}
             }
         }
-
 
         if time_start != "0":
             time_query['range']['visit_time']['gte'] = time_start
@@ -8693,22 +8714,22 @@ def get_user_log_query(user_id,time_start,time_end):
 
     return res_query
 
-def getPanelDetailType_Aggregation(user_id, time_start, time_end,panel_name):
+
+def getPanelDetailType_Aggregation(user_id, time_start, time_end, panel_name):
     res_query = get_user_log_query(user_id, time_start, time_end)
 
     panel_filter = {
-        'term':{
-            'page_url.keyword':panel_name
+        'term': {
+            'page_url.keyword': panel_name
         }
     }
     res_query['bool']['filter'].append(panel_filter)
 
     machine_user_name = getpass.getuser()
-    if  machine_user_name == SERVER_USER_NAME:
+    if machine_user_name == SERVER_USER_NAME:
         index_name = es_config.SERVE_USER_LOG_INDEX
     else:
         index_name = es_config.LOCAL_USER_LOG_INDEX
-
 
     res_agg = {
         "detail-type-agg": {
@@ -8722,35 +8743,33 @@ def getPanelDetailType_Aggregation(user_id, time_start, time_end,panel_name):
                              request_timeout=40,
                              query=res_query,
                              aggregations=res_agg,
-                             size = 100,
-                             sort= [
-                                    { "visit_time" : {"order" : "desc"}}
-                                ]
+                             size=100,
+                             sort=[
+                                 {"visit_time": {"order": "desc"}}
+                             ]
                              )
-    
+
     total_hits = response['hits']['total']['value']
     aggregation_data = response['aggregations']['detail-type-agg']['buckets']
 
     chart_value_list = []
 
     for column in aggregation_data:
-
         key = column["key"]
         value = column["doc_count"]
         chart_value_list.append([key, value])
 
-    return  chart_value_list
+    return chart_value_list
 
-def getUserLogs_ES(request, user_id, time_start, time_end, curr_page,page_size):
 
-    #time_start = time_start + "T00:00:00"+ 'Z'
-    #time_end = time_end + "T00:00:00"+ 'Z'
-
+def getUserLogs_ES(request, user_id, time_start, time_end, curr_page, page_size):
+    # time_start = time_start + "T00:00:00"+ 'Z'
+    # time_end = time_end + "T00:00:00"+ 'Z'
 
     res_query = get_user_log_query(user_id, time_start, time_end)
-    
+
     machine_user_name = getpass.getuser()
-    if  machine_user_name == SERVER_USER_NAME:
+    if machine_user_name == SERVER_USER_NAME:
         index_name = es_config.SERVE_USER_LOG_INDEX
     else:
         index_name = es_config.LOCAL_USER_LOG_INDEX
@@ -8793,12 +8812,12 @@ def getUserLogs_ES(request, user_id, time_start, time_end, curr_page,page_size):
     response = client.search(index=index_name,
                              request_timeout=40,
                              query=res_query,
-                             aggregations = res_agg,
+                             aggregations=res_agg,
                              from_=from_value,
-                             size = page_size,
-                            sort=[
-                                    { "visit_time" : {"order" : "desc"}}
-                                ]
+                             size=page_size,
+                             sort=[
+                                 {"visit_time": {"order": "desc"}}
+                             ]
                              )
     result = response['hits']['hits']
     total_hits = response['hits']['total']['value']
@@ -8809,18 +8828,17 @@ def getUserLogs_ES(request, user_id, time_start, time_end, curr_page,page_size):
             "query": res_query
         }, index=index_name, doc_type='_doc')['count']
 
-    es_search_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end,'rahbari_search')
-    graph_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end,'rahbari_graph')
+    es_search_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end, 'rahbari_search')
+    graph_chart_data = getPanelDetailType_Aggregation(user_id, time_start, time_end, 'rahbari_graph')
 
-
-    return  JsonResponse(
+    return JsonResponse(
         {
             "result": result,
             'total_hits': total_hits,
             'curr_page': curr_page,
-           'aggregations':aggregations,
-           "es_search_chart_data":es_search_chart_data,
-           "graph_chart_data":graph_chart_data
+            'aggregations': aggregations,
+            "es_search_chart_data": es_search_chart_data,
+            "graph_chart_data": graph_chart_data
         }
     )
 
@@ -8885,28 +8903,27 @@ def getUserLogs(request, user_id, time_start, time_end):
 
     return JsonResponse({'user_logs': result})
 
-def getTableUserLogs_ES(request, user_id, time_start, time_end):
 
+def getTableUserLogs_ES(request, user_id, time_start, time_end):
     res_query = get_user_log_query(user_id, time_start, time_end)
     detail_query = {
-        "match_phrase":{
-            "detail_json.detail_type":"نتایج جست و جو"
+        "match_phrase": {
+            "detail_json.detail_type": "نتایج جست و جو"
         }
     }
     search_query = {
-        "term":{
-            "page_url.keyword":"rahbari_search"
+        "term": {
+            "page_url.keyword": "rahbari_search"
         }
     }
     res_query['bool']['filter'].append(search_query)
     res_query['bool']['filter'].append(detail_query)
-    
+
     machine_user_name = getpass.getuser()
-    if  machine_user_name == SERVER_USER_NAME:
+    if machine_user_name == SERVER_USER_NAME:
         index_name = es_config.SERVE_USER_LOG_INDEX
     else:
         index_name = es_config.LOCAL_USER_LOG_INDEX
-
 
     res_agg = {
         "detail-type-agg": {
@@ -8920,19 +8937,17 @@ def getTableUserLogs_ES(request, user_id, time_start, time_end):
     response = client.search(index=index_name,
                              request_timeout=40,
                              query=res_query,
-                             aggregations = res_agg,
-                             size = 100,
-                            sort= [{ "visit_time" : {"order" : "desc"}}]
+                             aggregations=res_agg,
+                             size=100,
+                             sort=[{"visit_time": {"order": "desc"}}]
                              )
     total_hits = response['hits']['total']['value']
     aggregations = response['aggregations']
-    
+
     if total_hits == 10000:
         total_hits = client.count(body={
             "query": res_query
         }, index=index_name, doc_type='_doc')['count']
-
-
 
     i = 1
     keyword_table_data_list = []
@@ -8945,8 +8960,8 @@ def getTableUserLogs_ES(request, user_id, time_start, time_end):
 
     return JsonResponse({'keyword_table_data_list': keyword_table_data_list})
 
-def userlogs_to_index(request, id, language):
 
+def userlogs_to_index(request, id, language):
     file = get_object_or_404(Country, id=id)
 
     from es_scripts import IngestUserLogToElastic
@@ -8958,6 +8973,5 @@ def userlogs_to_index(request, id, language):
 
     machine_user_name = getpass.getuser()
 
-    IngestUserLogToElastic.apply(folder_name, file,machine_user_name)
+    IngestUserLogToElastic.apply(folder_name, file, machine_user_name)
     return redirect('zip')
-
