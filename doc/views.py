@@ -64,7 +64,7 @@ doctic_para_index = es_config.DOTIC_PARA_INDEX
 
 from doc.huggingface_views import *
 import getpass
-
+from persiantools.jdatetime import JalaliDate
 SERVER_USER_NAME = config.SERVER_USER_NAME
 
 # preprocessing function
