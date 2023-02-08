@@ -462,6 +462,51 @@
     </div>
 
 
+    <!-- ChartModal_2 Container -->
+    <button type="button" id="ChartModalBtn_2" class="btn d-none modal_btn" data-bs-toggle="modal"
+        data-bs-target="#ChartModal_2"></button>
+    <div class="modal fade" id="ChartModal_2">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div style="direction: rtl !important;" class="modal-header">
+                    <h5 id="ChartModalHeader_2" class="modal-title">عنوان</h5>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div id="ChartModalText_2" class="modal-body text-justify">
+                    <h6 id="DocsCount_2" class='text-secondary'></h6>
+                    <div id="ChartModalBodyText_2">
+                    </div>
+
+                    <button id="LoadMoreDocuments_2" class="btn btn-white w-100 mb-1 float-left"
+                        style="color: #0e3f8b">
+                        <i class="fa fa-plus pl-2" style="position:relative;top:3px;">
+                        </i>
+                        نمایش بیش‌تر
+                    </button>
+
+                </div>
+
+                <!-- Modal footer -->
+                <div dir="rtl" class="modal-footer">
+
+                    <input type="number" id="ColumnModalPaginationInput_2" min="1" max="1" value="1"
+                        class="form-select text-right float-right d-none">
+
+
+                    <button id="ExportExcel_2" disabled class="btn btn-primary"><i class="fa fa-download"></i> خروجی
+                        اکسل
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
     <div class="modal fade" id="LabelSimModal">
         <div class="modal-dialog modal-dialog-scrollable modal-lg">
             <div class="modal-content">
@@ -527,11 +572,24 @@
         initSearchableSelects();
         init()
 
+        const CHART_FIELD_DICT = {
+            "labels_container": "label_name",
+            "type_container": "type_name",
+            "year_container": "rahbari_year",
+            "sentiment_container": "sentiment",
+            "subject_container": "classification_subject",
+            "person_container": "persons",
+            "location_container": "locations",
+            "organization_container": "organizations",
+        }
+
+
+
         SearchResultValue = []
         ES_SearchResult = []
 
         MAX_RESULT_WINDOW = 5000
-        SEARCH_RESULT_SIZE = 500
+        SEARCH_RESULT_SIZE = 100
 
         container_id_list = ['SearchResultLable', 'SearchTable']
 
@@ -559,6 +617,30 @@
             }
         }
 
+
+
+        let ColumnUserSearchParameters = {
+
+            country_id: "",
+            type_name: "",
+            label_name: "",
+            from_year: "",
+            to_year: "",
+            column_curr_page: "",
+
+            update_parameters: function () {
+
+
+                this.country_id = document.getElementById("country").value;
+                this.type_name = $("#TypeName option:selected").text();
+                this.label_name = $("#LabelsName option:selected").text();
+                this.from_year = $("#YearFrom option:selected").text();
+                this.to_year = $("#YearTo option:selected").text();
+
+                this.column_curr_page = document.getElementById('ColumnModalPaginationInput_2').value
+
+            }
+        }
 
 
 
@@ -593,7 +675,7 @@
                 response['ToYear'];
 
             UserSearchParameters.update_parameters();
-
+            ColumnUserSearchParameters.update_parameters()
 
             syncAllSelectsWithResetExceptions(["country"])
 
@@ -851,6 +933,7 @@
                 title,
                 yAxisTitle: "تعداد سند",
                 onClick: async function (event, data) {
+
                     const click_tag = event.domTarget.tag;
                     const index = click_tag["index"]
                     const text = data.row(index)[0];
@@ -858,81 +941,18 @@
 
                     let filtered_result = []
                     let header = ""
-                    let save_file_name = document.getElementById("SearchBox").value;
 
-                    if (container === "type_container") {
-                        filtered_result = documents_information_result.filter(function (row) {
-                            if (row['_source']["type"] === text)
-                                return row
-                        });
-                        header = "نوع سند: " + text
-                        save_file_name += "اسناد رهبری - نوع سند " + text
-                    } else if (container === "labels_container") {
-                        filtered_result = documents_information_result.filter(function (row) {
-                            if (row['_source']["labels"].includes(text))
-                                return row
-                        });
-                        console.log(filtered_result)
-                        header = "برچسب: " + text
-                        save_file_name += "اسناد رهبری - برچسب سند " + text
-                    } else if (container === "year_container") {
-                        filtered_result = documents_information_result.filter(function (row) {
-                            if (row['_source']["rahbari_year"].substring(0, 4) === text.toString() || (text.toString() === row['_source']['rahbari_date']))
-                                return row
-                        });
-                        header = "سال صدور: " + text
-                        save_file_name += "اسناد رهبری - سال " + text
-                    }
-
-                    document.getElementById("ChartModalHeader").innerText = header
-                    let filtered_result_tag = ""
-                    let list_of_docId = ""
-                    for (const doc of filtered_result) {
-                        const link = 'http://' + location.host + "/document_profile/?id=" + doc["_source"]["document_id"]
-                        let tag = "<li class='mt-3' id=" + doc["_source"]["document_id"] + "><a target='_blank' href='" + link + "'>" + doc["_source"]["name"] + "</a></li>"
-                        filtered_result_tag += tag
-                        list_of_docId += doc["document_id"] + "_"
-                    }
-
-                    const filtered_result_count = filtered_result.length
-                    document.getElementById("ChartModalText").innerHTML = "<h6 class='text-secondary' >" + filtered_result_count + " سند از " + best_result_count + " سند برتر:" + "</h6>"
-                    filtered_result_tag = "<ol start='1'>" + filtered_result_tag + "</ol>"
-                    document.getElementById("ChartModalText").innerHTML += filtered_result_tag
+                    await GetClickedColumnDocuments(container, text)
+                    $("#ChartModalBtn_2").click();
 
 
-                    /* download file creation */
-                    document.getElementById("DownloadDocuments").onclick = function () {
-                        downloadFiles(filtered_result, save_file_name);
-                    };
-
-                    console.log(filtered_result)
-                    /* export into excel files */
-                    document.getElementById("ExportExcel2").onclick = function ExportExcelFunction() {
-
-                        var csv = "";
-
-                        sep = ","
-                        let Csv = "نام سند" + sep + "نوع سند" + sep +
-                            "برچسب سند" + sep + "سال سند" + "\n"
-
-                        for (const document of filtered_result) {
-                            Csv += document['_source']["name"].replaceAll(',', '-') + sep + document['_source']["type"].replaceAll(',', '-') + sep + document['_source']['labels'].toString().replaceAll(',', '-') + sep +
-                                document['_source']["rahbari_year"].replaceAll(',', '-') + "\n"
-
-                        }
-
-                        let csvContent = "data:text/csv;charset=utf-8,%EF%BB%BF" + encodeURI(Csv);
-                        var link = document.createElement("a");
-                        link.setAttribute("href", csvContent);
-                        link.setAttribute("download", save_file_name + ".csv");
-                        document.body.appendChild(link);
-                        link.click()
-                    };
-
-                    $("#ChartModalBtn").click();
 
 
                 }
+
+
+
+
             };
 
             newBarChart(container, options)
@@ -942,6 +962,8 @@
         async function NewSearch() {
             await update_table_pagination_input(1, 0);
             UserSearchParameters.update_parameters();
+            ColumnUserSearchParameters.update_parameters();
+
             await ShowResult()
         }
 
@@ -1604,6 +1626,193 @@
         });
 
 
+        // Column Interactivity
+
+        async function GetClickedColumnDocuments(position, column_value) {
+            startFullPageBlockUI();
+            document.getElementById("ChartModalBodyText_2").innerHTML = ""
+            RESULT_DOCUMENTS = []
+            await load_documents(position, column_value, 1, RESULT_DOCUMENTS)
+
+            stopFullPageBlockUI('کلیک روی نمودار');
+        }
+
+        async function load_documents(position, column_value, next_page_number, RESULT_DOCUMENTS) {
+
+            Doc_Field = CHART_FIELD_DICT[position]
+
+            label_name_list = [ColumnUserSearchParameters.label_name]
+            type_name = ColumnUserSearchParameters.type_name
+            from_year = ColumnUserSearchParameters.from_year
+            to_year = ColumnUserSearchParameters.to_year
+
+            header = ""
+            let save_file_name = "";
+
+            if (Doc_Field == 'label_name') {
+
+                header = "برچسب: " + column_value
+                if (!label_name_list.includes(column_value))
+                    label_name_list.push(column_value)
+
+                save_file_name += " (مجموعه سند {1} و برچسب {2})".replace("1", "اسناد رهبری").replace("2", column_value)
+
+            } else if (Doc_Field == 'type_name') {
+
+                header = "نوع سند: " + column_value
+                type_name = column_value
+                save_file_name += " (مجموعه سند {1} و نوع سند {2})".replace("1", "اسناد رهبری").replace("2", column_value)
+
+            } else if (Doc_Field == 'rahbari_year') {
+
+                header = "سال اسناد: " + column_value
+                save_file_name += " (مجموعه سند {1} و سال اسناد {2})".replace("1", "اسناد رهبری").replace("2", column_value)
+
+                if (column_value == 'نامشخص') {
+                    from_year = "0"
+                    to_year = "0"
+                } else {
+                    from_year = to_year = column_value
+                }
+
+
+            }
+            label_name_list = label_name_list.toString();
+
+            request_link = 'http://' + location.host + "/Search_Rahbari_Column_ES/"
+                + ColumnUserSearchParameters.country_id + "/"
+                + type_name + "/"
+                + label_name_list + "/"
+                + from_year + "/"
+                + to_year + "/"
+                + "0" + "/"
+                + "عنوان یا متن" + "/"
+                + "empty" + "/"
+                + "exact" + "/"
+                + next_page_number + "/"
+                + SEARCH_RESULT_SIZE + "/"
+
+            let response = await fetch(request_link).then(response => response.json());
+            result_documents = response['result']
+            total_hits = response['total_hits']
+            curr_page = response['curr_page']
+
+            RESULT_DOCUMENTS = RESULT_DOCUMENTS.concat(result_documents);
+
+
+            /* download file creation */
+            document.getElementById("DownloadDocuments").onclick = function () {
+                downloadFiles(RESULT_DOCUMENTS, save_file_name);
+            };
+
+            /* export into excel files */
+            document.getElementById("ExportExcel2").onclick = function ExportExcelFunction() {
+                // startFullPageBlockUI()
+
+                var csv = "";
+
+                sep = ","
+                let Csv = "نام سند" + sep + "نوع سند" + sep +
+                    "برچسب سند" + sep + "سال سند" + "\n"
+
+                for (const document of RESULT_DOCUMENTS) {
+                    Csv += document['_source']["name"].replaceAll(',', '-') + sep + document['_source']["type"].replaceAll(',', '-') + sep + document['_source']['labels'].toString().replaceAll(',', '-') + sep +
+                        document['_source']["rahbari_year"].replaceAll(',', '-') + "\n"
+
+                }
+
+                let csvContent = "data:text/csv;charset=utf-8,%EF%BB%BF" + encodeURI(Csv);
+                var link = document.createElement("a");
+                link.setAttribute("href", csvContent);
+                link.setAttribute("download", save_file_name + ".csv");
+                document.body.appendChild(link);
+                link.click()
+                // stopFullPageBlockUI('خروجی اکسل');
+
+            };
+
+
+            await update_column_pagination_input(curr_page, total_hits);
+            max_page = parseInt(document.getElementById("ColumnModalPaginationInput_2").max)
+
+            document.getElementById("ChartModalHeader_2").innerText = header
+            document.getElementById("DocsCount_2").innerText = total_hits + " سند:"
+
+            await show_modal_documents(result_documents, position, column_value, curr_page, max_page, RESULT_DOCUMENTS);
+
+
+        }
+
+        async function show_modal_documents(result_documents, position, column_value, curr_page, max_page, RESULT_DOCUMENTS) {
+
+
+            let filtered_result_tag = ""
+            let list_of_docId = ""
+
+            for (const doc of result_documents) {
+                const link = 'http://' + location.host + "/document_profile/?id=" + doc["_source"]["document_id"]
+                let tag = "<li class='mt-3' id=" + doc["_source"]["document_id"] + "><a target='blank' href='" + link + "'>" + doc["_source"]["name"] + "</a></li>"
+                filtered_result_tag += tag
+                list_of_docId += doc["document_id"] + "_"
+            }
+
+            index = (curr_page - 1) * SEARCH_RESULT_SIZE + 1;
+
+            filtered_result_tag = "<ol start='" + index + "'>" + filtered_result_tag + "</ol>"
+            document.getElementById("ChartModalBodyText_2").innerHTML += filtered_result_tag
+
+            if (curr_page >= max_page) {
+                $("#LoadMoreDocuments_2").hide();
+            } else {
+                $("#LoadMoreDocuments_2").show();
+            }
+
+            /* LoadMoreDocuments_2 */
+            document.getElementById("LoadMoreDocuments_2").onclick = function () {
+
+                next_page_number = ColumnModalNextPage(curr_page);
+                load_documents(position, column_value, next_page_number, RESULT_DOCUMENTS);
+
+            };
+
+
+        }
+
+        async function update_column_pagination_input(curr_page, total_hits) {
+
+            page_count = 0;
+
+            if (total_hits < SEARCH_RESULT_SIZE) {
+                page_count = 1
+
+            } else if (total_hits < MAX_RESULT_WINDOW) {
+                page_count = Math.ceil(total_hits / SEARCH_RESULT_SIZE)
+
+            } else if (total_hits >= MAX_RESULT_WINDOW) {
+                page_count = MAX_RESULT_WINDOW / SEARCH_RESULT_SIZE
+            }
+
+            document.getElementById("ColumnModalPaginationInput_2").min = 1;
+            document.getElementById("ColumnModalPaginationInput_2").max = page_count;
+            document.getElementById("ColumnModalPaginationInput_2").value = curr_page;
+
+        }
+
+        function ColumnModalNextPage(curr_page) {
+
+
+            next_page_number = curr_page;
+            max_page_number = parseInt(document.getElementById("ColumnModalPaginationInput_2").max);
+
+            if (next_page_number < max_page_number) {
+                next_page_number = curr_page + 1
+            }
+
+            document.getElementById("ColumnModalPaginationInput_2").value = next_page_number
+
+            return next_page_number;
+
+        }
 
     </script>
 

@@ -3369,7 +3369,7 @@ def filter_rahbari_fields_COLUMN(res_query, type_name, label_name_list,
 
 
 def Search_Rahbari_Column_ES(request, country_id, type_name, label_name_list,
-                             from_year, to_year, rahbari_type, place, text, search_type, curr_page):
+                             from_year, to_year, rahbari_type, place, text, search_type,curr_page, page_size):
     res_query = {
         "bool": {}
     }
@@ -3392,7 +3392,7 @@ def Search_Rahbari_Column_ES(request, country_id, type_name, label_name_list,
     country_obj = Country.objects.get(id=country_id)
     index_name = standardIndexName(country_obj, Document.__name__)
 
-    from_value = (curr_page - 1) * search_result_size
+    from_value = (curr_page - 1) * page_size
 
     response = client.search(index=index_name,
                              _source_includes=['document_id', 'name', 'raw_file_name',
@@ -3401,7 +3401,7 @@ def Search_Rahbari_Column_ES(request, country_id, type_name, label_name_list,
                              request_timeout=40,
                              query=res_query,
                              from_=from_value,
-                             size=search_result_size
+                             size=page_size
 
                              )
 
