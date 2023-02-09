@@ -136,8 +136,6 @@ def readFiles(path, readContent=True, preprocess=True, preprocessArg={}):
 
     return result_text
 
-
-
 def read_raw_text(path):
 
     all_files = glob.glob(path + "//*.docx")
@@ -157,9 +155,6 @@ def read_raw_text(path):
 
     return result_text
 
-
-
-
 def readFile(filePath, preprocess=True, preprocessArg={}):
     if str(filePath).split(".")[-1] == "docx":
         text = docx2txt.process(filePath)
@@ -175,7 +170,6 @@ def readFile(filePath, preprocess=True, preprocessArg={}):
             text = Preprocessing(text, **preprocessArg)
 
     return text
-
 
 def pdf2txt(dataPath,file_old,format):
     address = dataPath + "/" + file_old + format
