@@ -427,9 +427,33 @@ def leadership_slogan(request):  ###
     slogan_map = {i.year: f"{i.year} - {i.content}" for i in slogan_list}  # 1383 - پاسخگویی
     slogan_map_keyword = {i.year: i.keywords for i in slogan_list}  # پاسخگویی-پاسخگو
     slogan_map_synonymous_words = {i.year: i.words for i in slogan_synonymous_words_list}
+
+    slogan_year_doc_id = {"1380": "204230",
+                          "1381": "202297",
+                          "1382": "202358",
+                          "1383": "203684",
+                          "1384": "202789",
+                          "1385": "202311",
+                          "1386": "204092",
+                          "1387": "202778",
+                          "1388": "202812",
+                          "1389": "202243",
+                          "1390": "203920",
+                          "1391": "204062",
+                          "1392": "203023",
+                          "1393": "203900",
+                          "1394": "203598",
+                          "1395": "202303",
+                          "1396": "203430",
+                          "1397": "204076",
+                          "1398": "204072",
+                          "1399": "202232",
+                          "1400": "202769",
+                          "1401": "202478",
+                          }
     return render(request, 'doc/leadership_slogan.html',
                   {'countries': country_map, 'slogans': slogan_map, 'slogan_keyword': slogan_map_keyword,
-                   'slogan_synonymous_words': slogan_map_synonymous_words})
+                   'slogan_synonymous_words': slogan_map_synonymous_words, "year_document_id": slogan_year_doc_id})
 
 
 @allowed_users('document_profile')
@@ -3237,49 +3261,113 @@ def save_lda_topic_label(request, topic_id, username, label):
     })
 
 
-# def slogan_get_chart(request, slogan_year):
-#     slogan = Slogan.objects.get(year=slogan_year)
-#     keywords = slogan.keywords
-#     # synonymous = SloganSynonymousWords.objects.get(id=slogan.id)
-#
-#     index_name = doctic_doc_index
-#     res_query = {
-#         "range": {
-#             "approval_year": {
-#                 "gte": 1375
-#             }
-#         }
-#     }
-#     res_agg = {
-#         "approval-year-agg": {
-#             "terms": {
-#                 "field": "approval_year",
-#                 "size": bucket_size
-#             }
-#         },
-#     }
-#
-#     response = client.search(index=index_name,
-#                              _source_includes=["attachment.content"],
-#                              request_timeout=40,
-#                              query=res_query,
-#                              aggregations=res_agg,
-#                              )
-#
-#     word_array = []
-#     word_array.extend(keywords.split("-"))
-#     # word_array.extend(synonymous.split("-"))
-#
-#     result = response['hits']['hits']
-#     aggregations = response['aggregations']
-#
-#     # total_hits = response['hits']['total']['value']
-#
-#
-#     # if total_hits == 10000:
-#     #     total_hits = client.count(body={
-#     #         "query": res_query
-#     #     }, index=index_name, doc_type='_doc')['count']
+def slogan_get_chart(request, slogan_year):
+    slogan = Slogan.objects.get(year=slogan_year)
+    keywords = slogan.keywords
+    synonymous = ""
+
+    try:
+        synonymous = SloganSynonymousWords.objects.get(slogan_id__id=slogan.id).words
+    except:
+        print("no synonymous")
+
+    index_name = doctic_doc_index
+    res_query = {
+        "range": {
+            "approval_year": {
+                "gte": 1375
+            }
+        }
+    }
+    res_agg = {
+        "approval-year-agg": {
+            "terms": {
+                "field": "approval_year",
+                "size": bucket_size
+            }
+        },
+    }
+
+    response = client.search(index=index_name,
+                             _source_includes=["attachment.content"],
+                             request_timeout=40,
+                             query=res_query,
+                             aggregations=res_agg,
+                             )
+
+    result = response['hits']['hits']
+    aggregations = response['aggregations']
+
+    word_array = []
+    if synonymous:
+        word_array.extend(synonymous.split("-"))
+    word_array.extend(keywords.split("-"))
+
+    should_query = []
+    for word in word_array:
+        new_q = {"match_phrase": {"attachment.content": word}}
+        should_query.append(new_q)
+
+    res_query2 = {
+        "bool": {
+            "must": [{"range": {"approval_year": {"gte": 1375}}}],
+            "should": should_query,
+            "minimum_should_match": 1
+        }
+    }
+
+    res_agg2 = {
+        "approval-year-content-agg": {
+            "terms": {
+                "field": "approval_year",
+                "size": bucket_size
+            }
+        }
+    }
+
+    response2 = client.search(index=index_name,
+                              _source_includes=["attachment.content"],
+                              request_timeout=40,
+                              query=res_query2,
+                              aggregations=res_agg2,
+                              )
+
+    aggregations2 = response2['aggregations']
+    total_hit_2 = response2['hits']['total']['value']
+    print(total_hit_2)
+
+    keywords_repeat = {}
+    for word in keywords.split("-"):
+        res_query3 = {
+            "bool": {
+                "must": [
+                    {"range": {"approval_year": {"gte": 1375}}},
+                    {"match_phrase": {"attachment.content": word}}
+                ]
+            }
+        }
+
+        response3 = client.search(index=index_name,
+                                  _source_includes=[],
+                                  request_timeout=40,
+                                  query=res_query3,
+                                  )
+        total_hits = response3['hits']['total']['value']
+        keywords_repeat[word] = total_hits
+
+    return JsonResponse({
+        "year_agg": aggregations,
+        "with_word_year_agg": aggregations2,
+        "keyword_repeat": keywords_repeat,
+
+    })
+
+    # total_hits = response['hits']['total']['value']
+
+    # if total_hits == 10000:
+    #     total_hits = client.count(body={
+    #         "query": res_query
+    #     }, index=index_name, doc_type='_doc')['count']
 
 
 def save_topic_label(request, topic_id, username, label):
