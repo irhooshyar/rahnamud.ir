@@ -38,6 +38,10 @@ class User(models.Model):
     last_login = models.CharField(max_length=500)
     is_super_user = models.IntegerField(default=0)
     is_active = models.IntegerField(default=0)
+    enable = models.IntegerField(default=0)
+    account_activation_token = models.CharField(null=True, max_length=500)
+    account_acctivation_expire_time = models.DateTimeField(default=datetime.utcnow, blank=True)
+    email_confirm_code = models.CharField(max_length=500)
     reset_password_token = models.CharField(null=True, max_length=500)
     reset_password_expire_time = models.DateTimeField(default=datetime.utcnow, blank=True)
 
@@ -2345,7 +2349,6 @@ class DocumentCommentVote(models.Model):
 
 class NoteHashTag(models.Model):
     hash_tag = models.CharField(max_length=500, primary_key=True)
-
     class Meta:
         app_label = 'doc'
 

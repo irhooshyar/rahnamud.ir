@@ -5,6 +5,7 @@ from jdatetime import datetime as jdatetime
 from django.shortcuts import redirect, get_object_or_404
 import os
 import re
+from random import randint
 from hazm import *
 from django.core.mail import send_mail
 from django.utils import timezone
@@ -286,12 +287,12 @@ def get_user_report_bug(request):
 
 @allowed_users('admin_waiting_user')
 def getRegisteredUser(request):
-    data = User.objects.all().filter(is_active=0)
+    data = User.objects.all().filter(enable=1, is_active=0)
     return render(request, 'doc/admin_waiting_user.html', {'data': data})
 
 
 def getRegisteredUser2(request):
-    data = User.objects.all().filter(is_active=0)
+    data = User.objects.all().filter(enable=1, is_active=0)
     return render(request, 'doc/admin_waiting_user2.html', {'data': data})
 
 
@@ -3397,6 +3398,71 @@ def save_topic_label(request, topic_id, username, label):
         "result_response": result_response
     })
 
+def CreateEmailCode():
+    range_start = 10 ** 3
+    range_end = (10 ** 4) - 1
+    return randint(range_start, range_end)
+
+def confirm_email(user):
+    email_code = CreateEmailCode()
+
+    token = get_random_string(length=50)
+    user.account_activation_token = token
+    user.account_acctivation_expire_time = datetime.datetime.now() + datetime.timedelta(minutes=5)
+    #dayes=2
+    user.email_confirm_code = email_code
+    user.save()
+
+    template = f"""
+    لطفا برای تایید ثبت نام خود روی لینک زیر کلیک کنید. 
+    دقت فرمایید که مهلت استفاده از این کد، "دو روز" است و در صورت منقضی شدن لینک، باید مجددا وارد بخش ثبت‌نام سامانه شوید و روی لینک ارسال مجدد کد تایید، کلیک فرمایید. 
+    کد تایید ایمیل: {email_code}
+    """
+    #template += f'http://rahnamud.ir:7074/Confirm-Email/{user.id}/{token}'
+    template += f'http://127.0.0.1:8000/Confirm-Email/{user.id}/{token}'
+    print("template: ", template)
+
+
+    send_mail(subject='کد تایید ایمیل', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[user.email])
+    
+def resend_email(request):
+    return render(request, 'doc/Resend-Email.html')
+
+def resend_email_code(request, email):
+    users = User.objects.filter(email=email)
+    user = users[0]
+    if user.account_acctivation_expire_time < timezone.now() and user.enable == 0:
+        confirm_email(user)
+    return JsonResponse({ "status": "OK" })
+
+def email_check(request, user_id, token):
+    url_is_valid = False
+    try:
+        user = User.objects.get(pk=user_id)
+        if (not (user.account_activation_token is None)) and user.account_activation_token == token and user.account_acctivation_expire_time >= timezone.now():
+            url_is_valid = True
+    except:
+        user_id = ""
+
+    return render(request, 'doc/Confirm-Email.html', { "url_is_valid": url_is_valid, "user_id": user_id, "token": token })
+
+def user_activation(request, user_id, token, code):
+    user = User.objects.get(pk=user_id)
+
+    if (not (user.account_activation_token is None)) and user.account_activation_token == token and user.account_acctivation_expire_time >= timezone.now():
+        print("code: ",code)
+        print("user_code: ", user.email_confirm_code)
+        if(user.email_confirm_code == code):
+            user.account_activation_token = None
+            user.enable = 1
+            user.save()
+            return JsonResponse({ "status": "OK" })
+        else:
+            user.save()
+            return JsonResponse({ "status": "Not OK" })
+    
+        
+    return JsonResponse({ "status": "Not OK" })
 
 def SaveUser(request, firstname, lastname, nationalcode, email, phonenumber, role, username, password, ip, expertise):
     print("************", nationalcode, "**************")
@@ -3420,6 +3486,7 @@ def SaveUser(request, firstname, lastname, nationalcode, email, phonenumber, rol
         for e in expertise.split(','):
             User_Expertise.objects.create(user_id_id=user.id, experise_id_id=e)
         SaveUserLog(user.id, ip, "signup")
+        confirm_email(user)
 
     return JsonResponse({"status": "OK"})
 
@@ -4078,8 +4145,16 @@ def changeUserState(request, user_id, state):
         accepted_user.is_active = 1
         accepted_user.save()
 
-        return JsonResponse({"status": "accepted"})
+        template = f"""
+        ثبت‌نام شما با موفقیت انجام شده است. تایید شما توسط ادمین انجام شد. هم‌اکنون، می‌توانید وارد سامانه شوید.
+        """
+        #template += f'http://rahnamud.ir:707/login/'
+        template += f'http://127.0.0.1:8000/login/'
+        print("template: ", template)
+        send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[accepted_user.email])
+        
 
+        return JsonResponse({"status": "accepted"})
     elif state == "rejected":
         accepted_user = User.objects.get(pk=user_id)
         accepted_user.is_active = -1
