@@ -3408,8 +3408,7 @@ def confirm_email(user):
 
     token = get_random_string(length=50)
     user.account_activation_token = token
-    user.account_acctivation_expire_time = datetime.datetime.now() + datetime.timedelta(minutes=3)
-    #dayes=2
+    user.account_acctivation_expire_time = datetime.datetime.now() + datetime.timedelta(days=2)
     user.email_confirm_code = email_code
     user.save()
 
@@ -3419,7 +3418,6 @@ def confirm_email(user):
     کد تایید ایمیل: {email_code}
     """
     template += f'http://rahnamud.ir:7074/Confirm-Email/{user.id}/{token}'
-    #template += f'http://127.0.0.1:8000/Confirm-Email/{user.id}/{token}'
     print("template: ", template)
 
 
@@ -3464,21 +3462,17 @@ def user_activation(request, user_id, token, code):
         
     return JsonResponse({ "status": "Not OK" })
 
-def SaveUser(request, firstname, lastname, nationalcode, email, phonenumber, role, username, password, ip, expertise):
-    print("************", nationalcode, "**************")
-    user_nationalcode = User.objects.filter(national_code=nationalcode)
+def SaveUser(request, firstname, lastname,email, phonenumber, role, username, password, ip, expertise):
     user_username = User.objects.filter(username=username)
     user_email = User.objects.filter(email=email)
-    if nationalcode != "0" and user_nationalcode.count() > 0:
-        return JsonResponse({"status": "duplicated national code"})
-    elif user_username.count() > 0:
+    if user_username.count() > 0:
         return JsonResponse({"status": "duplicated username"})
     elif user_email.count() > 0:
         return JsonResponse({"status": "duplicated email"})
     else:
         hashed_pwd = make_password(password)
         last_login = datetime.datetime.now()
-        user = User.objects.create(first_name=firstname, last_name=lastname, national_code=nationalcode, email=email,
+        user = User.objects.create(first_name=firstname, last_name=lastname,email=email,
                                    role_id=role,
                                    mobile=phonenumber, username=username, password=hashed_pwd, last_login=last_login,
                                    is_super_user=0, is_active=0)
@@ -4149,7 +4143,6 @@ def changeUserState(request, user_id, state):
         ثبت‌نام شما با موفقیت انجام شده است. تایید شما توسط ادمین انجام شد. هم‌اکنون، می‌توانید وارد سامانه شوید.
         """
         template += f'http://rahnamud.ir:707/login/'
-        #template += f'http://127.0.0.1:8000/login/'
         print("template: ", template)
         send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[accepted_user.email])
         
@@ -4159,6 +4152,13 @@ def changeUserState(request, user_id, state):
         accepted_user = User.objects.get(pk=user_id)
         accepted_user.is_active = -1
         accepted_user.save()
+
+        template = f"""
+        متاسفانه ثبت‌نام شما توسط ادمین رد شده است.
+        """
+        print("template: ", template)
+        send_mail(subject='عدم تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[accepted_user.email])
+        
 
         return JsonResponse({"status": "rejected"})
 

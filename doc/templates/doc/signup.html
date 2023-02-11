@@ -51,11 +51,6 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="nationalcode">کدملی:</label>
-                            <input type="text" class="form-control" id="nationalcode" include-content-tracking placeholder="National Code">
-                        </div>
-
-                        <div class="mb-3">
                             <label for="email">ایمیل <span style="color: red">*</span>:</label>
                             <input type="email" class="form-control" id="email" name="email" required include-content-tracking
                                 placeholder="example@example.com">
@@ -163,27 +158,20 @@
             e.preventDefault()
             const formElements = e.target.elements
 
-            let nationalcode = 0;
-            if (formElements.nationalcode.value !== "")
-                nationalcode = formElements.nationalcode.value
-
             let phonenumber = 0;
             if (formElements.phonenumber.value !== "")
                 phonenumber = formElements.phonenumber.value
 
             const expertise = getMultiSelectValue("expertise")
             const user_ip = "127.0.0.0"
-            const request_link = 'http://' + location.host + "/SaveUser/" + formElements.firstname.value + "/" + formElements.lastname.value + "/" + nationalcode + "/" + formElements.email.value + "/" + phonenumber + "/" + formElements.role.value + "/" + formElements.username.value + "/" + formElements.password.value + "/" + user_ip + "/" + expertise + "/";
+            const request_link = 'http://' + location.host + "/SaveUser/" + formElements.firstname.value + "/" + formElements.lastname.value + "/" + formElements.email.value + "/" + phonenumber + "/" + formElements.role.value + "/" + formElements.username.value + "/" + formElements.password.value + "/" + user_ip + "/" + expertise + "/";
             let response = await fetch(request_link);
             response = await response.json();
 
             const messages = document.getElementById("messages");
             messages.classList.remove("text-danger", "text-success")
-            if (response.status === "duplicated national code") {
-                messages.innerText = "کاربر با کدملی وارد شده از قبل در سامانه وجود دارد."
-                messages.classList.add("text-danger")
-            }
-            else if (response.status === "duplicated username") {
+
+            if (response.status === "duplicated username") {
                 messages.innerText = "نام کاربری انتخاب شده تکراری است."
                 messages.classList.add("text-danger")
             }

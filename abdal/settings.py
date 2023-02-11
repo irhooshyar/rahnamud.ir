@@ -188,11 +188,7 @@ LOCAL_SETTING = {
 #     },
 # }
 
-"""
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
-EMAIL_HOST_USER = "CyberMap"
-"""
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.irhooshyar.com'
 EMAIL_PORT = 465
