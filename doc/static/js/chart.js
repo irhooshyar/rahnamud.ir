@@ -20,7 +20,7 @@ function newBarChart(container_id, options) {
         return x[0] === 'نامشخص' ? -1 : y[0] === 'نامشخص' ? 1 : 0;
     });
 
-    if ( data.length > 0 && data[0][0] == 0) {
+    if (data.length > 0 && data[0][0] == 0) {
         data[0][0] = 'نامشخص'
     }
 
@@ -100,8 +100,8 @@ function newBarChart(container_id, options) {
     chart.draw();
     console.log("----------------------------------------------------------------")
     console.log(options.data.length)
-    if(data.length == 0){
-       
+    if (data.length == 0) {
+
         document.getElementById(container_id).innerHTML = "نتیجه‌ای یافت نشد"
     }
 
@@ -119,7 +119,9 @@ function newBarChart(container_id, options) {
             document.body.style.cursor = "auto";
         });
 
-        chart.listen('Click', (e) => {options.onClick(e, data)})
+        chart.listen('Click', (e) => {
+            options.onClick(e, data)
+        })
     }
 
 }
@@ -139,10 +141,12 @@ function newStackedColumnChart(container_id, options) {
         let data = anychart.data.set(value);
         let series = chart.column(data);
         series.name(key);
-        
+
         // series.rendering().point(roundedColumnDrawer);
-        value.forEach((v) => {xScaleValues[v.x] = v.x})
-      
+        value.forEach((v) => {
+            xScaleValues[v.x] = v.x
+        })
+
         if (options.onClick) {
             series.listen("mouseOver", function () {
                 document.body.style.cursor = "pointer";
@@ -150,10 +154,15 @@ function newStackedColumnChart(container_id, options) {
             series.listen("mouseOut", function () {
                 document.body.style.cursor = "auto";
             });
-            
-            Object.entries(value).forEach(([x, value]) => {
-                series.listen('Click', (e) => options.onClick(e, [key, value.x]))
+
+            // Object.entries(value).forEach(([x, value]) => {
+            series.listen('Click', (e) => {
+                const click_tag = e.domTarget.tag;
+                const index = click_tag["index"]
+
+                options.onClick(e, [key, value.x], [key, value[index].x])
             })
+            // })
         }
     })
 
@@ -212,7 +221,11 @@ function newStackedColumnChart(container_id, options) {
     chart.xGrid(true);
     chart.xGrid().fill("#EFEFEF99");
     xScaleValues = Object.values(xScaleValues)
-    if (options.sortKeys){xScaleValues = xScaleValues.sort((v1, v2) => {return v1<v2})}
+    if (options.sortKeys) {
+        xScaleValues = xScaleValues.sort((v1, v2) => {
+            return v1 < v2
+        })
+    }
     chart.xScale().values(xScaleValues)
     chart.yScale().minimum(0);
     /* enable the value stacking mode
@@ -306,7 +319,9 @@ function newBarsChart(container_id, options) {
                 document.body.style.cursor = "auto";
             });
 
-            series.listen('Click', (e) => {options.bars[i].onClick(e, data)})
+            series.listen('Click', (e) => {
+                options.bars[i].onClick(e, data)
+            })
 
         }
 
@@ -338,7 +353,7 @@ function newBarsChart(container_id, options) {
     xAxis.title(options.xAxisTitle);
     xAxis.title().fontFamily('vazir');
     xAxis.title().fontWeight("bold");
-    
+
     var yAxis = chart.yAxis();
     yAxis.title(options.yAxisTitle);
     yAxis.title().fontFamily('vazir');
@@ -452,7 +467,6 @@ function roundedColumnDrawer() {
 }
 
 
-
 // added line chart
 function newLineChart(container_id, options) {
     const {chartContainerId, chartDownloadId} = newChartContainer(container_id, options);
@@ -472,7 +486,7 @@ function newLineChart(container_id, options) {
         return x[0] === 'نامشخص' ? -1 : y[0] === 'نامشخص' ? 1 : 0;
     });
 
-    if ( data.length > 0 && data[0][0] == 0) {
+    if (data.length > 0 && data[0][0] == 0) {
         // data[0][0] = 'نامشخص'
     }
 
@@ -551,8 +565,8 @@ function newLineChart(container_id, options) {
     chart.draw();
     console.log("----------------------------------------------------------------")
     console.log(options.data.length)
-    if(data.length == 0){
-       
+    if (data.length == 0) {
+
         document.getElementById(container_id).innerHTML = "نتیجه‌ای یافت نشد"
     }
 
@@ -570,7 +584,9 @@ function newLineChart(container_id, options) {
             document.body.style.cursor = "auto";
         });
 
-        chart.listen('Click', (e) => {options.onClick(e, data)})
+        chart.listen('Click', (e) => {
+            options.onClick(e, data)
+        })
     }
 
 }

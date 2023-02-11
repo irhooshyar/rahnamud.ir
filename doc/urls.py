@@ -274,6 +274,12 @@ urlpatterns = [
     path('GetDetailChartSloganAnalysis/<int:country_id>/<int:slogan_year>/<str:chart_type>/<str:column_name>/',
          views.GetDetailChartSloganAnalysis, name='GetDetailChartSloganAnalysis'),
     path('slogan_get_chart/<int:slogan_year>/', views.slogan_get_chart, name='slogan_get_chart'),
+    path(
+        'slogan_stackBased_get_information/<int:key>/<int:slogan_year>/<int:selected_year>/<int:curr_page>/<int:result_size>/',
+        views.slogan_stackBased_get_information, name='slogan_stackBased_get_information'),
+    path(
+        'slogan_stackBased_information_export/<int:key>/<int:slogan_year>/<int:selected_year>/<int:curr_page>/<int:result_size>/',
+        views.slogan_stackBased_information_export, name='slogan_stackBased_information_export'),
     path('AI_predict_subject_LDA/<int:country_id>/<int:number_of_topic>/', views.GetDocumentsPredictSubjectLDA,
          name='GetDocumentsPredictSubjectLDA'),
     path("AI_topics/", views.AI_topics, name='AI_topics'),

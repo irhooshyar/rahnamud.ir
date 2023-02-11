@@ -54,6 +54,8 @@
     <link rel="stylesheet" type="text/css" href="../../static/library/notyf.min-npm.css">
     <script src="../../static/library/notyf.min.js"></script>
 
+    <script src="../../static/js/ChartColumnInteractivity.js"></script>
+
     <!--<script type="text/javascript" src="http://l2.io/ip.js?var=myip">
     </script>-->
     <script src="../../static/js/chart.js"></script>
@@ -109,7 +111,7 @@
         <div class="row flex-row-reverse mx-auto">
 
             <!-- Country select -->
-            <div class="col-md-6 col-12 col-lg-2 bg-light pt-3  mt-1" dir="rtl">
+            <div class="col-md-6 col-12 col-lg-2 bg-light pt-3  mt-1" dir="rtl" style="display: none">
                 <label for="country" class=" text-right bg-light float-right">مجموعه سند:</label>
                 <select dir="rtl" id="country" name="country"
                         class="form-select text-right float-right searchable-select"
@@ -122,7 +124,7 @@
             </div>
 
             <!-- Slogan select -->
-            <div class="col-md-6 col-12 col-lg-4 bg-light pt-3  mt-1" dir="rtl">
+            <div class="col-md-6 col-12 col-lg-4 bg-light pt-3  mt-1" dir="rtl" style="padding-right: 0">
                 <label class=" text-right bg-light float-right" style="direction: rtl;;"> انتخاب سال و شعار:</label>
                 <select id="slogan" name="slogan_year" class="form-select text-right float-right searchable-select"
                         style="direction: rtl;" onchange="keywordChange()">
@@ -166,12 +168,15 @@
                         id="document_note_text" onclick="ShowSynonymousWords()">واژگان مترادف
                 </button>
             </div>
-            <div style="direction: rtl; text-align: start" class="text-light col-lg-2 col-md-2 pt-3 col-11 mt-1 pl-5">
-                <button style="background-color:lightblue;color:black" type="button" class="btn modal_btn"
-                        data-bs-toggle="modal"
-                        id="document_id">
-                    <a style="text-decoration: none" id="document_id_link" target="_blank" href="">سند نوروزی مرتبط</a>
-                </button>
+            <div style="direction: rtl; text-align: start"
+                 class="text-light col-lg-2 col-md-2 pt-3 pt-5 col-11 mt-1 pl-5">
+                <a style="text-decoration: none" id="document_id_link" target="_blank" href="">
+                    <button style="background-color:lightblue;color:black" type="button" class="btn modal_btn"
+                            data-bs-toggle="modal"
+                            id="document_id">
+                        سند نوروزی مرتبط
+                    </button>
+                </a>
             </div>
 
         </div>
@@ -193,13 +198,6 @@
                     aria-selected="false">داشبورد آماری
             </button>
         </li>
-        <li class="nav-item float-right" role="presentation">
-            <button id="statistic_info_tab" class="nav-link" data-bs-toggle="pill"
-                    data-bs-target="#statistic_info_pane" type="button" role="tab" aria-controls="statistic_info_pane"
-                    aria-selected="false">اطلاعات شعار در اسناد (جدید)
-            </button>
-        </li>
-
 
         <!-- Download Buttons -->
         <!--            <button type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="دانلود اسناد"-->
@@ -222,9 +220,11 @@
         <div id="slogan_info_pane" class="tab-pane w-100 fade show active float-right" role="tabpanel"
              aria-labelledby="statistics_info_tab">
             <div class="row mt-4 w-100 flex-row-reverse justify-content-around mx-0 px-0">
+                <div id="doc_count_container" class="full" chart-height="550px"></div>
                 <div id="chart_container1" class="half" chart-height="450px"></div>
+                <div id="word_count_container" class="half" chart-height="450px"></div>
                 <div id="chart_container3" class="half" chart-height="450px"></div>
-                <div id="chart_container2" class="full" chart-height="450px"></div>
+                <div id="chart_container2" class="half" chart-height="450px"></div>
             </div>
         </div>
 
@@ -236,15 +236,6 @@
                 <div id="subject_container" class="half" chart-height="450px"></div>
                 <div id="level_container" class="half" chart-height="450px"></div>
                 <div id="approval_container" class="full" chart-height="2000px"></div>
-            </div>
-        </div>
-
-        <div dir="rtl" class="tab-pane fade float-right w-100" id="statistic_info_pane" role="tabpanel"
-             aria-labelledby="bar_chart_info_tab">
-
-            <div class="row mt-4 w-100 flex-row-reverse justify-content-around mx-0 px-0">
-                <div id="doc_count_container" class="full" chart-height="550px"></div>
-                <div id="word_count_container" chart-height="550px"></div>
             </div>
         </div>
 
@@ -308,6 +299,47 @@
                 </button>
 
                 <button id="ExportExcel2" class="btn btn-primary"><i class="fa fa-download"></i> خروجی اکسل</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<button type="button" id="ChartModalBtn_2" class="btn d-none modal_btn" data-bs-toggle="modal"
+        data-bs-target="#ChartModal_2"></button>
+<div class="modal fade" id="ChartModal_2">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div style="direction: rtl !important;" class="modal-header">
+                <h5 id="ChartModalHeader_2" class="modal-title">عنوان</h5>
+                <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div id="ChartModalText_2" class="modal-body text-justify">
+                <h6 id="DocsCount_2" class='text-secondary'></h6>
+                <div id="ChartModalBodyText_2">
+                </div>
+
+                <button id="LoadMoreDocuments_2" class="btn btn-white w-100 mb-1 float-left"
+                        style="color: #0e3f8b"><i class="fa fa-plus pl-2"
+                                                  style="position:relative;top:3px;"></i>نمایش بیش‌تر
+                </button>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div dir="rtl" class="modal-footer">
+
+                <input type="number" id="ColumnModalPaginationInput_2" min="1" max="1" value="1"
+                       class="form-select text-right float-right d-none">
+
+
+                <button id="ExportExcel_2" class="btn btn-primary"><i class="fa fa-download"></i> خروجی
+                    اکسل
+                </button>
             </div>
 
         </div>
@@ -416,7 +448,8 @@
         const year = document.getElementById("slogan").value;
         document.getElementById("slogan-keyword").value = sloganKeyword[year].split('-').join('- ');
 
-        const doc_ids = {% autoescape off %}{{ year_document_id }}{% endautoescape %}
+        const doc_ids =
+        {% autoescape off %}{{ year_document_id }}{% endautoescape %}
         const document_link = 'http://' + location.host + "/document_profile/?id=" + doc_ids[year]
         document.getElementById("document_id_link").href = document_link
         // document.getElementById("slogan-synonymous-words").value = sloganSynonymousWords[year].split('-').join('- ');
@@ -473,11 +506,12 @@
 
         const slogan_year = document.getElementById("slogan").value;
 
-        new_prof_slogan_year_changed(slogan_year);
+        const new_prof_chart = new_prof_slogan_year_changed(slogan_year);
 
         request_link = 'http://' + location.host + "/GetChartSloganAnalysis/" + country_id + "/" + slogan_year + "/"; //  اطلاعات شعار در اسناد
         let response = await fetch(request_link).then(response => response.json());
 
+        await new_prof_chart;
 
         chart_data1 = response['slogan_analysis1']
         chart_data2 = response['slogan_analysis2']
