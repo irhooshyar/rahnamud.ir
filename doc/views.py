@@ -478,7 +478,7 @@ def index(request):
     return render(request, 'doc/index.html', {'countries': country_map})
 
 
-@allowed_users('information')
+# @allowed_users('information')
 def information(request):
     country_list = Country.objects.all()
     country_map = get_country_maps(country_list)
