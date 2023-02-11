@@ -3408,7 +3408,7 @@ def confirm_email(user):
 
     token = get_random_string(length=50)
     user.account_activation_token = token
-    user.account_acctivation_expire_time = datetime.datetime.now() + datetime.timedelta(minutes=5)
+    user.account_acctivation_expire_time = datetime.datetime.now() + datetime.timedelta(minutes=3)
     #dayes=2
     user.email_confirm_code = email_code
     user.save()
@@ -3418,8 +3418,8 @@ def confirm_email(user):
     دقت فرمایید که مهلت استفاده از این کد، "دو روز" است و در صورت منقضی شدن لینک، باید مجددا وارد بخش ثبت‌نام سامانه شوید و روی لینک ارسال مجدد کد تایید، کلیک فرمایید. 
     کد تایید ایمیل: {email_code}
     """
-    #template += f'http://rahnamud.ir:7074/Confirm-Email/{user.id}/{token}'
-    template += f'http://127.0.0.1:8000/Confirm-Email/{user.id}/{token}'
+    template += f'http://rahnamud.ir:7074/Confirm-Email/{user.id}/{token}'
+    #template += f'http://127.0.0.1:8000/Confirm-Email/{user.id}/{token}'
     print("template: ", template)
 
 
@@ -4148,8 +4148,8 @@ def changeUserState(request, user_id, state):
         template = f"""
         ثبت‌نام شما با موفقیت انجام شده است. تایید شما توسط ادمین انجام شد. هم‌اکنون، می‌توانید وارد سامانه شوید.
         """
-        #template += f'http://rahnamud.ir:707/login/'
-        template += f'http://127.0.0.1:8000/login/'
+        template += f'http://rahnamud.ir:707/login/'
+        #template += f'http://127.0.0.1:8000/login/'
         print("template: ", template)
         send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[accepted_user.email])
         
