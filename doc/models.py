@@ -41,7 +41,7 @@ class User(models.Model):
     enable = models.IntegerField(default=0)
     account_activation_token = models.CharField(null=True, max_length=500)
     account_acctivation_expire_time = models.DateTimeField(default=datetime.utcnow, blank=True)
-    email_confirm_code = models.CharField(max_length=500)
+    email_confirm_code = models.CharField(null=True, max_length=500)
     reset_password_token = models.CharField(null=True, max_length=500)
     reset_password_expire_time = models.DateTimeField(default=datetime.utcnow, blank=True)
 
