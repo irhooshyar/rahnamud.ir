@@ -28,7 +28,6 @@ class User(models.Model):
     id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=500)
     last_name = models.CharField(max_length=500)
-    national_code = models.CharField(null=True, max_length=500)
     email = models.CharField(max_length=500)
     mobile = models.CharField(null=True, max_length=500)
     username = models.CharField(max_length=500)
