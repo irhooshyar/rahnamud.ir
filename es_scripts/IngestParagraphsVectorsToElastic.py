@@ -4,7 +4,7 @@ from abdal import config
 from abdal import es_config
 import base64
 import csv
-from doc.models import Book, Document, DocumentParagraphs, Standard,ParagraphVector,ParagraphVectorType
+from doc.models import Document, DocumentParagraphs,ParagraphVector,ParagraphVectorType
 from django.db.models.functions import Substr, Cast
 from django.db.models import Max, Min, F, IntegerField, Q
 import pandas as pd
@@ -19,7 +19,6 @@ import time
 from elasticsearch import helpers
 from collections import deque
 from scripts.Persian.Preprocessing import standardIndexName
-from en_doc import models as en_model
 
 
 # ---------------------------------------------------------------------------------
