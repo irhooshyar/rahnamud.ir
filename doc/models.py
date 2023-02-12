@@ -196,7 +196,16 @@ class ActorArea(models.Model):
     name = models.CharField(null=True, max_length=500)  # انرژی، اقتصادی
 
 
+class ActorType(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(null=True, max_length=500)  # motevali, hamkar, salahiat
+    pattern_keywords = models.CharField(null=True, max_length=1000)
 
+    class Meta:
+        app_label = 'doc'
+
+    def __str__(self):
+        return f'ID: {self.id}, Type: {self.name}'
 
 class Actor(models.Model):
     id = models.AutoField(primary_key=True)
@@ -1348,6 +1357,7 @@ class RahbariGraph(models.Model):
     type = models.ForeignKey(RahbariGraphType, on_delete=models.CASCADE, null=True)
     nodes_data = models.JSONField(null=True)
     edges_data = models.JSONField(null=True)
+
 
 
 class ParagraphVectorType(models.Model):
