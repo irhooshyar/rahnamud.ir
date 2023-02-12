@@ -1359,6 +1359,25 @@ class RahbariGraph(models.Model):
     edges_data = models.JSONField(null=True)
 
 
+
+class ParagraphVectorType(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.TextField(null=True)
+    class Meta:
+        app_label = 'doc'
+
+
+class ParagraphVector(models.Model):
+    id = models.AutoField(primary_key=True)
+
+    paragraph = models.ForeignKey(DocumentParagraphs, on_delete=models.CASCADE, null=True)
+    vector_type = models.ForeignKey(ParagraphVectorType, on_delete=models.CASCADE, null=True)
+    vector_value = models.JSONField(null=True)
+    class Meta:
+        app_label = 'doc'
+
+
+
 class DocumentActor(models.Model):
     Individual = 'منفرد'
     Plural = 'اشتراکی'
@@ -1379,35 +1398,16 @@ class DocumentActor(models.Model):
     document_id = models.ForeignKey(Document, null=True, on_delete=models.CASCADE)
     actor_id = models.ForeignKey(Actor, null=True, on_delete=models.CASCADE)
     actor_type_id = models.ForeignKey(ActorType, null=True, on_delete=models.CASCADE)
-    paragraph_id = models.ForeignKey(DocumentParagraphs, null=True, on_delete=models.CASCADE,
-                                     related_name='paragraph_id')
+    paragraph_id = models.ForeignKey(DocumentParagraphs, null=True, on_delete=models.CASCADE, related_name='paragraph_id')
     current_actor_form = models.CharField(null=True, max_length=1000)
     ref_to_general_definition = models.BooleanField(default=False)
     general_definition_id = models.ForeignKey(DocumentGeneralDefinition, null=True, on_delete=models.CASCADE)
 
     ref_to_paragraph = models.BooleanField(default=False)
-    ref_paragraph_id = models.ForeignKey(DocumentParagraphs, null=True, on_delete=models.CASCADE,
-                                         related_name='ref_paragraph_id')
+    ref_paragraph_id = models.ForeignKey(DocumentParagraphs, null=True, on_delete=models.CASCADE,related_name='ref_paragraph_id')
 
     class Meta:
         app_label = 'doc'
 
     def __str__(self):
         return f'ID: {self.id}, Document_ID: {self.document_id}, Actor_ID: {self.actor_id}, Actor_Type_ID: {self.actor_type_id}, Paragraph_ID: {self.paragraph_id}'
-
-
-class ParagraphVectorType(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.TextField(null=True)
-    class Meta:
-        app_label = 'doc'
-
-
-class ParagraphVector(models.Model):
-    id = models.AutoField(primary_key=True)
-
-    paragraph = models.ForeignKey(DocumentParagraphs, on_delete=models.CASCADE, null=True)
-    vector_type = models.ForeignKey(ParagraphVectorType, on_delete=models.CASCADE, null=True)
-    vector_value = models.JSONField(null=True)
-    class Meta:
-        app_label = 'doc'
