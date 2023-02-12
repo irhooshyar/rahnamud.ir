@@ -186,6 +186,42 @@ class Subject(models.Model):
         return f'ID: {self.id}, Name: {self.name}'
 
 
+class ActorCategory(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(null=True, max_length=500)  # سازمان, وزارت, مرکز
+
+
+class ActorArea(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(null=True, max_length=500)  # انرژی، اقتصادی
+
+
+class ActorType(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(null=True, max_length=500)  # motevali, hamkar, salahiat
+    pattern_keywords = models.CharField(null=True, max_length=1000)
+
+    class Meta:
+        app_label = 'doc'
+
+    def __str__(self):
+        return f'ID: {self.id}, Type: {self.name}'
+
+class Actor(models.Model):
+    id = models.AutoField(primary_key=True)
+    actor_category_id = models.ForeignKey(ActorCategory, null=True, on_delete=models.CASCADE)
+    name = models.CharField(null=True, max_length=500)
+    forms = models.CharField(null=True, max_length=1000)
+    # sub_area = models.ForeignKey(to=ActorSubArea,null=True, on_delete=models.CASCADE)
+    area = models.ForeignKey(to=ActorArea, null=True, on_delete=models.CASCADE)
+
+    class Meta:
+        app_label = 'doc'
+
+    def __str__(self):
+        return f'ID: {self.id}, Name: {self.name}'
+
+
 class SubjectKeyWords(models.Model):
     id = models.AutoField(primary_key=True)
     subject_id = models.ForeignKey(Subject, on_delete=models.CASCADE)
@@ -258,6 +294,7 @@ class Document(models.Model):
 
     def __str__(self):
         return f'ID: {self.id}, Name: {self.name}, Country_ID: {self.country_id}'
+
 
 
 class SimilarityType(models.Model):
@@ -1321,28 +1358,42 @@ class RahbariGraph(models.Model):
     nodes_data = models.JSONField(null=True)
     edges_data = models.JSONField(null=True)
 
-class ActorCategory(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(null=True, max_length=500)  # سازمان, وزارت, مرکز
 
+class DocumentActor(models.Model):
+    Individual = 'منفرد'
+    Plural = 'اشتراکی'
+    CollectiveMember = 'جمعی'
 
-class ActorArea(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(null=True, max_length=500)  # انرژی، اقتصادی
+    DUTY_TYPE_CHOICES = [
+        (Individual, 'Individual'),
+        (Plural, 'Plural'),
+        (CollectiveMember, 'CollectiveMember'),
+    ]
 
-class Actor(models.Model):
+    duty_type = models.CharField(
+        null=True, max_length=500,
+        choices=DUTY_TYPE_CHOICES,
+        default=Individual)
+
     id = models.AutoField(primary_key=True)
-    actor_category_id = models.ForeignKey(ActorCategory, null=True, on_delete=models.CASCADE)
-    name = models.CharField(null=True, max_length=500)
-    forms = models.CharField(null=True, max_length=1000)
-    # sub_area = models.ForeignKey(to=ActorSubArea,null=True, on_delete=models.CASCADE)
-    area = models.ForeignKey(to=ActorArea, null=True, on_delete=models.CASCADE)
+    document_id = models.ForeignKey(Document, null=True, on_delete=models.CASCADE)
+    actor_id = models.ForeignKey(Actor, null=True, on_delete=models.CASCADE)
+    actor_type_id = models.ForeignKey(ActorType, null=True, on_delete=models.CASCADE)
+    paragraph_id = models.ForeignKey(DocumentParagraphs, null=True, on_delete=models.CASCADE,
+                                     related_name='paragraph_id')
+    current_actor_form = models.CharField(null=True, max_length=1000)
+    ref_to_general_definition = models.BooleanField(default=False)
+    general_definition_id = models.ForeignKey(DocumentGeneralDefinition, null=True, on_delete=models.CASCADE)
+
+    ref_to_paragraph = models.BooleanField(default=False)
+    ref_paragraph_id = models.ForeignKey(DocumentParagraphs, null=True, on_delete=models.CASCADE,
+                                         related_name='ref_paragraph_id')
 
     class Meta:
         app_label = 'doc'
 
     def __str__(self):
-        return f'ID: {self.id}, Name: {self.name}'
+        return f'ID: {self.id}, Document_ID: {self.document_id}, Actor_ID: {self.actor_id}, Actor_Type_ID: {self.actor_type_id}, Paragraph_ID: {self.paragraph_id}'
 
 
 class ParagraphVectorType(models.Model):
