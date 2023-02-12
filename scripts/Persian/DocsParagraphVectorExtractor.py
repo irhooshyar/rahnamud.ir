@@ -72,7 +72,11 @@ def apply(folder_name, Country):
     print("time ", time.time() - t)
 
     # save vectors to db
-    vector_type = ParagraphVectorType.objects.get(name = 'wikitriplet_vector')
+    try:
+        vector_type = ParagraphVectorType.objects.get(name = 'wikitriplet_vector')
+    except:
+        vector_type = ParagraphVectorType.objects.create(name = 'wikitriplet_vector')
+
     create_list = []
     for i in range(len(paragraph_list)):
         para_vector = (list(corpus_embeddings[i]))
