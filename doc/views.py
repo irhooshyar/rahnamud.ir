@@ -5070,14 +5070,7 @@ def filter_doc_fields(res_query, level_id, subject_id, type_id, approval_referen
         res_query['bool']['filter'].append(type_query)
 
     # ---------------------------------------------------------
-    if revoked_type_id != 0:
-        revoked_type_name = RevokedType.objects.get(id=revoked_type_id).name
-        revoked_type_name_query = {
-            "term": {
-                "revoked_type_name.keyword": revoked_type_name
-            }
-        }
-        res_query['bool']['filter'].append(revoked_type_name_query)
+
 
     # ---------------------------------------------------------
     if organization_type_id != '0':
@@ -5305,16 +5298,6 @@ def filter_doc_actor_fields(res_query, level_id, subject_id, type_id, approval_r
             }
         }
         res_query['bool']['filter'].append(type_query)
-
-    # ---------------------------------------------------------
-    if revoked_type_id != 0:
-        revoked_type_name = RevokedType.objects.get(id=revoked_type_id).name
-        revoked_type_name_query = {
-            "term": {
-                "document_revoked_type_name.keyword": revoked_type_name
-            }
-        }
-        res_query['bool']['filter'].append(revoked_type_name_query)
 
     # ---------------------------------------------------------
     if organization_type_id != '0':
