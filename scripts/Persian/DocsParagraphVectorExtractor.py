@@ -72,6 +72,7 @@ def apply(folder_name, Country):
     print("time ", time.time() - t)
 
     # save vectors to db
+    vector_type = None
     try:
         vector_type = ParagraphVectorType.objects.get(name = 'wikitriplet_vector')
     except:
