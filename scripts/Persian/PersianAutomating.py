@@ -6,9 +6,9 @@ from scripts.Persian import DocsNgramExtractor, DocsLevelExtractor, DocsParagrap
     DocsAnalysisLeadershipSlogan, DocsGraphCubeData, DocsReferencesExtractor2, AIParagraphTopicLDA
 
 from scripts.Persian import  ClusteringGraphData
-#from scripts.Persian import StaticDataImportDB, DocsCreateSubjectCubeData
+#from scripts.Persian import StaticDataImportDB, DocsCreateSubjectCubeData,DocsParagraphsClustering
 from scripts.Persian.DocsDefinitionsExtractor import DocsDefinitionsExtractor
-from scripts.Persian import DocsParagraphsClustering , SubjectParagraphExtractor
+from scripts.Persian import SubjectParagraphExtractor
 from scripts.Persian import DocsSubjectExtractor2
 from scripts.Persian import DocsParagraphsClusteringCubeData,LDAGraphData 
 from scripts.Persian import RahbariTypeExtraction, RahabriCoLabelsGraph, RahabriCorrelatedTimeSeriesExtractor, \
@@ -171,7 +171,7 @@ def persian_apply(folder_name, Country, tasks_list, host_url):
         Country.save()
 
         print("17. DocsParagraphsClustering")
-        DocsParagraphsClustering.apply(folder_name, Country)
+        # DocsParagraphsClustering.apply(folder_name, Country)
 
     if "DocsParagraphsClusteringCubeData" in tasks_list: ####
         Country.status = "DocsParagraphsClusteringCubeData"
