@@ -482,7 +482,7 @@ def index(request):
     return render(request, 'doc/index.html', {'countries': country_map})
 
 
-@allowed_users('information')
+# @allowed_users('information')
 def information(request):
     country_list = Country.objects.all()
     country_map = get_country_maps(country_list)
@@ -1818,8 +1818,16 @@ def CreatePanel(request):
     return result
 
 
-def GetAllPanels(request):
+def GetAllPanels(request, username=None):
     CreatePanel(request)
+
+    if username == None:
+        username = request.COOKIES.get('username')
+    user = User.objects.all().get(username=username)
+    user_panels = UserPanels.objects.filter(user=user).order_by('panel__id')
+
+    user_panel_ids = [user_panel.panel_id for user_panel in user_panels]
+
     main_panels = MainPanels.objects.all().order_by('id')
     ret_res = {'all_panels': []}
 
@@ -1835,6 +1843,11 @@ def GetAllPanels(request):
             new_panel['english_name'] = panel.panel_english_name
             new_panel['persian_name'] = panel.panel_persian_name
             ret_res['all_panels'][-1]['sub_panels'].append(new_panel)
+
+    for panel in ret_res['all_panels']:
+        panel['sub_panels'] = list(filter(lambda sub: sub['id'] in user_panel_ids, panel['sub_panels']))
+
+    ret_res['all_panels'] = list(filter(lambda panel: len(panel['sub_panels']) != 0, ret_res['all_panels']))
 
     return JsonResponse(ret_res)
 
@@ -3176,6 +3189,139 @@ def slogan_get_chart(request, slogan_year):
     #     }, index=index_name, doc_type='_doc')['count']
 
 
+def slogan_stackBased_get_information(request, key, slogan_year, selected_year, curr_page, result_size):
+    slogan = Slogan.objects.get(year=slogan_year)
+    keywords = slogan.keywords
+    synonymous = ""
+
+    try:
+        synonymous = SloganSynonymousWords.objects.get(slogan_id__id=slogan.id).words
+    except:
+        print("no synonymous")
+
+    index_name = doctic_doc_index
+
+    word_array = []
+    if synonymous:
+        word_array.extend(synonymous.split("-"))
+    word_array.extend(keywords.split("-"))
+
+    should_query = []
+    for word in word_array:
+        new_q = {"match_phrase": {"attachment.content": word}}
+        should_query.append(new_q)
+
+    res_query = {}
+    if key == 1:
+        res_query = {
+            "bool": {
+                "must": [{"term": {"approval_year": {"value": selected_year}}}],
+                "should": should_query,
+                "minimum_should_match": 1
+            }
+        }
+    else:
+        res_query = {
+            "bool": {
+                "must": [{"term": {"approval_year": {"value": selected_year}}}],
+                "must_not": should_query,
+            }
+        }
+
+    from_value = (curr_page - 1) * result_size
+    response = client.search(index=index_name,
+                             _source_includes=[],
+
+                             request_timeout=40,
+                             query=res_query,
+                             from_=from_value,
+                             size=result_size,
+                             )
+    result = response['hits']['hits']
+    total_hits = response['hits']['total']['value']
+
+    if total_hits == 10000:
+        total_hits = client.count(body={
+            "query": res_query
+        }, index=index_name)['count']
+
+    response_dict = {
+        'total_hits': total_hits,
+        "curr_page": curr_page,
+        "result": result
+    }
+    return JsonResponse(response_dict)
+
+
+def slogan_stackBased_information_export(request, key, slogan_year, selected_year, curr_page, result_size):
+    slogan = Slogan.objects.get(year=slogan_year)
+    keywords = slogan.keywords
+    synonymous = ""
+
+    try:
+        synonymous = SloganSynonymousWords.objects.get(slogan_id__id=slogan.id).words
+    except:
+        print("no synonymous")
+
+    index_name = doctic_doc_index
+
+    word_array = []
+    if synonymous:
+        word_array.extend(synonymous.split("-"))
+    word_array.extend(keywords.split("-"))
+
+    should_query = []
+    for word in word_array:
+        new_q = {"match_phrase": {"attachment.content": word}}
+        should_query.append(new_q)
+
+    res_query = {}
+    if key == 1:
+        res_query = {
+            "bool": {
+                "must": [{"term": {"approval_year": {"value": selected_year}}}],
+                "should": should_query,
+                "minimum_should_match": 1
+            }
+        }
+    else:
+        res_query = {
+            "bool": {
+                "must": [{"term": {"approval_year": {"value": selected_year}}}],
+                "must_not": should_query,
+            }
+        }
+
+    from_value = (curr_page - 1) * result_size
+    response = client.search(index=index_name,
+                             _source_includes=['document_id', 'name'],
+                             request_timeout=40,
+                             query=res_query,
+                             from_=from_value,
+                             size=result_size,
+                             )
+
+    result = response['hits']['hits']
+
+    result_range = str(from_value) + " تا " + str(from_value + len(result))
+
+    paragraph_list = [doc['_source']['name'] for doc in result]
+
+    file_dataframe = pd.DataFrame(paragraph_list, columns=["نام سند"])
+    file_dec = ""
+    if key == 1:
+        file_dec = "دارای حداقل واژه"
+    else:
+        file_dec = "بدون واژه"
+    file_name = "اسناد " + file_dec + " مربوط به شعار سال " + str(slogan_year) + " در سال " + str(
+        selected_year) + " از " + result_range + " " + ".xlsx"
+
+    file_path = os.path.join(config.MEDIA_PATH, file_name)
+    file_dataframe.to_excel(file_path, index=False)
+
+    return JsonResponse({"file_name": file_name})
+
+
 def save_topic_label(request, topic_id, username, label):
     result_response = ""
 
@@ -3388,7 +3534,7 @@ def filter_rahbari_fields_COLUMN(res_query, type_name, label_name_list,
 
 
 def Search_Rahbari_Column_ES(request, country_id, type_name, label_name_list,
-                             from_year, to_year, rahbari_type, place, text, search_type,curr_page, page_size):
+                             from_year, to_year, rahbari_type, place, text, search_type, curr_page, page_size):
     res_query = {
         "bool": {}
     }
@@ -3634,7 +3780,7 @@ def filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, ra
 
 
 def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_year, rahbari_type, document_ids, place,
-                     text, search_type, curr_page,page_size):
+                     text, search_type, curr_page, page_size):
     fields = [type_id, label_name, from_year, to_year, rahbari_type, document_ids]
 
     res_query = {

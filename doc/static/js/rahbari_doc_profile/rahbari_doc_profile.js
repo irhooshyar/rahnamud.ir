@@ -119,9 +119,8 @@ async function init() {
                 $(".pagination").append("<li class='footable-page visible'><a class='add-row-1' href='#' onclick='loadMoreDoc()'>+</a></li>");
             }, 1000);
         }
-
-        setTimeout(loadMoreDoc, 1000)
     }
+    loadMoreDoc()
 
     // user log
     let form_data = new FormData()

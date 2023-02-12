@@ -44,13 +44,5 @@ AllPanels = {
             'rahbari_problem_system': 'نظام مسائل رهبری',
             'rahbari_topic': 'تحلیل هوشمند موضوعی',
         }
-    },
-
-    'interactions_and_notes': {
-        'persian_name': 'تعاملات و یادداشت ها',
-        'sub_panels': {
-            'recommendation': 'انتقادات و پیشنهادات',
-            'report_bug': 'گزارش خطا',
-        }
     }
 }

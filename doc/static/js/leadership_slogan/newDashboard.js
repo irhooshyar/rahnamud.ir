@@ -1,3 +1,28 @@
+MAX_RESULT_WINDOW = 5000
+SEARCH_RESULT_SIZE = 100
+
+
+function startBlockUI() {
+    $.blockUI({
+        // BlockUI code for element blocking
+        message: ("<div class='lds-ellipsis'><div></div><div></div><div></div><div></div></div><h6 style = 'font-family:vazir;'>...در حال دریافت اطلاعات<h6>"),
+        css: {
+            color: 'var(--menu_color)',
+            border: 'none',
+            borderRadius: '5px',
+            borderColor: 'var(--menu_color)',
+            paddingTop: '5px'
+        }
+    });
+    startTime = new Date();
+}
+
+function stopBlockUI() {
+    $.unblockUI();
+    elapsed_time = endTimer();
+    toast_message = '<span class="text-secondary"> ' + 'زمان سپری شده: ' + '</span>' + '<span class="bold" style="color:var(--menu_color)">' + elapsed_time + ' ثانیه' + '</span>'
+}
+
 async function new_prof_slogan_year_changed(year) {
     const request_link = 'http://' + location.host + "/slogan_get_chart/" + year + "/"
 
@@ -77,6 +102,13 @@ function create_bars_chart_data(all_year, keyword_all_year) {
         title: 'توزیع اسناد حاوی حداقل یک واژه به تفکیک سال',
         size: "full",
         yAxisTitle: "تعداد کل اسناد",
+        onClick: (e, junk_data, data) => {
+            const key = data[0] === "اسناد حاوی حداقل واژه" ? 1 : 0;
+            const year = data[1]
+            const slogan_year = document.getElementById("slogan").value;
+
+            click_stack_based_column(key, slogan_year, year, data[0])
+        }
     };
 
 
@@ -168,8 +200,8 @@ function guage_chart(container_id, options) {
         axis.minorTicks().enabled(false);
 
         let radius = 100;
-        let width = 85 / (data.length - 1)
-        if(data.length === 2) width = 65
+        let width = 75 / (data.length - 1)
+        if (data.length === 2) width = 55
         for (let i = 0; i < data.length - 1; i++) {
             makeBarWithBar(gauge, radius, i, width);
             radius = radius - (100 / (data.length - 1))
@@ -191,4 +223,72 @@ function guage_chart(container_id, options) {
         gauge.container(chartContainerId);
         gauge.draw();
     });
+}
+
+async function click_stack_based_column(key, slogan_year, selected_year, chart_name) {
+    startBlockUI("کلیک روی نمودار")
+    const request_link = 'http://' + location.host + "/slogan_stackBased_get_information/" + key + "/" + slogan_year + "/" + selected_year + "/";
+
+    document.getElementById("ChartModalBodyText_2").innerHTML = ""
+    document.getElementById("ChartModalHeader_2").innerHTML = ""
+
+
+    // set modal header
+    modal_header = chart_name + " در سال " + selected_year
+    document.getElementById("ChartModalHeader_2").innerHTML = modal_header
+    // define request link without curr_page & search_result_size
+
+    request_configs = {
+        "link": request_link,
+        "search_result_size": SEARCH_RESULT_SIZE,
+        "max_result_window": MAX_RESULT_WINDOW,
+        "data_type": "url_parameters",
+        "form_data": null
+    }
+
+    export_link = 'http://' + location.host + "/slogan_stackBased_information_export/" + key + "/" + slogan_year + "/" + selected_year + "/";
+
+    export_configs = {
+        "link": export_link,
+        "btn_id": "ExportExcel_2"
+    }
+
+    highlight_configs = {
+        "parameters": null,
+        "highlight_enabled": false,
+        "custom_function": null
+    }
+
+    modal_configs = {
+        "body_id": "ChartModalBodyText_2",
+        "modal_load_more_btn_id": "LoadMoreDocuments_2",
+        "result_size_container_id": "DocsCount_2",
+        "result_size_message": "حکم",
+        "list_type": "ordered",
+        "custom_body_function": null,
+        "body_parameters": null,
+        "link_page": "information",
+
+    }
+
+    segmentation_config = {
+        "parameters": ["احساس بسیار منفی", "بدون ابراز احساسات", "احساس منفی", "احساس خنثی یا ترکیبی از مثبت و منفی", "احساس مثبت", "احساس بسیار مثبت"],
+        "keyword": "sentiment",
+        "enable": false,
+        "aggregation_keyword": "rahbari-sentiment-agg"
+    }
+
+
+    column_interactivity_obj = new ColumnInteractivity("documents",
+        request_configs, export_configs, modal_configs, highlight_configs, segmentation_config)
+
+    result = await column_interactivity_obj.load_content();
+    console.log(result)
+
+    $('#ChartModalBtn_2').click()
+    stopBlockUI('کلیک روی نمودار');
+
+    $('#ExportExcel_2').on('click', async function () {
+        await column_interactivity_obj.download_content();
+    })
 }

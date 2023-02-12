@@ -28,6 +28,7 @@ class ColumnInteractivity {
         this.modal_result_size_container_id =
             modal_configs["result_size_container_id"];
         this.result_size_message = modal_configs["result_size_message"];
+        this.document_link = modal_configs["link_page"] ?? "document_profile"
 
         this.modal_list_type = modal_configs["list_type"];
         this.custom_body_function = modal_configs["custom_body_function"];
@@ -208,7 +209,7 @@ class ColumnInteractivity {
             const link =
                 "http://" +
                 location.host +
-                "/document_profile/?id=" +
+                "/" + this.document_link + "/?id=" +
                 doc["_source"]["document_id"];
             let tag =
                 "<li class='mt-3' id=" +
@@ -250,7 +251,7 @@ class ColumnInteractivity {
             }
 
             const doc_link =
-                "http://" + location.host + "/document_profile/?id=" + document_id;
+                "http://" + location.host + "/" + this.document_link + "/?id=" + document_id;
             let doc_tag =
                 "<a title='پروفایل سند' class='bold text-secondary' target='blank' href='" +
                 doc_link +
