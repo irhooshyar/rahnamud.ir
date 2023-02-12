@@ -1,13 +1,13 @@
 
 from scripts.Persian import DocsNgramExtractor, DocsLevelExtractor, DocsParagraphsExtractor, DocFeaturesExtractor, \
     DocsDefinitionsExtractor, DocsTFIDFExtractor, DocsListExtractor, \
-    Preprocessing, DocsTypeExtractor,StaticDataImportDB, \
+    Preprocessing, DocsTypeExtractor, \
     DocsGeneralDefinitionsExtractor, DocsCreateDocumentsListCubeData, \
     DocsCreateSubjectCubeData, DocsCompleteJsonField, \
     DocsAnalysisLeadershipSlogan, DocsGraphCubeData, DocsReferencesExtractor2, AIParagraphTopicLDA
 
 from scripts.Persian import  ClusteringGraphData
-
+#from scripts.Persian import StaticDataImportDB
 from scripts.Persian.DocsDefinitionsExtractor import DocsDefinitionsExtractor
 from scripts.Persian import DocsParagraphsClustering , SubjectParagraphExtractor
 from scripts.Persian import DocsSubjectExtractor2
@@ -66,7 +66,7 @@ def persian_apply(folder_name, Country, tasks_list, host_url):
         Country.save()
 
         print("4. StaticDataImportDB")
-        StaticDataImportDB.apply(folder_name, Country)
+        # StaticDataImportDB.apply(folder_name, Country)
 
     if "DocsTFIDFExtractor" in tasks_list: ####
         Country.status = "DocsTFIDFExtractor"
