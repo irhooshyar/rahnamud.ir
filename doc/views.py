@@ -664,12 +664,6 @@ def leadership_slogan_analysis(request, id):
     return redirect('zip')
 
 
-def docs_clause_extractor(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsClauseExtractor
-    DocsClauseExtractor.apply(None, file)
-
-    return redirect('zip')
 
 
 def template_panels_data_import_db(request, id):
@@ -716,15 +710,6 @@ def rahbari_labels_to_db(request, id):
     StaticDataImportDB.rahbari_labels_to_db(Country)
     return redirect('zip')
 
-
-def trial_law_import(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsTrialLawExtractor
-
-    DocsTrialLawExtractor.apply(file)
-    return redirect('zip')
-
-
 def document_json_list(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import DocsCreateDocumentsListCubeData
@@ -739,32 +724,10 @@ def docs_general_definitions_extractor(request, id):
     return redirect('zip')
 
 
-def docs_subject_area_extractor(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsSubjectAreaExtractor
-    DocsSubjectAreaExtractor.apply(None, file)
-    return redirect('zip')
 
 
-def docs_actors_extractor(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsActorsExtractor4
-    DocsActorsExtractor4.apply(None, file)
-    return redirect('zip')
 
 
-def docs_lda_topic_extraction(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import AITopicLDA
-    AITopicLDA.apply(None, file)
-    return redirect('zip')
-
-
-def docs_general_actors_extractor(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsGeneralActorsExtractor
-    DocsGeneralActorsExtractor.apply(None, file)
-    return redirect('zip')
 
 
 def operators_static_data_to_db(request, id):
@@ -816,14 +779,6 @@ def create_judgments_table(request, id):
     return redirect('zip')
 
 
-def insert_subject_keyword_list(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import InsertSubjectKeywords
-
-    InsertSubjectKeywords.apply(None, file)
-    return redirect('zip')
-
-
 @is_login
 def Admin(request):
     username = request.COOKIES.get('username')
@@ -865,24 +820,12 @@ def update_file_name_extention(request, id):
     return redirect('zip')
 
 
-def FindSubjectComplaint(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import FindSubjectComplaint
-    FindSubjectComplaint.apply(None, file)
-    return redirect('zip')
 
 
 def regulators_static_import_db(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import StaticDataImportDB
     StaticDataImportDB.Regulators_Insert()
-    return redirect('zip')
-
-
-def actors_time_series_extractor(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsActorsTimeSeriesDataExtractor
-    DocsActorsTimeSeriesDataExtractor.apply(None, file)
     return redirect('zip')
 
 
@@ -893,26 +836,6 @@ def rahbari_labels_time_series_extractor(request, id):
     return redirect('zip')
 
 
-def ARIMA_Prediction_TO_DB(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import ActorsARIMAPrediction
-    ActorsARIMAPrediction.apply(None, file)
-    return redirect('zip')
-
-
-def actors_graph_extractor(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocActorsGraphExtractor
-    DocActorsGraphExtractor.apply(None, file)
-    return redirect('zip')
-
-
-def actors_new_graph_extractor(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocActorsGraphExtractor
-    DocActorsGraphExtractor.get_similarity_graph(None, file)
-    DocActorsGraphExtractor.get_area_actor_graph(None, file)
-    return redirect('zip')
 
 
 def ingest_documents_to_index(request, id, language):
@@ -1120,12 +1043,6 @@ def ingest_rahbari_to_sim_index(request, id):
     return redirect('zip')
 
 
-def books_similarity_calculation(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import BooksSimilarityCalculation
-
-    BooksSimilarityCalculation.apply(None, file)
-    return redirect('zip')
 
 
 def rahbari_similarity_calculation(request, id):
@@ -1133,14 +1050,6 @@ def rahbari_similarity_calculation(request, id):
     from es_scripts import RahbariDocsSimilarityCalculation
 
     RahbariDocsSimilarityCalculation.apply(None, file)
-    return redirect('zip')
-
-
-def books_similarity_calculation_cube(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import BooksSimilarityCalculation_CUBE
-
-    BooksSimilarityCalculation_CUBE.apply(None, file)
     return redirect('zip')
 
 
@@ -1152,11 +1061,6 @@ def paragraphs_similarity_calculation(request, id):
     return redirect('zip')
 
 
-def ARIMA_Prediction_TO_DB_2(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import AdvanceARIMAExtractor
-    AdvanceARIMAExtractor.apply(None, file)
-    return redirect('zip')
 
 
 def RahabriCoLabelsGraph(request, id):
@@ -1217,47 +1121,6 @@ def collective_static_data_to_db(request, id):
     return redirect('zip')
 
 
-def indictment_to_db(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import IndictmentToDB
-    IndictmentToDB.apply(None, file)
-    return redirect('zip')
-
-
-def docs_collective_extractor(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsCollectiveActorsExtractor
-    DocsCollectiveActorsExtractor.apply(None, file)
-    return redirect('zip')
-
-
-def docs_complete_para_extractor(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsExecutiveParagraphsExtractor
-    DocsExecutiveParagraphsExtractor.apply(None, file)
-    return redirect('zip')
-
-
-def docs_regulators_extractor(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsRegulatorsExtractor3
-    DocsRegulatorsExtractor3.apply(None, file)
-    return redirect('zip')
-
-
-def docs_opertators_extractor(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsOperatorsExtractor
-    DocsOperatorsExtractor.apply(None, file)
-    return redirect('zip')
-
-
-def create_CUBE_Subject_Statistics(request, id):
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsCreateSubjectStatisticsCubeData
-    DocsCreateSubjectStatisticsCubeData.apply(None, file)
-    return redirect('zip')
-
 
 def create_CUBE_Subject(request, id):
     host_url = request.get_host()
@@ -1268,71 +1131,9 @@ def create_CUBE_Subject(request, id):
     return redirect('zip')
 
 
-def create_CUBE_Votes(request, id):
-    host_url = request.get_host()
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsCreateVotesCubeData
-    DocsCreateVotesCubeData.apply(None, file, host_url)
-    return redirect('zip')
 
 
-def create_CUBE_CollectiveActor(request, id):
-    host_url = request.get_host()
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsCreateCollectiveActorsCubeData
-    DocsCreateCollectiveActorsCubeData.apply(None, file, host_url)
-    return redirect('zip')
 
-
-def create_CUBE_RegularityLifeCycle(request, id):
-    host_url = request.get_host()
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsCreateRegularityLifeCycleCubeData
-    DocsCreateRegularityLifeCycleCubeData.apply(None, file, host_url)
-    return redirect('zip')
-
-
-def create_CUBE_BusinessAdvisor(request, id):
-    host_url = request.get_host()
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocCreateBusinessAdvisorCubeData
-    DocCreateBusinessAdvisorCubeData.apply(None, file, host_url)
-    return redirect('zip')
-
-
-def create_CUBE_MandatoryRegulations(request, id):
-    host_url = request.get_host()
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsCreateMandatoryRegulationsCubeData
-    DocsCreateMandatoryRegulationsCubeData.apply(None, file, host_url)
-    return redirect('zip')
-
-
-def create_CUBE_Template(request, id, panel_name):
-    host_url = request.get_host()
-
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsCreateTemplatePanelsCubeData
-    DocsCreateTemplatePanelsCubeData.apply(None, file, host_url, panel_name)
-    return redirect('zip')
-
-
-def create_CUBE_Principle(request, id):
-    host_url = request.get_host()
-
-    file = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsCreatePrinciplesCubeData
-    DocsCreatePrinciplesCubeData.apply(None, file, host_url)
-    return redirect('zip')
-
-
-def create_CUBE_MaxMinEffectActorsInArea(request, id):
-    host_url = request.get_host()
-
-    Country_Id = get_object_or_404(Country, id=id)
-    from scripts.Persian import DocsCreateActorInformationStackChartCubeData
-    DocsCreateActorInformationStackChartCubeData.apply(None, Country_Id, host_url)
-    return redirect('zip')
 
 
 def delete_doc(request, id, language):
@@ -4512,10 +4313,6 @@ def AILDASubjectChartTopic(request, topic_id):
 def GetLDAForDocByID(request, document_id):
     doc = Document.objects.get(id=document_id)
     language = Country.objects.get(id=doc.country_id.id).language
-    if language == 'کتاب':
-        book = Book.objects.get(document_id=doc.id)
-    elif language == 'استاندارد':
-        sta = Standard.objects.get(document_id=doc.id)
     topics = AILDATopic.objects.filter(country__id=doc.country_id.id)
     topic_documents = []
 
@@ -4559,12 +4356,6 @@ def GetLDAForDocByID(request, document_id):
 
     _id = None
     _name = None
-    if language == "کتاب":
-        _id = book.id
-        _name: book.name
-    elif language == "استاندارد":
-        _id = sta.id
-        _name: sta.subject
     return JsonResponse({
         "document_id": doc.id,
         "document_name": doc.name,
@@ -4871,13 +4662,6 @@ def GetDocumentById(request, id):
     revoked_size = ""
     revoked_clauses = ""
 
-    if validation_type != 'معتبر':
-        try:
-            revoked_doc = RevokedDocument.objects.get(dest_document__id=id)
-            revoked_size = revoked_doc.revoked_size
-            revoked_clauses = revoked_doc.revoked_clauses
-        except:
-            pass
 
     document_actors_chart_data = []
     if document.actors_chart_data != None:
@@ -4976,31 +4760,6 @@ def GetReferences2Doc(request, document1_id, document2_id):
 
     return JsonResponse({'references_from_doc1': result_text1, 'references_from_doc2': result_text2})
 
-
-def GetCommonWords2Doc(request, document1_id, document2_id):
-    document1_word = DocumentWords.objects.filter(
-        document_id_id=document1_id).values("word")
-    CommonWords = DocumentWords.objects.filter(
-        document_id_id=document2_id, word__in=document1_word).values("word")
-    CommonWords = CommonWords.annotate(text_len=Length(
-        'word')).filter(text_len__gte=2).values("word")
-    result1 = []
-    for word in CommonWords:
-        result1.append(word["word"])
-    result1 = list(set(result1))
-
-    document1_keyword = DocumentKeywords.objects.filter(
-        document_id_id=document1_id).values("keyword_id")
-    CommonKeyWords = DocumentKeywords.objects.filter(
-        document_id_id=document2_id, keyword_id__in=document1_keyword).values("keyword_id__word")
-    CommonKeyWords = CommonKeyWords.annotate(text_len=Length(
-        'keyword_id__word')).filter(text_len__gte=2).values('keyword_id__word')
-    result2 = []
-    for word in CommonKeyWords:
-        result2.append(word['keyword_id__word'])
-    result2 = list(set(result2))
-
-    return JsonResponse({'common_words': result1, 'common_keywords': result2})
 
 
 def getUserDeployLogs(request):
@@ -8408,12 +8167,6 @@ def GetSearchDetails_ES(request, document_id, search_type, text):
     language = country.language
 
     local_index = standardIndexName(country, Document.__name__)
-
-    if language == 'کتاب':
-        local_index = book_index_name
-
-    if language == 'استاندارد':
-        local_index = standardIndexName(country, Standard.__name__)
 
     result_text = ''
     place = 'متن'
