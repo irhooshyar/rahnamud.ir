@@ -134,7 +134,7 @@ def update_doc(request, id, language, ):
 
 
         from scripts.Persian import DocsParagraphVectorExtractor
-        DocsParagraphVectorExtractor.apply.after_response(folder_name, file)
+        DocsParagraphVectorExtractor.apply(folder_name, file)
 
 
 
