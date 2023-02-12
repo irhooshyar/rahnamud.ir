@@ -138,6 +138,12 @@ Paragraphs_Settings_3 = {
 
 Paragraphs_Mappings = {
     "properties": {
+    
+        "wikitriplet_vector": {
+        "type": "dense_vector",
+        "dims": 768
+        },
+
         "document_id": {
             "type": "integer"
         },

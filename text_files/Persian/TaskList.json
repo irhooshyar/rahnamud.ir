@@ -50,7 +50,8 @@
         "کیوب جدول خوشه‌بندی":["DocsParagraphsClusteringCubeData",0],
         "گراف‌های LDA":["LDAGraphData"],
         "LSTM":["ActorTimeSeriesPrediction"],
-        "آریما پیشرفته":["AdvanceARIMAExtractor"]
+        "آریما پیشرفته":["AdvanceARIMAExtractor"],
+        "استخراج بردار پاراگراف‌ها":["DocsParagraphVectorExtractor"]
 
         
     },

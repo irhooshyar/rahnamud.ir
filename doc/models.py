@@ -1343,3 +1343,20 @@ class Actor(models.Model):
 
     def __str__(self):
         return f'ID: {self.id}, Name: {self.name}'
+
+
+class ParagraphVectorType(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.TextField(null=True)
+    class Meta:
+        app_label = 'doc'
+
+
+class ParagraphVector(models.Model):
+    id = models.AutoField(primary_key=True)
+
+    paragraph = models.ForeignKey(DocumentParagraphs, on_delete=models.CASCADE, null=True)
+    vector_type = models.ForeignKey(ParagraphVectorType, on_delete=models.CASCADE, null=True)
+    vector_value = models.JSONField(null=True)
+    class Meta:
+        app_label = 'doc'
