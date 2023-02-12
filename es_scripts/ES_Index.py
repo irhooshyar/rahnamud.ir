@@ -5,7 +5,7 @@ from abdal import config
 from abdal import es_config
 import base64
 import csv
-from doc.models import Book, Document, DocumentParagraphs, Standard, Standard_Branch, Standard_Status
+from doc.models import  Document, DocumentParagraphs
 from django.db.models.functions import Substr, Cast
 from django.db.models import Max, Min, F, IntegerField, Q
 import pandas as pd
