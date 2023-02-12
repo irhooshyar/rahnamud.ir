@@ -186,6 +186,29 @@ class Subject(models.Model):
         return f'ID: {self.id}, Name: {self.name}'
 
 
+class ActorCategory(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(null=True, max_length=500)  # سازمان, وزارت, مرکز
+
+
+class ActorArea(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(null=True, max_length=500)  # انرژی، اقتصادی
+
+class Actor(models.Model):
+    id = models.AutoField(primary_key=True)
+    actor_category_id = models.ForeignKey(ActorCategory, null=True, on_delete=models.CASCADE)
+    name = models.CharField(null=True, max_length=500)
+    forms = models.CharField(null=True, max_length=1000)
+    # sub_area = models.ForeignKey(to=ActorSubArea,null=True, on_delete=models.CASCADE)
+    area = models.ForeignKey(to=ActorArea, null=True, on_delete=models.CASCADE)
+
+    class Meta:
+        app_label = 'doc'
+
+    def __str__(self):
+        return f'ID: {self.id}, Name: {self.name}'
+
 class SubjectKeyWords(models.Model):
     id = models.AutoField(primary_key=True)
     subject_id = models.ForeignKey(Subject, on_delete=models.CASCADE)
@@ -1320,4 +1343,5 @@ class RahbariGraph(models.Model):
     type = models.ForeignKey(RahbariGraphType, on_delete=models.CASCADE, null=True)
     nodes_data = models.JSONField(null=True)
     edges_data = models.JSONField(null=True)
+
 
