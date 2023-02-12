@@ -110,52 +110,7 @@
 
         </form>
 
-        <form class="ml-2" method="POST">
-            {% csrf_token %}
-            <p>CUBE ({{ file.name }})
-                {# <input type="submit" name="delete_items" value="delete {{ file.pk }}" id="{{ file.pk }}">#}
-                {# <input type="submit" name="update_items" value="update {{ file.pk }}" id="{{ file.pk }}" content="{{ file.pk }}">#}
 
-                <a href="{% url 'create_CUBE_Subject_Statistics' file.pk %}">Subject-Statistics: (تحلیل آماری) </a>
-
-                <span class="bold"> | </span>
-                <a href="{% url 'create_CUBE_Subject' file.pk %}">Subject: (تحلیل موضوعی)</a>
-
-                <span class="bold"> | </span>
-                <a href="{% url 'create_CUBE_Votes' file.pk %}">Votes: (تحلیل آراء)</a>
-
-                <span class="bold"> | </span>
-                <a href="{% url 'create_CUBE_CollectiveActor' file.pk %}">CollectiveActor: (تحلیل کنشگران جمعی)</a>
-
-                <span class="bold"> | </span>
-                <a href="{% url 'create_CUBE_RegularityLifeCycle' file.pk %}">RegularityLifeCycle: (تحلیل چرخه حیات
-                    تنظیم گری)</a>
-
-                <span class="bold"> | </span>
-                <a href="{% url 'create_CUBE_MandatoryRegulations' file.pk %}">MandatoryRegulations: (تحلیل آیین نامه
-                    های اجباری)</a>
-
-                <span class="bold"> | </span>
-                <a href="{% url 'create_CUBE_Template' file.pk 'portal' %}">Template (تحلیل درگاه)</a>
-
-                <span class="bold"> | </span>
-                <a href="{% url 'create_CUBE_Template' file.pk 'keywords' %}">Template (تحلیل مالی)</a>
-
-                <span class="bold"> | </span>
-                <a href="{% url 'create_CUBE_BusinessAdvisor' file.pk %}">BusinessAdvisor: (مشاوره به کسب و کار)</a>
-
-                <span class="bold"> | </span>
-                <a href="{% url 'create_CUBE_Principle' file.pk %}">principles: (تحلیل اصول مندرج در مصوبات) </a>
-
-                <span class="bold"> | </span>
-                <a href="{% url 'create_CUBE_MaxMinEffectActorsInArea' file.pk %}">Actor_Information: (نمودار تب
-                    اثرگذاری)</a>
-
-                    <span class="bold"> | </span>
-                    <a href="{% url 'rahbari_update_fields_from_file' file.pk %}">rahbari_update_fields_from_file</a>
-            </p>
-
-        </form>
 
         <form class="ml-2 border-3 border-left pl-2" method="POST">
             {% csrf_token %}
