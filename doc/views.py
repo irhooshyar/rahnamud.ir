@@ -3229,8 +3229,7 @@ def slogan_stackBased_get_information(request, key, slogan_year, selected_year, 
 
     from_value = (curr_page - 1) * result_size
     response = client.search(index=index_name,
-                             _source_includes=[],
-
+                             _source_includes=["document_id", "name"],
                              request_timeout=40,
                              query=res_query,
                              from_=from_value,
