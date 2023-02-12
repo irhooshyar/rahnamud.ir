@@ -42,30 +42,16 @@ async function new_prof_slogan_year_changed(year) {
         all_data: all_data,
         title: 'توزیع کلیدواژه ها در اسناد حاوی واژه',
         size: "full",
+        onClick: (e, data, index) => {
+            console.log(data)
+            console.log(index)
+        }
     })
     create_bars_chart_data(response['year_agg']['approval-year-agg']['buckets'],
         response['with_word_year_agg']['approval-year-content-agg']['buckets'])
 }
 
 function create_bars_chart_data(all_year, keyword_all_year) {
-    // let data = []
-    // for (let year_bucket of all_year) {
-    //     const row = []
-    //     row[0] = year_bucket['key']
-    //     row[1] = year_bucket['doc_count']
-    //
-    //     for (let keyword_bucket of keyword_all_year) {
-    //         if (row[0] === keyword_bucket['key']) {
-    //             row[2] = keyword_bucket['doc_count']
-    //             break
-    //         }
-    //     }
-    //     if (row.length === 2) row[2] = 0
-    //
-    //     data.push(row)
-    //
-    // }
-
     all_year = all_year.sort((a, b) => a['key'] - b['key'])
 
     let data = {}
@@ -135,7 +121,9 @@ function guage_chart(container_id, options) {
         names.push(item[0])
         data.push(item[1])
     }
-    data.push(all_data)
+    for (let i = 0; i < names.length; i++) {
+        data.push(all_data)
+    }
 
     var dataSet = anychart.data.set(data);
     var makeBarWithBar = function (gauge, radius, i, width) {
@@ -146,6 +134,7 @@ function guage_chart(container_id, options) {
             .textDirection("rtl")
             .fontFamily("vazir")
             .fontColor('#6C757D')
+
         gauge
             .label(i)
             .hAlign('center')
@@ -167,7 +156,7 @@ function guage_chart(container_id, options) {
             .zIndex(5);
         gauge
             .bar(i + 100)
-            .dataIndex(data.length - 1)
+            .dataIndex(i + (data.length / 2))
             .radius(radius)
             .width(width)
             .fill('#F5F4F4')
@@ -176,6 +165,7 @@ function guage_chart(container_id, options) {
 
         return gauge.bar(i);
     };
+
 
     anychart.onDocumentReady(function () {
         var gauge = anychart.gauges.circular();
@@ -188,6 +178,10 @@ function guage_chart(container_id, options) {
             .startAngle(0)
             .sweepAngle(270);
 
+        let tooltip = gauge.tooltip();
+        tooltip.fontFamily("vazir");
+        tooltip.hAlign('center').format("تعداد: {%value}");
+
         var axis = gauge.axis().radius(100).width(1).fill(null);
         axis
             .scale()
@@ -199,14 +193,34 @@ function guage_chart(container_id, options) {
         axis.ticks().enabled(false);
         axis.minorTicks().enabled(false);
 
+        const itration = data.length / 2
         let radius = 100;
-        let width = 75 / (data.length - 1)
-        if (data.length === 2) width = 55
-        for (let i = 0; i < data.length - 1; i++) {
+        let width = 75 / itration
+        if (itration === 1) width = 55
+        for (let i = 0; i < itration; i++) {
             makeBarWithBar(gauge, radius, i, width);
-            radius = radius - (100 / (data.length - 1))
+            radius = radius - (100 / itration)
         }
         gauge.margin(50);
+
+        if (options.onClick) {
+            gauge.listen("mouseOver", function () {
+                document.body.style.cursor = "pointer";
+            });
+            gauge.listen("mouseOut", function () {
+                document.body.style.cursor = "auto";
+            });
+
+            gauge.listen('Click', (e) => {
+                const click_tag = e.domTarget.tag;
+                let index = click_tag["index"]
+                if (index >= options.data.length) {
+                    index = index - options.data.length
+                }
+                options.onClick(e, options.data, index)
+            })
+        }
+
         // gauge
         //     .title()
         //     .text(
@@ -263,7 +277,7 @@ async function click_stack_based_column(key, slogan_year, selected_year, chart_n
         "body_id": "ChartModalBodyText_2",
         "modal_load_more_btn_id": "LoadMoreDocuments_2",
         "result_size_container_id": "DocsCount_2",
-        "result_size_message": "حکم",
+        "result_size_message": "سند",
         "list_type": "ordered",
         "custom_body_function": null,
         "body_parameters": null,
