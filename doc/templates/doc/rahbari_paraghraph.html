@@ -1139,10 +1139,8 @@
                 + UserSearchParameters.place + "/"
                 + UserSearchParameters.text + "/"
                 + UserSearchParameters.search_type + "/"
-                + next_page_number + "/"
+                + next_page_number + "/" + SEARCH_RESULT_SIZE + "/"
 
-
-            console.log(request_link)
 
             let response = await fetch(request_link).then(response => response.json());
             result_documents = response['result']
