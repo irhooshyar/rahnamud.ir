@@ -1153,6 +1153,28 @@ canvas{
   opacity: 0.3;
 }
 
+.delete-avatar-button {
+  position: absolute;
+  top: 65px;
+  right: 125px;
+  font-size: 30px;
+  z-index: 10;
+  margin: 0;
+  padding: 0;
+  border-radius: 50px;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+}
+
+.delete-avatar-button i {
+  color: #fff;
+  text-align: center;
+  position: absolute;
+  top: 2px;
+  left: 6px;
+}
+
 .ts-dropdown .active {
   background-color: #e7f1ff;
 }
