@@ -143,7 +143,7 @@ urlpatterns = [
     path('GetSearchDetails_ES_2/<int:document_id>/<str:search_type>/<str:text>/', views.GetSearchDetails_ES_2,
          name='GetSearchDetails_ES_2'),
     path(
-        'SearchRahbari_ES/<int:country_id>/<int:type_id>/<str:label_name>/<int:from_year>/<int:to_year>/<str:rahbari_type>/<str:document_ids>/<str:place>/<str:text>/<str:search_type>/<int:curr_page>/<int:page_size>/',
+        'SearchRahbari_ES/<int:country_id>/<int:type_id>/<str:label_name>/<int:from_year>/<int:to_year>/<str:rahbari_type>/<str:document_ids>/<str:place>/<str:text>/<str:search_type>/<int:with_rahbari_type>/<int:curr_page>/<int:page_size>/',
         views.SearchRahbari_ES, name='SearchRahbari_ES'),
     path(
         'SearchRahbariRule_ES/<int:country_id>/<int:type_id>/<str:label_name>/<int:from_year>/<int:to_year>/<str:rahbari_type>/<str:place>/<str:text>/<str:search_type>/<int:curr_page>/',

@@ -1021,8 +1021,9 @@
             startBlockUI('SearchTable');
             const rahbari_type = 0
             const documnet_ids = 0
+            const with_rahbari_type = 0
             request_link = 'http://' + location.host + "/SearchRahbari_ES/" + country_id + "/" + type_id + "/" +
-                label_name + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + documnet_ids + "/" + place + "/" + text + "/" + search_type + "/"
+                label_name + "/" + from_year + "/" + to_year + "/" + rahbari_type + "/" + documnet_ids + "/" + place + "/" + text + "/" + search_type + "/" +  with_rahbari_type + "/"
                 + curr_page  + "/" + SEARCH_RESULT_SIZE + "/";
 
             let response = await fetch(request_link).then(response => response.json());
