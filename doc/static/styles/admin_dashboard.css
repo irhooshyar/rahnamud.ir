@@ -112,6 +112,13 @@ body {
     width: 100%;
 }
 
+#submit_btn {
+  background-color: #0e3f8b;
+  color: white;
+  height: 37px;
+  width: 100%;
+}
+
 .btn-color, .btn-color:hover{
     background-color: #1481c0;
     color: white;
