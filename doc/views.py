@@ -2918,28 +2918,7 @@ def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRul
                 search_type = 'or'
             res_query = boolean_search_text(res_query, place, text, search_type, False)
 
-    h_query1 = {
-        "bool": {
-            "filter": {
-                "term": {
-                    "document_id": document_id
-                }
-            },
-            "should": res_query['bool']['should'],
-
-        }
-    }
-
-    h_query2 = {
-        "bool": {
-            "filter": {
-                "term": {
-                    "document_id": document_id
-                }
-            },
-            "must": res_query["bool"]["must"],
-        }
-    }
+    print(res_query)
 
     response = client.search(index=local_index,
                              _source_includes=['document_id', 'paragraph_id', 'document_name', 'attachment.content'],
@@ -3778,7 +3757,7 @@ def filter_rahbari_fields(res_query, type_id, label_name, from_year, to_year, ra
 
 
 def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_year, rahbari_type, document_ids, place,
-                     text, search_type, curr_page, page_size):
+                     text, search_type, with_rahbari_type, curr_page, page_size):
     fields = [type_id, label_name, from_year, to_year, rahbari_type, document_ids]
 
     res_query = {
@@ -3800,6 +3779,23 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
             res_query = exact_search_text(res_query, place, text, ALL_FIELDS)
         else:
             res_query = boolean_search_text(res_query, place, text, search_type, ALL_FIELDS)
+
+
+    # if with_rahbari_type == 1:
+    #     keywords_list = RahbariTypeKeyword.objects.all()
+    #     should_query = {
+    #         'should': []
+    #     }
+    #     for key in keywords_list:
+    #         res = {
+    #             "match_phrase": {
+    #                 "attachment.content": key.keyword
+    #             }
+    #         }
+    #         should_query["should"].append(res)
+    #     should_query['minimum_should_match'] = 1
+    #     res_query['bool']["must"].append(should_query)
+
 
     country_obj = Country.objects.get(id=country_id)
     index_name = standardIndexName(country_obj, Document.__name__)
