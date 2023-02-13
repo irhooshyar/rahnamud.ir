@@ -262,6 +262,13 @@ urlpatterns = [
     path("AIGetLDATopic/<int:country_id>/<int:number_of_topic>/<str:username>/", views.AIGetLDATopic,
          name='AIGetLDATopic'),
     path("AILDADocFromTopic/<int:topic_id>/", views.AILDADocFromTopic, name='AILDADocFromTopic'),
+    path("AILDASubjectChartTopicGetInformation/<int:topic_id>/<str:subject_name>/<int:curr_page>/<int:result_size>/",
+         views.AILDASubjectChartTopicGetInformation, name='AILDASubjectChartTopicGetInformation'),
+
+    path(
+        "AILDASubjectChartTopicGetInformationExport/<int:topic_id>/<str:subject_name>/<int:curr_page>/<int:result_size>/",
+        views.AILDASubjectChartTopicGetInformationExport, name='AILDASubjectChartTopicGetInformationExport'),
+
     path("AILDAWordCloudTopic/<int:topic_id>/", views.AILDAWordCloudTopic, name='AILDAWordCloudTopic'),
     path("AILDASubjectChartTopic/<int:topic_id>/", views.AILDASubjectChartTopic, name='AILDASubjectChartTopic'),
     path('GetLDAForDocByID/<int:document_id>/', views.GetLDAForDocByID, name='GetLDAForDocByID'),
