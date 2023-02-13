@@ -2882,7 +2882,7 @@ def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRul
     # local_index = "doticfull_documentparagraphs_graph"
 
     result_text = ''
-    place = 'متن'
+    place = 'عنوان و متن'
 
     res_query = {
         "bool": {
@@ -2895,19 +2895,6 @@ def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRul
         }
     }
 
-    if isRule:
-        keywords_list = RahbariTypeKeyword.objects.all()
-        should_query = []
-        for key in keywords_list:
-            res = {
-                "match_phrase": {
-                    "attachment.content": key.keyword
-                }
-            }
-            should_query.append(res)
-        res_query['bool']['should'] = should_query
-        res_query['bool']['minimum_should_match'] = 1
-
     if text != "empty":
         res_query["bool"]["must"] = []
 
@@ -2918,7 +2905,16 @@ def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRul
                 search_type = 'or'
             res_query = boolean_search_text(res_query, place, text, search_type, False)
 
-    print(res_query)
+
+    if isRule:
+        keywords_list = RahbariTypeKeyword.objects.all()
+        for key in keywords_list:
+            should_query = {
+                "match_phrase": {
+                    "attachment.content": key.keyword
+                }
+            }
+            res_query['bool']["must"][0]["bool"]['should'].append(should_query)
 
     response = client.search(index=local_index,
                              _source_includes=['document_id', 'paragraph_id', 'document_name', 'attachment.content'],
@@ -3781,24 +3777,27 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
             res_query = boolean_search_text(res_query, place, text, search_type, ALL_FIELDS)
 
 
-    # if with_rahbari_type == 1:
-    #     keywords_list = RahbariTypeKeyword.objects.all()
-    #     should_query = {
-    #         'should': []
-    #     }
-    #     for key in keywords_list:
-    #         res = {
-    #             "match_phrase": {
-    #                 "attachment.content": key.keyword
-    #             }
-    #         }
-    #         should_query["should"].append(res)
-    #     should_query['minimum_should_match'] = 1
-    #     res_query['bool']["must"].append(should_query)
-
-
     country_obj = Country.objects.get(id=country_id)
     index_name = standardIndexName(country_obj, Document.__name__)
+
+
+    if with_rahbari_type == 1:
+        keywords_list = RahbariTypeKeyword.objects.all()
+        should_query = {
+            'bool': {
+                'should': []
+            }
+        }
+        for key in keywords_list:
+            res = {
+                "match_phrase": {
+                    "attachment.content": key.keyword
+                }
+            }
+            should_query["bool"]["should"].append(res)
+        should_query["bool"]["minimum_should_match"] = 1
+        res_query['bool']["must"].append(should_query)
+
     # index_name = "rahbari_document"
 
     # ---------------------- Get Chart Data -------------------------
