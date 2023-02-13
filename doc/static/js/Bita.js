@@ -5692,6 +5692,7 @@ function pushSubmit(event) {
 }
 
 export function initXC(siteId, apiKey) {
+          console.log("Bita2")
   xApiKey = apiKey;
   fpPromise_pro
     .then((fp) => fp.get())
