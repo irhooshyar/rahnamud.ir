@@ -2,7 +2,7 @@
 import operator
 import re
 
-from doc.models import  Document,DocumentWords,DocumentParagraphs
+from doc.models import  Document,DocumentParagraphs
 from doc.models import CUBE_Subject_TableData,Subject
 from django.db.models import Count, Q
 import json

@@ -3,7 +3,7 @@ from abdal import config
 from abdal import es_config
 import base64
 import csv
-from doc.models import Book, Document, Standard, DocumentActor
+from doc.models import Document, DocumentActor
 from django.db.models.functions import Substr, Cast
 from django.db.models import Max, Min, F, IntegerField, Q
 import pandas as pd

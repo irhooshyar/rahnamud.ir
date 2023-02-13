@@ -6,7 +6,8 @@ from scripts.Persian import DocsNgramExtractor, DocsLevelExtractor, DocsParagrap
     DocsAnalysisLeadershipSlogan, DocsGraphCubeData, DocsReferencesExtractor2, AIParagraphTopicLDA
 
 from scripts.Persian import  ClusteringGraphData
-#from scripts.Persian import StaticDataImportDB, DocsCreateSubjectCubeData, DocsParagraphsClustering
+# from scripts.Persian import StaticDataImportDB,
+from scripts.Persian import DocsParagraphsClustering, DocsCreateSubjectCubeData
 from scripts.Persian.DocsDefinitionsExtractor import DocsDefinitionsExtractor
 from scripts.Persian import SubjectParagraphExtractor
 from scripts.Persian import DocsSubjectExtractor2
@@ -23,7 +24,7 @@ if ENABLE_BERT:
 
 # ------------------- ES Configs -----------------------------------
 from abdal.es_config import INGEST_ENABLED
-#from es_scripts import IngestDocumentsToElastic,IngestParagraphsToElastic
+from es_scripts import IngestDocumentsToElastic,IngestParagraphsToElastic
 # ------------------- ES Configs -----------------------------------
 
 
@@ -134,7 +135,7 @@ def persian_apply(folder_name, Country, tasks_list, host_url):
         Country.save()
 
         print("13. IngestDocumentsToElastic.")
-        #IngestDocumentsToElastic.apply(folder_name, Country)
+        IngestDocumentsToElastic.apply(folder_name, Country)
 
 
     # --- Ingest Paragraphs
@@ -143,7 +144,7 @@ def persian_apply(folder_name, Country, tasks_list, host_url):
         Country.save()
 
         print("14. IngestParagraphsToElastic.")
-        #IngestParagraphsToElastic.apply(folder_name, Country,1)
+        IngestParagraphsToElastic.apply(folder_name, Country,1)
 
     # --------------------------------------------------------
 
@@ -171,7 +172,7 @@ def persian_apply(folder_name, Country, tasks_list, host_url):
         Country.save()
 
         print("17. DocsParagraphsClustering")
-        # DocsParagraphsClustering.apply(folder_name, Country)
+        DocsParagraphsClustering.apply(folder_name, Country)
 
     if "DocsParagraphsClusteringCubeData" in tasks_list: ####
         Country.status = "DocsParagraphsClusteringCubeData"
@@ -199,7 +200,7 @@ def persian_apply(folder_name, Country, tasks_list, host_url):
         Country.save()
 
         print("21. DocsCreateSubjectCubeData.")
-        #DocsCreateSubjectCubeData.apply(folder_name, Country, host_url)
+        DocsCreateSubjectCubeData.apply(folder_name, Country, host_url)
     
     
     if "DocsAnalysisLeadershipSlogan" in tasks_list:
