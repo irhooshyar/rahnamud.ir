@@ -117,6 +117,7 @@
     <script src="../../static/js/GraphClass.js"></script>
 
     <script src="../../static/js/chart.js"></script>
+    <script src="../../static/js/CustomAlert.js"></script>
 
     <title> نمایش مصوبات</title>
     {% include "doc/title_icon.html" %}
@@ -1360,6 +1361,7 @@
     </div>
 </div>
 
+<div id="HooshyarAlert"></div>
 
 <script src="../../static/js/logincheck.js"></script>
 <script src="../../static/js/scroll_button_handler.js">
@@ -3267,7 +3269,7 @@
         const document_id = document.getElementById("document").value
         // disable show button before choosing a document
         if (!document_id || document_id == '0') {
-            alert('لطفا یک سند را انتخاب نمایید.')
+            HooshyarAlertShow('لطفا یک سند را انتخاب نمایید.','',1)
             return
         }
         $('#documentContent').modal('show');
@@ -3309,7 +3311,7 @@
         const document_id = document.getElementById("document").value
         // disable show button before choosing a document
         if (!document_id || document_id == '0') {
-            alert('لطفا یک سند را انتخاب نمایید.')
+            HooshyarAlertShow('لطفا یک سند را انتخاب نمایید.')
             return
         }
         $('#subjectContent').modal('show');
@@ -3425,7 +3427,7 @@
         const document_id = document.getElementById("document").value
         // disable show button before choosing a document
         if (!document_id || document_id == '0') {
-            alert('لطفا یک سند را انتخاب نمایید.');
+            HooshyarAlertShow('لطفا یک سند را انتخاب نمایید.');
             return;
         }
         const request_link = 'http://' + location.host + "/GetDocumentContent/" + document_id + "/";
