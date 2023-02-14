@@ -287,6 +287,7 @@
 
             <!-- Modal body -->
             <div id="ChartModalText" class="modal-body text-justify">
+
             </div>
 
             <!-- Modal footer -->
@@ -625,7 +626,7 @@
                     list_of_docId += doc["document_id"] + "_"
                 }
 
-                filtered_result_tag = "<ol start='1'>" + filtered_result_tag + "</ol>"
+                filtered_result_tag = "<h6 class='text-secondary'>" + `${filtered_result.length} سند` + "</h6>" + "<ol start='1'>" + filtered_result_tag + "</ol>"
                 document.getElementById("ChartModalText").innerHTML = filtered_result_tag
 
                 stopFullPageBlockUI('کلیک روی نمودار')

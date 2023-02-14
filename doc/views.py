@@ -4519,40 +4519,6 @@ def AILDASubjectChartTopicGetInformation(request, topic_id, subject_name, curr_p
     from_value = (curr_page - 1) * result_size
     to_value = from_value + result_size
     temp = AILDAParagraphToTopic.objects.filter(topic__id=topic_id).order_by('-score').values()
-    for record in temp:
-        if len(topic_paragraphs) == curr_page * result_size:
-            break
-        paragraph_id = record['paragraph_id']
-        try:
-            subjects_name = ParagraphsSubject.objects.get(paragraph__id=paragraph_id, version__id=12)
-
-            if subjects_name.subject1_name == subject_name:
-                paragraph = DocumentParagraphs.objects.get(id=paragraph_id)
-                topic_paragraphs.append({"_source": {
-                    "attachment": {
-                        "content": paragraph.text
-                    },
-                    "paragraph_id": paragraph.id,
-                    "document_id": paragraph.document_id.id,
-                    "document_name": paragraph.document_id.name,
-                    # "subject1_name": subjects_name.subject1_name,
-                }})
-                print("ADD", paragraph_id)
-        except:
-            if subject_name == "نامشخص":
-                paragraph = DocumentParagraphs.objects.get(id=paragraph_id)
-                topic_paragraphs.append({"_source": {
-                    "attachment": {
-                        "content": paragraph.text
-                    },
-                    "paragraph_id": paragraph.id,
-                    "document_id": paragraph.document_id.id,
-                    "document_name": paragraph.document_id.name,
-                    # "subject1_name": subjects_name.subject1_name,
-                }})
-                print("ADD", paragraph_id)
-            else:
-                print("ERROR", paragraph_id)
 
     all_paragraph_count = AIParagraphLDATopic.objects.get(id=topic_id).subjects_list_chart_data_json['data']
     paragraph_count = 0
@@ -4560,16 +4526,8 @@ def AILDASubjectChartTopicGetInformation(request, topic_id, subject_name, curr_p
         if item[0] == subject_name:
             paragraph_count = item[1]
 
-    return JsonResponse({'result': topic_paragraphs[from_value: to_value], 'total_hits': paragraph_count})
-
-
-def AILDASubjectChartTopicGetInformationExport(request, topic_id, subject_name, curr_page, result_size):
-    topic_paragraphs = []
-    from_value = (curr_page - 1) * result_size
-    to_value = from_value + result_size
-    temp = AILDAParagraphToTopic.objects.filter(topic__id=topic_id).order_by('-score').values()
     for record in temp:
-        if len(topic_paragraphs) == curr_page * result_size:
+        if (len(topic_paragraphs) == curr_page * result_size) or (len(topic_paragraphs) == paragraph_count):
             break
         paragraph_id = record['paragraph_id']
         try:
@@ -4603,11 +4561,63 @@ def AILDASubjectChartTopicGetInformationExport(request, topic_id, subject_name, 
             else:
                 print("ERROR", paragraph_id)
 
-    result_range = str(from_value) + " تا " + str(from_value + len(topic_paragraphs))
+    return JsonResponse({'result': topic_paragraphs[from_value: to_value], 'total_hits': paragraph_count})
+
+
+def AILDASubjectChartTopicGetInformationExport(request, topic_id, subject_name, curr_page, result_size):
+    topic_paragraphs = []
+    from_value = (curr_page - 1) * result_size
+    temp = AILDAParagraphToTopic.objects.filter(topic__id=topic_id).order_by('-score').values()
+    to_value = from_value + result_size
+    all_paragraph_count = AIParagraphLDATopic.objects.get(id=topic_id).subjects_list_chart_data_json['data']
+    paragraph_count = 0
+    for item in all_paragraph_count:
+        if item[0] == subject_name:
+            paragraph_count = item[1]
+
+    if to_value > paragraph_count:
+        to_value = paragraph_count
+
+    for record in temp:
+        if (len(topic_paragraphs) == curr_page * result_size) or (len(topic_paragraphs) == paragraph_count):
+            break
+        paragraph_id = record['paragraph_id']
+        try:
+            subjects_name = ParagraphsSubject.objects.get(paragraph__id=paragraph_id, version__id=12)
+
+            if subjects_name.subject1_name == subject_name:
+                paragraph = DocumentParagraphs.objects.get(id=paragraph_id)
+                topic_paragraphs.append({"_source": {
+                    "attachment": {
+                        "content": paragraph.text
+                    },
+                    "paragraph_id": paragraph.id,
+                    "document_id": paragraph.document_id.id,
+                    "document_name": paragraph.document_id.name,
+                    # "subject1_name": subjects_name.subject1_name,
+                }})
+                print("ADD", paragraph_id)
+        except:
+            if subject_name == "نامشخص":
+                paragraph = DocumentParagraphs.objects.get(id=paragraph_id)
+                topic_paragraphs.append({"_source": {
+                    "attachment": {
+                        "content": paragraph.text
+                    },
+                    "paragraph_id": paragraph.id,
+                    "document_id": paragraph.document_id.id,
+                    "document_name": paragraph.document_id.name,
+                    # "subject1_name": subjects_name.subject1_name,
+                }})
+                print("ADD", paragraph_id)
+            else:
+                print("ERROR", paragraph_id)
+
+    result_range = str(from_value) + " تا " + str(to_value)
 
     paragraph_list = [
         [doc['_source']['document_name']
-            , doc['_source']['attachment']['content']] for doc in topic_paragraphs]
+            , doc['_source']['attachment']['content']] for doc in topic_paragraphs[from_value:to_value]]
 
     file_dataframe = pd.DataFrame(paragraph_list, columns=["نام سند", "متن پاراگراف"])
 
