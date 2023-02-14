@@ -3933,6 +3933,7 @@ def SetMyUserProfile(request):
     email = data["email"]
     phonenumber = data["phonenumber"]
     role = data["role"]
+    expertise_ids = data["expertise"]
 
     username = request.COOKIES.get('username')
     user = User.objects.get(username=username)
@@ -3942,6 +3943,9 @@ def SetMyUserProfile(request):
     if user_email.count() > 0:
         return JsonResponse({"status": "duplicated email"})
     else:
+        User_Expertise.objects.filter(user_id__id=user.id).delete()
+        for e in expertise_ids:
+            User_Expertise.objects.create(experise_id_id=e, user_id_id=user.id)
         if "avatar" in data:
             avatar = data["avatar"]
         else:
