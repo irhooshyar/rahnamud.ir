@@ -37,6 +37,8 @@
 
     <script src="../../static/js/jquery_351/jquery.min.js"></script>
 
+    <script src="../../static/js/CustomAlert.js"></script>
+
     <title>آپلود فایل</title>
     {% include "doc/title_icon.html" %}
     
@@ -111,6 +113,8 @@
         </div>
     </div>
 </div>
+
+<div id="HooshyarAlert"></div>
 
 <script src="../../static/js/logincheck.js"></script>
 
@@ -205,18 +209,18 @@
         }
 
         function completeHandler(event) {
-            alert("با موفقیت آپلود گردید.")
+            HooshyarAlertShow("با موفقیت آپلود گردید.")
           _("status").innerHTML = "با موفقیت آپلود گردید.";
           _("progressBar").value = 0;
         }
 
         function errorHandler(event) {
-            alert("خطایی در آپلود فایل رخ داد.")
+            HooshyarAlertShow("خطایی در آپلود فایل رخ داد.")
           _("status").innerHTML = "خطایی در آپلود فایل رخ داد.";
         }
 
         function abortHandler(event) {
-            alert("خطایی در آپلود فایل رخ داد.")
+            HooshyarAlertShow("خطایی در آپلود فایل رخ داد.")
           _("status").innerHTML = "آپلود قطع شد";
         }
 

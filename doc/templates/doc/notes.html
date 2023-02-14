@@ -81,6 +81,8 @@
         <!--<script type="text/javascript" src="http://l2.io/ip.js?var=myip">
         </script>-->
 
+        <script src="../../static/js/CustomAlert.js"></script>
+
         <meta charset="UTF-8">
 
         <title> یادداشت‌ها</title>
@@ -302,6 +304,9 @@
             <script src="../../static/js/scroll_button_handler.js">
             </script>
         </div>
+
+        <div id="HooshyarAlert"></div>
+
         <!--end container-->
     </body>
 
@@ -988,7 +993,7 @@
                 }
             }).catch(error => {
                 // console.log(error)
-                alert(error)
+                HooshyarAlertShow(error)
             }
             ,)
             stopFullPageBlockUI('تغییر ستاره با موفقیت انجام شد');
