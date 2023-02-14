@@ -3837,7 +3837,7 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
     index_name = standardIndexName(country_obj, Document.__name__)
 
 
-    if with_rahbari_type == 1:
+    if with_rahbari_type == 1 and text != "empty":
         keywords_list = RahbariTypeKeyword.objects.all()
         should_query = {
             'bool': {
