@@ -458,7 +458,7 @@
 
       for (const e of expertise) {
           var tag = "<option value=" + e.id + ">" + e.expertise + "</option>";
-          if (user_expertise.some(ue => ue == e.id)) {
+          if (user_expertise && user_expertise.some(ue => ue == e.id)) {
               tag = "<option value=" + e.id + " selected>" + e.expertise + "</option>";
           }
           document.getElementById("expertise").innerHTML += tag;
