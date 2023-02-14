@@ -132,11 +132,8 @@ def update_doc(request, id, language, ):
         #                                      "DocsParagraphsClustering_AIParagraphTopicLDA_LDAGraphData",
         #                                      host_url)  # AdvanceARIMAExtractor_ ActorTimeSeriesPrediction _DocsSubjectExtractor_DocsLevelExtractor_DocsReferencesExtractor_DocsActorsTimeSeriesDataExtractor_DocsCreateDocumentsListCubeData_DocsCreateSubjectCubeData_DocsCreateVotesCubeData_DocsCreateSubjectStatisticsCubeData_DocsCreateTemplatePanelsCubeData_DocsAnalysisLeadershipSlogan_DocsCreatePrinciplesCubeData_DocCreateBusinessAdvisorCubeData_DocsCreateRegularityLifeCycleCubeData_DocsExecutiveParagraphsExtractor_DocsClauseExtractor_DocsGraphCubeData_DocsCreateMandatoryRegulationsCubeData_DocsExecutiveClausesExtractor_DocsCreateActorInformationStackChartCubeData
 
-
         from scripts.Persian import DocsParagraphVectorExtractor
         DocsParagraphVectorExtractor.apply(folder_name, file)
-
-
 
         # DocsSubjectExtractor2_DocsParagraphsClustering_AIParagraphTopicLDA_LDAGraphData
         # DocsSubjectAreaExtractor.apply(folder_name,file),DocsParagraphsClustering
@@ -667,8 +664,6 @@ def leadership_slogan_analysis(request, id):
     return redirect('zip')
 
 
-
-
 def template_panels_data_import_db(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import StaticDataImportDB
@@ -713,6 +708,7 @@ def rahbari_labels_to_db(request, id):
     StaticDataImportDB.rahbari_labels_to_db(Country)
     return redirect('zip')
 
+
 def document_json_list(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import DocsCreateDocumentsListCubeData
@@ -725,12 +721,6 @@ def docs_general_definitions_extractor(request, id):
     from scripts.Persian import DocsGeneralDefinitionsExtractor
     DocsGeneralDefinitionsExtractor.apply(None, file)
     return redirect('zip')
-
-
-
-
-
-
 
 
 def operators_static_data_to_db(request, id):
@@ -823,8 +813,6 @@ def update_file_name_extention(request, id):
     return redirect('zip')
 
 
-
-
 def regulators_static_import_db(request, id):
     file = get_object_or_404(Country, id=id)
     from scripts.Persian import StaticDataImportDB
@@ -837,8 +825,6 @@ def rahbari_labels_time_series_extractor(request, id):
     from scripts.Persian import RahbariLabelsTimeSeriesExtractor
     RahbariLabelsTimeSeriesExtractor.apply(None, file)
     return redirect('zip')
-
-
 
 
 def ingest_documents_to_index(request, id, language):
@@ -1046,8 +1032,6 @@ def ingest_rahbari_to_sim_index(request, id):
     return redirect('zip')
 
 
-
-
 def rahbari_similarity_calculation(request, id):
     file = get_object_or_404(Country, id=id)
     from es_scripts import RahbariDocsSimilarityCalculation
@@ -1062,8 +1046,6 @@ def paragraphs_similarity_calculation(request, id):
 
     ParagraphsSimilarityCalculation.apply(None, file)
     return redirect('zip')
-
-
 
 
 def RahabriCoLabelsGraph(request, id):
@@ -1124,7 +1106,6 @@ def collective_static_data_to_db(request, id):
     return redirect('zip')
 
 
-
 def create_CUBE_Subject(request, id):
     host_url = request.get_host()
 
@@ -1132,11 +1113,6 @@ def create_CUBE_Subject(request, id):
     from scripts.Persian import DocsCreateSubjectCubeData
     DocsCreateSubjectCubeData.apply(None, file, host_url)
     return redirect('zip')
-
-
-
-
-
 
 
 def delete_doc(request, id, language):
@@ -3295,6 +3271,78 @@ def slogan_stackBased_information_export(request, key, slogan_year, selected_yea
     return JsonResponse({"file_name": file_name})
 
 
+def slogan_gauge_get_information(request, key, curr_page, result_size):
+    index_name = doctic_doc_index
+
+    res_query = {
+        "bool": {
+            "must": [
+                {"range": {"approval_year": {"gte": 1375}}},
+                {"match_phrase": {"attachment.content": key}}
+            ]
+        }
+    }
+
+    from_value = (curr_page - 1) * result_size
+    response = client.search(index=index_name,
+                             _source_includes=["document_id", "name"],
+                             request_timeout=40,
+                             query=res_query,
+                             from_=from_value,
+                             size=result_size,
+                             )
+    result = response['hits']['hits']
+    total_hits = response['hits']['total']['value']
+
+    if total_hits == 10000:
+        total_hits = client.count(body={
+            "query": res_query
+        }, index=index_name)['count']
+
+    response_dict = {
+        'total_hits': total_hits,
+        "curr_page": curr_page,
+        "result": result
+    }
+    return JsonResponse(response_dict)
+
+
+def slogan_gauge_information_export(request, key, curr_page, result_size):
+    index_name = doctic_doc_index
+
+    res_query = {
+        "bool": {
+            "must": [
+                {"range": {"approval_year": {"gte": 1375}}},
+                {"match_phrase": {"attachment.content": key}}
+            ]
+        }
+    }
+
+    from_value = (curr_page - 1) * result_size
+    response = client.search(index=index_name,
+                             _source_includes=["document_id", "name"],
+                             request_timeout=40,
+                             query=res_query,
+                             from_=from_value,
+                             size=result_size,
+                             )
+    result = response['hits']['hits']
+
+    paragraph_list = [doc['_source']['name'] for doc in result]
+
+    result_range = str(from_value) + " تا " + str(from_value + len(result))
+
+    file_dataframe = pd.DataFrame(paragraph_list, columns=["نام سند"])
+
+    file_name = "اسناد حاوی حداقل واژه و دارای کلمه " + key + " از " + result_range + ".xlsx"
+
+    file_path = os.path.join(config.MEDIA_PATH, file_name)
+    file_dataframe.to_excel(file_path, index=False)
+
+    return JsonResponse({"file_name": file_name})
+
+
 def save_topic_label(request, topic_id, username, label):
     result_response = ""
 
@@ -3322,10 +3370,12 @@ def save_topic_label(request, topic_id, username, label):
         "result_response": result_response
     })
 
+
 def CreateEmailCode():
     range_start = 10 ** 3
     range_end = (10 ** 4) - 1
     return randint(range_start, range_end)
+
 
 def confirm_email(user):
     email_code = CreateEmailCode()
@@ -3344,49 +3394,55 @@ def confirm_email(user):
     template += f'http://rahnamud.ir:7074/Confirm-Email/{user.id}/{token}'
     print("template: ", template)
 
+    send_mail(subject='کد تایید ایمیل', message=template, from_email=settings.EMAIL_HOST_USER,
+              recipient_list=[user.email])
 
-    send_mail(subject='کد تایید ایمیل', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[user.email])
-    
+
 def resend_email(request):
     return render(request, 'doc/Resend-Email.html')
+
 
 def resend_email_code(request, email):
     users = User.objects.filter(email=email)
     user = users[0]
     if user.account_acctivation_expire_time < timezone.now() and user.enable == 0:
         confirm_email(user)
-    return JsonResponse({ "status": "OK" })
+    return JsonResponse({"status": "OK"})
+
 
 def email_check(request, user_id, token):
     url_is_valid = False
     try:
         user = User.objects.get(pk=user_id)
-        if (not (user.account_activation_token is None)) and user.account_activation_token == token and user.account_acctivation_expire_time >= timezone.now():
+        if (not (
+                user.account_activation_token is None)) and user.account_activation_token == token and user.account_acctivation_expire_time >= timezone.now():
             url_is_valid = True
     except:
         user_id = ""
 
-    return render(request, 'doc/Confirm-Email.html', { "url_is_valid": url_is_valid, "user_id": user_id, "token": token })
+    return render(request, 'doc/Confirm-Email.html', {"url_is_valid": url_is_valid, "user_id": user_id, "token": token})
+
 
 def user_activation(request, user_id, token, code):
     user = User.objects.get(pk=user_id)
 
-    if (not (user.account_activation_token is None)) and user.account_activation_token == token and user.account_acctivation_expire_time >= timezone.now():
-        print("code: ",code)
+    if (not (
+            user.account_activation_token is None)) and user.account_activation_token == token and user.account_acctivation_expire_time >= timezone.now():
+        print("code: ", code)
         print("user_code: ", user.email_confirm_code)
-        if(user.email_confirm_code == code):
+        if (user.email_confirm_code == code):
             user.account_activation_token = None
             user.enable = 1
             user.save()
-            return JsonResponse({ "status": "OK" })
+            return JsonResponse({"status": "OK"})
         else:
             user.save()
-            return JsonResponse({ "status": "Not OK" })
-    
-        
-    return JsonResponse({ "status": "Not OK" })
+            return JsonResponse({"status": "Not OK"})
 
-def SaveUser(request, firstname, lastname,email, phonenumber, role, username, password, ip, expertise):
+    return JsonResponse({"status": "Not OK"})
+
+
+def SaveUser(request, firstname, lastname, email, phonenumber, role, username, password, ip, expertise):
     user_username = User.objects.filter(username=username)
     user_email = User.objects.filter(email=email)
     if user_username.count() > 0:
@@ -3396,7 +3452,7 @@ def SaveUser(request, firstname, lastname,email, phonenumber, role, username, pa
     else:
         hashed_pwd = make_password(password)
         last_login = datetime.datetime.now()
-        user = User.objects.create(first_name=firstname, last_name=lastname,email=email,
+        user = User.objects.create(first_name=firstname, last_name=lastname, email=email,
                                    role_id=role,
                                    mobile=phonenumber, username=username, password=hashed_pwd, last_login=last_login,
                                    is_super_user=0, is_active=0)
@@ -4088,8 +4144,8 @@ def changeUserState(request, user_id, state):
         """
         template += f'http://rahnamud.ir:707/login/'
         print("template: ", template)
-        send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[accepted_user.email])
-        
+        send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
+                  recipient_list=[accepted_user.email])
 
         return JsonResponse({"status": "accepted"})
     elif state == "rejected":
@@ -4101,8 +4157,8 @@ def changeUserState(request, user_id, state):
         متاسفانه ثبت‌نام شما توسط ادمین رد شده است.
         """
         print("template: ", template)
-        send_mail(subject='عدم تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[accepted_user.email])
-        
+        send_mail(subject='عدم تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
+                  recipient_list=[accepted_user.email])
 
         return JsonResponse({"status": "rejected"})
 
@@ -4451,6 +4507,111 @@ def AILDASubjectChartTopic(request, topic_id):
                          'paragraph_count': paragraph_count,
                          'dominant_subject_name': dominant_subject_name,
                          'correlation_score': correlation_score})
+
+
+def AILDASubjectChartTopicGetInformation(request, topic_id, subject_name, curr_page, result_size):
+    topic_paragraphs = []
+    from_value = (curr_page - 1) * result_size
+    to_value = from_value + result_size
+    temp = AILDAParagraphToTopic.objects.filter(topic__id=topic_id).order_by('-score').values()
+    for record in temp:
+        if len(topic_paragraphs) == curr_page * result_size:
+            break
+        paragraph_id = record['paragraph_id']
+        try:
+            subjects_name = ParagraphsSubject.objects.get(paragraph__id=paragraph_id, version__id=12)
+
+            if subjects_name.subject1_name == subject_name:
+                paragraph = DocumentParagraphs.objects.get(id=paragraph_id)
+                topic_paragraphs.append({"_source": {
+                    "attachment": {
+                        "content": paragraph.text
+                    },
+                    "paragraph_id": paragraph.id,
+                    "document_id": paragraph.document_id.id,
+                    "document_name": paragraph.document_id.name,
+                    # "subject1_name": subjects_name.subject1_name,
+                }})
+                print("ADD", paragraph_id)
+        except:
+            if subject_name == "نامشخص":
+                paragraph = DocumentParagraphs.objects.get(id=paragraph_id)
+                topic_paragraphs.append({"_source": {
+                    "attachment": {
+                        "content": paragraph.text
+                    },
+                    "paragraph_id": paragraph.id,
+                    "document_id": paragraph.document_id.id,
+                    "document_name": paragraph.document_id.name,
+                    # "subject1_name": subjects_name.subject1_name,
+                }})
+                print("ADD", paragraph_id)
+            else:
+                print("ERROR", paragraph_id)
+
+    all_paragraph_count = AIParagraphLDATopic.objects.get(id=topic_id).subjects_list_chart_data_json['data']
+    paragraph_count = 0
+    for item in all_paragraph_count:
+        if item[0] == subject_name:
+            paragraph_count = item[1]
+
+    return JsonResponse({'result': topic_paragraphs[from_value: to_value], 'total_hits': paragraph_count})
+
+
+def AILDASubjectChartTopicGetInformationExport(request, topic_id, subject_name, curr_page, result_size):
+    topic_paragraphs = []
+    from_value = (curr_page - 1) * result_size
+    to_value = from_value + result_size
+    temp = AILDAParagraphToTopic.objects.filter(topic__id=topic_id).order_by('-score').values()
+    for record in temp:
+        if len(topic_paragraphs) == curr_page * result_size:
+            break
+        paragraph_id = record['paragraph_id']
+        try:
+            subjects_name = ParagraphsSubject.objects.get(paragraph__id=paragraph_id, version__id=12)
+
+            if subjects_name.subject1_name == subject_name:
+                paragraph = DocumentParagraphs.objects.get(id=paragraph_id)
+                topic_paragraphs.append({"_source": {
+                    "attachment": {
+                        "content": paragraph.text
+                    },
+                    "paragraph_id": paragraph.id,
+                    "document_id": paragraph.document_id.id,
+                    "document_name": paragraph.document_id.name,
+                    # "subject1_name": subjects_name.subject1_name,
+                }})
+                print("ADD", paragraph_id)
+        except:
+            if subject_name == "نامشخص":
+                paragraph = DocumentParagraphs.objects.get(id=paragraph_id)
+                topic_paragraphs.append({"_source": {
+                    "attachment": {
+                        "content": paragraph.text
+                    },
+                    "paragraph_id": paragraph.id,
+                    "document_id": paragraph.document_id.id,
+                    "document_name": paragraph.document_id.name,
+                    # "subject1_name": subjects_name.subject1_name,
+                }})
+                print("ADD", paragraph_id)
+            else:
+                print("ERROR", paragraph_id)
+
+    result_range = str(from_value) + " تا " + str(from_value + len(topic_paragraphs))
+
+    paragraph_list = [
+        [doc['_source']['document_name']
+            , doc['_source']['attachment']['content']] for doc in topic_paragraphs]
+
+    file_dataframe = pd.DataFrame(paragraph_list, columns=["نام سند", "متن پاراگراف"])
+
+    file_name = "احکام با موضوع " + subject_name + " " + result_range + ".xlsx"
+
+    file_path = os.path.join(config.MEDIA_PATH, file_name)
+    file_dataframe.to_excel(file_path, index=False)
+
+    return JsonResponse({"file_name": file_name})
 
 
 def GetLDAForDocByID(request, document_id):
@@ -4805,7 +4966,6 @@ def GetDocumentById(request, id):
     revoked_size = ""
     revoked_clauses = ""
 
-
     document_actors_chart_data = []
     if document.actors_chart_data != None:
         document_actors_chart_data = document.actors_chart_data['data']
@@ -4902,7 +5062,6 @@ def GetReferences2Doc(request, document1_id, document2_id):
             result_text2 += row["highlight"]["attachment.content"][0] + "\n"
 
     return JsonResponse({'references_from_doc1': result_text1, 'references_from_doc2': result_text2})
-
 
 
 def getUserDeployLogs(request):
@@ -5064,7 +5223,6 @@ def filter_doc_fields(res_query, level_id, subject_id, type_id, approval_referen
         res_query['bool']['filter'].append(type_query)
 
     # ---------------------------------------------------------
-
 
     # ---------------------------------------------------------
     if organization_type_id != '0':

@@ -43,8 +43,7 @@ async function new_prof_slogan_year_changed(year) {
         title: 'توزیع کلیدواژه ها در اسناد حاوی واژه',
         size: "full",
         onClick: (e, data, index) => {
-            console.log(data)
-            console.log(index)
+            click_guage_column(data[index][0])
         }
     })
     create_bars_chart_data(response['year_agg']['approval-year-agg']['buckets'],
@@ -180,7 +179,24 @@ function guage_chart(container_id, options) {
 
         let tooltip = gauge.tooltip();
         tooltip.fontFamily("vazir");
-        tooltip.hAlign('center').format("تعداد: {%value}");
+        tooltip.hAlign('center').format(function (e) {
+            const allDataValue = `تعداد کل اسناد حاوی حداقل واژه: ${all_data}`
+            let returnValue = ""
+            if(e.index >= data.length/2){
+                let dataIndex = e.index - data.length/2
+                const dataIndexValue = data[dataIndex]
+                const dataIndexTitle = names[dataIndex]
+
+               returnValue = `تعداد اسناد حاوی کلمه ${dataIndexTitle}: ${dataIndexValue}` + `\n` + allDataValue
+            }else {
+                const dataIndexValue = data[e.index]
+                const dataIndexTitle = names[e.index]
+
+                returnValue = `تعداد اسناد حاوی کلمه ${dataIndexTitle}: ${dataIndexValue}` + `\n` + allDataValue
+            }
+            return returnValue;
+        });
+
 
         var axis = gauge.axis().radius(100).width(1).fill(null);
         axis
@@ -261,6 +277,74 @@ async function click_stack_based_column(key, slogan_year, selected_year, chart_n
     }
 
     export_link = 'http://' + location.host + "/slogan_stackBased_information_export/" + key + "/" + slogan_year + "/" + selected_year + "/";
+
+    export_configs = {
+        "link": export_link,
+        "btn_id": "ExportExcel_2"
+    }
+
+    highlight_configs = {
+        "parameters": null,
+        "highlight_enabled": false,
+        "custom_function": null
+    }
+
+    modal_configs = {
+        "body_id": "ChartModalBodyText_2",
+        "modal_load_more_btn_id": "LoadMoreDocuments_2",
+        "result_size_container_id": "DocsCount_2",
+        "result_size_message": "سند",
+        "list_type": "ordered",
+        "custom_body_function": null,
+        "body_parameters": null,
+        "link_page": "information",
+
+    }
+
+    segmentation_config = {
+        "parameters": ["احساس بسیار منفی", "بدون ابراز احساسات", "احساس منفی", "احساس خنثی یا ترکیبی از مثبت و منفی", "احساس مثبت", "احساس بسیار مثبت"],
+        "keyword": "sentiment",
+        "enable": false,
+        "aggregation_keyword": "rahbari-sentiment-agg"
+    }
+
+
+    column_interactivity_obj = new ColumnInteractivity("documents",
+        request_configs, export_configs, modal_configs, highlight_configs, segmentation_config)
+
+    result = await column_interactivity_obj.load_content();
+    console.log(result)
+
+    $('#ChartModalBtn_2').click()
+    stopBlockUI('کلیک روی نمودار');
+
+    $('#ExportExcel_2').on('click', async function () {
+        await column_interactivity_obj.download_content();
+    })
+}
+
+async function click_guage_column(key) {
+    startBlockUI("کلیک روی نمودار")
+    const request_link = 'http://' + location.host + "/slogan_gauge_get_information/" + key + "/";
+
+    document.getElementById("ChartModalBodyText_2").innerHTML = ""
+    document.getElementById("ChartModalHeader_2").innerHTML = ""
+
+
+    // set modal header
+    modal_header = "اسناد حاوی کلمه " + key + " از سال 1375"
+    document.getElementById("ChartModalHeader_2").innerHTML = modal_header
+    // define request link without curr_page & search_result_size
+
+    request_configs = {
+        "link": request_link,
+        "search_result_size": SEARCH_RESULT_SIZE,
+        "max_result_window": MAX_RESULT_WINDOW,
+        "data_type": "url_parameters",
+        "form_data": null
+    }
+
+    export_link = 'http://' + location.host + "/slogan_gauge_information_export/" + key + "/";
 
     export_configs = {
         "link": export_link,
