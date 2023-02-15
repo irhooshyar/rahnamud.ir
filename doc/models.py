@@ -1376,7 +1376,14 @@ class ParagraphVector(models.Model):
     class Meta:
         app_label = 'doc'
 
-
+# class DocumentVector(models.Model):
+#     id = models.AutoField(primary_key=True)
+#
+#     document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True)
+#     vector_type = models.ForeignKey(ParagraphVectorType, on_delete=models.CASCADE, null=True)
+#     vector_value = models.JSONField(null=True)
+#     class Meta:
+#         app_label = 'doc'
 
 class DocumentActor(models.Model):
     Individual = 'منفرد'

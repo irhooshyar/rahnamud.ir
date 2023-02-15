@@ -37,13 +37,15 @@ async function new_prof_slogan_year_changed(year) {
     for (let item of Object.keys(response.keyword_repeat)) {
         data.push([item, response.keyword_repeat[item]])
     }
-    guage_chart("word_count_container", {
+    NewGaugeChart("word_count_container", {
         data: data,
         all_data: all_data,
         title: 'توزیع کلیدواژه ها در اسناد حاوی واژه',
+        all_data_tooltip: "تعداد کل اسناد حاوی حداقل واژه",
+        data_tooltip: "اسناد حاوی کلمه",
         size: "full",
-        onClick: (e, data, index) => {
-            click_guage_column(data[index][0])
+        onClick: (e, data, text) => {
+            click_guage_column(text)
         }
     })
     create_bars_chart_data(response['year_agg']['approval-year-agg']['buckets'],
@@ -98,161 +100,6 @@ function create_bars_chart_data(all_year, keyword_all_year) {
 
 
     newStackedColumnChart("doc_count_container", options)
-}
-
-function guage_chart(container_id, options) {
-    const {chartContainerId, chartDownloadId} = newChartContainer(container_id, options);
-    const palette = anychart.palettes.distinctColors();
-
-    palette.items(['#488FB8', '#B8A948', '#8FB848', '#CDC37F', '#CD7F8A', '#B1CD7F', '#CD7FB1', '#7FB1CD', '#7F8ACD', '#CDC37F', '#B1CD7F']);
-
-    let all_data = options.all_data
-    let chart_data = options.data
-
-    if (chart_data.length === 0) {
-        document.getElementById(chartContainerId).innerText = "هیچ داده ای وجود ندارد"
-        return;
-    }
-
-    let names = [];
-    let data = [];
-    for (let item of chart_data) {
-        names.push(item[0])
-        data.push(item[1])
-    }
-    for (let i = 0; i < names.length; i++) {
-        data.push(all_data)
-    }
-
-    var dataSet = anychart.data.set(data);
-    var makeBarWithBar = function (gauge, radius, i, width) {
-        var stroke = null;
-        gauge
-            .label(i)
-            .text(names[i] + ' ' + Math.ceil(((data[i] / all_data) * 100)) + '%') // color: #7c868e
-            .textDirection("rtl")
-            .fontFamily("vazir")
-            .fontColor('#6C757D')
-
-        gauge
-            .label(i)
-            .hAlign('center')
-            .vAlign('middle')
-            .anchor('right-center')
-            .padding(0, 10)
-            .height(width / 2 + '%')
-            .offsetY(radius + '%')
-            .offsetX(0)
-            .fontFamily("vazir");
-
-        gauge
-            .bar(i)
-            .dataIndex(i)
-            .radius(radius)
-            .width(width)
-            .fill(palette.itemAt(i))
-            .stroke(null)
-            .zIndex(5);
-        gauge
-            .bar(i + 100)
-            .dataIndex(i + (data.length / 2))
-            .radius(radius)
-            .width(width)
-            .fill('#F5F4F4')
-            .stroke(stroke)
-            .zIndex(4);
-
-        return gauge.bar(i);
-    };
-
-
-    anychart.onDocumentReady(function () {
-        var gauge = anychart.gauges.circular();
-        gauge.data(dataSet);
-        gauge
-            .fill('#fff')
-            .stroke(null)
-            .padding(0)
-            .margin(100)
-            .startAngle(0)
-            .sweepAngle(270);
-
-        let tooltip = gauge.tooltip();
-        tooltip.fontFamily("vazir");
-        tooltip.hAlign('center').format(function (e) {
-            const allDataValue = `تعداد کل اسناد حاوی حداقل واژه: ${all_data}`
-            let returnValue = ""
-            if(e.index >= data.length/2){
-                let dataIndex = e.index - data.length/2
-                const dataIndexValue = data[dataIndex]
-                const dataIndexTitle = names[dataIndex]
-
-               returnValue = `تعداد اسناد حاوی کلمه ${dataIndexTitle}: ${dataIndexValue}` + `\n` + allDataValue
-            }else {
-                const dataIndexValue = data[e.index]
-                const dataIndexTitle = names[e.index]
-
-                returnValue = `تعداد اسناد حاوی کلمه ${dataIndexTitle}: ${dataIndexValue}` + `\n` + allDataValue
-            }
-            return returnValue;
-        });
-
-
-        var axis = gauge.axis().radius(100).width(1).fill(null);
-        axis
-            .scale()
-            .minimum(0)
-            .maximum(all_data)
-            .ticks({interval: 1})
-            .minorTicks({interval: 1});
-        axis.labels().enabled(false);
-        axis.ticks().enabled(false);
-        axis.minorTicks().enabled(false);
-
-        const itration = data.length / 2
-        let radius = 100;
-        let width = 75 / itration
-        if (itration === 1) width = 55
-        for (let i = 0; i < itration; i++) {
-            makeBarWithBar(gauge, radius, i, width);
-            radius = radius - (100 / itration)
-        }
-        gauge.margin(50);
-
-        if (options.onClick) {
-            gauge.listen("mouseOver", function () {
-                document.body.style.cursor = "pointer";
-            });
-            gauge.listen("mouseOut", function () {
-                document.body.style.cursor = "auto";
-            });
-
-            gauge.listen('Click', (e) => {
-                const click_tag = e.domTarget.tag;
-                let index = click_tag["index"]
-                if (index >= options.data.length) {
-                    index = index - options.data.length
-                }
-                options.onClick(e, options.data, index)
-            })
-        }
-
-        // gauge
-        //     .title()
-        //     .text(
-        //         options.title
-        //     )
-        //     .useHtml(true);
-        // gauge
-        //     .title()
-        //     .enabled(true)
-        //     .hAlign('center')
-        //     .padding(0)
-        //     .margin([0, 0, 20, 0]);
-
-        gauge.container(chartContainerId);
-        gauge.draw();
-    });
 }
 
 async function click_stack_based_column(key, slogan_year, selected_year, chart_name) {

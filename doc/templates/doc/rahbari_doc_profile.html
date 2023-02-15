@@ -165,6 +165,14 @@
                     نمایش موضوعی
                 </button>
 
+                <button type="button" id="document_adaption_btn"  onclick="showSimilarity()"
+                        class="btn d-flex float-right  mr-2">
+                    <div class="spinner-border text-light" role="status">
+                        <span class="sr-only">درحال جستجو ...</span>
+                    </div>
+                    انطباق‌سنجی
+                </button>
+
 
                 <div dir="rtl" class="dropdown float-right mr-2">
                     <button id="document_download" class="btn dropdown-toggle float-right text-right" type="button"
@@ -222,7 +230,12 @@
                     aria-controls="references_graph_pane" aria-selected="false">کنشگران
             </button>
         </li>
-
+        <li class="nav-item float-right" role="presentation">
+            <button id="find_similarity_tab" class="nav-link" data-bs-toggle="pill"
+                    data-bs-target="#find_similarity_pane" type="button" role="tab" aria-controls="find_similarity_pane"
+                    aria-selected="false"> مشابهت یابی ظاهری
+            </button>
+        </li>
         <li class="nav-item float-right" role="presentation">
             <button id="user_comments" class="nav-link" data-bs-toggle="pill" data-bs-target="#user_comments_pane"
                     type="button" role="tab" aria-controls="user_comments_pane" aria-selected="false">نظرات
@@ -235,6 +248,7 @@
                 شخصی
             </button>
         </li>
+
         {#        <li class="nav-item float-right" role="presentation">#}
         {#            <button id="references_table_tab" class="nav-link" data-bs-toggle="pill"#}
         {#                    data-bs-target="#references_table_pane" type="button" role="tab"#}
@@ -421,6 +435,21 @@
             </div>
         </div>
 
+        <div class="tab-pane fade float-right w-100" id="find_similarity_pane" role="tabpanel"
+             aria-labelledby="find_similarity_tab">
+
+            <!-- Search Result Pane -->
+            <div dir="rtl" id="search_result_pane" class="tab-pane w-100 fade show active float-right"
+                 role="tabpanel" aria-labelledby="search_result_tab">
+                <!-- Search Result table -->
+                <div class="table-responsive search_result_table mt-4">
+                    <table class="table table-striped SimilarityTable" style="min-height: 200px;" id="SimilarityTable">
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
         {#        <div class="tab-pane fade float-right w-100 " id="references_table_pane" role="tabpanel"#}
         {#             aria-labelledby="references_table_tab" dir="rtl">#}
         {#            <div class="mt-4">#}
@@ -627,10 +656,98 @@
                     <input type="number" id="ColumnModalPaginationInput_2" min="1" max="1" value="1"
                            class="form-select text-right float-right d-none">
 
-
+                <button id="ExportExcel_2" class="btn btn-primary" disabled>
+                    <i class="fa fa-download"></i>
+                    دانلود اسناد
+                </button>
                     <button id="ExportExcel_2" class="btn btn-primary"><i class="fa fa-download"></i> خروجی
                         اکسل
                     </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <button type="button" id="document_adaption_modal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
+            data-bs-target="#SimilaritiesDetail"></button>
+    <div class="modal fade" style="padding: 0" id="SimilaritiesDetail">
+        <div id="modal_dialog" class="modal-dialog modal-fullscreen  modal-dialog-scrollable "
+            style="max-height: 100vh !important;">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div style="direction: rtl !important;" class="modal-header">
+                    <h5 id="SimilaritiesDetail_ModalHeader" class="modal-title text-center w-100">
+
+                    </h5>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div id="SimilaritiesDetail_Body" class="modal-body bg-light text-justify">
+                    <div class="row w-100 ">
+
+                        <div id="label_sim_container" class="col-4 float-right">
+                            <h6 id="label_sim_header" class="w-100 float-right text-center m-auto fw-bold text-primary">
+                                شباهت براساس برچسب‌ها <span class="text-secondary">(نسخه آزمایشی)</span></h6>
+
+                            <div class="table-responsive search_result_table mt-4">
+                                <table class="table table-striped LabelSimSearchTable" style="min-height: 200px;"
+                                    id="LabelSimSearchTable">
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="para_sim_container" class="col-4 float-right">
+                            <h6 id="para_sim_header" class="w-100 float-right text-center m-auto fw-bold text-primary">
+                                شباهت پاراگرافی <span class="text-secondary">(نسخه آزمایشی)</span></h6>
+
+                            <div class="table-responsive search_result_table mt-4">
+                                <table class="table table-striped ParaSimSearchTable" style="min-height: 200px;"
+                                    id="ParaSimSearchTable">
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="title_sim_container" class="col-4 float-right">
+                            <h6 id="title_sim_header" class="w-100 float-right text-center m-auto fw-bold text-primary">
+                                شباهت براساس عنوان اسناد <span class="text-secondary">(نسخه آزمایشی)</span></h6>
+
+                            <div class="table-responsive search_result_table mt-4">
+                                <table class="table table-striped TitleSimSearchTable" style="min-height: 200px;"
+                                    id="TitleSimSearchTable">
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div id="modal_footer" class="modal-footer">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="LabelSimModal">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div style="direction: rtl !important;" class="modal-header">
+                    <h6 id="LabelSimModalHeader" class="modal-title w-100">عنوان</h6>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div id="LabelSimModalBody" class="modal-body text-justify">
+                </div>
+
+                <!-- Modal footer -->
+                <div dir="rtl" class="modal-footer">
                 </div>
 
             </div>
@@ -644,8 +761,10 @@
 </body>
 <script src="../../static/js/rahbari_doc_profile/rahbari_document_profile_statistic.js"></script>
 <script src="../../static/js/rahbari_doc_profile/rahbari_doc_profile.js"></script>
+<script src="../../static/js/rahbari_doc_profile/rahbari_document_actors.js"></script>
+<script src="../../static/js/rahbari_doc_profile/rahbari_doc_ES_similarity.js"></script>
+<script src="../../static/js/rahbari_doc_profile/adaption.js"></script>
 {#<script src="../../static/js/rahbari_doc_profile/rahbari_document_real_person.js"></script>#}
 {#<script src="../../static/js/rahbari_doc_profile/rahbari_document_locations.js"></script>#}
-<script src="../../static/js/rahbari_doc_profile/rahbari_document_actors.js"></script>
 {#<script src="../../static/js/rahbari_doc_profile/rahbari_document_summary.js"></script>#}
 </html>

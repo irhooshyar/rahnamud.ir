@@ -337,7 +337,10 @@
                 <input type="number" id="ColumnModalPaginationInput_2" min="1" max="1" value="1"
                        class="form-select text-right float-right d-none">
 
-
+                <button id="ExportExcel_2" class="btn btn-primary" disabled>
+                    <i class="fa fa-download"></i>
+                    دانلود اسناد
+                </button>
                 <button id="ExportExcel_2" class="btn btn-primary"><i class="fa fa-download"></i> خروجی
                     اکسل
                 </button>
@@ -566,13 +569,11 @@
             title,
             yAxisTitle,
             xAxisTitle,
-            onClick: async function (event, data) {
+            zero_to_unknown: true,
+            rotate_x_labels: true,
+            onClick: async function (event, data, text) {
 
                 document.getElementById("ChartModalText").innerHTML = ""
-
-                const click_tag = event.domTarget.tag;
-                const index = click_tag["index"]
-                const text = data.row(index)[0];
                 const column_name = text;
 
                 let filtered_result = []
@@ -700,7 +701,7 @@
                     list_of_docId += doc["document_id"] + "_"
                 }
 
-                filtered_result_tag = "<ol start='1'>" + filtered_result_tag + "</ol>"
+                filtered_result_tag = "<h6 class='text-secondary'>" + `${filtered_result.length} سند` + "</h6>" + "<ol start='1'>" + filtered_result_tag + "</ol>"
                 document.getElementById("ChartModalText").innerHTML = filtered_result_tag
 
                 stopFullPageBlockUI('کلیک روی نمودار')
@@ -740,6 +741,10 @@
             }
 
             newDoughnutChart(container, options);
+        } else if (container === "level_container") {
+            newDoughnutChart(container, options);
+        } else if (container === "chart_container1" || container === "chart_container2" || container === "chart_container3") {
+            newLineChart(container, options)
         } else {
             newBarChart(container, options)
         }
