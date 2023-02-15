@@ -132,16 +132,16 @@ def update_doc(request, id, language, ):
         #                                      "DocsParagraphsClustering_AIParagraphTopicLDA_LDAGraphData",
         #                                      host_url)  # AdvanceARIMAExtractor_ ActorTimeSeriesPrediction _DocsSubjectExtractor_DocsLevelExtractor_DocsReferencesExtractor_DocsActorsTimeSeriesDataExtractor_DocsCreateDocumentsListCubeData_DocsCreateSubjectCubeData_DocsCreateVotesCubeData_DocsCreateSubjectStatisticsCubeData_DocsCreateTemplatePanelsCubeData_DocsAnalysisLeadershipSlogan_DocsCreatePrinciplesCubeData_DocCreateBusinessAdvisorCubeData_DocsCreateRegularityLifeCycleCubeData_DocsExecutiveParagraphsExtractor_DocsClauseExtractor_DocsGraphCubeData_DocsCreateMandatoryRegulationsCubeData_DocsExecutiveClausesExtractor_DocsCreateActorInformationStackChartCubeData
 
-        from scripts.Persian import DocsParagraphVectorExtractor
-        DocsParagraphVectorExtractor.apply(folder_name, file)
+        # from scripts.Persian import DocsParagraphVectorExtractor
+        # DocsParagraphVectorExtractor.apply(folder_name, file)
 
         # DocsSubjectExtractor2_DocsParagraphsClustering_AIParagraphTopicLDA_LDAGraphData
         # DocsSubjectAreaExtractor.apply(folder_name,file),DocsParagraphsClustering
         # AIParagraphTopicLDA_LDAGraphData-DocsActorsExtractor
         # DocsParagraphsClusteringCubeData,ClusteringGraphData
 
-        # from scripts.Persian import DocsSubjectExtractor2
-        # DocsSubjectExtractor2.apply.after_response(folder_name, file)
+        from scripts.Persian import DocsSubjectExtractor2
+        DocsSubjectExtractor2.apply.after_response(folder_name, file)
 
         # from scripts.Persian import DocProvisionsFullProfileAnalysis
         # DocProvisionsFullProfileAnalysis.apply.after_response(folder_name, file)
@@ -1519,7 +1519,7 @@ def forgot_password(request):
 
 
 def forgot_password_by_email(request, email):
-    users = User.objects.filter(email=email)
+    users = User.objects.filter(email=email, is_active=1)
     if len(users) == 0:
         return JsonResponse({"status": "OK"})
 
@@ -1535,6 +1535,8 @@ def forgot_password_by_email(request, email):
     در صورتی که قصد بازیابی ندارید این پیام را نادیده بگیرید.
     """
     template += f'http://rahnamud.ir:7074/reset-password/{user.id}/{token}'
+    #template += f'http://127.0.0.1:8000/reset-password/{user.id}/{token}'
+
 
     send_mail(
         subject='بازیابی کلمه عبور',
@@ -3381,23 +3383,23 @@ def CreateEmailCode():
 
 def confirm_email(user):
     email_code = CreateEmailCode()
-
     token = get_random_string(length=50)
     user.account_activation_token = token
     user.account_acctivation_expire_time = datetime.datetime.now() + datetime.timedelta(days=2)
     user.email_confirm_code = email_code
     user.save()
 
+    send_email(user, email_code, token)
+
+def send_email(user, email_code, token):
     template = f"""
-    لطفا برای تایید ثبت نام خود روی لینک زیر کلیک کنید. 
-    دقت فرمایید که مهلت استفاده از این کد، "دو روز" است و در صورت منقضی شدن لینک، باید مجددا وارد بخش ثبت‌نام سامانه شوید و روی لینک ارسال مجدد کد تایید، کلیک فرمایید. 
+    لطفا برای تایید ثبت نام خود، کد تایید ایمیل را وارد نمایید.
+    دقت فرمایید که مهلت استفاده از این کد، "دو روز" است و در صورت منقضی شدن لینک، باید مجددا وارد بخش ثبت‌نام سامانه شوید و برای دریافت کد جدید، روی لینک ارسال مجدد کد تایید، کلیک فرمایید. 
     کد تایید ایمیل: {email_code}
     """
-    template += f'http://rahnamud.ir:7074/Confirm-Email/{user.id}/{token}'
-    print("template: ", template)
 
-    send_mail(subject='کد تایید ایمیل', message=template, from_email=settings.EMAIL_HOST_USER,
-              recipient_list=[user.email])
+    template += f'http://rahnamud.ir:7074/Confirm-Email/{user.id}/{token}'
+    #template += f'http://127.0.0.1:8000/Confirm-Email/{user.id}/{token}'
 
 
 def resend_email(request):
@@ -3409,7 +3411,9 @@ def resend_email_code(request, email):
     user = users[0]
     if user.account_acctivation_expire_time < timezone.now() and user.enable == 0:
         confirm_email(user)
-    return JsonResponse({"status": "OK"})
+    elif user.account_acctivation_expire_time > timezone.now() and user.enable == 0:
+        send_email(user, user.email_confirm_code, user.account_activation_token)
+    return JsonResponse({ "status": "OK" })
 
 
 def email_check(request, user_id, token):
@@ -3436,7 +3440,13 @@ def user_activation(request, user_id, token, code):
             user.account_activation_token = None
             user.enable = 1
             user.save()
-            return JsonResponse({"status": "OK"})
+
+            template = f"""
+            ثبت‌نام شما با موفقیت انجام شد. تایید شما توسط ادمین، بررسی خواهد شد. نتیجه‌ی بررسی ادمین، در ایمیل، برای شما ارسال می‌شود.
+            """
+            send_mail(subject='عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[user.email])
+            return JsonResponse({ "status": "OK" })
+
         else:
             user.save()
             return JsonResponse({"status": "Not OK"})
@@ -3837,7 +3847,8 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
     country_obj = Country.objects.get(id=country_id)
     index_name = standardIndexName(country_obj, Document.__name__)
 
-    if with_rahbari_type == 1:
+    if with_rahbari_type == 1 and text != "empty":
+
         keywords_list = RahbariTypeKeyword.objects.all()
         should_query = {
             'bool': {
@@ -3933,6 +3944,7 @@ def SetMyUserProfile(request):
     email = data["email"]
     phonenumber = data["phonenumber"]
     role = data["role"]
+    expertise_ids = data["expertise"]
 
     username = request.COOKIES.get('username')
     user = User.objects.get(username=username)
@@ -3942,6 +3954,9 @@ def SetMyUserProfile(request):
     if user_email.count() > 0:
         return JsonResponse({"status": "duplicated email"})
     else:
+        User_Expertise.objects.filter(user_id__id=user.id).delete()
+        for e in expertise_ids:
+            User_Expertise.objects.create(experise_id_id=e, user_id_id=user.id)
         if "avatar" in data:
             avatar = data["avatar"]
         else:
@@ -4140,9 +4155,10 @@ def changeUserState(request, user_id, state):
         accepted_user.save()
 
         template = f"""
-        ثبت‌نام شما با موفقیت انجام شده است. تایید شما توسط ادمین انجام شد. هم‌اکنون، می‌توانید وارد سامانه شوید.
+        تایید شما توسط ادمین انجام شد. هم‌اکنون، می‌توانید وارد سامانه شوید.
         """
         template += f'http://rahnamud.ir:707/login/'
+        #template += f'http://127.0.0.1:8000/login/'
         print("template: ", template)
         send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
                   recipient_list=[accepted_user.email])
@@ -4154,7 +4170,7 @@ def changeUserState(request, user_id, state):
         accepted_user.save()
 
         template = f"""
-        متاسفانه ثبت‌نام شما توسط ادمین رد شده است.
+        متاسفانه تایید شما توسط ادمین رد شده است.
         """
         print("template: ", template)
         send_mail(subject='عدم تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,

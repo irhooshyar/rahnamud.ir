@@ -615,6 +615,8 @@
     <link rel="stylesheet" href="../../static/styles/loader.css">
     <script src="../../static/js/column.js"></script>
     <script src="../../static/js/ChartColumnInteractivity.js"></script>
+    <script src="../../static/js/zipDownload/jszip.min.js"></script>
+    <script src="../../static/js/zipDownload/FileSaver.min.js"></script>
 
     <script>
         TABLE_INFO = []
@@ -631,7 +633,7 @@
         initSearchableSelects();
         init()
 
-
+        SearchResultValue = []
         const COLUMNS = {
             "rahbari_type": 'فرامین رهبری',
             "rahbari_date": 'تاریخ',
@@ -845,10 +847,13 @@
             if (text === "empty")
                 detail_btn = false
 
+            console.log("*********", documents_information_result)
+            SearchResultValue = documents_information_result
+
             for (let doc of documents_information_result) {
                 const doc_id = doc['_source']['document_id']
                 var doc_name = doc['_source']['name']
-                const doc_file_name = doc['_source']['document_file_name']
+                const doc_file_name = doc['_source']['raw_file_name']
                 const type = doc['_source']['type']
                 const rahbari_date = doc['_source']['rahbari_date']
                 const rahbari_year = doc['_source']['rahbari_year'] !== 0 ? doc['_source']['rahbari_year'] : 'نامشخص'
@@ -1272,7 +1277,7 @@
 
         }
 
-
+        
         async function downloadFiles(file_name_list, save_file_name) {
             startFullPageBlockUI()
             const country_id = document.getElementById('country').value
@@ -1293,7 +1298,7 @@
             }
 
             for (const document of file_name_list) {
-                const document_name = document["_source"]["document_file_name"] + extension
+                const document_name = document["_source"]["raw_file_name"] + extension
                 const path = 'http://' + location.host + '/media/data/' + country_folder + '\\' + document_name;
 
                 await fetch(path)

@@ -167,7 +167,7 @@ async function ShowDocumentContent() {
     const document_id = document.getElementById("document").value
     // disable show button before choosing a document
     if (!document_id || document_id == '0') {
-        alert('لطفا یک سند را انتخاب نمایید.')
+        HooshyarAlertShow('لطفا یک سند را انتخاب نمایید.')
         return
     }
     $('#documentContent').modal('show');
@@ -208,7 +208,7 @@ async function ShowDocumentSubject() {
     const document_id = document.getElementById("document").value
     // disable show button before choosing a document
     if (!document_id || document_id == '0') {
-        alert('لطفا یک سند را انتخاب نمایید.')
+        HooshyarAlertShow('لطفا یک سند را انتخاب نمایید.')
         return
     }
     $('#subjectContent').modal('show');
@@ -249,7 +249,7 @@ async function generatePDF() {
     const document_id = document.getElementById("document").value
     // disable show button before choosing a document
     if (!document_id || document_id == '0') {
-        alert('لطفا یک سند را انتخاب نمایید.');
+        HooshyarAlertShow('لطفا یک سند را انتخاب نمایید.');
         return;
     }
     const request_link = 'http://' + location.host + "/GetDocumentContent/" + document_id + "/";
