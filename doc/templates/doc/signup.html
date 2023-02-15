@@ -96,9 +96,6 @@
                         <div class="mb-3 d-grid gap-2 col-6 mx-auto">
                             <button class="btn btn-primary" type="submit">ثبت نام</button>
                         </div>
-                        <div class="mb-2" id="messages"><span style="color: red">در صورتی که فرم ثبت‌نام را پر کردید و لینک ایمیل شده برای شما منقضی شده است،
-                            بر روی لینک زیر کلیک کنید و ایمیل خود را مجددا وارد کنید.<br /> 
-                            کد تایید جدید، مجددا برای شما ایمیل خواهد شد.</span></div>
                             <p class="text-center mb-3"><a href="/resend-email/"  class="text-decoration-none">ارسال مجدد کد تایید</a></p>
                         <div>
                             <hr>
@@ -176,7 +173,7 @@
                 messages.classList.add("text-danger")
             }
             else if (response.status === "duplicated email") {
-                messages.innerText = "کاربر با ایمیل وارد شده از قبل در سامانه وجود دارد. کد تایید به شما با موضوع 'کد تایید ایمیل' ایمیل شده است. درصورتی که لینک ارسال شده، منقضی شده است؛ بر روی لینک ارسال مجدد کد تایید کلیک فرمایید."
+                messages.innerText = "کاربر با ایمیل وارد شده از قبل در سامانه وجود دارد. کد تایید به شما با موضوع 'کد تایید ایمیل' ایمیل شده است. درصورتی که لینک ارسال نشده یا از زمان انقضای آن گذشته است؛ بر روی لینک ارسال مجدد کد تایید، کلیک فرمایید."
                 messages.classList.add("text-danger")
             }
             if (response.status === "OK") {
