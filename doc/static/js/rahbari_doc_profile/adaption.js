@@ -1,5 +1,5 @@
 async function DetailFunction2(document_id, document_name) {
-    startBlockUI();
+
     /* Title Text */
     const src_document_link = 'http://' + location.host + "/document_profile/?id=" + document_id;
     let src_document_tag = "<a class='mt-2' target='blank' href='" + src_document_link + "'>" + document_name + "</a>";
@@ -34,14 +34,11 @@ async function DetailFunction2(document_id, document_name) {
 
     /********** TitleSimSearchTable *****************/
 
-    startBlockUI('TitleSimSearchTable');
     country_id = document.getElementById("country").value;
     request_link = 'http://' + location.host + "/GetDoticSimDocument_ByTitle/" + document_name + '/';
     response = await fetch(request_link).then(response => response.json());
     result_doc_list = response['result_doc_list']
     await showDetailsDataExact(result_doc_list, document_id, document_name, "TitleSimSearchTable")
-
-    stopBlockUI()
 
 }
 

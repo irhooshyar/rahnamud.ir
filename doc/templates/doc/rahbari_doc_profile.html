@@ -164,8 +164,8 @@
                     نمایش موضوعی
                 </button>
 
-                <button type="button" id="document_adaption_btn" data-bs-toggle="modal" onclick="showSimilarity()"
-                        class="btn d-flex float-right  mr-2" data-bs-target="#SimilaritiesDetail">
+                <button type="button" id="document_adaption_btn"  onclick="showSimilarity()"
+                        class="btn d-flex float-right  mr-2">
                     <div class="spinner-border text-light" role="status">
                         <span class="sr-only">درحال جستجو ...</span>
                     </div>
@@ -655,7 +655,10 @@
                     <input type="number" id="ColumnModalPaginationInput_2" min="1" max="1" value="1"
                            class="form-select text-right float-right d-none">
 
-
+                <button id="ExportExcel_2" class="btn btn-primary" disabled>
+                    <i class="fa fa-download"></i>
+                    دانلود اسناد
+                </button>
                     <button id="ExportExcel_2" class="btn btn-primary"><i class="fa fa-download"></i> خروجی
                         اکسل
                     </button>
@@ -665,6 +668,8 @@
         </div>
     </div>
 
+    <button type="button" id="document_adaption_modal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
+            data-bs-target="#SimilaritiesDetail"></button>
     <div class="modal fade" style="padding: 0" id="SimilaritiesDetail">
         <div id="modal_dialog" class="modal-dialog modal-fullscreen  modal-dialog-scrollable "
             style="max-height: 100vh !important;">

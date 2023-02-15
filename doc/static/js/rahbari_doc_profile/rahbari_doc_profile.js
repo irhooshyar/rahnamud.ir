@@ -303,12 +303,17 @@ async function generatePDF() {
     UserLog(form_data)
 }
 
-function showSimilarity(){
+async function showSimilarity() {
+    startBlockUI();
     const document_id = document.getElementById("document").value
     const document_name = document.getElementById('document_select').title
 
-    DetailFunction2(document_id, document_name)
+    await DetailFunction2(document_id, document_name)
+    $("#document_adaption_modal_btn").click()
+    stopBlockUI()
+
 }
+
 // async function DownloadLinkSet() {
 //     const country_id = document.getElementById("country").value;
 //     let request_link = 'http://' + location.host + "/GetCountryById/" + country_id + "/";
