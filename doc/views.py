@@ -132,16 +132,16 @@ def update_doc(request, id, language, ):
         #                                      "DocsParagraphsClustering_AIParagraphTopicLDA_LDAGraphData",
         #                                      host_url)  # AdvanceARIMAExtractor_ ActorTimeSeriesPrediction _DocsSubjectExtractor_DocsLevelExtractor_DocsReferencesExtractor_DocsActorsTimeSeriesDataExtractor_DocsCreateDocumentsListCubeData_DocsCreateSubjectCubeData_DocsCreateVotesCubeData_DocsCreateSubjectStatisticsCubeData_DocsCreateTemplatePanelsCubeData_DocsAnalysisLeadershipSlogan_DocsCreatePrinciplesCubeData_DocCreateBusinessAdvisorCubeData_DocsCreateRegularityLifeCycleCubeData_DocsExecutiveParagraphsExtractor_DocsClauseExtractor_DocsGraphCubeData_DocsCreateMandatoryRegulationsCubeData_DocsExecutiveClausesExtractor_DocsCreateActorInformationStackChartCubeData
 
-        from scripts.Persian import DocsParagraphVectorExtractor
-        DocsParagraphVectorExtractor.apply(folder_name, file)
+        # from scripts.Persian import DocsParagraphVectorExtractor
+        # DocsParagraphVectorExtractor.apply(folder_name, file)
 
         # DocsSubjectExtractor2_DocsParagraphsClustering_AIParagraphTopicLDA_LDAGraphData
         # DocsSubjectAreaExtractor.apply(folder_name,file),DocsParagraphsClustering
         # AIParagraphTopicLDA_LDAGraphData-DocsActorsExtractor
         # DocsParagraphsClusteringCubeData,ClusteringGraphData
 
-        # from scripts.Persian import DocsSubjectExtractor2
-        # DocsSubjectExtractor2.apply.after_response(folder_name, file)
+        from scripts.Persian import DocsSubjectExtractor2
+        DocsSubjectExtractor2.apply.after_response(folder_name, file)
 
         # from scripts.Persian import DocProvisionsFullProfileAnalysis
         # DocProvisionsFullProfileAnalysis.apply.after_response(folder_name, file)
