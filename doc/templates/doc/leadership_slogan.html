@@ -566,13 +566,9 @@
             title,
             yAxisTitle,
             xAxisTitle,
-            onClick: async function (event, data) {
+            onClick: async function (event, data, text) {
 
                 document.getElementById("ChartModalText").innerHTML = ""
-
-                const click_tag = event.domTarget.tag;
-                const index = click_tag["index"]
-                const text = data.row(index)[0];
                 const column_name = text;
 
                 let filtered_result = []
@@ -700,7 +696,7 @@
                     list_of_docId += doc["document_id"] + "_"
                 }
 
-                filtered_result_tag = "<ol start='1'>" + filtered_result_tag + "</ol>"
+                filtered_result_tag = "<h6 class='text-secondary'>" + `${filtered_result.length} سند` + "</h6>" +"<ol start='1'>" + filtered_result_tag + "</ol>"
                 document.getElementById("ChartModalText").innerHTML = filtered_result_tag
 
                 stopFullPageBlockUI('کلیک روی نمودار')
@@ -740,8 +736,10 @@
             }
 
             newDoughnutChart(container, options);
-        } else {
-            newBarChart(container, options)
+        } else if (container === "level_container"){
+           newDoughnutChart(container, options);
+        }else{
+             newBarChart(container, options)
         }
     }
 

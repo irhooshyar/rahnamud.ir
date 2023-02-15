@@ -302,11 +302,11 @@
 
                     <div class="row mt-4 w-100 flex-row-reverse justify-content-around mx-0 px-0">
 
-                        <div id="type_container" chart-height="750px" class="half">
+                        <div id="type_container" chart-height="400px" class="half">
                         </div>
 
 
-                        <div id="year_container" chart-height="750px" class="half">
+                        <div id="year_container" chart-height="400px" class="half">
                         </div>
 
 
@@ -933,11 +933,13 @@
                 xAxisTitle,
                 title,
                 yAxisTitle: "تعداد سند",
-                onClick: async function (event, data) {
+                zero_to_unknown:true,
+                rotate_x_labels:true,
+                onClick: async function (event, data, text) {
 
-                    const click_tag = event.domTarget.tag;
-                    const index = click_tag["index"]
-                    const text = data.row(index)[0];
+                    {#const click_tag = event.domTarget.tag;#}
+                    {#const index = click_tag["index"]#}
+                    {#const text = data.row(index)[0];#}
                     const best_result_count = documents_information_result.length
 
                     let filtered_result = []
@@ -946,17 +948,16 @@
                     await GetClickedColumnDocuments(container, text)
                     $("#ChartModalBtn_2").click();
 
-
-
-
                 }
-
-
-
-
             };
 
-            newBarChart(container, options)
+             if (container === "year_container") {
+                newLineChart(container, options)
+            } else if (container === "type_container") {
+                newDoughnutChart(container, options)
+            } else {
+                newBarChart(container, options)
+            }
 
         }
 

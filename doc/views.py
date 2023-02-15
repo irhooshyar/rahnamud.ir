@@ -2056,10 +2056,13 @@ def GetAffinityLabels_ByLabelName(request, label_name):
     index = 1
     table_data = []
 
+    label_list = []
+
     for row in result_labels:
         source_label = row['source_label']
         target_label = row['target_label']
         common_document_count = row['common_document_count']
+        label_list.extend(row['common_document_list'].split(","))
 
         other_label = ''
 
@@ -2085,7 +2088,7 @@ def GetAffinityLabels_ByLabelName(request, label_name):
         index += 1
         table_data.append(table_row)
 
-    return JsonResponse({"table_data": table_data})
+    return JsonResponse({"table_data": table_data, "all_data": len(set(label_list))})
 
 
 def GetAllNotesInTimeRange(request, username, time_start, time_end):
@@ -2880,7 +2883,6 @@ def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRul
             if search_type == 'and':
                 search_type = 'or'
             res_query = boolean_search_text(res_query, place, text, search_type, False)
-
 
     if isRule:
         keywords_list = RahbariTypeKeyword.objects.all()
@@ -3832,10 +3834,8 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
         else:
             res_query = boolean_search_text(res_query, place, text, search_type, ALL_FIELDS)
 
-
     country_obj = Country.objects.get(id=country_id)
     index_name = standardIndexName(country_obj, Document.__name__)
-
 
     if with_rahbari_type == 1:
         keywords_list = RahbariTypeKeyword.objects.all()
@@ -6876,7 +6876,6 @@ def GetActorsPararaphsByDocumentId(request, document_id):
 
 def GetBM25Similarity(request, document_id):
     sim_docs = []
-    # index_name = Document.objects.get(id = document_id).country_id.name.replace(' ','_')
     country_obj = Document.objects.get(id=document_id).country_id
     index_name = standardIndexName(country_obj, Document.__name__)
 
@@ -6898,7 +6897,7 @@ def GetBM25Similarity(request, document_id):
     }
 
     response = client.search(index=index_name,
-                             _source_includes=['document_id', 'name', 'approval_date', 'approval_reference_name'],
+                             _source_includes=['document_id', 'name', 'approval_date', 'subject_name'],
                              request_timeout=40,
                              query=sim_query
                              )

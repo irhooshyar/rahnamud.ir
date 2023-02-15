@@ -107,6 +107,7 @@ async function init() {
         document.getElementById("document_download").disabled = true;
         document.getElementById("pdf_download").disabled = true;
         document.getElementById("document_search").disabled = true;
+        document.getElementById("document_adaption_btn").disabled = true;
         document.getElementById("document_subject_btn").disabled = true;
 
         document.getElementById("document_select").disabled = true;
@@ -140,6 +141,7 @@ async function ShowResult() {
     document.getElementById("document_download").disabled = false;
     document.getElementById("pdf_download").disabled = false;
     document.getElementById("document_search").disabled = false;
+    document.getElementById("document_adaption_btn").disabled = false;
     document.getElementById("document_subject_btn").disabled = false;
 
     getDocumentFullProfileInfo(country_id, document_id)
@@ -301,6 +303,12 @@ async function generatePDF() {
     UserLog(form_data)
 }
 
+function showSimilarity(){
+    const document_id = document.getElementById("document").value
+    const document_name = document.getElementById('document_select').title
+
+    DetailFunction2(document_id, document_name)
+}
 // async function DownloadLinkSet() {
 //     const country_id = document.getElementById("country").value;
 //     let request_link = 'http://' + location.host + "/GetCountryById/" + country_id + "/";
@@ -511,6 +519,7 @@ async function SelectDocumentFunction(document_id) {
     document.getElementById("document_subject").innerHTML = response['subject']
     // GetTextSummary()
     ShowResult();
+    BM25Similarity()
     find_rahbari_document_actors(document_id)
 }
 
