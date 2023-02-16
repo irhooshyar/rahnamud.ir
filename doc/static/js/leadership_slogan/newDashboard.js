@@ -41,7 +41,7 @@ async function new_prof_slogan_year_changed(year) {
         data: data,
         all_data: all_data,
         title: 'توزیع کلیدواژه ها در اسناد حاوی واژه',
-        all_data_tooltip: "تعداد کل اسناد حاوی حداقل واژه",
+        all_data_tooltip: "اسناد حاوی حداقل واژه",
         data_tooltip: "اسناد حاوی کلمه",
         size: "full",
         onClick: (e, data, text) => {
