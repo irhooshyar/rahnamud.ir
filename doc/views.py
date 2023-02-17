@@ -1559,8 +1559,6 @@ def forgot_password_by_email(request, email):
     در صورتی که قصد بازیابی ندارید این پیام را نادیده بگیرید.
     """
     template += f'http://rahnamud.ir:7074/reset-password/{user.id}/{token}'
-    #template += f'http://127.0.0.1:8000/reset-password/{user.id}/{token}'
-
 
     send_mail(
         subject='بازیابی کلمه عبور',
@@ -3345,13 +3343,18 @@ def confirm_email(user):
 
 def send_email(user, email_code, token):
     template = f"""
-    لطفا برای تایید ثبت نام خود، کد تایید ایمیل را وارد نمایید.
-    دقت فرمایید که مهلت استفاده از این کد، "دو روز" است و در صورت منقضی شدن لینک، باید مجددا وارد بخش ثبت‌نام سامانه شوید و برای دریافت کد جدید، روی لینک ارسال مجدد کد تایید، کلیک فرمایید. 
+    لطفا برای تایید ثبت نام خود، کد تایید ایمیل را در کادر "کد تایید" موجود در صفحه ثبت‌نام، وارد نمایید.
     کد تایید ایمیل: {email_code}
+    
+    -----------------------------------------------------------------------------------------------------------------------------
+    در صورتی که بعد از زدن دکمه‌ی ثبت‌نام، پنجره‌ی ثبت‌نام را بسته‌اید، از لینک زیر برای وارد کردن کد تایید استفاده نمایید.
+    دقت فرمایید که مهلت استفاده از این کد برای وارد کردن در لینک زیر، "دو روز" است و در صورت منقضی شدن لینک، باید مجددا وارد بخش ثبت‌نام سامانه شوید و برای دریافت کد جدید، روی لینک ارسال مجدد کد تایید، کلیک فرمایید. 
+
+
     """
 
     template += f'http://rahnamud.ir:7074/Confirm-Email/{user.id}/{token}'
-    #template += f'http://127.0.0.1:8000/Confirm-Email/{user.id}/{token}'
+    
 
     send_mail(subject='کد تایید ایمیل', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[user.email])
     
@@ -3378,13 +3381,10 @@ def email_check(request, user_id, token):
 
     return render(request, 'doc/Confirm-Email.html', { "url_is_valid": url_is_valid, "user_id": user_id, "token": token })
 
-
 def user_activation(request, user_id, token, code):
     user = User.objects.get(pk=user_id)
 
     if (not (user.account_activation_token is None)) and user.account_activation_token == token and user.account_acctivation_expire_time >= timezone.now():
-        print("code: ",code)
-        print("user_code: ", user.email_confirm_code)
         if(user.email_confirm_code == code):
             user.account_activation_token = None
             user.enable = 1
@@ -3399,9 +3399,27 @@ def user_activation(request, user_id, token, code):
         else:
             user.save()
             return JsonResponse({ "status": "Not OK" })
-    
         
     return JsonResponse({ "status": "Not OK" })
+
+def signup_user_activation(request, email, code):
+    user = User.objects.get(email=email)
+    if(user.email_confirm_code == code):
+        user.account_activation_token = None
+        user.enable = 1
+        user.save()
+
+        template = f"""
+        ثبت‌نام شما با موفقیت انجام شد. تایید شما توسط ادمین، بررسی خواهد شد. نتیجه‌ی بررسی ادمین، در ایمیل، برای شما ارسال می‌شود.
+        """
+        send_mail(subject='عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[user.email])
+        return JsonResponse({ "status": "OK" })
+            
+    else:
+        user.save()
+        return JsonResponse({ "status": "Not OK" })
+        
+
 
 def SaveUser(request, firstname, lastname,email, phonenumber, role, username, password, ip, expertise):
     user_username = User.objects.filter(username=username)
@@ -3422,6 +3440,7 @@ def SaveUser(request, firstname, lastname,email, phonenumber, role, username, pa
             User_Expertise.objects.create(user_id_id=user.id, experise_id_id=e)
         SaveUserLog(user.id, ip, "signup")
         confirm_email(user)
+        
 
     return JsonResponse({"status": "OK"})
 
@@ -4101,8 +4120,7 @@ def changeUserState(request, user_id, state):
         تایید شما توسط ادمین انجام شد. هم‌اکنون، می‌توانید وارد سامانه شوید.
         """
         template += f'http://rahnamud.ir:707/login/'
-        #template += f'http://127.0.0.1:8000/login/'
-        print("template: ", template)
+        
         send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[accepted_user.email])
         
 
@@ -4115,7 +4133,6 @@ def changeUserState(request, user_id, state):
         template = f"""
         متاسفانه تایید شما توسط ادمین رد شده است.
         """
-        print("template: ", template)
         send_mail(subject='عدم تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[accepted_user.email])
         
 
