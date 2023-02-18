@@ -37,6 +37,8 @@
 
     <script src="../../static/js/jquery_351/jquery.min.js"></script>
 
+    <script src="../../static/js/CustomAlert.js"></script>
+
     <title>آپلود فایل</title>
     {% include "doc/title_icon.html" %}
     
@@ -56,22 +58,6 @@
             // Active panel
             $('#AdminDropdown').addClass('active');
             $('#admin_upload').addClass('active');
-
-            $('select#document_language').on('change', function (e) {
-
-                let selected_language = this.value;
-                let current_url = window.location.href;
-                if (selected_language === 'England') {
-                    let page_name = current_url.split('/')[3]
-                    let requested_url = current_url.replace(page_name, 'en')
-                    window.location = requested_url;
-                } else if (selected_language === 'Russia') {
-                    let page_name = current_url.split('/')[3]
-                    let requested_url = current_url.replace(page_name, 'ru')
-                    window.location = requested_url;
-                }
-
-            });
         });
     </script>
 
@@ -102,23 +88,19 @@
                                 <input type="file" name="inputFile_name" id="inputFile" class="d-none">
                             </div>
                             <div class="col-4 form-group">
-                                <label for="country" class="mr-sm-2 pb-2">نام کشور:</label>
-                                <input type="text" class="form-control" id="country" placeholder="نام کشور" required>
+                                <label for="country" class="mr-sm-2 pb-2">مجموعه سند:</label>
+                                <input type="text" class="form-control" id="country" placeholder="مجموعه سند" required>
                             </div>
-                            <div class="col-4 form-group" dir="rtl">
-                                <label for="document_language" class="mr-sm-2 pb-2" >زبان اسناد:</label>
-                                <select class="form-select text-right searchable-select" id="document_language" name="document_language" onchange="LanguageChanged()">
-                                    <option value="فارسی">فارسی</option>
-                                    <option value="انگلیسی">انگلیسی</option>
-                                    <option value="روسی">روسی</option>
-                                </select>
+
+                            <div class="col-4 form-group">
+                                <label class="mr-sm-2 pb-2"></label>
+                                <button type="button" id= "submit_btn" class="btn mb-0 p-1 d-block float-right" onclick="UploadFile()" style="margin-top: 20px;">آپلود و پردازش</button>
                             </div>
-                        </div>
-                        <div class="row list-table mt-3 mx-auto p-3 mb-4" id="taskList">
+
+
                         </div>
 
-                        <div dir="ltr" class="m-auto">
-                            <button class="btn btn-color mt-3" onclick="UploadFile()">آپلود و پردازش</button>
+                        <div class="row list-table mt-3 mx-auto p-3 mb-4" id="taskList">
                         </div>
 
                         <progress id="progressBar" value="0" max="100" style="height:30px; width:100%;"></progress>
@@ -131,6 +113,8 @@
         </div>
     </div>
 </div>
+
+<div id="HooshyarAlert"></div>
 
 <script src="../../static/js/logincheck.js"></script>
 
@@ -159,7 +143,7 @@
     async function LanguageChanged()
     {
         // const language = document.getElementById("language").value
-        const language = $('#document_language option:selected').val()
+        const language = 'فارسی'
 
         /* Extract Task List */
         const request_url = 'http://' + location.host + '/get_task_list/';
@@ -189,7 +173,7 @@
     async function UploadFile()
     {
         const country = document.getElementById("country").value
-        const language = document.getElementById("document_language").value
+        const language ='فارسی'
         if (country !== "")
         {
             let checkboxes = document.querySelectorAll('input[name="task"]:checked');
@@ -225,18 +209,18 @@
         }
 
         function completeHandler(event) {
-            alert("با موفقیت آپلود گردید.")
+            HooshyarAlertShow("با موفقیت آپلود گردید.")
           _("status").innerHTML = "با موفقیت آپلود گردید.";
           _("progressBar").value = 0;
         }
 
         function errorHandler(event) {
-            alert("خطایی در آپلود فایل رخ داد.")
+            HooshyarAlertShow("خطایی در آپلود فایل رخ داد.")
           _("status").innerHTML = "خطایی در آپلود فایل رخ داد.";
         }
 
         function abortHandler(event) {
-            alert("خطایی در آپلود فایل رخ داد.")
+            HooshyarAlertShow("خطایی در آپلود فایل رخ داد.")
           _("status").innerHTML = "آپلود قطع شد";
         }
 

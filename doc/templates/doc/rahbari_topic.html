@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="../../static/library/bootstrap-icons-1.3.0.css">
     <!-- Fontawesome Icons -->
 
-    <link rel="stylesheet" href="../../static/library/fontawesome-5.10.0.all.css"  />
+    <link rel="stylesheet" href="../../static/library/fontawesome-5.10.0.all.css"/>
     <link rel="stylesheet" href="../../static/library/font-awesome.min-4.7.0.css">
 
 
@@ -57,7 +57,6 @@
     <link rel="stylesheet" href="../../static/styles/search_chart.css">
 
 
-
     <!-- Download Zip Files -->
     <script src="../../static/js/zipDownload/jszip.min.js"></script>
     <script src="../../static/js/zipDownload/FileSaver.min.js"></script>
@@ -93,67 +92,68 @@
 <body>
 
 
-    <!-- Menu -->
-    <nav dir="rtl" class="navbar nav_menu navbar-expand-lg fixed-top p-0 mt-0">
-        {% include "doc/header2.html" %}
-    </nav>
+<!-- Menu -->
+<nav dir="rtl" class="navbar nav_menu navbar-expand-lg fixed-top p-0 mt-0">
+    {% include "doc/header2.html" %}
+</nav>
 
-    <script>
-        $(document).ready(function () {
+<script>
+    $(document).ready(function () {
 
-            // Active panel
-            $('#RahbariDropdown').addClass('active');
-            $('#rahbari_topic').addClass('active');
+        // Active panel
+        $('#RahbariDropdown').addClass('active');
+        $('#rahbari_topic').addClass('active');
 
-            $('select#language').on('change', function (e) {
+        $('select#language').on('change', function (e) {
 
-                let selected_language = this.value;
-                let current_url = window.location.href;
-                if (selected_language === 'England') {
-                    let page_name = current_url.split('/')[3]
-                    let requested_url = current_url.replace(page_name, 'en')
-                    window.location = requested_url;
-                } else if (selected_language === 'Russia') {
-                    let page_name = current_url.split('/')[3]
-                    let requested_url = current_url.replace(page_name, 'ru')
-                    window.location = requested_url;
-                }
+            let selected_language = this.value;
+            let current_url = window.location.href;
+            if (selected_language === 'England') {
+                let page_name = current_url.split('/')[3]
+                let requested_url = current_url.replace(page_name, 'en')
+                window.location = requested_url;
+            } else if (selected_language === 'Russia') {
+                let page_name = current_url.split('/')[3]
+                let requested_url = current_url.replace(page_name, 'ru')
+                window.location = requested_url;
+            }
 
-            });
         });
-    </script>
-    <!-- Main Container includes: Form Fields, Tab Pills, Tab Panes -->
-    <div class="row flex-row-reverse px-0 py-5 px-md-5 py-md-5 m-0 mt-4">
-        <div class="d-flex align-items-center rtl flex-row-reverse mx-auto p-1" style="background: linear-gradient(#8693AB, #cbd3da, #e9ecef); box-shadow: 0 0 2px 2px #f8f9fa inset; border: 4px solid #f8f9fa; border-radius: 24px">
-            <img style="width: 120px;" id="prefix_ShowHideImg" src="../../static/image/rahbar_profile.png">
-            <div class="d-flex flex-column gap-2 rtl mr-2" dir="rtl">
-                <span class="font-weight-bolder">تحلیل اسناد رهبری</span>
-                <span>صفحه تحلیل هوشمند موضوعی</span>
-            </div>
+    });
+</script>
+<!-- Main Container includes: Form Fields, Tab Pills, Tab Panes -->
+<div class="row flex-row-reverse px-0 py-5 px-md-5 py-md-5 m-0 mt-4">
+    <div class="d-flex align-items-center rtl flex-row-reverse mx-auto p-1"
+         style="background: linear-gradient(#8693AB, #cbd3da, #e9ecef); box-shadow: 0 0 2px 2px #f8f9fa inset; border: 4px solid #f8f9fa; border-radius: 24px">
+        <img style="width: 120px;" id="prefix_ShowHideImg" src="../../static/image/rahbar_profile.png">
+        <div class="d-flex flex-column gap-2 rtl mr-2" dir="rtl">
+            <span class="font-weight-bolder">تحلیل اسناد رهبری</span>
+            <span>صفحه تحلیل هوشمند موضوعی</span>
         </div>
-        <!-- Form Fields -->
-        <form action="" class="custom-control mx-auto needs-validation" id="info_form" enctype="multipart/form-data"
-            method="post" novalidate>
-            <!-- Primary Fields in First Row -->
-            <div class="row flex-row-reverse mt-2 mx-auto">
-                <!-- Country Input -->
-                <div class="col-md-6  pt-3 col-12 col-lg-2 bg-light" dir="rtl">
-                    <label class=" text-right bg-light float-right" style="direction: rtl;;">مجموعه سند:</label>
-                    <select dir="rtl" id="country" name="country"
+    </div>
+    <!-- Form Fields -->
+    <form action="" class="custom-control mx-auto needs-validation" id="info_form" enctype="multipart/form-data"
+          method="post" novalidate>
+        <!-- Primary Fields in First Row -->
+        <div class="row flex-row-reverse mt-2 mx-auto">
+            <!-- Country Input -->
+            <div class="col-md-6  pt-3 col-12 col-lg-2 bg-light" dir="rtl">
+                <label class=" text-right bg-light float-right" style="direction: rtl;;">مجموعه سند:</label>
+                <select dir="rtl" id="country" name="country"
                         class="form-select text-right float-right searchable-select" style="direction: rtl;"
                         onchange="CountryChanged()">
-                        {% for k,v in countries.items %}
+                    {% for k,v in countries.items %}
 
                         {% if v == 'اسناد رهبری' %}
-                        <option value="{{ k }}">{{ v }}</option>
+                            <option value="{{ k }}">{{ v }}</option>
 
                         {% endif %}
 
-                        {% endfor %}
-                    </select>
-                </div>
+                    {% endfor %}
+                </select>
+            </div>
 
-                <!-- Match Type -->
+            <!-- Match Type -->
             <div class="col-md-6  pt-3 col-12 col-lg-2 bg-light" dir="rtl">
                 <label class=" text-right bg-light float-right" style="direction: rtl;;"> نوع الگوریتم:</label>
                 <select id="AlgorithmTypeSelect" class="form-select text-right float-right searchable-select"
@@ -163,640 +163,687 @@
                 </select>
             </div>
 
-                <!-- Cluster Size  -->
-                <div class="col-md-6  pt-3 col-12 col-lg-2 bg-light" dir="rtl">
-                    <label class="text-right bg-light float-right" style="direction: rtl;;">تعداد خوشه‌ها:</label>
-                    <select id="Cluster_Count_Select" class="form-select text-right float-right searchable-select"
+            <!-- Cluster Size  -->
+            <div class="col-md-6  pt-3 col-12 col-lg-2 bg-light" dir="rtl">
+                <label class="text-right bg-light float-right" style="direction: rtl;;">تعداد خوشه‌ها:</label>
+                <select id="Cluster_Count_Select" class="form-select text-right float-right searchable-select"
                         style="direction: rtl;">
-                    </select>
-                </div>
-
-                <!--  Buttons -->
-                <div class="col-lg-4 col-md-6 pt-5 col-12">
-                    <button type="button" id="document_search" onclick="ShowResult()"
-                        class="btn d-flex float-right mr-4">
-                        نمایش
-                    </button>
-                </div>
+                </select>
             </div>
-        </form>
 
-        <div dir="rtl" class="row w-100 p-0">
-            <!--Original Tabs -->
-            <ul id="original_tabs" class="nav nav-pills mt-5 mx-auto  pr-3 pr-sm-0  float-right  d-block" id="pills-tab"
-                role="tablist">
+            <!--  Buttons -->
+            <div class="col-lg-4 col-md-6 pt-5 col-12">
+                <button type="button" id="document_search" onclick="ShowResult()"
+                        class="btn d-flex float-right mr-4">
+                    نمایش
+                </button>
+            </div>
+        </div>
+    </form>
 
-                <li class="nav-item float-right" role="presentation">
-                    <button id="search_result_tab" class="nav-link active" data-bs-toggle="pill"
+    <div dir="rtl" class="row w-100 p-0">
+        <!--Original Tabs -->
+        <ul id="original_tabs" class="nav nav-pills mt-5 mx-auto  pr-3 pr-sm-0  float-right  d-block" id="pills-tab"
+            role="tablist">
+
+            <li class="nav-item float-right" role="presentation">
+                <button id="search_result_tab" class="nav-link active" data-bs-toggle="pill"
                         data-bs-target="#search_result_pane" type="button" role="tab" aria-controls="search_result_pane"
-                        aria-selected="true">موضوعات</button>
-                </li>
+                        aria-selected="true">موضوعات
+                </button>
+            </li>
 
-                <!-- <li class="nav-item float-right" role="presentation">
-                    <button id="centroids_result_tab" class="nav-link" data-bs-toggle="pill"
-                        data-bs-target="#centroids_result_pane" type="button" role="tab"
-                        aria-controls="centroids_result_pane" aria-selected="false">تحلیل مراکز خوشه‌ها</button>
-                </li>
+            <!-- <li class="nav-item float-right" role="presentation">
+                <button id="centroids_result_tab" class="nav-link" data-bs-toggle="pill"
+                    data-bs-target="#centroids_result_pane" type="button" role="tab"
+                    aria-controls="centroids_result_pane" aria-selected="false">تحلیل مراکز خوشه‌ها</button>
+            </li>
 
-                <li class="nav-item float-right" role="presentation">
-                    <button id="centroids_graph_tab" class="nav-link" data-bs-toggle="pill"
-                        data-bs-target="#centroids_graph_pane" type="button" role="tab"
-                        aria-controls="centroids_graph_pane" aria-selected="false">گراف مراکز خوشه‌ها</button>
-                </li>
+            <li class="nav-item float-right" role="presentation">
+                <button id="centroids_graph_tab" class="nav-link" data-bs-toggle="pill"
+                    data-bs-target="#centroids_graph_pane" type="button" role="tab"
+                    aria-controls="centroids_graph_pane" aria-selected="false">گراف مراکز خوشه‌ها</button>
+            </li>
 
-                <li class="nav-item float-right" role="presentation">
-                    <button id="clustersKeywords_graph_tab" class="nav-link" data-bs-toggle="pill"
-                        data-bs-target="#clustersKeywords_graph_pane" type="button" role="tab"
-                        aria-controls="clustersKeywords_graph_pane" aria-selected="false">گراف خوشه کلیدواژه</button>
-                </li>
+            <li class="nav-item float-right" role="presentation">
+                <button id="clustersKeywords_graph_tab" class="nav-link" data-bs-toggle="pill"
+                    data-bs-target="#clustersKeywords_graph_pane" type="button" role="tab"
+                    aria-controls="clustersKeywords_graph_pane" aria-selected="false">گراف خوشه کلیدواژه</button>
+            </li>
 
-                <li class="nav-item float-right" role="presentation">
-                    <button id="without_subject" class="nav-link" data-bs-toggle="pill"
-                        data-bs-target="#doc_without_subject_pane" type="button" role="tab"
-                        aria-controls="doc_without_subject_pane" aria-selected="false">احکام بدون موضوع</button>
-                </li>
+            <li class="nav-item float-right" role="presentation">
+                <button id="without_subject" class="nav-link" data-bs-toggle="pill"
+                    data-bs-target="#doc_without_subject_pane" type="button" role="tab"
+                    aria-controls="doc_without_subject_pane" aria-selected="false">احکام بدون موضوع</button>
+            </li>
 
-                <li class="nav-item float-right" role="presentation">
-                    <button id="different_subject" class="nav-link" data-bs-toggle="pill"
-                        data-bs-target="#doc_different_subject_pane" type="button" role="tab"
-                        aria-controls="doc_different_subject_pane" aria-selected="false">احکام با موضوع متفاوت</button>
-                </li> -->
-
-
-                <!-- Download Buttons -->
-                <!--                <button type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="دانلود اسناد"-->
-                <!--                    class="btn float-left p-0 px-1 mt-2" id="DownloadBtn" onclick="DownloadSerachResultFunction()"-->
-                <!--                    type="button">-->
-                <!--                    <i class="far fa-file-archive m-0" style="font-size: 25px;margin: 0px;"></i>-->
-
-                <!--                </button>-->
-
-                <!-- <button class="btn float-left p-0 px-1 mt-2" id="ExportExcel" data-bs-toggle="tooltip"
-                    data-bs-placement="top" title="خروجی اکسل جدول" onclick="ExportExcelSerachResultFunction()"
-                    type="button">
-                    <i class="far fa-file-excel text-success m-0" style="font-size: 25px;margin: 0px;"></i>
-                </button> -->
-
-                <!-- Result Count -->
-                <p id="DocumentCount" dir="rtl" class="text-left float-left text-secondary  pl-2"></p>
+            <li class="nav-item float-right" role="presentation">
+                <button id="different_subject" class="nav-link" data-bs-toggle="pill"
+                    data-bs-target="#doc_different_subject_pane" type="button" role="tab"
+                    aria-controls="doc_different_subject_pane" aria-selected="false">احکام با موضوع متفاوت</button>
+            </li> -->
 
 
-            </ul>
+            <!-- Download Buttons -->
+            <!--                <button type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="دانلود اسناد"-->
+            <!--                    class="btn float-left p-0 px-1 mt-2" id="DownloadBtn" onclick="DownloadSerachResultFunction()"-->
+            <!--                    type="button">-->
+            <!--                    <i class="far fa-file-archive m-0" style="font-size: 25px;margin: 0px;"></i>-->
 
-            <!-- Original Panes -->
-            <div id="original_pane" class="tab-content float-right px-1 bg-white" id="pills-tabContent">
+            <!--                </button>-->
 
-                <!-- Search Result Pane -->
-                <div id="search_result_pane" class="tab-pane w-100 fade show active float-right" role="tabpanel"
-                    aria-labelledby="search_result_tab">
+            <!-- <button class="btn float-left p-0 px-1 mt-2" id="ExportExcel" data-bs-toggle="tooltip"
+                data-bs-placement="top" title="خروجی اکسل جدول" onclick="ExportExcelSerachResultFunction()"
+                type="button">
+                <i class="far fa-file-excel text-success m-0" style="font-size: 25px;margin: 0px;"></i>
+            </button> -->
 
-                    <!-- Table Headers -->
-                    <div class="mt-4">
-                        <!-- Column Selection -->
-                        <p id="ColumnSelection" class="text-left text-secondary float-right">فهرست براساس:</p>
+            <!-- Result Count -->
+            <p id="DocumentCount" dir="rtl" class="text-left float-left text-secondary  pl-2"></p>
 
 
-                        <!-- Column select -->
-                        <div class="col-md-6 col-12 col-lg-2 float-right">
+        </ul>
 
-                            <select id="ColumnSelect"
+        <!-- Original Panes -->
+        <div id="original_pane" class="tab-content float-right px-1 bg-white" id="pills-tabContent">
+
+            <!-- Search Result Pane -->
+            <div id="search_result_pane" class="tab-pane w-100 fade show active float-right" role="tabpanel"
+                 aria-labelledby="search_result_tab">
+
+                <!-- Table Headers -->
+                <div class="mt-4">
+                    <!-- Column Selection -->
+                    <p id="ColumnSelection" class="text-left text-secondary float-right">فهرست براساس:</p>
+
+
+                    <!-- Column select -->
+                    <div class="col-md-6 col-12 col-lg-2 float-right">
+
+                        <select id="ColumnSelect"
                                 class=" form-select text-right float-right searchable-multi-select"
                                 style="direction: rtl;">
 
-                            </select>
-
-                        </div>
-
-                        <!-- Page select -->
-                        <div class="col-md-6 col-12 col-lg-2 float-left">
-
-                            <input type="number" disabled="true" onchange="TablePaginationChanged(event)"
-                                id="TablePaginationInput" min="1" max="1" value="1"
-                                class="form-select text-right float-right" style="direction: rtl;">
-
-                        </div>
-
-
-                        <!-- Result Pagination -->
-                        <p id="ResultPagination" class="text-left text-secondary float-left">صفحه:
-                            <span id="from_page">1</span>
-                            /
-                            <span id="total_page">1</span>
-                        </p>
+                        </select>
 
                     </div>
 
-                    <!-- Search Result table -->
-                    <div class="table-responsive search_result_table mt-4">
-                        <table class="table table-striped SearchTable" style="min-height: 200px;" id="SearchTable">
-                        </table>
+                    <!-- Page select -->
+                    <div class="col-md-6 col-12 col-lg-2 float-left">
+
+                        <input type="number" disabled="true" onchange="TablePaginationChanged(event)"
+                               id="TablePaginationInput" min="1" max="1" value="1"
+                               class="form-select text-right float-right" style="direction: rtl;">
+
                     </div>
+
+
+                    <!-- Result Pagination -->
+                    <p id="ResultPagination" class="text-left text-secondary float-left">صفحه:
+                        <span id="from_page">1</span>
+                        /
+                        <span id="total_page">1</span>
+                    </p>
 
                 </div>
 
-                <div id="doc_without_subject_pane" class="tab-pane w-100 fade show float-right" role="tabpanel"
-                    aria-labelledby="without_subject">
-
-                    <div dir="rtl" class="table-responsive mt-4">
-                        <table id="WithoutSubjectTableId" style="min-height: 200px;"
-                            class="table table-striped WithoutSubjectTable">
-                        </table>
-                    </div>
+                <!-- Search Result table -->
+                <div class="table-responsive search_result_table mt-4">
+                    <table class="table table-striped SearchTable" style="min-height: 200px;" id="SearchTable">
+                    </table>
                 </div>
 
-                <!-- Centroids Pane -->
-                <div id="centroids_result_pane" class="tab-pane w-100 fade float-right" role="tabpanel"
-                    aria-labelledby="centroids_result_tab">
+            </div>
 
-                    <div id="cluster_size_chart_container" class="full">
-                    </div>
+            <div id="doc_without_subject_pane" class="tab-pane w-100 fade show float-right" role="tabpanel"
+                 aria-labelledby="without_subject">
 
-                    <!-- Members Count Pane -->
+                <div dir="rtl" class="table-responsive mt-4">
+                    <table id="WithoutSubjectTableId" style="min-height: 200px;"
+                           class="table table-striped WithoutSubjectTable">
+                    </table>
+                </div>
+            </div>
 
-                    <h5 class="document_subject w-100 mt-4 text-center float-right pt-3 pb-3">
-                        فاصله مراکز خوشه‌ها
-                    </h5>
-                    <br>
-                    <div id="heatmap_chart_container" style="height: 85vh" class="bg-white w-100 p-4">
-                    </div>
+            <!-- Centroids Pane -->
+            <div id="centroids_result_pane" class="tab-pane w-100 fade float-right" role="tabpanel"
+                 aria-labelledby="centroids_result_tab">
 
+                <div id="cluster_size_chart_container" class="full">
                 </div>
 
+                <!-- Members Count Pane -->
 
-                <!-- ------------------------------- -->
-
-                <!-- Centroids-Graph Pane -->
-                <div id="centroids_graph_pane" class="tab-pane w-100 fade float-right" role="tabpanel"
-                    aria-labelledby="centroids_graph_tab">
-
-                    <!-- Graph Between Clusters -->
-                    <div class="row mt-4 w-100 flex-row-reverse  mx-auto pb-5 px-4">
-
-                        <div id="centroids_constraints_container"
-                            class="collapse show constraints_container row flex-row-reverse pt-0 mb-0 mt-0 mx-auto">
-                            <div id="centroids_WeightDiv" class="col-md-12 p-1 col-12 col-lg-12 mt-1">
-                                <div class="source_header bg-white row mx-auto p-1">
-                                    <label class="text-center my-0" style="direction: rtl;">فیلتر وزن</label>
-                                </div>
-                                <div class="source_container pb-2 row mx-auto">
-                                    <div dir="rtl" class="wrapper mt-5 mb-1" id="centroids_WeightSlider"
-                                        style="visibility: hidden;">
-                                        <div class="container" style="display: flex; justify-content: center;">
-                                            <div class="slider-wrapper" style="width: 100% !important;">
-                                                <div dir="ltr" id="slider-range"></div>
-                                                <div dir="rtl"
-                                                    style="display:flex; width: 300px; justify-content: center"
-                                                    class="range-wrapper">
-                                                    <div dir="ltr" class="range mt-1"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex">
-                            <div class="col-md-6 p-1 col-12 col-lg-6 mt-3">
-                                <div class="source_header bg-white row mx-auto p-1">
-                                    <label class="text-center my-0" style="direction: rtl;">نحوه نمایش</label>
-                                </div>
-                                <div class="source_container p-4 row mx-auto">
-
-                                    <select id="centroids_ChangeLayout" name="centroids_ChangeLayout"
-                                        class="form-select text-right float-right searchable-select"
-                                        style="direction: rtl;">
-
-                                        <option value="grid">مربعی</option>
-                                        <option value="circular"> دایره ای </option>
-                                        <option value="force">ساده</option>
-                                        <option value="dagre">بالا به پایین</option>
-                                        <option value="radial">شعاعی</option>
-                                        <option value="concentric">متحدالمرکز</option>
-                                        <option value="comboForce">خوشه ای</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 p-1 col-12 col-lg-6 mt-3">
-                                <div class="source_header bg-white row mx-auto p-1">
-                                    <label class="text-center my-0" style="direction: rtl;">جستجو در نام گره</label>
-                                </div>
-                                <div class="source_container p-4 d-flex">
-                                    <input style="direction: rtl;" class="form-control text-right"
-                                        placeholder="جستجو در نام گره ها ..." type="text" required=""
-                                        name="centroids_SearchBox" id="centroids_SearchBox" value="">
-                                    <button type="button" id="centroids_SearchBtn"
-                                        class="btn modal_btn mr-2">جست‌وجو</button>
-                                </div>
-                            </div>
-
-
-                            <div class="col-md-6 p-1 col-12 col-lg-6 mt-1 d-flex">
-
-                            </div>
-                        </div>
-
-                        <div dir="ltr">
-
-                            <img style="width: 4%; cursor: pointer; margin-top: 20px;" id="centroids_SelectNeighbourImg"
-                                src="../../static/image/neighbourhood.png">
-                            <img style="width: 3%; cursor: pointer; margin-top: 20px;" id="centroids_ShowHideImg"
-                                src="../../static/image/hide_nodes.png">
-
-                        </div>
-
-                        <div id="centroids_graph_container" class="border mt-1 position-static"
-                            style="height:500px; overflow: hidden;">
-                        </div>
-
-                        <div dir="rtl" style="display: flex; margin-bottom: 50px;">
-                            <div class="col-md-6 px-0 col-12 col-lg-5 pt-1">
-                                <h6 class="table_header text-center  p-2  mb-0">
-                                    گره های انتخاب شده
-                                </h6>
-                                <table id="centroids_selected_node_table" class="table table-striped PopUpTable"
-                                    style="width: 95%;margin: auto;">
-
-                                </table>
-                            </div>
-
-                            <div class="col-md-6 px-0 col-12 col-lg-7 pt-1">
-                                <h6 class="table_header text-center  p-2  mb-0">
-                                    یال های انتخاب شده
-                                </h6>
-                                <table id="centroids_selected_edge_table" class="table table-striped PopUpTable"
-                                    style="width: 95%;margin: auto;">
-
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
-
+                <h5 class="document_subject w-100 mt-4 text-center float-right pt-3 pb-3">
+                    فاصله مراکز خوشه‌ها
+                </h5>
+                <br>
+                <div id="heatmap_chart_container" style="height: 85vh" class="bg-white w-100 p-4">
                 </div>
-
-
-                <!-- Cluster-Keywords Pane -->
-                <div id="clustersKeywords_graph_pane" class="tab-pane w-100 fade float-right" role="tabpanel"
-                    aria-labelledby="clustersKeywords_graph_tab">
-
-                    <div class="row mt-4 w-100 flex-row-reverse  mx-auto pb-5 px-4">
-
-                        <div id="clustersKeywords_constraints_container"
-                            class="collapse show constraints_container row flex-row-reverse pt-0 mb-0 mt-0 mx-auto">
-
-                            <div id="clustersKeywords_DegreeDiv" class="col-md-3 p-1 col-12 col-lg-6 mt-1">
-                                <div class="source_header bg-white row mx-auto p-1">
-                                    <label class="text-center my-0" style="direction: rtl;">فیلتر درجه</label>
-                                </div>
-                                <div class="source_container pb-2 row mx-auto">
-                                    <div dir="rtl" class="wrapper mt-5 mb-1" id="clustersKeywords_DegreeSlider"
-                                        style="visibility: hidden;">
-                                        <div class="container" style="display: flex; justify-content: center;">
-                                            <div class="slider-wrapper">
-                                                <div dir="ltr" id="slider-range"></div>
-                                                <div dir="rtl"
-                                                    style="display:flex; width: 300px; justify-content: center"
-                                                    class="range-wrapper">
-                                                    <div dir="ltr" class="range mt-1"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="clustersKeywords_WeightDiv" class="col-md-3 p-1 col-12 col-lg-6 mt-1">
-                                <div class="source_header bg-white row mx-auto p-1">
-                                    <label class="text-center my-0" style="direction: rtl;">فیلتر وزن</label>
-                                </div>
-                                <div class="source_container pb-2 row mx-auto">
-                                    <div dir="rtl" class="wrapper mt-5 mb-1" id="clustersKeywords_WeightSlider"
-                                        style="visibility: hidden;">
-                                        <div class="container" style="display: flex; justify-content: center;">
-                                            <div class="slider-wrapper">
-                                                <div dir="ltr" id="slider-range"></div>
-                                                <div dir="rtl"
-                                                    style="display:flex; width: 300px; justify-content: center"
-                                                    class="range-wrapper">
-                                                    <div dir="ltr" class="range mt-1"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="d-flex">
-                            <div class="col-md-6 p-1 col-12 col-lg-6 mt-3">
-                                <div class="source_header bg-white row mx-auto p-1">
-                                    <label class="text-center my-0" style="direction: rtl;">نحوه نمایش</label>
-                                </div>
-                                <div class="source_container p-4 row mx-auto">
-                                    <select id="clustersKeywords_ChangeLayout" name="clustersKeywords_ChangeLayout"
-                                        class="form-select text-right float-right searchable-select"
-                                        style="direction: rtl;">
-                                        <option value="grid">مربعی</option>
-                                        <option value="circular"> دایره ای </option>
-                                        <option value="force">ساده</option>
-                                        <option value="dagre">بالا به پایین</option>
-                                        <option value="radial">شعاعی</option>
-                                        <option value="concentric">متحدالمرکز</option>
-                                        <option value="comboForce">خوشه ای</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 p-1 col-12 col-lg-6 mt-3">
-                                <div class="source_header bg-white row mx-auto p-1">
-                                    <label class="text-center my-0" style="direction: rtl;">جستجو در نام گره</label>
-                                </div>
-                                <div class="source_container p-4 d-flex">
-                                    <input style="direction: rtl;" class="form-control text-right"
-                                        placeholder="جستجو در نام گره ها ..." type="text" required=""
-                                        name="clustersKeywords_SearchBox" id="clustersKeywords_SearchBox" value="">
-                                    <button type="button" id="clustersKeywords_SearchBtn"
-                                        class="btn modal_btn mr-2">جست‌وجو</button>
-                                </div>
-                            </div>
-
-
-                            <div class="col-md-6 p-1 col-12 col-lg-6 mt-1 d-flex">
-
-                            </div>
-                        </div>
-
-                        <div dir="ltr">
-                            <img style="width: 4%; cursor: pointer; margin-top: 20px;"
-                                id="clustersKeywords_SelectNeighbourImg" src="../../static/image/neighbourhood.png">
-                            <img style="width: 3%; cursor: pointer; margin-top: 20px;" id="clustersKeywords_ShowHideImg"
-                                src="../../static/image/hide_nodes.png">
-                        </div>
-
-                        <div id="clustersKeywords_graph_container" class="border mt-1 position-static"
-                            style="height:500px; overflow: hidden;">
-                        </div>
-
-                        <div dir="rtl" style="display: flex; margin-bottom: 50px;">
-                            <div class="col-md-6 px-0 col-12 col-lg-5 pt-1">
-                                <h6 class="table_header text-center  p-2  mb-0">
-                                    گره های انتخاب شده
-                                </h6>
-                                <table id="clustersKeywords_selected_node_table" class="table table-striped PopUpTable"
-                                    style="width: 95%;margin: auto;">
-
-                                </table>
-                            </div>
-
-                            <div class="col-md-6 px-0 col-12 col-lg-7 pt-1">
-                                <h6 class="table_header text-center  p-2  mb-0">
-                                    یال های انتخاب شده
-                                </h6>
-                                <table id="clustersKeywords_selected_edge_table" class="table table-striped PopUpTable"
-                                    style="width: 95%;margin: auto;">
-
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Doc Different Subject Pane -->
-                <div id="doc_different_subject_pane" class="tab-pane w-100 fade show float-right" role="tabpanel"
-                    aria-labelledby="doc_different_subject">
-
-                    <div dir="rtl" class="table-responsive mt-4">
-                        <table id="DifferentSubjectTableId" style="min-height: 200px;"
-                            class="table table-striped DifferentSubjectTable">
-                        </table>
-                    </div>
-                </div>
-
 
             </div>
 
 
+            <!-- ------------------------------- -->
 
+            <!-- Centroids-Graph Pane -->
+            <div id="centroids_graph_pane" class="tab-pane w-100 fade float-right" role="tabpanel"
+                 aria-labelledby="centroids_graph_tab">
 
+                <!-- Graph Between Clusters -->
+                <div class="row mt-4 w-100 flex-row-reverse  mx-auto pb-5 px-4">
 
-        </div>
-    </div>
-
-     <!-- Distributions Modal Container -->
-     <div class="modal fade" id="distributionsModal">
-        <div class="modal-dialog modal-fullscreen">
-            <div class="modal-content">
-
-                <!-- Modal Header -->
-                <div style="direction: rtl !important;" class="modal-header">
-                    <h5 id="DistModalHeader" class="modal-title">تحلیل توزیعی</h5>
-                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
-                </div>
-
-                <!-- Modal body -->
-                <div id="dist_chart_info" class="modal-body bg-light text-justify">
-                    <div class="charts-list-container">
-                        <div id="subject_container" class="half"></div>
-                        <!-- <div id="approval_container" class="half"></div> -->
-                        
-                        <div id="level_container" class="half"></div>
-                        <div id="year_container" class="full"></div>
+                    <div id="centroids_constraints_container"
+                         class="collapse show constraints_container row flex-row-reverse pt-0 mb-0 mt-0 mx-auto">
+                        <div id="centroids_WeightDiv" class="col-md-12 p-1 col-12 col-lg-12 mt-1">
+                            <div class="source_header bg-white row mx-auto p-1">
+                                <label class="text-center my-0" style="direction: rtl;">فیلتر وزن</label>
+                            </div>
+                            <div class="source_container pb-2 row mx-auto">
+                                <div dir="rtl" class="wrapper mt-5 mb-1" id="centroids_WeightSlider"
+                                     style="visibility: hidden;">
+                                    <div class="container" style="display: flex; justify-content: center;">
+                                        <div class="slider-wrapper" style="width: 100% !important;">
+                                            <div dir="ltr" id="slider-range"></div>
+                                            <div dir="rtl"
+                                                 style="display:flex; width: 300px; justify-content: center"
+                                                 class="range-wrapper">
+                                                <div dir="ltr" class="range mt-1"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <!-- Modal footer -->
-                <div class="modal-footer">
 
-                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button> -->
+                    <div class="d-flex">
+                        <div class="col-md-6 p-1 col-12 col-lg-6 mt-3">
+                            <div class="source_header bg-white row mx-auto p-1">
+                                <label class="text-center my-0" style="direction: rtl;">نحوه نمایش</label>
+                            </div>
+                            <div class="source_container p-4 row mx-auto">
+
+                                <select id="centroids_ChangeLayout" name="centroids_ChangeLayout"
+                                        class="form-select text-right float-right searchable-select"
+                                        style="direction: rtl;">
+
+                                    <option value="grid">مربعی</option>
+                                    <option value="circular"> دایره ای</option>
+                                    <option value="force">ساده</option>
+                                    <option value="dagre">بالا به پایین</option>
+                                    <option value="radial">شعاعی</option>
+                                    <option value="concentric">متحدالمرکز</option>
+                                    <option value="comboForce">خوشه ای</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 p-1 col-12 col-lg-6 mt-3">
+                            <div class="source_header bg-white row mx-auto p-1">
+                                <label class="text-center my-0" style="direction: rtl;">جستجو در نام گره</label>
+                            </div>
+                            <div class="source_container p-4 d-flex">
+                                <input style="direction: rtl;" class="form-control text-right"
+                                       placeholder="جستجو در نام گره ها ..." type="text" required=""
+                                       name="centroids_SearchBox" id="centroids_SearchBox" value="">
+                                <button type="button" id="centroids_SearchBtn"
+                                        class="btn modal_btn mr-2">جست‌وجو
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 p-1 col-12 col-lg-6 mt-1 d-flex">
+
+                        </div>
+                    </div>
+
+                    <div dir="ltr">
+
+                        <img style="width: 4%; cursor: pointer; margin-top: 20px;" id="centroids_SelectNeighbourImg"
+                             src="../../static/image/neighbourhood.png">
+                        <img style="width: 3%; cursor: pointer; margin-top: 20px;" id="centroids_ShowHideImg"
+                             src="../../static/image/hide_nodes.png">
+
+                    </div>
+
+                    <div id="centroids_graph_container" class="border mt-1 position-static"
+                         style="height:500px; overflow: hidden;">
+                    </div>
+
+                    <div dir="rtl" style="display: flex; margin-bottom: 50px;">
+                        <div class="col-md-6 px-0 col-12 col-lg-5 pt-1">
+                            <h6 class="table_header text-center  p-2  mb-0">
+                                گره های انتخاب شده
+                            </h6>
+                            <table id="centroids_selected_node_table" class="table table-striped PopUpTable"
+                                   style="width: 95%;margin: auto;">
+
+                            </table>
+                        </div>
+
+                        <div class="col-md-6 px-0 col-12 col-lg-7 pt-1">
+                            <h6 class="table_header text-center  p-2  mb-0">
+                                یال های انتخاب شده
+                            </h6>
+                            <table id="centroids_selected_edge_table" class="table table-striped PopUpTable"
+                                   style="width: 95%;margin: auto;">
+
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
+
+
+            <!-- Cluster-Keywords Pane -->
+            <div id="clustersKeywords_graph_pane" class="tab-pane w-100 fade float-right" role="tabpanel"
+                 aria-labelledby="clustersKeywords_graph_tab">
+
+                <div class="row mt-4 w-100 flex-row-reverse  mx-auto pb-5 px-4">
+
+                    <div id="clustersKeywords_constraints_container"
+                         class="collapse show constraints_container row flex-row-reverse pt-0 mb-0 mt-0 mx-auto">
+
+                        <div id="clustersKeywords_DegreeDiv" class="col-md-3 p-1 col-12 col-lg-6 mt-1">
+                            <div class="source_header bg-white row mx-auto p-1">
+                                <label class="text-center my-0" style="direction: rtl;">فیلتر درجه</label>
+                            </div>
+                            <div class="source_container pb-2 row mx-auto">
+                                <div dir="rtl" class="wrapper mt-5 mb-1" id="clustersKeywords_DegreeSlider"
+                                     style="visibility: hidden;">
+                                    <div class="container" style="display: flex; justify-content: center;">
+                                        <div class="slider-wrapper">
+                                            <div dir="ltr" id="slider-range"></div>
+                                            <div dir="rtl"
+                                                 style="display:flex; width: 300px; justify-content: center"
+                                                 class="range-wrapper">
+                                                <div dir="ltr" class="range mt-1"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="clustersKeywords_WeightDiv" class="col-md-3 p-1 col-12 col-lg-6 mt-1">
+                            <div class="source_header bg-white row mx-auto p-1">
+                                <label class="text-center my-0" style="direction: rtl;">فیلتر وزن</label>
+                            </div>
+                            <div class="source_container pb-2 row mx-auto">
+                                <div dir="rtl" class="wrapper mt-5 mb-1" id="clustersKeywords_WeightSlider"
+                                     style="visibility: hidden;">
+                                    <div class="container" style="display: flex; justify-content: center;">
+                                        <div class="slider-wrapper">
+                                            <div dir="ltr" id="slider-range"></div>
+                                            <div dir="rtl"
+                                                 style="display:flex; width: 300px; justify-content: center"
+                                                 class="range-wrapper">
+                                                <div dir="ltr" class="range mt-1"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex">
+                        <div class="col-md-6 p-1 col-12 col-lg-6 mt-3">
+                            <div class="source_header bg-white row mx-auto p-1">
+                                <label class="text-center my-0" style="direction: rtl;">نحوه نمایش</label>
+                            </div>
+                            <div class="source_container p-4 row mx-auto">
+                                <select id="clustersKeywords_ChangeLayout" name="clustersKeywords_ChangeLayout"
+                                        class="form-select text-right float-right searchable-select"
+                                        style="direction: rtl;">
+                                    <option value="grid">مربعی</option>
+                                    <option value="circular"> دایره ای</option>
+                                    <option value="force">ساده</option>
+                                    <option value="dagre">بالا به پایین</option>
+                                    <option value="radial">شعاعی</option>
+                                    <option value="concentric">متحدالمرکز</option>
+                                    <option value="comboForce">خوشه ای</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 p-1 col-12 col-lg-6 mt-3">
+                            <div class="source_header bg-white row mx-auto p-1">
+                                <label class="text-center my-0" style="direction: rtl;">جستجو در نام گره</label>
+                            </div>
+                            <div class="source_container p-4 d-flex">
+                                <input style="direction: rtl;" class="form-control text-right"
+                                       placeholder="جستجو در نام گره ها ..." type="text" required=""
+                                       name="clustersKeywords_SearchBox" id="clustersKeywords_SearchBox" value="">
+                                <button type="button" id="clustersKeywords_SearchBtn"
+                                        class="btn modal_btn mr-2">جست‌وجو
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 p-1 col-12 col-lg-6 mt-1 d-flex">
+
+                        </div>
+                    </div>
+
+                    <div dir="ltr">
+                        <img style="width: 4%; cursor: pointer; margin-top: 20px;"
+                             id="clustersKeywords_SelectNeighbourImg" src="../../static/image/neighbourhood.png">
+                        <img style="width: 3%; cursor: pointer; margin-top: 20px;" id="clustersKeywords_ShowHideImg"
+                             src="../../static/image/hide_nodes.png">
+                    </div>
+
+                    <div id="clustersKeywords_graph_container" class="border mt-1 position-static"
+                         style="height:500px; overflow: hidden;">
+                    </div>
+
+                    <div dir="rtl" style="display: flex; margin-bottom: 50px;">
+                        <div class="col-md-6 px-0 col-12 col-lg-5 pt-1">
+                            <h6 class="table_header text-center  p-2  mb-0">
+                                گره های انتخاب شده
+                            </h6>
+                            <table id="clustersKeywords_selected_node_table" class="table table-striped PopUpTable"
+                                   style="width: 95%;margin: auto;">
+
+                            </table>
+                        </div>
+
+                        <div class="col-md-6 px-0 col-12 col-lg-7 pt-1">
+                            <h6 class="table_header text-center  p-2  mb-0">
+                                یال های انتخاب شده
+                            </h6>
+                            <table id="clustersKeywords_selected_edge_table" class="table table-striped PopUpTable"
+                                   style="width: 95%;margin: auto;">
+
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Doc Different Subject Pane -->
+            <div id="doc_different_subject_pane" class="tab-pane w-100 fade show float-right" role="tabpanel"
+                 aria-labelledby="doc_different_subject">
+
+                <div dir="rtl" class="table-responsive mt-4">
+                    <table id="DifferentSubjectTableId" style="min-height: 200px;"
+                           class="table table-striped DifferentSubjectTable">
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </div>
+</div>
+
+<!-- Distributions Modal Container -->
+<div class="modal fade" id="distributionsModal">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div style="direction: rtl !important;" class="modal-header">
+                <h5 id="DistModalHeader" class="modal-title">تحلیل توزیعی</h5>
+                <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div id="dist_chart_info" class="modal-body bg-light text-justify">
+                <div class="charts-list-container">
+                    <div id="subject_container" class="half"></div>
+                    <!-- <div id="approval_container" class="half"></div> -->
+
+                    <div id="level_container" class="half"></div>
+                    <div id="year_container" class="full"></div>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+
+                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button> -->
+            </div>
+
         </div>
     </div>
+</div>
 
 
-    <!-- Details Modal Container -->
-    <button type="button" id="detailModal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
+<!-- Details Modal Container -->
+<button type="button" id="detailModal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
         data-bs-target="#KmeansdetailModal"></button>
-    <div class="modal fade" id="detailModal">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl">
-            <div class="modal-content">
+<div class="modal fade" id="detailModal">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
 
-                <!-- Modal Header -->
-                <div style="direction: rtl !important;" class="modal-header">
-                    <h5 id="KmeansModalHeader" class="modal-title">ابر واژگان</h5>
-                    <div id="kmeans_topic_keywords_container" class="w-80 text-right" dir="rtl"></div>
-                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+            <!-- Modal Header -->
+            <div style="direction: rtl !important;" class="modal-header">
+                <h5 id="KmeansModalHeader" class="modal-title">ابر واژگان</h5>
+                <div id="kmeans_topic_keywords_container" class="w-80 text-right" dir="rtl"></div>
+                <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body bg-light text-justify">
+
+                <h6 id="KmeansDocsCount" class='text-secondary'></h6>
+
+                <div id="KmeansDetailText" class="bg-light text-justify mx-2 h-100">
                 </div>
 
-                <!-- Modal body -->
-                <div class="modal-body bg-light text-justify">
+                <button id="KmeansLoadMoreDocuments" class="btn btn-white w-100 mb-1 float-left" style="color: #0e3f8b">
+                    <i
+                            class="fa fa-plus pl-2" style="position:relative;top:3px;"></i>نمایش بیش‌تر
+                </button>
 
-                    <h6 id="KmeansDocsCount" class='text-secondary'></h6>
-
-                    <div id="KmeansDetailText" class="bg-light text-justify mx-2 h-100">
-                    </div>
-
-                    <button id="KmeansLoadMoreDocuments" class="btn btn-white w-100 mb-1 float-left" style="color: #0e3f8b"><i
-                            class="fa fa-plus pl-2" style="position:relative;top:3px;"></i>نمایش بیش‌تر</button>
-
-                </div>
-                <!-- Modal footer -->
-                <div id="detail_modal_footer" dir="ltr" class="modal-footer">
+            </div>
+            <!-- Modal footer -->
+            <div id="detail_modal_footer" dir="ltr" class="modal-footer">
 
 
-                    <input type="number" id="ColumnModalPaginationInput" min="1" max="1" value="1"
-                        class="form-select text-right float-right d-none">
+                <input type="number" id="ColumnModalPaginationInput" min="1" max="1" value="1"
+                       class="form-select text-right float-right d-none">
 
-                    <!-- <button id="close_btn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن
-                    </button> -->
+                <!-- <button id="close_btn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن
+                </button> -->
 
-                    <button id="ExportExcel2" onclick="TopicParagraphs_Excel()"
+                <button id="ExportExcel2" onclick="TopicParagraphs_Excel()"
                         class="btn btn-outline-primary float-left"><i class="fa fa-download"></i>
-                        خروجی اکسل احکام
-                    </button>
-                </div>
+                    خروجی اکسل احکام
+                </button>
+            </div>
 
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Container -->
+<div class="modal fade" id="SelectDocumentModal">
+    <div style="max-width: 1200px !important;" class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div style="direction: rtl !important;" class="modal-header">
+                <h5 id="ModalHeader" class="modal-title"></h5>
+                <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div id="ModalBody" class="modal-body text-justify">
+                <div class="container">
+                    <table id="PopUpTable" class="table table-striped LDAPopUpTable">
+                    </table>
+                    <span class="add-row"></span>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div dir="ltr" class="modal-footer">
+
+                <button id="ExportExcel2" disabled class="btn btn-outline-secondary"><i class="fa fa-download"></i>
+                    خروجی اکسل احکام
+                </button>
             </div>
         </div>
     </div>
+</div>
 
+<div class="modal fade" id="subjectDetailModal">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
 
-    <!-- Modal Container -->
-    <div class="modal fade" id="SelectDocumentModal">
-        <div style="max-width: 1200px !important;" class="modal-dialog modal-dialog-scrollable">
-            <div class="modal-content">
+            <!-- Modal Header -->
+            <div style="direction: rtl !important;" class="modal-header">
+                <h5 id="CloudHeader" class="modal-title">ابر واژگان</h5>
+                <button id="subject_close_btn" type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+            </div>
 
-                <!-- Modal Header -->
-                <div style="direction: rtl !important;" class="modal-header">
-                    <h5 id="ModalHeader" class="modal-title"></h5>
-                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
-                </div>
-
-                <!-- Modal body -->
-                <div id="ModalBody" class="modal-body text-justify">
-                    <div class="container">
-                        <table id="PopUpTable" class="table table-striped LDAPopUpTable">
-                        </table>
-                        <span class="add-row"></span>
-                    </div>
-                </div>
-                <!-- Modal footer -->
-                <div dir="ltr" class="modal-footer">
-                    
-                    <button id="ExportExcel2" disabled class="btn btn-outline-secondary"><i class="fa fa-download"></i> خروجی اکسل احکام
-                    </button>
+            <!-- Modal body -->
+            <div class="modal-body bg-light text-justify">
+                <div id="DetailText" class="full">
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="subjectDetailModal">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl">
-            <div class="modal-content">
-
-                <!-- Modal Header -->
-                <div style="direction: rtl !important;" class="modal-header">
-                    <h5 id="CloudHeader" class="modal-title">ابر واژگان</h5>
-                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
-                </div>
-
-                <!-- Modal body -->
-                <div class="modal-body bg-light text-justify">
-                    <div id="DetailText" class="full">
-                    </div>
-                </div>
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button> -->
-                </div>
-
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button> -->
             </div>
+
         </div>
     </div>
-    
+</div>
 
-    <div class="modal fade" id="detailModalCloud">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl">
-            <div class="modal-content">
 
-                <div style="direction: rtl !important;" class="modal-header">
-                    <h5 id="CloudHeader" class="modal-title">ابر واژگان</h5>
-                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
-                </div>
+<div class="modal fade" id="detailModalCloud">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
 
-                <!-- Modal body -->
-                <div class="modal-body bg-light text-justify">
-                    <div id="DetailTextCloud" class="bg-light text-justify mx-2 h-100">
-                    </div>
-                </div>
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button> -->
-                </div>
-
+            <div style="direction: rtl !important;" class="modal-header">
+                <h5 id="CloudHeader" class="modal-title">ابر واژگان</h5>
+                <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
             </div>
+
+            <!-- Modal body -->
+            <div class="modal-body bg-light text-justify">
+                <div id="DetailTextCloud" class="bg-light text-justify mx-2 h-100">
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button> -->
+            </div>
+
         </div>
     </div>
+</div>
 
-    <!-- ANOVA Word Modal Container -->
-    <div class="modal fade" id="anova_word_modal">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl">
-            <div class="modal-content">
+<!-- ANOVA Word Modal Container -->
+<div class="modal fade" id="anova_word_modal">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
 
-                <!-- Modal Header -->
-                <div style="direction: rtl !important;" class="modal-header">
-                    <h5 id="anova_word_ModalHeader" class="modal-title">ابر واژگان</h5>
-                    <div id="anova_word_topic_keywords_container" class="w-80 text-right" dir="rtl"></div>
-                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+            <!-- Modal Header -->
+            <div style="direction: rtl !important;" class="modal-header">
+                <h5 id="anova_word_ModalHeader" class="modal-title">ابر واژگان</h5>
+                <div id="anova_word_topic_keywords_container" class="w-80 text-right" dir="rtl"></div>
+                <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body bg-light text-justify">
+
+                <h6 id="anova_word_DocsCount" class='text-secondary'></h6>
+
+                <div id="anova_word_DetailText" class="bg-light text-justify mx-2 h-100">
                 </div>
 
-                <!-- Modal body -->
-                <div class="modal-body bg-light text-justify">
-
-                    <h6 id="anova_word_DocsCount" class='text-secondary'></h6>
-
-                    <div id="anova_word_DetailText" class="bg-light text-justify mx-2 h-100">
-                    </div>
-
-                    <button id="anova_word_LoadMoreDocuments" class="btn btn-white w-100 mb-1 float-left"
+                <button id="anova_word_LoadMoreDocuments" class="btn btn-white w-100 mb-1 float-left"
                         style="color: #0e3f8b"><i class="fa fa-plus pl-2" style="position:relative;top:3px;"></i>نمایش
-                        بیش‌تر</button>
-
-                </div>
-                <!-- Modal footer -->
-                <div id="detail_modal_footer" dir="ltr" class="modal-footer">
-
-
-                    <input type="number" id="anova_word_ColumnModalPaginationInput" min="1" max="1" value="1"
-                        class="form-select text-right float-right d-none">
-
-                    <button id="anova_word_ExportExcel2" class="btn btn-outline-primary float-left"><i
-                            class="fa fa-download"></i>
-                        خروجی اکسل احکام
-                    </button>
-
-                </div>
+                    بیش‌تر
+                </button>
 
             </div>
+            <!-- Modal footer -->
+            <div id="detail_modal_footer" dir="ltr" class="modal-footer">
+
+
+                <input type="number" id="anova_word_ColumnModalPaginationInput" min="1" max="1" value="1"
+                       class="form-select text-right float-right d-none">
+
+                <button id="anova_word_ExportExcel2" class="btn btn-outline-primary float-left"><i
+                        class="fa fa-download"></i>
+                    خروجی اکسل احکام
+                </button>
+
+            </div>
+
         </div>
     </div>
+</div>
 
-   
-    <!-- Scrollbar -->
-    <button id="scroll_btn" class="p-0" title="بالای صفحه" onclick="topFunction()">
-        <i class="far fa-caret-square-up"></i>
-    </button>
+<button type="button" id="ChartModalBtn_2" class="btn d-none modal_btn" data-bs-toggle="modal"
+        data-bs-target="#ChartModal_2"></button>
+<div class="modal fade" id="ChartModal_2">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
 
-    <script src="../../static/js/logincheck.js"></script>
+            <!-- Modal Header -->
+            <div style="direction: rtl !important;" class="modal-header">
+                <h5 id="ChartModalHeader_2" class="modal-title">عنوان</h5>
+                <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+            </div>
 
-    <script src="../../static/js/scroll_button_handler.js">
-    </script>
+            <!-- Modal body -->
+            <div id="ChartModalText_2" class="modal-body text-justify">
+                <h6 id="DocsCount_2" class='text-secondary'></h6>
+                <div id="ChartModalBodyText_2">
+                </div>
+
+                <button id="LoadMoreDocuments_2" class="btn btn-white w-100 mb-1 float-left"
+                        style="color: #0e3f8b"><i class="fa fa-plus pl-2"
+                                                  style="position:relative;top:3px;"></i>نمایش بیش‌تر
+                </button>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div dir="rtl" class="modal-footer">
+
+                <input type="number" id="ColumnModalPaginationInput_2" min="1" max="1" value="1"
+                       class="form-select text-right float-right d-none">
+
+                <button id="ExportExcel_2" class="btn btn-primary" disabled>
+                    <i class="fa fa-download"></i>
+                    دانلود اسناد
+                </button>
+                <button id="ExportExcel_2" class="btn btn-primary"><i class="fa fa-download"></i> خروجی
+                    اکسل
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Scrollbar -->
+<button id="scroll_btn" class="p-0" title="بالای صفحه" onclick="topFunction()">
+    <i class="far fa-caret-square-up"></i>
+</button>
+
+<script src="../../static/js/logincheck.js"></script>
+
+<script src="../../static/js/scroll_button_handler.js">
+</script>
 
 </body>
 
@@ -875,7 +922,7 @@
         "هوش‌یار- قوانین": [5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
             60, 70, 80, 90, 100]
     }
-    
+
     TABLE_INFO = []
     const COLUMNS = {
         "cloud": "ابر واژگان",
@@ -889,7 +936,7 @@
 
     let topic_response = []
 
-    container_id_list = ['SearchTable','DifferentSubjectTableId',
+    container_id_list = ['SearchTable', 'DifferentSubjectTableId',
         'heatmap_chart_container',
         'centroids_graph_container',
         'clustersKeywords_graph_container'
@@ -908,7 +955,7 @@
             document.getElementById(container_id).innerHTML = "";
         }
     }
-    
+
 
     async function CountryChanged() {
 
@@ -919,9 +966,9 @@
 
         const options = []
         for (i of num_topic) {
-            options.push({value:i, text:i})
+            options.push({value: i, text: i})
         }
-         syncSelectOptions("Cluster_Count_Select", options);
+        syncSelectOptions("Cluster_Count_Select", options);
 
         // await ShowResult();
 
@@ -933,12 +980,13 @@
 
 
     }
+
     CountryChanged()
 
     async function ShowResult() {
         clearPrevResults(container_id_list);
         notyf.dismissAll();
-        
+
         startBlockUI('SearchTable');
 
         const number_of_topic = document.getElementById("Cluster_Count_Select").value;
@@ -948,9 +996,9 @@
         const vector_type = "TF-IDF"
         const ngram_type = "(1, 1)"
 
-        if(AlgoType == "K-Means"){
+        if (AlgoType == "K-Means") {
             let request_link = 'http://' + location.host + "/GetParagraph_Clusters/" + country_id + "/"
-            + AlgoType + "/" + vector_type + "/" + number_of_topic + "/"+ ngram_type + "/" + username + "/";
+                + AlgoType + "/" + vector_type + "/" + number_of_topic + "/" + ngram_type + "/" + username + "/";
 
             let response = await fetch(request_link).then(response => response.json());
             CLUSTERS_DATA = response["clusters_data"]
@@ -960,14 +1008,13 @@
 
             await show_kmeans_table_result()
 
-        }
-        else{
+        } else {
             let request_link = 'http://' + location.host + "/AIGetLDATopic/" + country_id + "/" + number_of_topic + "/" + username + "/";
             let response = await fetch(request_link).then(response => response.json());
             topic_response = response['lda_topics']
             all_para_count = response["all_para_count"]
             console.log(all_para_count)
-            await showDocumentInformation(topic_response,all_para_count);
+            await showDocumentInformation(topic_response, all_para_count);
         }
 
         //user log
@@ -981,7 +1028,6 @@
         form_data.append('algo_type', algo_type);
         form_data.append('cluster_size', cluster_size);
         UserLog(form_data)
- 
 
 
         stopBlockUI('SearchTable', 'موضوعات');
@@ -999,11 +1045,11 @@
         // show_heatmap_charts('heatmap_chart_container', heatmap_chart_data);
 
         // Centroids_showChart(cluster_size_chart_data, "cluster_size_chart_container", false, "خوشه", "تعداد پاراگراف")
-        
+
         // stopBlockUI('heatmap_chart_container', 'فاصله مراکز خوشه‌ها');
         // stopBlockUI('cluster_size_chart_container', 'توزیع اندازه خوشه‌ها');
         // //------------- Show Graph Between Centroid --------------------------------
-        
+
         // startBlockUI('centroids_graph_pane');
 
         // await showCentroidGraph("centroids_graph_container")
@@ -1029,9 +1075,7 @@
         // await showDifferenceSubjectTable(documents_difference_subject);
         // stopBlockUI('DifferentSubjectTableId', 'احکام با موضوع متفاوت');
 
-        
 
-       
     }
 
 
@@ -1041,14 +1085,14 @@
 
 
         columns = [{
-                "name": "id",
-                "title": "ردیف",
-                "breakpoints": "xs sm",
-                "type": "number",
-                "style": {
-                    "width": "5%"
-                }
-            },{
+            "name": "id",
+            "title": "ردیف",
+            "breakpoints": "xs sm",
+            "type": "number",
+            "style": {
+                "width": "5%"
+            }
+        }, {
             "name": "cluster_name",
             "title": "نام خوشه",
         }, {
@@ -1148,7 +1192,6 @@
     }
 
 
-
     async function showCentroidGraph(container) {
         $('#selected_node_table').empty();
         $('#selected_edge_table').empty();
@@ -1184,6 +1227,7 @@
         await DetailFunctionLDA(node_date["id"])
         $("#SelectDocumentModal").modal("show")
     }
+
     function centroids_edge_dbl_click(edge_date) {
         console.log(edge_date)
     }
@@ -1209,7 +1253,7 @@
 
         let Graph_Object = new MyGraph("clustersKeywords_graph_container",
             Nodes_data, Edges_data, {}, {}, width, height, "circular", "clustersKeywords_ChangeLayout", false,
-            "Yellow","clustersKeywords_DegreeSlider", "clustersKeywords_WeightSlider", 1, 0.001,
+            "Yellow", "clustersKeywords_DegreeSlider", "clustersKeywords_WeightSlider", 1, 0.001,
             "clustersKeywords_selected_node_table", "clustersKeywords_selected_edge_table",
             "clustersKeywords_SelectNeighbourImg", "clustersKeywords_ShowHideImg", "امتیاز",
             clustersKeywords_node_dbl_click, clustersKeywords_edge_dbl_click,
@@ -1225,63 +1269,62 @@
             const country_id = document.getElementById("country").value;
             await DetailFunctionLDA(node_date["id"])
             $("#SelectDocumentModal").modal("show")
-        }
-        else {
+        } else {
             const country_id = document.getElementById("country").value;
             const cluster_size = document.getElementById("Cluster_Count_Select").value;
             const username = getCookie("username");
             let request_link = 'http://' + location.host + "/GetKeywordLDAData/" + country_id + "/" + cluster_size + "/" + username + "/" + node_date["id"] + "/";
             let response = await fetch(request_link).then(response => response.json());
 
-            await showDocumentInformation(response["lda_topics"],response["all_para_count"])
+            await showDocumentInformation(response["lda_topics"], response["all_para_count"])
             document.getElementById("CloudHeader").innerHTML = "کلیدواژه: " + node_date["id"]
             document.getElementById("DetailText").innerHTML = '<table class="table table-striped" style="min-height: 200px;" id="KeywordSearchTable"></table>'
             columns = [
                 {
-                "name": "id",
-                "title": "ردیف",
-                "breakpoints": "xs sm",
-                "type": "number",
-                "style": {
-                    "width": "5%"
-                }
-            },{
-            "name": "topic_name",
-            "title": "نام دسته",
-            "style": {
-                "width": "5%"
-            }
-        }, {
-            "name": "keywords",
-            "title": "موضوع (20 کلمه کلیدی)",
-            "style": {
-                "width": "40%"
-            }
-        }, {
-            "name": "paragraph_count",
-            "title": "تعداد احکام",
-            "style": {
-                "width": "5%"
-            }
-        }, {
-            "name": "entropy",
-            "title": "آنتروپی",
-            "style": {
-                "width": "5%"
-            }
-        }, {
-            "name": "subject",
-            "title": "موضوع غالب (براساس کلیدواژگان)",
-            "style": {
-                "width": "10%"
-            }
-        }, {
-            "name": "user_label",
-            "title": "برچسب پیشنهادی",
-            "style": {
-                "width": "10%"
-            }
-        }]
+                    "name": "id",
+                    "title": "ردیف",
+                    "breakpoints": "xs sm",
+                    "type": "number",
+                    "style": {
+                        "width": "5%"
+                    }
+                }, {
+                    "name": "topic_name",
+                    "title": "نام دسته",
+                    "style": {
+                        "width": "5%"
+                    }
+                }, {
+                    "name": "keywords",
+                    "title": "موضوع (20 کلمه کلیدی)",
+                    "style": {
+                        "width": "40%"
+                    }
+                }, {
+                    "name": "paragraph_count",
+                    "title": "تعداد احکام",
+                    "style": {
+                        "width": "5%"
+                    }
+                }, {
+                    "name": "entropy",
+                    "title": "آنتروپی",
+                    "style": {
+                        "width": "5%"
+                    }
+                }, {
+                    "name": "subject",
+                    "title": "موضوع غالب (براساس کلیدواژگان)",
+                    "style": {
+                        "width": "10%"
+                    }
+                }, {
+                    "name": "user_label",
+                    "title": "برچسب پیشنهادی",
+                    "style": {
+                        "width": "10%"
+                    }
+                }]
 
             $('#KeywordSearchTable').empty();
             $('#KeywordSearchTable').footable({
@@ -1316,6 +1359,7 @@
             $("#detailModal").modal("show")
         }
     }
+
     async function clustersKeywords_edge_dbl_click(edge_date) {
         const country_id = document.getElementById("country").value;
         await CloudFunctionLDA(country_id, edge_date["source"])
@@ -1335,7 +1379,6 @@
 
         // set the chart title
         chart.title().fontFamily("vazir").textDirection('rtl');
-        // chart.tooltip().format("{%yPercentOfTotal}% ({%value})\n\n{%custom_field}");
         chart.tooltip().fontFamily('vazir').textDirection('rtl');
 
         // tooltip title font setting
@@ -1347,7 +1390,7 @@
     }
 
 
-    async function showDocumentInformation(lda_topics,all_para_count) {
+    async function showDocumentInformation(lda_topics, all_para_count) {
         let index = 1;
         let document_result_table = [];
 
@@ -1380,10 +1423,12 @@
 
             temp = doc['words'];
             user_label = doc['user_label'];
-            const row = { "id":"" , "topic_name": doc['topic_name'], "keywords": temp,
-            "paragraph_count": doc['paragraph_count'], 
-            "subject_chart": subject_chart, "cloud": cloud, 
-            "detail": detail, "entropy": doc['entropy'], "subject": subject ,"user_label":user_label}
+            const row = {
+                "id": "", "topic_name": doc['topic_name'], "keywords": temp,
+                "paragraph_count": doc['paragraph_count'],
+                "subject_chart": subject_chart, "cloud": cloud,
+                "detail": detail, "entropy": doc['entropy'], "subject": subject, "user_label": user_label
+            }
 
             document_result_table.push(row);
             index += 1;
@@ -1392,23 +1437,22 @@
         show_table_result()
 
 
-
     }
 
     async function show_table_result() {
-        selected_columns = ["index","user_label", "keywords"]
+        selected_columns = ["index", "user_label", "keywords"]
         selected_columns = find_selected_column(selected_columns)
 
 
         columns = [{
-                "name": "id",
-                "title": "ردیف",
-                "breakpoints": "xs sm",
-                "type": "number",
-                "style": {
-                    "width": "5%"
-                }
-            },{
+            "name": "id",
+            "title": "ردیف",
+            "breakpoints": "xs sm",
+            "type": "number",
+            "style": {
+                "width": "5%"
+            }
+        }, {
             "name": "topic_name",
             "title": "نام دسته",
             "style": {
@@ -1529,11 +1573,10 @@
     }
 
 
-
     async function save_user_labelLDA(topic_id) {
         username = getCookie("username");
-        label = $("#"+topic_id).val();
-        
+        label = $("#" + topic_id).val();
+
         if (label != "" && label != "بدون برچسب") {
             let request_link = 'http://' + location.host + "/save_lda_topic_label/" +
                 topic_id + "/" + username + "/" + label + "/"
@@ -1542,12 +1585,11 @@
             result_response = response["result_response"];
             notyf.success(result_response);
 
-        }else {
+        } else {
             notyf.error("!برچسبی وارد نشده‌است");
         }
 
     }
-
 
 
     async function showWithoutSubjectTable(doc_sub) {
@@ -1566,9 +1608,10 @@
                 'target="_blank" href="' + para_link + '">' + doc['paragraph_text'] +
                 "</a>";
 
-            const row = { "index": index, 
-                "doc_name": doc_name,  
-                "para_text":para_text,
+            const row = {
+                "index": index,
+                "doc_name": doc_name,
+                "para_text": para_text,
                 "subject_name": doc['subject_name'],
                 "approval_reference_name": doc['approval_reference_name'],
                 "approval_date": doc['approval_date']
@@ -1610,19 +1653,19 @@
                 "style": {
                     "width": "30%"
                 }
-            },{
+            }, {
                 "name": "subject_name",
                 "title": "موضوع سند",
                 "style": {
                     "width": "10%"
                 }
-            },{
+            }, {
                 "name": "approval_reference_name",
                 "title": "مرجع تصویب",
                 "style": {
                     "width": "10%"
                 }
-            },{
+            }, {
                 "name": "approval_date",
                 "title": "تاریخ تصویب",
                 "style": {
@@ -1656,14 +1699,20 @@
                 "</a>";
 
             const para_text = '<p>' + doc['paragraph_text'] + "</p>";
-            
+
 
             paragraph_link = 'http://' + location.host + "/sentiment_analysis/?id=" + doc['paragraph_id'];
 
-            paragraph_tag ="<a class='' title = 'پروفایل حکم' target='blank' href='" + paragraph_link + "'>" + doc['paragraph_text'] + "</a>"
-            
-            
-            const row = { "index": index, "doc_name": doc_name, "name": paragraph_tag, "subject": doc['document_subject'], "pre_subject": doc['document_predict_subject'] }
+            paragraph_tag = "<a class='' title = 'پروفایل حکم' target='blank' href='" + paragraph_link + "'>" + doc['paragraph_text'] + "</a>"
+
+
+            const row = {
+                "index": index,
+                "doc_name": doc_name,
+                "name": paragraph_tag,
+                "subject": doc['document_subject'],
+                "pre_subject": doc['document_predict_subject']
+            }
 
             document_result.push(row);
             index += 1;
@@ -1754,7 +1803,7 @@
 
             if (ngram_type == '(2, 2)') {
                 tag = '<div class="form-check form-check-inline float-right py-2 pb-1"><input disabled class="form-check-input topic_keyword' + '" id="kw_' + i + '" style="padding:0;"  type="checkbox" value="' + keyword + '" checked = "true"><label class="form-check-label">' + keyword + '</label> </div>'
-            }else {
+            } else {
                 tag = '<div class="form-check form-check-inline float-right py-2 pb-1"><input class="form-check-input topic_keyword' + '" id="kw_' + i + '" style="padding:0;"  type="checkbox" value="' + keyword + '" checked = "true"><label class="form-check-label">' + keyword + '</label> </div>'
             }
             document.getElementById("kmeans_topic_keywords_container").innerHTML += tag;
@@ -1792,10 +1841,10 @@
 
         show_modal_paragraphs(country_id, topic_id, modal_header, ES_SearchResult, curr_page, max_page)
         stopFullPageBlockUI('احکام مرتبط')
-        }
+    }
 
 
-        async function show_modal_paragraphs(country_id, topic_id, modal_header, paragraph_list, curr_page, max_page) {
+    async function show_modal_paragraphs(country_id, topic_id, modal_header, paragraph_list, curr_page, max_page) {
 
 
         body_tag = ""
@@ -1811,8 +1860,7 @@
             try {
                 paragraph = para["highlight"]["attachment.content"][0]
 
-            }
-            catch {
+            } catch {
                 paragraph = para["_source"]["attachment"]["content"]
 
             }
@@ -1833,7 +1881,6 @@
 
 
             }
-
 
 
             paragraph_link = 'http://' + location.host + "/sentiment_analysis/?id=" + paragraph_id;
@@ -1862,8 +1909,6 @@
 
             }
         })
-
-
 
 
         if (curr_page >= max_page) {
@@ -1918,13 +1963,10 @@
     }
 
 
-
-
-
     async function DetailFunctionLDA(topic_id) {
         document.getElementById("ModalHeader").innerHTML = "";
         $('#LDAPopUpTable').empty();
-        
+
         startFullPageBlockUI();
 
         let request_link = 'http://' + location.host + "/AILDADocFromTopic/" + topic_id + "/";
@@ -1957,26 +1999,21 @@
                 if (paragraph['subject2_name'] == null) {
                     if (paragraph['subject1_name'] == 0) {
                         subject_name = '<p>نامشخص</p>'
-                    }
-                    else {
+                    } else {
                         subject_name = '<p>1- ' + paragraph['subject1_name'] + '</p>'
                     }
-                }
-                else {
+                } else {
                     subject_name = '<p>1- ' + paragraph['subject1_name'] + '<br>2- ' + paragraph['subject2_name'] + '</p>'
                 }
-            }
-            else {
+            } else {
                 subject_name = '<p>1- ' + paragraph['subject1_name'] + '<br>2- ' + paragraph['subject2_name'] +
                     '<br>3- ' + paragraph['subject3_name'] + '</p>'
             }
 
 
-            
-
             paragraph_link = 'http://' + location.host + "/sentiment_analysis/?id=" + paragraph['paragraph_id'];
             paragraph_tag = '<a ' +
-                'target="_blank"  href="' + paragraph_link + '">' + paragraph['paragraph_text']+
+                'target="_blank"  href="' + paragraph_link + '">' + paragraph['paragraph_text'] +
                 "</a>";
 
             const row = {
@@ -1985,7 +2022,7 @@
                 'paragraph_text': paragraph_tag,
                 'subject_name': subject_name,
                 'score': paragraph['score']
-                }
+            }
             document_result.push(row);
             index += 1
         }
@@ -2104,7 +2141,6 @@
         // set the chart title
         chart.title("خوشه :شماره " + cluster_name.replaceAll('C', ''));
         chart.title().fontFamily("vazir").textDirection('rtl');
-        // chart.tooltip().format("{%yPercentOfTotal}% ({%value})\n\n{%custom_field}");
         chart.tooltip().fontFamily('vazir').textDirection('rtl');
 
         // tooltip title font setting
@@ -2116,8 +2152,9 @@
         chart.textSpacing(10);
         // set the container id
         chart.container(container);
-        // chart.tooltip().format("{امتیاز: %yPercentOfTotal}% \n({%value})");
-        chart.tooltip().format("امتیاز: {%yPercentOfTotal}%");
+        chart.tooltip().format("امتیاز:{%yPercentOfTotal}")
+
+        {#        {%yPercentOfTotal}#}
 
         // initiate drawing the chart
         chart.draw();
@@ -2132,7 +2169,6 @@
         var chart = anychart.tagCloud(tag_cloud_data);
         chart.fontFamily('vazir');
 
-        // chart.tooltip().format("{%yPercentOfTotal}% ({%value})\n\n{%custom_field}");
         chart.tooltip().fontFamily('vazir').textDirection('rtl');
 
         // tooltip title font setting
@@ -2144,8 +2180,7 @@
         chart.textSpacing(10);
         // set the container id
         chart.container(container);
-        // chart.tooltip().format("{درصد نسبی: %yPercentOfTotal}% \n({%value})");
-        chart.tooltip().format("درصد نسبی: {%yPercentOfTotal}%");
+        chart.tooltip().format("درصد نسبی:{%yPercentOfTotal}%");
 
         // initiate drawing the chart
         chart.draw();
@@ -2163,7 +2198,7 @@
 
         chart_data = response['chart_data']
         console.log(chart_data)
-        documents_information_dict = []
+        documents_information_dict = [topic_id]
         showChart(chart_data, "DetailText", documents_information_dict, true, paragraph_count, dominant_subject_name, correlation_score)
 
 
@@ -2171,16 +2206,15 @@
     }
 
 
-
     function Centroids_showChart(data, position, sortKeys, xAxisTitle, yAxisTitle) {
         const options = {
-                data,
-                sortKeys,
-                xAxisTitle: "خوشه",
-                title: "توزیع خوشه‌ها در پاراگراف",
-                yAxisTitle: "تعداد پاراگراف"
+            data,
+            sortKeys,
+            xAxisTitle: "خوشه",
+            title: "توزیع خوشه‌ها در پاراگراف",
+            yAxisTitle: "تعداد پاراگراف"
 
-            };
+        };
         newBarChart(position, options)
 
     }
@@ -2192,10 +2226,116 @@
             sortKeys,
             xAxisTitle: "موضوع سند",
             title: "تعداد احکام: " + paragraph_count + '\n' + 'موضوع غالب (براساس کلیدواژگان): ' + dominant_subject_name + "\n" + 'آنتروپی: ' + correlation_score + "\n",
-            yAxisTitle: "تعداد سند"
-
+            yAxisTitle: "تعداد سند",
+            onClick: (event, data) => {
+                const click_tag = event.domTarget.tag;
+                const index = click_tag["index"]
+                const text = data[index][0];
+                click_classification_chart(documents_information_result[0], text)
+            }
         }
         newDoughnutChart(position, options)
+    }
+
+    function endNewTimer() {
+        endTime = new Date();
+        var timeDiff = endTime - startTime; //in ms
+        // strip the ms
+        timeDiff /= 1000;
+
+        // get seconds
+        var seconds = Math.round(timeDiff);
+        console.log(seconds + " seconds");
+        return seconds;
+    }
+
+    function startNewBlockUI() {
+        $.blockUI({
+            // BlockUI code for element blocking
+            message: ("<div class='lds-ellipsis'><div></div><div></div><div></div><div></div></div><h6 style = 'font-family:vazir;'>...در حال دریافت اطلاعات<h6>"),
+            css: {
+                color: 'var(--menu_color)',
+                border: 'none',
+                borderRadius: '5px',
+                borderColor: 'var(--menu_color)',
+                paddingTop: '5px'
+            }
+        });
+        startTime = new Date();
+    }
+
+    function stopNewBlockUI() {
+        $.unblockUI();
+        elapsed_time = endNewTimer();
+        toast_message = '<span class="text-secondary"> ' + 'زمان سپری شده: ' + '</span>' + '<span class="bold" style="color:var(--menu_color)">' + elapsed_time + ' ثانیه' + '</span>'
+    }
+
+    async function click_classification_chart(topic_id, subject) {
+        startNewBlockUI("کلیک روی نمودار")
+        $('#subject_close_btn').click()
+        const request_link = 'http://' + location.host + "/AILDASubjectChartTopicGetInformation/" + topic_id + "/" + subject + "/";
+
+        document.getElementById("ChartModalBodyText_2").innerHTML = ""
+        document.getElementById("ChartModalHeader_2").innerHTML = ""
+
+
+        // set modal header
+        modal_header = "احکام دارای موضوع " + subject
+        document.getElementById("ChartModalHeader_2").innerHTML = modal_header
+        // define request link without curr_page & search_result_size
+
+        request_configs = {
+            "link": request_link,
+            "search_result_size": SEARCH_RESULT_SIZE,
+            "max_result_window": MAX_RESULT_WINDOW,
+            "data_type": "url_parameters",
+            "form_data": null
+        }
+
+        export_link = 'http://' + location.host + "/AILDASubjectChartTopicGetInformationExport/" + topic_id + "/" + subject + "/";
+
+        export_configs = {
+            "link": export_link,
+            "btn_id": "ExportExcel_2"
+        }
+
+        highlight_configs = {
+            "parameters": null,
+            "highlight_enabled": false,
+            "custom_function": null
+        }
+
+        modal_configs = {
+            "body_id": "ChartModalBodyText_2",
+            "modal_load_more_btn_id": "LoadMoreDocuments_2",
+            "result_size_container_id": "DocsCount_2",
+            "result_size_message": "حکم",
+            "list_type": "ordered",
+            "custom_body_function": null,
+            "body_parameters": null
+
+        }
+
+        segmentation_config = {
+            "parameters": ["احساس بسیار منفی", "بدون ابراز احساسات", "احساس منفی", "احساس خنثی یا ترکیبی از مثبت و منفی", "احساس مثبت", "احساس بسیار مثبت"],
+            "keyword": "sentiment",
+            "enable": false,
+            "aggregation_keyword": "rahbari-sentiment-agg"
+        }
+
+
+        column_interactivity_obj = new ColumnInteractivity("paragraphs",
+            request_configs, export_configs, modal_configs, highlight_configs, segmentation_config)
+
+        result = await column_interactivity_obj.load_content();
+        console.log(result)
+
+        $('#ChartModalBtn_2').click()
+        stopNewBlockUI('کلیک روی نمودار');
+
+        $('#ExportExcel_2').on('click', async function () {
+            await column_interactivity_obj.download_content();
+        })
     }
 
 
@@ -2230,12 +2370,11 @@
         discriminant_words_chart_data = response["discriminant_words_chart_data"]
 
 
-
-
-        showAnovaChart(discriminant_words_chart_data, "KmeansDetailText", false, "واژه", "درصد امتیاز","نمودار واژگان متمایزکننده")
+        showAnovaChart(discriminant_words_chart_data, "KmeansDetailText", false, "واژه", "درصد امتیاز", "نمودار واژگان متمایزکننده")
         stopFullPageBlockUI('واژگان متمایزکننده');
 
     }
+
     function showAnovaChart(data, position, sortKeys, xAxisTitle, yAxisTitle, title) {
         const options = {
             data,
@@ -2297,7 +2436,7 @@
             "max_result_window": MAX_RESULT_WINDOW
         }
 
-        highlight_parameters = { "selected_word": word }
+        highlight_parameters = {"selected_word": word}
 
         highlight_configs = {
             "parameters": highlight_parameters,
@@ -2326,13 +2465,13 @@
             "btn_id": "anova_word_ExportExcel2"
         }
         segmentation_config = {
-                "parameters": null,
-                "keyword": null,
-                "enable": false,
-                "aggregation_keyword":null
-            }
+            "parameters": null,
+            "keyword": null,
+            "enable": false,
+            "aggregation_keyword": null
+        }
         column_interactivity_obj = new ColumnInteractivity("paragraphs",
-            request_configs, export_configs, modal_configs, highlight_configs,segmentation_config)
+            request_configs, export_configs, modal_configs, highlight_configs, segmentation_config)
 
         column_interactivity_obj.load_content();
 
@@ -2343,8 +2482,7 @@
         })
 
 
-        }
-
+    }
 
 
     async function DistributionsFunction(country_id, topic_id) {
@@ -2361,7 +2499,8 @@
         startFullPageBlockUI()
 
         let request_link = 'http://' + location.host + "/Get_Topic_Paragraphs_ES/" + country_id + "/"
-            + topic_id + "/" + SEARCH_RESULT_SIZE + "/" + 1 + "/" + 0 + "/" + 1 + "/";;
+            + topic_id + "/" + SEARCH_RESULT_SIZE + "/" + 1 + "/" + 0 + "/" + 1 + "/";
+        ;
 
         let response = await fetch(request_link).then(response => response.json());
         topic_paragraphs = response["topic_paragraphs"]
@@ -2398,7 +2537,7 @@
         /* Show Chart  */
 
 
-        showChartData(country_id, topic_id, subject_data, "subject_container", documents_information_result, false, "موضوع حکم", entropy, cluster_size, 'توزیع موضوعی احکام' + '\n' +  "آنتروپی: " + entropy + "\n" + "تعداد احکام: " + cluster_size)
+        showChartData(country_id, topic_id, subject_data, "subject_container", documents_information_result, false, "موضوع حکم", entropy, cluster_size, 'توزیع موضوعی احکام' + '\n' + "آنتروپی: " + entropy + "\n" + "تعداد احکام: " + cluster_size)
         showChartData(country_id, topic_id, approval_year_data, "year_container", documents_information_result, true, "سال تصویب سند", entropy, cluster_size, "توزیع احکام براساس سال تصویب")
         // showHistogramChart(country_id, topic_id, approval_references_data, "approval_container", documents_information_result, false, "مرجع تصویب سند", "توزیع احکام براساس سطح احکام")
         showChartData(country_id, topic_id, level_data, "level_container", documents_information_result, false, "سطح سند", entropy, cluster_size, "توزیع احکام براساس سطح سند")
@@ -2447,71 +2586,71 @@
             }
         };
 
-        
+
         if (container === 'subject_container') {
             options.onClick = async function (event, data) {
-                    const click_tag = event.domTarget.tag;
-                    const index = click_tag["index"]
-                    
+                const click_tag = event.domTarget.tag;
+                const index = click_tag["index"]
 
-                    let field_value = data[index][0];
-                    let field_name = CHART_FIELD_DICT[container] + ".keyword"
-                    let chart_name = CHART_NAME_DICT[container]
 
-                    await GetClickedColumnParagraphs(country_id, topic_id, chart_name, field_name, field_value)
+                let field_value = data[index][0];
+                let field_name = CHART_FIELD_DICT[container] + ".keyword"
+                let chart_name = CHART_NAME_DICT[container]
 
-                    $("#detailModal").modal("show")
-                    $("#detail_modal_footer #close_btn").show();
-                    $("#detail_modal_footer #ExportExcel2").hide();
-                }
+                await GetClickedColumnParagraphs(country_id, topic_id, chart_name, field_name, field_value)
+
+                $("#detailModal").modal("show")
+                $("#detail_modal_footer #close_btn").show();
+                $("#detail_modal_footer #ExportExcel2").hide();
+            }
             newDoughnutChart(container, options);
         } else {
             newBarChart(container, options);
         }
-        
+
 
     }
 
     function showHistogramChart(country_id, topic_id, data, container, documents_information_result, sortKeys, xAxisTitle, title) {
-            // dict { 'approval_reference': [{ x: count, y: 1 }]
-            const references = {};
-            data.forEach(ref => {
-                references[ref.key] = [{ x: String(ref.doc_count), y: 1 }]
-            });
-            const options = {
-                data: references,
-                sortKeys,
-                xAxisTitle,
-                title,
-                showLabels: true,
-                yAxisTitle: "تعداد احکام",
-                onClick:async function (event, data) {
-                    const click_tag = event.domTarget.tag;
-                    const index = click_tag["index"]
+        // dict { 'approval_reference': [{ x: count, y: 1 }]
+        const references = {};
+        data.forEach(ref => {
+            references[ref.key] = [{x: String(ref.doc_count), y: 1}]
+        });
+        const options = {
+            data: references,
+            sortKeys,
+            xAxisTitle,
+            title,
+            showLabels: true,
+            yAxisTitle: "تعداد احکام",
+            onClick: async function (event, data) {
+                const click_tag = event.domTarget.tag;
+                const index = click_tag["index"]
 
-                    let field_value = data[0];
-                    let field_name = CHART_FIELD_DICT[container] + ".keyword"
-                    let chart_name = CHART_NAME_DICT[container]
+                let field_value = data[0];
+                let field_name = CHART_FIELD_DICT[container] + ".keyword"
+                let chart_name = CHART_NAME_DICT[container]
 
-                    if (container == "year_container") {
+                if (container == "year_container") {
 
-                        field_name = field_name.replaceAll(".keyword", "");
-                        if (field_value == "نامشخص")
-                            field_value = 0
-                    }
-
-                    await GetClickedColumnParagraphs(country_id, topic_id, chart_name, field_name, field_value)
-
-                    $("#detailModal").modal("show")
-                    $("#detail_modal_footer #close_btn").show();
-                    $("#detail_modal_footer #ExportExcel2").hide();
+                    field_name = field_name.replaceAll(".keyword", "");
+                    if (field_value == "نامشخص")
+                        field_value = 0
                 }
-            };
 
-            newStackedColumnChart(container, options)
-        }
-    
-        async function GetClickedColumnParagraphs(country_id, topic_id, chart_name, field_name, field_value) {
+                await GetClickedColumnParagraphs(country_id, topic_id, chart_name, field_name, field_value)
+
+                $("#detailModal").modal("show")
+                $("#detail_modal_footer #close_btn").show();
+                $("#detail_modal_footer #ExportExcel2").hide();
+            }
+        };
+
+        newStackedColumnChart(container, options)
+    }
+
+    async function GetClickedColumnParagraphs(country_id, topic_id, chart_name, field_name, field_value) {
         startFullPageBlockUI();
 
         // clear prev results
@@ -2533,7 +2672,6 @@
             let tag = '<div class="form-check form-check-inline float-right py-2 pb-1"><input class="form-check-input  topic_keyword' + '" id="kw_' + i + '" style="padding:0;"  type="checkbox" value="' + keyword + '" checked = "true"><label class="form-check-label">' + keyword + '</label> </div>'
             document.getElementById("kmeans_topic_keywords_container").innerHTML += tag;
         }
-
 
 
         $('.topic_keyword').change(function () {
@@ -2560,7 +2698,7 @@
             "form_data": null
         }
 
-        highlight_parameters = { "keyword_list": keyword_list }
+        highlight_parameters = {"keyword_list": keyword_list}
 
         highlight_configs = {
             "parameters": highlight_parameters,
@@ -2584,13 +2722,13 @@
             "btn_id": null
         }
         segmentation_config = {
-                "parameters": null,
-                "keyword": null,
-                "enable": false,
-                "aggregation_keyword":null
-            }
+            "parameters": null,
+            "keyword": null,
+            "enable": false,
+            "aggregation_keyword": null
+        }
         column_interactivity_obj = new ColumnInteractivity("paragraphs",
-            request_configs, export_configs, modal_configs, highlight_configs,segmentation_config)
+            request_configs, export_configs, modal_configs, highlight_configs, segmentation_config)
 
         column_interactivity_obj.load_content();
 
@@ -2728,7 +2866,6 @@
 <!-- {#
 <script src="../../static/js/UserLogSave.js"></script>#} -->
 <script src="../../static/js/signout_function.js"></script>
-
 
 
 </html>

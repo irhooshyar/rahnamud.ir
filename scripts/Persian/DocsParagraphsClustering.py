@@ -359,7 +359,6 @@ def centroidsDict(centroids, index):
         centroid_dict.update( {a[i,0] : a[i,1]} )
 
     return centroid_dict
-
 def generateWordClouds(centroids):
     wordcloud = PersianWordCloud(max_font_size=100, background_color = 'white',
     only_persian=True,no_reshape=True)

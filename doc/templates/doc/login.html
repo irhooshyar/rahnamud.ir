@@ -14,7 +14,7 @@
     <!--<script type="text/javascript" src="http://l2.io/ip.js?var=myip">
     </script>-->
 
-    <script src="../../static/js/cc.js"></script>
+    <script src="../../static/js/Bita.js"></script>
     
     <title>ورود</title>
     {% include "doc/title_icon.html" %}
@@ -27,14 +27,14 @@
             <div class="col-md-3"></div>
             <div class="col-md-6 col-sm-11 col-lg-6 offset-md-3">
 
-                <form id="login" class="shadow p-4 bg-white" method="POST" include-form-tracking>
+                <form id="login" name="login" class="shadow p-4 bg-white" method="POST" include-form-tracking>
                     <div class="mb-3 text-center">
                     <img width="170px" style=""
                             src="../static/image/rahbar_profile.png" alt="">
                     </div>
                     <div class="mb-3">
                         <label for="username">نام کاربری:</label>
-                        <input class="form-control" name="username" id="username" include-content-tracking placeholder="Username">
+                        <input class="form-control" name="email" id="username" include-content-tracking placeholder="Username"> <!-- Milad Allahgholi -->
                     </div>
 
                     <div class="mb-3">
@@ -189,6 +189,9 @@
         }
 
     </script>
-    <script> initCC(142);</script>
+    <script>
+        console.log("Bita1")
+        initXC(304, "wKxiyjGD2r9Iv3zK4JoAV3qWL0cJlsjG2lkfcT98");
+    </script>
 </body>
 </html>

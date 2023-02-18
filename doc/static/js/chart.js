@@ -20,7 +20,7 @@ function newBarChart(container_id, options) {
         return x[0] === 'نامشخص' ? -1 : y[0] === 'نامشخص' ? 1 : 0;
     });
 
-    if ( data.length > 0 && data[0][0] == 0) {
+    if (data.length > 0 && data[0][0] == 0) {
         data[0][0] = 'نامشخص'
     }
 
@@ -100,8 +100,8 @@ function newBarChart(container_id, options) {
     chart.draw();
     console.log("----------------------------------------------------------------")
     console.log(options.data.length)
-    if(data.length == 0){
-       
+    if (data.length == 0) {
+
         document.getElementById(container_id).innerHTML = "نتیجه‌ای یافت نشد"
     }
 
@@ -119,7 +119,13 @@ function newBarChart(container_id, options) {
             document.body.style.cursor = "auto";
         });
 
-        chart.listen('Click', (e) => {options.onClick(e, data)})
+        chart.listen('Click', (e) => {
+            const click_tag = e.domTarget.tag;
+            const index = click_tag["index"]
+            const text = data.row(index)[0];
+
+            options.onClick(e, data, text)
+        })
     }
 
 }
@@ -139,10 +145,12 @@ function newStackedColumnChart(container_id, options) {
         let data = anychart.data.set(value);
         let series = chart.column(data);
         series.name(key);
-        
+
         // series.rendering().point(roundedColumnDrawer);
-        value.forEach((v) => {xScaleValues[v.x] = v.x})
-      
+        value.forEach((v) => {
+            xScaleValues[v.x] = v.x
+        })
+
         if (options.onClick) {
             series.listen("mouseOver", function () {
                 document.body.style.cursor = "pointer";
@@ -150,10 +158,15 @@ function newStackedColumnChart(container_id, options) {
             series.listen("mouseOut", function () {
                 document.body.style.cursor = "auto";
             });
-            
-            Object.entries(value).forEach(([x, value]) => {
-                series.listen('Click', (e) => options.onClick(e, [key, value.x]))
+
+            // Object.entries(value).forEach(([x, value]) => {
+            series.listen('Click', (e) => {
+                const click_tag = e.domTarget.tag;
+                const index = click_tag["index"]
+
+                options.onClick(e, [key, value.x], [key, value[index].x])
             })
+            // })
         }
     })
 
@@ -212,7 +225,11 @@ function newStackedColumnChart(container_id, options) {
     chart.xGrid(true);
     chart.xGrid().fill("#EFEFEF99");
     xScaleValues = Object.values(xScaleValues)
-    if (options.sortKeys){xScaleValues = xScaleValues.sort((v1, v2) => {return v1<v2})}
+    if (options.sortKeys) {
+        xScaleValues = xScaleValues.sort((v1, v2) => {
+            return v1 < v2
+        })
+    }
     chart.xScale().values(xScaleValues)
     chart.yScale().minimum(0);
     /* enable the value stacking mode
@@ -266,7 +283,13 @@ function newDoughnutChart(container_id, options) {
             document.body.style.cursor = "auto";
         });
 
-        chart.listen('Click', (e) => options.onClick(e, options.data))
+        chart.listen('Click', (e) => {
+            const click_tag = e.domTarget.tag;
+            const index = click_tag["index"]
+            const text = options.data[index][0];
+
+            options.onClick(e, options.data, text)
+        })
     }
 }
 
@@ -306,7 +329,9 @@ function newBarsChart(container_id, options) {
                 document.body.style.cursor = "auto";
             });
 
-            series.listen('Click', (e) => {options.bars[i].onClick(e, data)})
+            series.listen('Click', (e) => {
+                options.bars[i].onClick(e, data)
+            })
 
         }
 
@@ -338,7 +363,7 @@ function newBarsChart(container_id, options) {
     xAxis.title(options.xAxisTitle);
     xAxis.title().fontFamily('vazir');
     xAxis.title().fontWeight("bold");
-    
+
     var yAxis = chart.yAxis();
     yAxis.title(options.yAxisTitle);
     yAxis.title().fontFamily('vazir');
@@ -452,7 +477,6 @@ function roundedColumnDrawer() {
 }
 
 
-
 // added line chart
 function newLineChart(container_id, options) {
     const {chartContainerId, chartDownloadId} = newChartContainer(container_id, options);
@@ -472,8 +496,8 @@ function newLineChart(container_id, options) {
         return x[0] === 'نامشخص' ? -1 : y[0] === 'نامشخص' ? 1 : 0;
     });
 
-    if ( data.length > 0 && data[0][0] == 0) {
-        // data[0][0] = 'نامشخص'
+    if (data.length > 0 && data[0][0] === 0 && options.zero_to_unknown) {
+        data[0][0] = 'نامشخص'
     }
 
 
@@ -505,6 +529,9 @@ function newLineChart(container_id, options) {
     xAxisLabels.wordBreak("keep-all");
     xAxisLabels.textOverflow('...')
     xAxisLabels.fontColor('#6C757D')
+    if (options.rotate_x_labels) {
+        xAxisLabels.rotation(-90)
+    }
 
     var yAxisLabels = chart.yAxis().labels();
     yAxisLabels.fontFamily("vazir");
@@ -551,8 +578,8 @@ function newLineChart(container_id, options) {
     chart.draw();
     console.log("----------------------------------------------------------------")
     console.log(options.data.length)
-    if(data.length == 0){
-       
+    if (data.length == 0) {
+
         document.getElementById(container_id).innerHTML = "نتیجه‌ای یافت نشد"
     }
 
@@ -570,7 +597,166 @@ function newLineChart(container_id, options) {
             document.body.style.cursor = "auto";
         });
 
-        chart.listen('Click', (e) => {options.onClick(e, data)})
+        chart.listen('Click', (e) => {
+            const click_tag = e.domTarget.tag;
+            const index = click_tag["index"]
+            const text = options.data[click_tag][0];
+
+            options.onClick(e, data, text)
+        })
     }
 
+}
+
+function NewGaugeChart(container_id, options) {
+    const {chartContainerId, chartDownloadId} = newChartContainer(container_id, options);
+    const palette = anychart.palettes.distinctColors();
+
+    let all_data = options.all_data
+    let chart_data = options.data
+
+    if (chart_data.length === 0) {
+        document.getElementById(chartContainerId).innerText = "هیچ داده ای وجود ندارد"
+        return;
+    }
+
+    let names = [];
+    let data = [];
+    for (let item of chart_data) {
+        names.push(item[0])
+        data.push(item[1])
+    }
+    for (let i = 0; i < names.length; i++) {
+        data.push(all_data)
+    }
+
+    var dataSet = anychart.data.set(data);
+    var makeBarWithBar = function (gauge, radius, i, width) {
+        var stroke = null;
+        gauge
+            .label(i)
+            .text(names[i] + ' ' + Math.ceil(((data[i] / all_data) * 100)) + '%') // color: #7c868e
+            .textDirection("rtl")
+            .fontFamily("vazir")
+            .fontColor('#6C757D')
+
+        gauge
+            .label(i)
+            .hAlign('center')
+            .vAlign('middle')
+            .anchor('right-center')
+            .padding(0, 10)
+            .height(width / 2 + '%')
+            .offsetY(radius + '%')
+            .offsetX(0)
+            .fontFamily("vazir");
+
+        gauge
+            .bar(i)
+            .dataIndex(i)
+            .radius(radius)
+            .width(width)
+            .fill(palette.itemAt(i))
+            .stroke(null)
+            .zIndex(5);
+        gauge
+            .bar(i + 100)
+            .dataIndex(i + (data.length / 2))
+            .radius(radius)
+            .width(width)
+            .fill('#F5F4F4')
+            .stroke(stroke)
+            .zIndex(4);
+
+        return gauge.bar(i);
+    };
+
+
+    anychart.onDocumentReady(function () {
+        var gauge = anychart.gauges.circular();
+        gauge.data(dataSet);
+        gauge
+            .fill('#fff')
+            .stroke(null)
+            .padding(0)
+            .margin(100)
+            .startAngle(0)
+            .sweepAngle(270);
+
+        let tooltip = gauge.tooltip();
+        tooltip.fontFamily("vazir");
+        tooltip.hAlign('center').format(function (e) {
+            const allDataValue = `تعداد کل ${options.all_data_tooltip}: ${all_data}`
+            let returnValue = ""
+            if (e.index >= data.length / 2) {
+                let dataIndex = e.index - data.length / 2
+                const dataIndexValue = data[dataIndex]
+                const dataIndexTitle = names[dataIndex]
+
+                returnValue = `تعداد ${options.data_tooltip} ${dataIndexTitle}: ${dataIndexValue}` + `\n` + allDataValue
+            } else {
+                const dataIndexValue = data[e.index]
+                const dataIndexTitle = names[e.index]
+
+                returnValue = `تعداد ${options.data_tooltip} ${dataIndexTitle}: ${dataIndexValue}` + `\n` + allDataValue
+            }
+            return returnValue;
+        });
+
+
+        var axis = gauge.axis().radius(100).width(1).fill(null);
+        axis
+            .scale()
+            .minimum(0)
+            .maximum(all_data)
+            .ticks({interval: 1})
+            .minorTicks({interval: 1});
+        axis.labels().enabled(false);
+        axis.ticks().enabled(false);
+        axis.minorTicks().enabled(false);
+
+        const itration = data.length / 2
+        let radius = 100;
+        let width = 75 / itration
+        if (itration === 1) width = 55
+        for (let i = 0; i < itration; i++) {
+            makeBarWithBar(gauge, radius, i, width);
+            radius = radius - (100 / itration)
+        }
+        gauge.margin(50);
+
+        if (options.onClick) {
+            gauge.listen("mouseOver", function () {
+                document.body.style.cursor = "pointer";
+            });
+            gauge.listen("mouseOut", function () {
+                document.body.style.cursor = "auto";
+            });
+
+            gauge.listen('Click', (e) => {
+                const click_tag = e.domTarget.tag;
+                let index = click_tag["index"]
+                if (index >= options.data.length) {
+                    index = index - options.data.length
+                }
+                options.onClick(e, options.data, options.data[index][0])
+            })
+        }
+
+        // gauge
+        //     .title()
+        //     .text(
+        //         options.title
+        //     )
+        //     .useHtml(true);
+        // gauge
+        //     .title()
+        //     .enabled(true)
+        //     .hAlign('center')
+        //     .padding(0)
+        //     .margin([0, 0, 20, 0]);
+
+        gauge.container(chartContainerId);
+        gauge.draw();
+    });
 }

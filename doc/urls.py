@@ -72,6 +72,7 @@ urlpatterns = [
     path("reset-password/<str:user_id>/<str:token>/<str:password>", views.reset_password, name="reset_password"),
     path("Confirm-Email/<str:user_id>/<str:token>", views.email_check, name="email_check"),
     path("Confirm-Email/<str:user_id>/<str:token>/<str:code>", views.user_activation, name="user_activation"),
+    path("signup/<str:email>/<str:code>", views.signup_user_activation, name="signup_user_activation"),
     path("resend-email/", views.resend_email, name="resend_email"),
     path("resend-email/<str:email>/", views.resend_email_code, name="resend_email_code"),
     path("admin/", views.Admin, name="admin"),
@@ -143,7 +144,7 @@ urlpatterns = [
     path('GetSearchDetails_ES_2/<int:document_id>/<str:search_type>/<str:text>/', views.GetSearchDetails_ES_2,
          name='GetSearchDetails_ES_2'),
     path(
-        'SearchRahbari_ES/<int:country_id>/<int:type_id>/<str:label_name>/<int:from_year>/<int:to_year>/<str:rahbari_type>/<str:document_ids>/<str:place>/<str:text>/<str:search_type>/<int:curr_page>/<int:page_size>/',
+        'SearchRahbari_ES/<int:country_id>/<int:type_id>/<str:label_name>/<int:from_year>/<int:to_year>/<str:rahbari_type>/<str:document_ids>/<str:place>/<str:text>/<str:search_type>/<int:with_rahbari_type>/<int:curr_page>/<int:page_size>/',
         views.SearchRahbari_ES, name='SearchRahbari_ES'),
     path(
         'SearchRahbariRule_ES/<int:country_id>/<int:type_id>/<str:label_name>/<int:from_year>/<int:to_year>/<str:rahbari_type>/<str:place>/<str:text>/<str:search_type>/<int:curr_page>/',
@@ -241,6 +242,20 @@ urlpatterns = [
     path('GetDetailChartSloganAnalysis/<int:country_id>/<int:slogan_year>/<str:chart_type>/<str:column_name>/',
          views.GetDetailChartSloganAnalysis, name='GetDetailChartSloganAnalysis'),
     path('slogan_get_chart/<int:slogan_year>/', views.slogan_get_chart, name='slogan_get_chart'),
+    path(
+        'slogan_stackBased_get_information/<int:key>/<int:slogan_year>/<int:selected_year>/<int:curr_page>/<int:result_size>/',
+        views.slogan_stackBased_get_information, name='slogan_stackBased_get_information'),
+    path(
+        'slogan_stackBased_information_export/<int:key>/<int:slogan_year>/<int:selected_year>/<int:curr_page>/<int:result_size>/',
+        views.slogan_stackBased_information_export, name='slogan_stackBased_information_export'),
+
+    path(
+        'slogan_gauge_get_information/<str:key>/<int:curr_page>/<int:result_size>/',
+        views.slogan_gauge_get_information, name='slogan_gauge_get_information'),
+    path(
+        'slogan_gauge_information_export/<str:key>/<int:curr_page>/<int:result_size>/',
+        views.slogan_gauge_information_export, name='slogan_gauge_information_export'),
+
     path('AI_predict_subject_LDA/<int:country_id>/<int:number_of_topic>/', views.GetDocumentsPredictSubjectLDA,
          name='GetDocumentsPredictSubjectLDA'),
     path("AI_topics/", views.AI_topics, name='AI_topics'),
@@ -248,6 +263,13 @@ urlpatterns = [
     path("AIGetLDATopic/<int:country_id>/<int:number_of_topic>/<str:username>/", views.AIGetLDATopic,
          name='AIGetLDATopic'),
     path("AILDADocFromTopic/<int:topic_id>/", views.AILDADocFromTopic, name='AILDADocFromTopic'),
+    path("AILDASubjectChartTopicGetInformation/<int:topic_id>/<str:subject_name>/<int:curr_page>/<int:result_size>/",
+         views.AILDASubjectChartTopicGetInformation, name='AILDASubjectChartTopicGetInformation'),
+
+    path(
+        "AILDASubjectChartTopicGetInformationExport/<int:topic_id>/<str:subject_name>/<int:curr_page>/<int:result_size>/",
+        views.AILDASubjectChartTopicGetInformationExport, name='AILDASubjectChartTopicGetInformationExport'),
+
     path("AILDAWordCloudTopic/<int:topic_id>/", views.AILDAWordCloudTopic, name='AILDAWordCloudTopic'),
     path("AILDASubjectChartTopic/<int:topic_id>/", views.AILDASubjectChartTopic, name='AILDASubjectChartTopic'),
     path('GetLDAForDocByID/<int:document_id>/', views.GetLDAForDocByID, name='GetLDAForDocByID'),
