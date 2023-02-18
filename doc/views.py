@@ -3807,9 +3807,9 @@ def UserLogSaved(request, username, url, sub_url='0', ip='0'):
         paeg_url = url + "/" + sub_url
 
     # save to DB (temporary)
-    UserLogs.objects.create(user_id_id=user_id, user_ip=ip,
-                            page_url=paeg_url, visit_time=date_time,
-                            detail_json=request.POST)
+    # UserLogs.objects.create(user_id_id=user_id, user_ip=ip,
+    #                         page_url=paeg_url, visit_time=date_time,
+    #                         detail_json=request.POST)
 
     user_info = User.objects.get(id=user_id)
 
