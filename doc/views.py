@@ -6946,7 +6946,7 @@ def GetDocumentsSimilarity(request,document_id,):
     country_obj = Document.objects.get(id=document_id).country_id
     index_name = standardIndexName(country_obj, Document.__name__)
 
-    similarity_type = ["BM25","DFI","DFR"]
+    similarity_types = ["BM25","DFI","DFR"]
 
     for similarity_type in similarity_types:
         if similarity_type == "BM25":
