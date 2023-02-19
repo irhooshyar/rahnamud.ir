@@ -93,17 +93,17 @@ def apply(folder, Country,similarity_type):
 
     if similarity_type == "BM25":
         settings = es_config.Standard_BM25_Settings
-        mappings = es_config.FA_BM25_Mappings
+        mappings = es_config.BM25_Rahbari_Mappings
         index_name =  index_name + "_bm25_index"
 
     elif similarity_type == "DFR":
         settings = es_config.Standard_DFR_Settings
-        mappings = es_config.FA_DFR_Mappings
+        mappings = es_config.DFR_Rahbari_Mappings
         index_name = index_name + "_dfr_index"
 
     elif similarity_type == "DFI":
         settings = es_config.Standard_DFI_Settings
-        mappings = es_config.FA_DFI_Mappings
+        mappings = es_config.DFI_Rahbari_Mappings
         index_name = index_name + "_dfi_index"
 
     documents = Document.objects.filter(country_id__id=Country.id).annotate(

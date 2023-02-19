@@ -953,7 +953,7 @@ def ingest_standard_documents_to_index(request, id, language):
     return redirect('zip')
 
 
-def ingest_standard_documents_to_sim_index(request, id, language):
+def ingest_documents_to_sim_index(request, id):
     file = get_object_or_404(Country, id=id)
 
     from es_scripts import IngestDocumentsToSimilarityIndex
@@ -963,7 +963,7 @@ def ingest_standard_documents_to_sim_index(request, id, language):
     dot_index = my_file.rfind('.')
     folder_name = my_file[:dot_index]
 
-    similarity_list = ['BM25']
+    similarity_list = ['BM25','DFR','DFI']
 
     for sim_type in similarity_list:
         IngestDocumentsToSimilarityIndex.apply(folder_name, file, sim_type)
@@ -6905,10 +6905,53 @@ def GetActorsPararaphsByDocumentId(request, document_id):
     return JsonResponse({"actors_paragraphs": actors_paragraphs})
 
 
-def GetBM25Similarity(request, document_id):
+def GetBM25Similarity(request,document_id):
     sim_docs = []
     country_obj = Document.objects.get(id=document_id).country_id
     index_name = standardIndexName(country_obj, Document.__name__)
+
+    sim_query = {
+        "more_like_this": {
+            "analyzer": "persian_custom_analyzer",
+            "fields": ["attachment.content"],
+            "like": [
+                {
+                    "_index": index_name,
+                    "_id": "{}".format(document_id),
+
+                }
+
+            ],
+            "min_term_freq": 50,
+            "max_query_terms": 100000
+        }
+    }
+
+    response = client.search(index=index_name,
+                             _source_includes=['document_id', 'name', 'approval_date', 'subject_name'],
+                             request_timeout=40,
+                             query=sim_query
+                             )
+
+    sim_docs = response['hits']['hits']
+
+    return JsonResponse({'docs': sim_docs})
+
+
+
+
+def GetDocumentsSimilarity(request,document_id,similarity_type):
+    sim_docs = []
+
+    country_obj = Document.objects.get(id=document_id).country_id
+    index_name = standardIndexName(country_obj, Document.__name__)
+
+    if similarity_type == "BM25":
+        index_name =  index_name + "_bm25_index"
+    elif similarity_type == "DFR":
+        index_name =  index_name + "_dfr_index"
+    elif similarity_type == "DFI":
+        index_name =  index_name + "_dfi_index"
 
     sim_query = {
         "more_like_this": {
