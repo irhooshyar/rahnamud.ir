@@ -6940,43 +6940,46 @@ def GetBM25Similarity(request,document_id):
 
 
 
-def GetDocumentsSimilarity(request,document_id,similarity_type):
+def GetDocumentsSimilarity(request,document_id,):
     sim_docs = []
 
     country_obj = Document.objects.get(id=document_id).country_id
     index_name = standardIndexName(country_obj, Document.__name__)
 
-    if similarity_type == "BM25":
-        index_name =  index_name + "_bm25_index"
-    elif similarity_type == "DFR":
-        index_name =  index_name + "_dfr_index"
-    elif similarity_type == "DFI":
-        index_name =  index_name + "_dfi_index"
+    similarity_type = ["BM25","DFI","DFR"]
 
-    sim_query = {
-        "more_like_this": {
-            "analyzer": "persian_custom_analyzer",
-            "fields": ["attachment.content"],
-            "like": [
-                {
-                    "_index": index_name,
-                    "_id": "{}".format(document_id),
+    for similarity_type in similarity_types:
+        if similarity_type == "BM25":
+            index_name =  index_name + "_bm25_index"
+        elif similarity_type == "DFR":
+            index_name =  index_name + "_dfr_index"
+        elif similarity_type == "DFI":
+            index_name =  index_name + "_dfi_index"
 
-                }
+        sim_query = {
+            "more_like_this": {
+                "analyzer": "persian_custom_analyzer",
+                "fields": ["attachment.content"],
+                "like": [
+                    {
+                        "_index": index_name,
+                        "_id": "{}".format(document_id),
 
-            ],
-            "min_term_freq": 50,
-            "max_query_terms": 100000
+                    }
+
+                ],
+                "min_term_freq": 50,
+                "max_query_terms": 100000
+            }
         }
-    }
 
-    response = client.search(index=index_name,
-                             _source_includes=['document_id', 'name', 'approval_date', 'subject_name'],
-                             request_timeout=40,
-                             query=sim_query
-                             )
+        response = client.search(index=index_name,
+                                _source_includes=['document_id', 'name', 'approval_date', 'subject_name'],
+                                request_timeout=40,
+                                query=sim_query
+                                )
 
-    sim_docs = response['hits']['hits']
+        sim_docs = response['hits']['hits']
 
     return JsonResponse({'docs': sim_docs})
 
