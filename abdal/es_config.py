@@ -1058,8 +1058,8 @@ Standard_DFR_Settings = {
                     "arabic_stop",
                     "persian_stop",
                     "english_stop",
-                    "persian_stop_file",
-                    "cybermap_stop_file"
+                    "rahbari_stopwords_file",
+                    "all_stopwords_file"
                 ]
             }
         }
@@ -1268,8 +1268,8 @@ Standard_DFI_Settings = {
                     "arabic_stop",
                     "persian_stop",
                     "english_stop",
-                    "persian_stop_file",
-                    "cybermap_stop_file"
+                    "rahbari_stopwords_file",
+                    "all_stopwords_file"
                 ]
             }
         }
