@@ -4,7 +4,7 @@ from abdal import config
 from abdal import es_config
 import base64
 import csv
-from doc.models import  Document, DocumentParagraphs
+from doc.models import Document, DocumentParagraphs
 from django.db.models.functions import Substr, Cast
 from django.db.models import Max, Min, F, IntegerField, Q
 import pandas as pd
@@ -24,10 +24,8 @@ from scripts.Persian.Preprocessing import standardIndexName
 # ---------------------------------------------------------------------------------
 
 class DocumentIndex(ES_Index):
-
     def __init__(self, name, settings,mappings):
         super().__init__(name, settings,mappings)
-
     
     def generate_docs(self, files_dict, documents):
 
@@ -35,9 +33,16 @@ class DocumentIndex(ES_Index):
 
             doc_id = int(doc['id'])
             doc_name = doc['name']
-            doc_file_name = doc['file_name'] if doc['file_name'] != None else doc_name
+
+            doc_file_name = ""
+
+            if 'file_name' in doc and doc['file_name'] != None:
+                doc_file_name = doc['file_name']
+            else:
+                doc_file_name = doc_name
 
             doc_subject = doc['subject_name'] if doc['subject_name'] != None else 'نامشخص'
+            doc_subject_weight = doc['subject_weight'] if doc['subject_weight'] != None else 'نامشخص'
             doc_level = doc['level_name'] if doc['level_name'] != None else 'نامشخص'
             doc_type = doc['type_name'] if doc['type_name'] != None else 'نامشخص'
             doc_advisory_opinion_count = doc['advisory_opinion_count'] if doc['advisory_opinion_count'] != None else 0
@@ -49,7 +54,18 @@ class DocumentIndex(ES_Index):
             doc_communicated_date = doc['communicated_date'] if doc['communicated_date'] != None else 'نامشخص'
             doc_communicated_year = doc['communicated_year'] if doc['communicated_year'] != None else 0
             doc_revoked_type_name = doc['revoked_type_name']
-            doc_organization_type_name = doc['organization_name'] if doc['organization_name'] != None else 'نامشخص'
+
+            doc_revoked_sub_type = doc['revoked_sub_type'] if doc['revoked_sub_type'] != None else 'نامشخص'
+            doc_revoked_size = doc['revoked_size'] if doc['revoked_size'] != None else 'نامشخص'
+            doc_revoked_clauses = doc['revoked_clauses'] if doc['revoked_clauses'] != None else 'نامشخص' 
+
+            subject_area_name = doc['subject_area_name'] if doc['subject_area_name'] != None else 'نامشخص'
+            subject_sub_area_name = doc['subject_sub_area_name'] if doc['subject_sub_area_name'] != None else 'نامشخص'
+            subject_sub_area_weight = doc['subject_sub_area_weight'] if doc['subject_sub_area_weight'] != None else 0
+            subject_sub_area_entropy = doc['subject_sub_area_entropy']
+      
+
+            doc_organization_type_name = doc['organization_name'].split('-') if doc['organization_name'] != None else 'نامشخص'
 
             if doc_file_name in files_dict:
                 base64_file = files_dict[doc_file_name]
@@ -65,11 +81,19 @@ class DocumentIndex(ES_Index):
                     "raw_file_name": doc_file_name,
                     "level_name": doc_level,
                     "subject_name": doc_subject,
+                    "subject_weight": doc_subject_weight,
                     "type_name": doc_type,
                     "revoked_type_name":doc_revoked_type_name,
+                    "revoked_sub_type":doc_revoked_sub_type,
+                    "revoked_size":doc_revoked_size,
+                    "revoked_clauses":doc_revoked_clauses,
                     "organization_type_name":doc_organization_type_name,
                     "advisory_opinion_count": doc_advisory_opinion_count,
                     "interpretation_rules_count": doc_interpretation_rules_count,
+                    "subject_area_name": subject_area_name,
+                    "subject_sub_area_name": subject_sub_area_name,
+                    "subject_sub_area_weight": subject_sub_area_weight,
+                    "subject_sub_area_entropy": subject_sub_area_entropy,
                     "data": base64_file
                 }
 
@@ -83,35 +107,26 @@ class DocumentIndex(ES_Index):
                 yield new_document
 
 
-def apply(folder, Country,similarity_type):
+
+
+def apply(folder, Country):
     settings = {}
     mappings = {}
-
-
     model_name = Document.__name__
     index_name = standardIndexName(Country,model_name)
+    new_index = None
+    
+    
 
-    if similarity_type == "BM25":
-        settings = es_config.Standard_BM25_Settings
-        mappings = es_config.BM25_Rahbari_Mappings
-        index_name =  index_name + "_bm25_index"
+    settings = es_config.FA_Settings
+    mappings = es_config.FA_Mappings
+    Document_Model = Document
+    new_index = DocumentIndex(index_name, settings, mappings)
 
-    elif similarity_type == "DFR":
-        settings = es_config.Standard_DFR_Settings
-        mappings = es_config.DFR_Rahbari_Mappings
-        index_name = index_name + "_dfr_index"
 
-    elif similarity_type == "DFI":
-        settings = es_config.Standard_DFI_Settings
-        mappings = es_config.DFI_Rahbari_Mappings
-        index_name = index_name + "_dfi_index"
-
-    documents = Document.objects.filter(country_id__id=Country.id).annotate(
+    documents = Document_Model.objects.filter(country_id__id=Country.id).annotate(
         approval_year=Cast(Substr('approval_date', 1, 4), IntegerField())).annotate(communicated_year=Cast(Substr('communicated_date', 1, 4), IntegerField())).values()
 
 
-
-    new_index = DocumentIndex(index_name, settings, mappings)
     new_index.create()
     new_index.bulk_insert_documents(folder,documents,do_parallel=True)
-
