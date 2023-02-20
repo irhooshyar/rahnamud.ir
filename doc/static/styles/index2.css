@@ -1432,6 +1432,7 @@ table .footable {
   font-size: 16px;
   padding: 5px 15px;
   direction: rtl;
+  margin: 0;
 }
 
 .alert .closeset{
