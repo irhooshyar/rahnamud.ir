@@ -72,6 +72,7 @@ urlpatterns = [
     path("reset-password/<str:user_id>/<str:token>/<str:password>", views.reset_password, name="reset_password"),
     path("Confirm-Email/<str:user_id>/<str:token>", views.email_check, name="email_check"),
     path("Confirm-Email/<str:user_id>/<str:token>/<str:code>", views.user_activation, name="user_activation"),
+    path("signup/<str:email>/<str:code>", views.signup_user_activation, name="signup_user_activation"),
     path("resend-email/", views.resend_email, name="resend_email"),
     path("resend-email/<str:email>/", views.resend_email_code, name="resend_email_code"),
     path("admin/", views.Admin, name="admin"),
@@ -99,6 +100,9 @@ urlpatterns = [
     path("approvals_adaptation/", views.approvals_adaptation, name='approvals_adaptation'),
     path("delete_user/<int:user_id>/", views.DeleteUser, name='DeleteUser'),
     path('GetBM25Similarity/<int:document_id>/', views.GetBM25Similarity, name='GetBM25Similarity'),
+    path('GetDocumentsSimilarity/<int:document_id>/', views.GetDocumentsSimilarity, name='GetDocumentsSimilarity'),
+
+
 
     # urls inside main pages
     path('GetDocumentById/<int:id>/', views.GetDocumentById, name='GetDocumentById'),
@@ -322,8 +326,8 @@ urlpatterns = [
         views.rahbari_get_full_profile_analysis, name='rahbari_get_full_profile_analysis'),
     path('rahbari_similarity_calculation/<int:id>/', views.rahbari_similarity_calculation,
          name='rahbari_similarity_calculation'),
-    path('ingest_standard_documents_to_sim_index/<int:id>/<str:language>/',
-         views.ingest_standard_documents_to_sim_index, name='ingest_standard_documents_to_sim_index'),
+    path('ingest_documents_to_sim_index/<int:id>/',
+         views.ingest_documents_to_sim_index, name='ingest_documents_to_sim_index'),
     path('paragraphs_similarity_calculation/<int:id>/', views.paragraphs_similarity_calculation,
          name='paragraphs_similarity_calculation'),
     path('rahbari_paragraphs_similarity_calculation/<int:id>/', views.rahbari_paragraphs_similarity_calculation,

@@ -302,11 +302,11 @@
 
                     <div class="row mt-4 w-100 flex-row-reverse justify-content-around mx-0 px-0">
 
-                        <div id="type_container" chart-height="750px" class="half">
+                        <div id="type_container" chart-height="400px" class="half">
                         </div>
 
 
-                        <div id="year_container" chart-height="750px" class="half">
+                        <div id="year_container" chart-height="400px" class="half">
                         </div>
 
 
@@ -496,7 +496,10 @@
                     <input type="number" id="ColumnModalPaginationInput_2" min="1" max="1" value="1"
                         class="form-select text-right float-right d-none">
 
-
+                <button id="ExportExcel_2" class="btn btn-primary" disabled>
+                    <i class="fa fa-download"></i>
+                    دانلود اسناد
+                </button>
                     <button id="ExportExcel_2" disabled class="btn btn-primary"><i class="fa fa-download"></i> خروجی
                         اکسل
                     </button>
@@ -933,11 +936,13 @@
                 xAxisTitle,
                 title,
                 yAxisTitle: "تعداد سند",
-                onClick: async function (event, data) {
+                zero_to_unknown:true,
+                rotate_x_labels:true,
+                onClick: async function (event, data, text) {
 
-                    const click_tag = event.domTarget.tag;
-                    const index = click_tag["index"]
-                    const text = data.row(index)[0];
+                    {#const click_tag = event.domTarget.tag;#}
+                    {#const index = click_tag["index"]#}
+                    {#const text = data.row(index)[0];#}
                     const best_result_count = documents_information_result.length
 
                     let filtered_result = []
@@ -946,17 +951,16 @@
                     await GetClickedColumnDocuments(container, text)
                     $("#ChartModalBtn_2").click();
 
-
-
-
                 }
-
-
-
-
             };
 
-            newBarChart(container, options)
+             if (container === "year_container") {
+                newLineChart(container, options)
+            } else if (container === "type_container") {
+                newDoughnutChart(container, options)
+            } else {
+                newBarChart(container, options)
+            }
 
         }
 

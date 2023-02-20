@@ -1015,14 +1015,16 @@ BM25_Standard_Mappings = {
 Standard_DFR_Settings = {
     "analysis": {
         "filter": {
-            "persian_stop_file": {
+    
+            "all_stopwords_file": {
                 "type": "stop",
-                "stopwords_path": "persian_stopwords.txt"
+                "stopwords_path": "all_stopwords.txt"
             },
-            "cybermap_stop_file": {
+            "rahbari_stopwords_file": {
                 "type": "stop",
-                "stopwords_path": "cybermap_stopwords.txt"
+                "stopwords_path": "rahbari_stopwords.txt"
             },
+
             "persian_stop": {
                 "type": "stop",
                 "stopwords": "_persian_"
@@ -1056,8 +1058,8 @@ Standard_DFR_Settings = {
                     "arabic_stop",
                     "persian_stop",
                     "english_stop",
-                    "persian_stop_file",
-                    "cybermap_stop_file"
+                    "rahbari_stopwords_file",
+                    "all_stopwords_file"
                 ]
             }
         }
@@ -1224,13 +1226,13 @@ DFR_Standard_Mappings = {
 Standard_DFI_Settings = {
     "analysis": {
         "filter": {
-            "persian_stop_file": {
+            "all_stopwords_file": {
                 "type": "stop",
-                "stopwords_path": "persian_stopwords.txt"
+                "stopwords_path": "all_stopwords.txt"
             },
-            "cybermap_stop_file": {
+            "rahbari_stopwords_file": {
                 "type": "stop",
-                "stopwords_path": "cybermap_stopwords.txt"
+                "stopwords_path": "rahbari_stopwords.txt"
             },
             "persian_stop": {
                 "type": "stop",
@@ -1266,8 +1268,8 @@ Standard_DFI_Settings = {
                     "arabic_stop",
                     "persian_stop",
                     "english_stop",
-                    "persian_stop_file",
-                    "cybermap_stop_file"
+                    "rahbari_stopwords_file",
+                    "all_stopwords_file"
                 ]
             }
         }
@@ -3096,6 +3098,7 @@ Rahbari_Mappings = {
                 "content": {
                     "type": "text",
                     "analyzer": "persian_custom_analyzer",
+                    
                     "fields": {
                         "keyword": {
                             "type": "keyword",

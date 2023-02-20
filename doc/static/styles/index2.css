@@ -46,7 +46,7 @@ a {
 .nav_menu a {
   color: var(--nav_link_color);
   text-decoration: none;
- 
+
 }
 
 .nav_menu a:hover,
@@ -107,7 +107,7 @@ a {
   background-color: transparent;
   border: 1px solid white;
   outline: 2px solid var(--menu_color);
-  
+
 }
 .nav_menu #language option {
   color: var(--menu_color);
@@ -173,7 +173,8 @@ a#download_link {
 #save_2Gram,
 #save_3Gram,
 #Source_document_select,
-#Destination_document_select {
+#Destination_document_select,
+#document_adaption_btn{
   background-color: var(--menu_color);
   color: white;
 }
@@ -206,7 +207,7 @@ a#download_link {
 }
 
 #help_icon {
-  
+
   font-size: 18px;
   position: relative;
   top: -5px;
@@ -709,7 +710,7 @@ input[type="checkbox"] {
   position: relative;
   top: -1px;
   transform: scaleX(-1);
-  
+
 }
 
 /* added */
@@ -1323,6 +1324,126 @@ table .footable {
 /* added */
 
 
+
+.modal-header .btn-close {
+  color: #4F4F4F;
+  border: 0;
+  background-color: #E5E5E5;
+  border-radius: 29px;
+}
+
+.modal-title {
+  font-weight: 400;
+  font-size: 20px;
+  color: #0E3F8B;
+}
+.modal-header {
+  padding: 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #D6D6D6;
+}
+
+.modal-content {
+  padding: 12px 24px;
+  border-radius: 16px;
+  box-shadow: 0px 0px 4px rgb(108 117 125 / 25%);
+}
+
+.modal-body {
+  font-size: 16px;
+  line-height: 16px;
+  color: #6C757D;
+  border-bottom: 1px solid #D6D6D6;
+  padding: 1rem 0;
+}
+
+.modal-body a, h1, h2, h3, h4, h5, h6, p {
+  font-size: 16px;
+  line-height: 16px;
+  color: #6C757D;
+}
+
+.modal-body-rmse {
+  font-size: 16px;
+  line-height: 16px;
+  border-bottom: 1px solid #D6D6D6;
+  padding: 1rem 0;
+}
+
+.modal-footer {
+  padding-top: 1rem;
+}
+
+.green-button {
+  background: #FFFFFF;
+  border: 1px solid #107C41;
+  border-radius: 8px;
+  color: #107C41;
+}
+
+.blue-button {
+  background: #FFFFFF;
+  border: 1px solid #0E3F8B;
+  border-radius: 8px;
+  color: #0E3F8B;
+}
+
+/* total width */
+.scrollbar::-webkit-scrollbar {
+  background-color: transparent;
+  width:16px;
+}
+
+/* background of the scrollbar except button or resizer */
+.scrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.scrollbar::-webkit-scrollbar-track:hover {
+  background-color:#f4f4f4;
+}
+
+/* scrollbar itself */
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color:#E5E5E5;
+  border-radius:16px;
+  border:0;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color:#a0a0a5;
+  border:0;
+}
+
+/* set button(top and bottom of the scrollbar) */
+.scrollbar::-webkit-scrollbar-button {display:none}
+
+/* div box */
+.scrollbar {
+  overflow-y: scroll}
+
+/* added */
+.index-background {
+  background-image: url('../image/index_background.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 95vh;
+  padding: 0;
+  margin: 0;
+}
+
+.index-container {
+  background: linear-gradient(180deg, #F8F9FA 0%, #CBD3DA 54.18%, #F8F9FA 100%);
+  margin: 0;
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 0;
+}
+.w-65 {
+  width: 65%;
+}
+
 .nav-item .dropdown-menu li {
   border-bottom: 1px solid #DBE1EA;
 }
@@ -1431,6 +1552,7 @@ table .footable {
   font-size: 16px;
   padding: 5px 15px;
   direction: rtl;
+  margin: 0;
 }
 
 .alert .closeset{

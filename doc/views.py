@@ -953,7 +953,7 @@ def ingest_standard_documents_to_index(request, id, language):
     return redirect('zip')
 
 
-def ingest_standard_documents_to_sim_index(request, id, language):
+def ingest_documents_to_sim_index(request, id):
     file = get_object_or_404(Country, id=id)
 
     from es_scripts import IngestDocumentsToSimilarityIndex
@@ -963,7 +963,7 @@ def ingest_standard_documents_to_sim_index(request, id, language):
     dot_index = my_file.rfind('.')
     folder_name = my_file[:dot_index]
 
-    similarity_list = ['BM25']
+    similarity_list = ['BM25','DFR','DFI']
 
     for sim_type in similarity_list:
         IngestDocumentsToSimilarityIndex.apply(folder_name, file, sim_type)
@@ -1535,8 +1535,6 @@ def forgot_password_by_email(request, email):
     در صورتی که قصد بازیابی ندارید این پیام را نادیده بگیرید.
     """
     template += f'http://rahnamud.ir:7074/reset-password/{user.id}/{token}'
-    #template += f'http://127.0.0.1:8000/reset-password/{user.id}/{token}'
-
 
     send_mail(
         subject='بازیابی کلمه عبور',
@@ -2058,10 +2056,13 @@ def GetAffinityLabels_ByLabelName(request, label_name):
     index = 1
     table_data = []
 
+    label_list = []
+
     for row in result_labels:
         source_label = row['source_label']
         target_label = row['target_label']
         common_document_count = row['common_document_count']
+        label_list.extend(row['common_document_list'].split(","))
 
         other_label = ''
 
@@ -2087,7 +2088,7 @@ def GetAffinityLabels_ByLabelName(request, label_name):
         index += 1
         table_data.append(table_row)
 
-    return JsonResponse({"table_data": table_data})
+    return JsonResponse({"table_data": table_data, "all_data": len(set(label_list))})
 
 
 def GetAllNotesInTimeRange(request, username, time_start, time_end):
@@ -2883,7 +2884,6 @@ def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRul
                 search_type = 'or'
             res_query = boolean_search_text(res_query, place, text, search_type, False)
 
-
     if isRule:
         keywords_list = RahbariTypeKeyword.objects.all()
         for key in keywords_list:
@@ -3391,13 +3391,19 @@ def confirm_email(user):
 
 def send_email(user, email_code, token):
     template = f"""
-    لطفا برای تایید ثبت نام خود، کد تایید ایمیل را وارد نمایید.
-    دقت فرمایید که مهلت استفاده از این کد، "دو روز" است و در صورت منقضی شدن لینک، باید مجددا وارد بخش ثبت‌نام سامانه شوید و برای دریافت کد جدید، روی لینک ارسال مجدد کد تایید، کلیک فرمایید. 
+    لطفا برای تایید ثبت نام خود، کد تایید ایمیل را در کادر "کد تایید" موجود در صفحه ثبت‌نام، وارد نمایید.
     کد تایید ایمیل: {email_code}
+    
+    -----------------------------------------------------------------------------------------------------------------------------
+    در صورتی که بعد از زدن دکمه‌ی ثبت‌نام، پنجره‌ی ثبت‌نام را بسته‌اید، از لینک زیر برای وارد کردن کد تایید استفاده نمایید.
+    دقت فرمایید که مهلت استفاده از این کد برای وارد کردن در لینک زیر، "دو روز" است و در صورت منقضی شدن لینک، باید مجددا وارد بخش ثبت‌نام سامانه شوید و برای دریافت کد جدید، روی لینک ارسال مجدد کد تایید، کلیک فرمایید. 
+
+
     """
 
     template += f'http://rahnamud.ir:7074/Confirm-Email/{user.id}/{token}'
-    #template += f'http://127.0.0.1:8000/Confirm-Email/{user.id}/{token}'
+
+    send_mail(subject='کد تایید ایمیل', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[user.email])
 
 
 def resend_email(request):
@@ -3432,8 +3438,6 @@ def user_activation(request, user_id, token, code):
 
     if (not (
             user.account_activation_token is None)) and user.account_activation_token == token and user.account_acctivation_expire_time >= timezone.now():
-        print("code: ", code)
-        print("user_code: ", user.email_confirm_code)
         if (user.email_confirm_code == code):
             user.account_activation_token = None
             user.enable = 1
@@ -3451,6 +3455,22 @@ def user_activation(request, user_id, token, code):
 
     return JsonResponse({"status": "Not OK"})
 
+def signup_user_activation(request, email, code):
+    user = User.objects.get(email=email)
+    if(user.email_confirm_code == code):
+        user.account_activation_token = None
+        user.enable = 1
+        user.save()
+
+        template = f"""
+        ثبت‌نام شما با موفقیت انجام شد. تایید شما توسط ادمین، بررسی خواهد شد. نتیجه‌ی بررسی ادمین، در ایمیل، برای شما ارسال می‌شود.
+        """
+        send_mail(subject='عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,recipient_list=[user.email])
+        return JsonResponse({ "status": "OK" })
+
+    else:
+        user.save()
+        return JsonResponse({ "status": "Not OK" })
 
 def SaveUser(request, firstname, lastname, email, phonenumber, role, username, password, ip, expertise):
     user_username = User.objects.filter(username=username)
@@ -3842,12 +3862,11 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
         else:
             res_query = boolean_search_text(res_query, place, text, search_type, ALL_FIELDS)
 
-
     country_obj = Country.objects.get(id=country_id)
     index_name = standardIndexName(country_obj, Document.__name__)
 
-
     if with_rahbari_type == 1 and text != "empty":
+
         keywords_list = RahbariTypeKeyword.objects.all()
         should_query = {
             'bool': {
@@ -4016,9 +4035,9 @@ def UserLogSaved(request, username, url, sub_url='0', ip='0'):
         paeg_url = url + "/" + sub_url
 
     # save to DB (temporary)
-    UserLogs.objects.create(user_id_id=user_id, user_ip=ip,
-                            page_url=paeg_url, visit_time=date_time,
-                            detail_json=request.POST)
+    # UserLogs.objects.create(user_id_id=user_id, user_ip=ip,
+    #                         page_url=paeg_url, visit_time=date_time,
+    #                         detail_json=request.POST)
 
     user_info = User.objects.get(id=user_id)
 
@@ -4156,9 +4175,7 @@ def changeUserState(request, user_id, state):
         template = f"""
         تایید شما توسط ادمین انجام شد. هم‌اکنون، می‌توانید وارد سامانه شوید.
         """
-        template += f'http://rahnamud.ir:707/login/'
-        #template += f'http://127.0.0.1:8000/login/'
-        print("template: ", template)
+        template += f'http://rahnamud.ir:7074/login/'
         send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
                   recipient_list=[accepted_user.email])
 
@@ -4171,7 +4188,6 @@ def changeUserState(request, user_id, state):
         template = f"""
         متاسفانه تایید شما توسط ادمین رد شده است.
         """
-        print("template: ", template)
         send_mail(subject='عدم تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
                   recipient_list=[accepted_user.email])
 
@@ -6889,9 +6905,8 @@ def GetActorsPararaphsByDocumentId(request, document_id):
     return JsonResponse({"actors_paragraphs": actors_paragraphs})
 
 
-def GetBM25Similarity(request, document_id):
+def GetBM25Similarity(request,document_id):
     sim_docs = []
-    # index_name = Document.objects.get(id = document_id).country_id.name.replace(' ','_')
     country_obj = Document.objects.get(id=document_id).country_id
     index_name = standardIndexName(country_obj, Document.__name__)
 
@@ -6913,12 +6928,58 @@ def GetBM25Similarity(request, document_id):
     }
 
     response = client.search(index=index_name,
-                             _source_includes=['document_id', 'name', 'approval_date', 'approval_reference_name'],
+                             _source_includes=['document_id', 'name', 'approval_date', 'subject_name'],
                              request_timeout=40,
                              query=sim_query
                              )
 
     sim_docs = response['hits']['hits']
+
+    return JsonResponse({'docs': sim_docs})
+
+
+
+
+def GetDocumentsSimilarity(request,document_id,):
+    sim_docs = []
+
+    country_obj = Document.objects.get(id=document_id).country_id
+    index_name = standardIndexName(country_obj, Document.__name__)
+
+    similarity_types = ["BM25","DFI","DFR"]
+
+    for similarity_type in similarity_types:
+        if similarity_type == "BM25":
+            index_name =  index_name + "_bm25_index"
+        elif similarity_type == "DFR":
+            index_name =  index_name + "_dfr_index"
+        elif similarity_type == "DFI":
+            index_name =  index_name + "_dfi_index"
+
+        sim_query = {
+            "more_like_this": {
+                "analyzer": "persian_custom_analyzer",
+                "fields": ["attachment.content"],
+                "like": [
+                    {
+                        "_index": index_name,
+                        "_id": "{}".format(document_id),
+
+                    }
+
+                ],
+                "min_term_freq": 50,
+                "max_query_terms": 100000
+            }
+        }
+
+        response = client.search(index=index_name,
+                                _source_includes=['document_id', 'name', 'approval_date', 'subject_name'],
+                                request_timeout=40,
+                                query=sim_query
+                                )
+
+        sim_docs = response['hits']['hits']
 
     return JsonResponse({'docs': sim_docs})
 

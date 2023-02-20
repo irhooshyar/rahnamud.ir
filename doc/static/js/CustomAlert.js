@@ -8,6 +8,7 @@ function HooshyarAlertShow(alert_header_text, alert_body_text, icon_type) {
         icon_color = "#C27605"
     }
 
+    alert_body_text = alert_body_text || '';
     const html_value = `<div class="alert" tabindex="-1" role="dialog" aria-labelledby="HooshyaralertHeader" aria-hidden="true">
       <div class="alert-header">
           <div class="d-flex" style="flex-direction: row-reverse;">

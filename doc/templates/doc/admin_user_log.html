@@ -213,16 +213,16 @@
                     aria-labelledby="chart_info_tab">
                     <div class="row mt-4 w-100 flex-row mx-0 px-4 pb-5">
                         <div id="chart_container_div" class="row mt-4 w-100 flex-row-reverse justify-content-around mx-0 px-0">
-                         
+
                             <div id="month_chart_container" chart-height="350px" class="half">
                             </div>
 
 
-                 
+
                             <div id="day_chart_container" chart-height="350px" class="half">
                             </div>
 
-             
+
                             <div id="hour_chart_container" chart-height="350px" class="full">
                             </div>
 
@@ -234,20 +234,20 @@
                                 <div id="information_chart_container" style="height: 400px" class="bg-white w-100 p-4">
                                 </div> -->
 
-                       
+
                             <div id="search_chart_container" chart-height="350px" class="half">
                             </div>
 
                             <div id="graph_chart_container" chart-height="350px" class="half">
                             </div>
 
-         
+
                             <div id="panel_chart_container" chart-height="1200px" class="half">
                             </div>
                             <div id="user_chart_container" chart-height="1200px" class="half">
                             </div>
                             <!-- <div id="all_user_chart_container"> -->
-                               
+
                             <!-- </div> -->
 
 
@@ -460,6 +460,8 @@
                 xAxisTitle,
                 title,
                 yAxisTitle: "تعداد لاگ",
+                zero_to_unknown: false,
+                rotate_x_labels: false,
                 // onClick: async function (event, data) {
                 //     const click_tag = event.domTarget.tag;
                 //     const index = click_tag["index"]
@@ -486,7 +488,7 @@
              else {
                 newBarChart(container, options)
             }
-            
+
         }
 
 
@@ -576,10 +578,10 @@
 
             // await getchart_Data(start_time, end_time, user_id)
 
-            
+
             UserSearchParameters.update_parameters();
 
-            
+
             await showResult(user_id, start_time, end_time)
             await gettable_Data(start_time, end_time, user_id)
             await SpinnerModeFunction("Disable");
@@ -665,7 +667,7 @@
 
         }
 
-        
+
         async function update_table_pagination_input(curr_page, total_hits) {
 
             page_count = 0;
@@ -692,7 +694,7 @@
             await update_table_pagination_input(1, 0);
             await init()
         }
-        
+
         async function showResult(user_id, start_time, end_time) {
 
 
@@ -711,7 +713,7 @@
 
             const curr_page = document.getElementById('TablePaginationInput').value
 
-            
+
             const request_link = 'http://' + location.host + "/getUserLogs_ES/" + user_id + "/" + start_time + "/" + end_time + "/" + curr_page + "/"+ SEARCH_RESULT_SIZE + "/";
             let response = await fetch(request_link);
             response = await response.json();
@@ -727,7 +729,7 @@
             month_aggregation_data = response['aggregations']['month-agg']['buckets']
             day_aggregation_data = response['aggregations']['day-agg']['buckets']
             hour_aggregation_data = response['aggregations']['hour-agg']['buckets']
-            
+
             es_search_chart_data = response['es_search_chart_data']
             graph_chart_data = response['graph_chart_data']
             await update_table_pagination_input(curr_page, total_hits)
