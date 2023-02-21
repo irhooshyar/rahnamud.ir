@@ -177,6 +177,29 @@
                 </select>
             </div>
 
+
+            <!-- From Year input -->
+            <div class="col-md-6 pt-3 col-12 col-lg-3 mt-1 bg-light" dir="rtl">
+
+                <label class=" text-right bg-light float-right" style="direction: rtl;;"> سال از:</label>
+
+                <select id="YearFrom" class="form-select text-right float-right searchable-select"
+                        style="direction: rtl;">
+                </select>
+
+            </div>
+
+            <!-- To Year input -->
+            <div class="col-md-6 pt-3 col-12 col-lg-3 mt-1 bg-light" dir="rtl">
+
+                <label class="text-right bg-light float-right" style="direction: rtl;;"> سال تا:</label>
+
+                <select id="YearTo" class="form-select text-right float-right searchable-select"
+                        style="direction: rtl;">
+                </select>
+
+            </div>
+
         </div>
 
     </form>
@@ -667,8 +690,8 @@
                 if (this.label_name == "0") {
                     this.label_name = "همه"
                 }
-                this.from_year = "همه"
-                this.to_year = "همه"
+                this.from_year = $("#YearFrom option:selected").text();
+                this.to_year = $("#YearTo option:selected").text();
                 this.place = "عنوان یا متن"
                 this.rahbari_type = await GetMultiSelectValue("TypeSelect") + "__OR";
                 if (this.rahbari_type == "0__OR") {
@@ -726,6 +749,18 @@
             }
             syncSelectOptions('LabelSelect', options)
 
+            const country_id = document.getElementById("country").value
+            request_link = 'http://' + location.host + "/GetRahbariSearchParameters/" + country_id + "/";
+            response = await fetch(request_link).then(response => response.json());
+            response = response["parameters_result"]
+
+             /****************** Year List ****************************/
+            document.getElementById("YearFrom").innerHTML = "<option value=" + 0 + " >" + "همه" + "</option>" +
+                response['FromYear'];
+            document.getElementById("YearTo").innerHTML = "<option value=" + 0 + " >" + "همه" + "</option>" +
+                response['ToYear'];          
+            syncAllSelectsWithResetExceptions(["country"])
+
             //user log
             let form_data = new FormData()
             let detail_type = "نمایش پنل"
@@ -752,8 +787,8 @@
                 label_name = 0
             }
             console.log(label_name)
-            const from_year = 0;
-            const to_year = 0;
+            const from_year = document.getElementById("YearFrom").value;
+            const to_year = document.getElementById("YearTo").value;
             const place = "عنوان و متن"
 
             let rahbari_type = await GetMultiSelectValue("TypeSelect") + "__OR"
@@ -765,6 +800,7 @@
             if (text === '') {
                 text = "empty"
             }
+            
 
             UserSearchParameters.update_parameters();
 
@@ -802,12 +838,16 @@
             $("#LabelSelect option:selected").each(function () {
                 label += $(this).text() + "، ";
             });
+            let fromYear = $("#YearFrom option:selected").text();
+            let toYear = $("#YearTo option:selected").text();
             let search_text = text
             form_data.append('detail_type', detail_type);
             form_data.append('country_name', country_name);
             form_data.append('search_text', search_text);
             form_data.append('type', type);
             form_data.append('label', label);
+            form_data.append('fromYear', fromYear);
+            form_data.append('toYear', toYear);
             UserLog(form_data)
 
         }
