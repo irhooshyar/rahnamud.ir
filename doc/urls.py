@@ -101,6 +101,7 @@ urlpatterns = [
     path("delete_user/<int:user_id>/", views.DeleteUser, name='DeleteUser'),
     path('GetBM25Similarity/<int:document_id>/', views.GetBM25Similarity, name='GetBM25Similarity'),
     path('GetDocumentsSimilarity/<int:document_id>/', views.GetDocumentsSimilarity, name='GetDocumentsSimilarity'),
+    path('similarityDetail/<int:main_document_id>/<int:selected_document_id>/<str:similarity_type>/', views.similarityDetail, name='similarityDetail'),
 
 
 
