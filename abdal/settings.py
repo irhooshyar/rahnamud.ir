@@ -193,8 +193,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.irhooshyar.com'
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'support@irhooshyar.com'
-EMAIL_HOST_PASSWORD = 'SGGhChsz4aox0kB'
+EMAIL_HOST_USER = 'no-replay@irhooshyar.com'
+EMAIL_HOST_PASSWORD = 'Uk8)b?BtD?JI4(VGb*5e!@YE!3GVVy2f5OSd5o@f'
 if not (os.environ.get('EMAIL_HOST') is None):
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = os.environ.get('EMAIL_HOST')
