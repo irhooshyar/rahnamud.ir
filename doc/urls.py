@@ -186,7 +186,7 @@ urlpatterns = [
     path('GetKeywordsGeneralDefinitionByDocumentId/<int:document_id>/<str:word>/',
          views.GetKeywordsGeneralDefinitionByDocumentId, name='GetKeywordsGeneralDefinitionByDocumentId'),
     path(
-        'SaveUser/<str:firstname>/<str:lastname>/<str:email>/<str:phonenumber>/<int:role>/<str:username>/<str:password>/<str:ip>/<str:expertise>/',
+        'SaveUser/<str:firstname>/<str:lastname>/<str:email>/<str:phonenumber>/<int:role>/<str:username>/<str:password>/<str:ip>/<str:expertise>/<str:other_expertise>/',
         views.SaveUser, name='SaveUser'),
     path('CheckUserLogin/<str:username>/<str:password>/<str:ip>/', views.CheckUserLogin, name='CheckUserLogin'),
     path('changeUserState/<int:user_id>/<str:state>/', views.changeUserState, name='changeUserState'),
