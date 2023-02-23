@@ -1672,7 +1672,7 @@ def rahbari_labels_to_db(Country):
             label_item = label_item.strip().replace("؛", "").replace("ورزش‌کاران", "ورزشکاران")
             no_space_label_item = label_item.replace(" ", "").replace("\u200c", "")
             if no_space_label_item not in added_labels:
-                if label_item not in [None,'','نامشخص']:
+                if label_item not in [None,'']:
                     added_labels.append(no_space_label_item)
                     label_obj = RahbariLabel(name=label_item)
                     CreateList.append(label_obj)
