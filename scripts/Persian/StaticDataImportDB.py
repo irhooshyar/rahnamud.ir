@@ -11,20 +11,14 @@ from openpyxl import load_workbook
 
 from abdal import config
 from pathlib import Path
-from doc.models import ActorArea, ActorSubArea, CUBE_DocumentJsonList, JudgmentGraphType, DocumentActor, Judgment, \
-    JudgmentCategories, JudgmentConclusionDisplayName, JudgmentJudge, JudgmentSearchParameters, \
-    JudgmentSubjectTypeDisplayName, JudgmentType, LegalOrientation, RevokedType, SimilarityType, Standard, \
-    Standard_Branch, Standard_Status, StandardSearchParameters, Type, KeywordList, Subject, SubjectKeyWords, Slogan, \
-    SloganSynonymousWords, SubjectSubAreaKeyWords, SubjectArea, SubjectSubArea
-from doc.models import ActorArea, ActorSubArea, CUBE_DocumentJsonList, JudgmentGraphType, DocumentActor, Rahbari, StandardGraphType, Judgment, JudgmentCategories, JudgmentConclusionDisplayName, JudgmentJudge, JudgmentSearchParameters, JudgmentSubjectTypeDisplayName, JudgmentType, LegalOrientation, SimilarityType, Standard, Standard_Branch, Standard_Status, StandardSearchParameters, Type, KeywordList, Subject, SubjectKeyWords, Slogan , SloganSynonymousWords
+from doc.models import ActorArea, CUBE_DocumentJsonList,DocumentActor,SimilarityType,Type,Subject, SubjectKeyWords, Slogan, \
+    SloganSynonymousWords
+from doc.models import ActorArea,CUBE_DocumentJsonList, DocumentActor, Rahbari,SimilarityType,Type,Subject, SubjectKeyWords, Slogan , SloganSynonymousWords
 from doc.models import ApprovalReference, Document, Measure, Level, UserRole
-from doc.models import LegalOrientation,LegalOrientationKeyWords
 from doc.models import Document,DocumentParagraphs
-from doc.models import Regulator,RegularityArea,RegularityTools
-from doc.models import Actor,ActorCategory,ActorType,ActorGraphType
-from doc.models import CollectiveActor,SearchParameters, RahbariSearchParameters
-from doc.models import Template_Panels_Info,RevokedType
-from doc.models import Operator,ClusteringAlorithm,FeatureSelectionAlgorithm
+from doc.models import Actor,ActorCategory,ActorType
+from doc.models import SearchParameters, RahbariSearchParameters
+from doc.models import ClusteringAlorithm,FeatureSelectionAlgorithm
 from doc.models import RahbariLabel
 from django.shortcuts import get_object_or_404
 from pathlib import Path
@@ -1511,10 +1505,6 @@ def Rahbari_Insert_fromExcel(Country):
 def Rahbari_Search_Parameters_Insert(Country):
     RahbariSearchParameters.objects.filter(country__id=Country.id).delete()
 
-    parameters = {
-        "type": JudgmentConclusionDisplayName,
-        "labels": JudgmentSubjectTypeDisplayName,
-    }
 
     # -------------- Type --------------------------------
     RahbariList = Rahbari.objects.all()
