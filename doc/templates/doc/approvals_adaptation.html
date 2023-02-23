@@ -302,6 +302,9 @@
 
                     <div class="row mt-4 w-100 flex-row-reverse justify-content-around mx-0 px-0">
 
+                        <div class="row mt-4 w-100 flex-row-reverse justify-content-around mx-0 px-0" id="chart_message_container">
+                        </div>
+
                         <div id="type_container" chart-height="400px" class="half">
                         </div>
 
@@ -450,10 +453,10 @@
 
                 <!-- Modal footer -->
                 <div dir="rtl" class="modal-footer">
-                    <button id="DownloadDocuments" class="btn btn-primary"><i class="fa fa-download"></i> دانلود
+                    <button id="DownloadDocuments" class="btn blue-button"><i class="fa fa-file-archive"></i> دانلود
                         اسناد</button>
 
-                    <button id="ExportExcel2" class="btn btn-primary"><i class="fa fa-download"></i> خروجی اکسل
+                    <button id="ExportExcel2" class="btn green-button"><i class="fa fa-file-excel"></i> خروجی اکسل
                     </button>
                 </div>
 
@@ -906,9 +909,23 @@
 
             /* Show Chart  */
 
-            showChartData(type_chart, "type_container", documents_information_result, false, 'نوع', "توزیع اسناد براساس نوع")
-            showChartData(year_chart, "year_container", documents_information_result, true, 'سال', "توزیع اسناد براساس سال")
-            showChartData(labels_chart, "labels_container", documents_information_result, true, 'برچسب', "توزیع اسناد براساس برچسب")
+            if (type_chart.length == 0 && year_chart.length == 0 && labels_chart.length == 0){
+                const message = document.getElementById("chart_message_container");
+                message.innerHTML = `<img style="width: 120px;" id="no_result_image" src="../../static/icons/chart_icons/no_results.png">` + `<div id="p1" class="row mt-4 w-100 flex-row-reverse justify-content-around mx-0 px-0">سندی یافت نشد.</div>`;
+                type_container.style.display = "none";
+                year_container.style.display = "none";
+                labels_container.style.display = "none";
+            }
+            else{
+                const message = document.getElementById("chart_message_container");
+                message.innerHTML = ""
+                type_container.style.display = "block";
+                year_container.style.display = "block";
+                labels_container.style.display = "block";
+                showChartData(type_chart, "type_container", documents_information_result, false, 'نوع', "توزیع اسناد براساس نوع")
+                showChartData(year_chart, "year_container", documents_information_result, true, 'سال', "توزیع اسناد براساس سال")
+                showChartData(labels_chart, "labels_container", documents_information_result, true, 'برچسب', "توزیع اسناد براساس برچسب")
+            }
             stopBlockUI('bar_chart_info_pane', 'داشبورد آماری');
 
         }
