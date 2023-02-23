@@ -360,34 +360,6 @@
         initSearchableSelects()
 
         var chart_flag = true
-        async function getchart_Data(start_time, end_time, user_id) {
-
-
-
-            const request_link = 'http://' + location.host + "/getChartLogs_ES/" + user_id + "/" + start_time + "/" + end_time + "/";
-            let response = await fetch(request_link);
-            response = await response.json();
-            console.log("response========================")
-            console.log(response)
-            chart_value_list = response['chart_data_list']
-            // chart_data_information = response['chart_data_information']
-            chart_data_search = response['chart_data_search']
-            chart_data_graph = response['chart_data_graph']
-            month_chart_data = response['month_chart_data_list']
-            hour_chart_data = response['hour_chart_data_list']
-
-
-
-            // await showChart(chart_value_list, "panel_chart_container", 'نام پنل');
-            // await showChart(chart_data_information, "information_chart_container", 'نوع لاگ');
-            await showChart(chart_data_search, "search_chart_container", 'نوع لاگ');
-            await showChart(chart_data_graph, "graph_chart_container", 'نوع لاگ');
-            await showChart(month_chart_data, "month_chart_container", 'ماه');
-            await showChart(hour_chart_data, "hour_chart_container", 'ساعت');
-
-
-
-        }
 
         async function showChart2(data, position, xtitle) {
 
@@ -454,6 +426,9 @@
 
 
         function showChart(data, container, documents_information_result, sortKeys, xAxisTitle, title) {
+            console.log(container)
+            console.log(data)
+            console.log("=============================")
             const options = {
                 data,
                 sortKeys,
@@ -462,27 +437,15 @@
                 yAxisTitle: "تعداد لاگ",
                 zero_to_unknown: false,
                 rotate_x_labels: false,
-                // onClick: async function (event, data) {
-                //     const click_tag = event.domTarget.tag;
-                //     const index = click_tag["index"]
-                //     const text = data.row(index)[0];
-                //     const best_result_count = documents_information_result.length
-
-                //     let filtered_result = []
-                //     let header = ""
-                //     let save_file_name = document.getElementById("SearchBox").value;
-
-                //     await GetClickedColumnDocuments(container, text)
-
-                //     $("#ChartModalBtn").click();
-                // }
+                sortPersianMonth :(container === "month_chart_container")
             };
 
             if (container === "day_chart_container" ||
             container === "search_chart_container" ||
             container === "graph_chart_container") {
                 newDoughnutChart(container, options);
-            }else if(container === "hour_chart_container"){
+            }else if(container === "hour_chart_container" ||
+                    container === "month_chart_container"){
                 newLineChart(container, options)
             }
              else {
@@ -576,7 +539,6 @@
                 end_time = "0"
             }
 
-            // await getchart_Data(start_time, end_time, user_id)
 
 
             UserSearchParameters.update_parameters();
@@ -727,6 +689,7 @@
             panel_aggregation_data = response['aggregations']['panel-agg']['buckets']
             user_aggregation_data = response['aggregations']['user-agg']['buckets']
             month_aggregation_data = response['aggregations']['month-agg']['buckets']
+
             day_aggregation_data = response['aggregations']['day-agg']['buckets']
             hour_aggregation_data = response['aggregations']['hour-agg']['buckets']
 
