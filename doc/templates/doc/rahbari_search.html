@@ -959,28 +959,14 @@
                 "style": {
                     "width": "10%"
                 }
-            }
-                //  ,{
-                //     "name": "rahbari_labels",
-                //     "title": "برچسب",
-                //     "style": {
-                //         "width": "25%"
-                //     }
-                // },
-                //  {
-                //     "name": "count",
-                //     "title": "درصد امتیاز",
-                //     "style": {
-                //         "width": "10%"
-                //     }
-                // }
-                , {
-                    "name": "detail",
-                    "title": "جزئیات",
-                    "style": {
-                        "width": "5%"
-                    }
-                }]
+            }, {
+                "name": "detail",
+                "title": "جزئیات",
+                "style": {
+                    "width": "5%"
+                }
+            }];
+
             if (!selected_columns.includes("all")) {
                 for (let column of columns) {
                     if (selected_columns.includes(column["name"])) {
