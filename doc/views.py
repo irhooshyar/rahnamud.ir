@@ -57,6 +57,8 @@ from scripts.Persian.Preprocessing import standardIndexName
 from transformers import MT5ForConditionalGeneration, MT5Tokenizer, AutoTokenizer, AutoModelForTokenClassification, \
     pipeline, AutoModelForSequenceClassification, AutoModelForSeq2SeqLM
 
+from doc.forms import *
+
 # ---------- elastic configs -------------------
 es_url = es_config.ES_URL
 client = Elasticsearch(es_url, timeout=30)
@@ -503,7 +505,12 @@ def notes(request):
 
 @unathenticated_user
 def signup(request):
-    return render(request, "doc/signup.html")
+    if request.POST:
+        form = CaptchaTestForm(request.POST)
+    else:
+        form = CaptchaTestForm()
+
+    return render(request, "doc/signup.html",  {'form_data': form})
 
 
 @unathenticated_user
