@@ -203,3 +203,7 @@ if not (os.environ.get('EMAIL_HOST') is None):
     EMAIL_USE_TLS = True
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+
+RECAPTCHA_PUBLIC_KEY = "6LfWd6MkAAAAAK4QfhLbaD4e4rw-k35iUlguhi7N"
+RECAPTCHA_PRIVATE_KEY = "6LfWd6MkAAAAAKfLkkeFSnyeKg--elCkX2KvFsAO"

@@ -1,2 +1,3 @@
 torch
 flair
+django-recaptcha
