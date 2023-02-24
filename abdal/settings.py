@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     "corsheaders",
     'doc',
+    'captcha',
     'django_extensions',
     'after_response',
     'rest_framework'
@@ -205,3 +206,5 @@ if not (os.environ.get('EMAIL_HOST') is None):
 
 
 
+RECAPTCHA_PUBLIC_KEY = "6LfWd6MkAAAAAK4QfhLbaD4e4rw-k35iUlguhi7N"
+RECAPTCHA_PRIVATE_KEY = "6LfWd6MkAAAAAKfLkkeFSnyeKg--elCkX2KvFsAO"
