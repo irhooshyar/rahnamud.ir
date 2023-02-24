@@ -248,20 +248,7 @@
                 </li>
 
 
-                <!-- Download Buttons -->
-                <button type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="دانلود اسناد"
-                    class="btn float-left p-0 px-1 mt-2" id="DownloadBtn" onclick="DownloadSerachResultFunction()"
-                    type="button">
-                    <i class="far fa-file-archive m-0" style="font-size: 25px;margin: 0px;"></i>
-
-                </button>
-
-                <button class="btn float-left p-0 px-1 mt-2" id="ExportExcel" data-bs-toggle="tooltip"
-                    data-bs-placement="top" title="خروجی اکسل" onclick="ExportExcelSerachResultFunction()"
-                    type="button">
-                    <i class="far fa-file-excel text-success m-0" style="font-size: 25px;margin: 0px;"></i>
-                </button>
-
+                
                 <!-- Result Count -->
                 <p id="SearchResultLable" class="text-left float-left text-secondary pl-2"></p>
             </ul>
@@ -273,24 +260,58 @@
                 <!-- Search Result Pane -->
                 <div id="search_result_pane" class="tab-pane w-100 fade show active float-right" role="tabpanel"
                     aria-labelledby="search_result_tab">
-                    <!-- Page select -->
-                    <div class="col-md-6 col-12 col-lg-2 float-left">
 
-                        <input type="number" onchange="TablePaginationChanged(event)" id="TablePaginationInput" min="1"
-                            max="1" value="1" class="form-select text-right float-right" style="direction: rtl;">
+                    <!-- Table Headers -->
+                    <div class="mt-4">
+                        <!-- Column Selection -->
+                        <p id="ColumnSelection" class="text-left text-secondary float-right">فهرست براساس:</p>
 
+
+                        <!-- Column select -->
+                        <div class="col-md-6 col-12 col-lg-2 float-right" dir="rtl">
+
+                            <select id="ColumnSelect" onchange="show_table_result();"
+                                    class="form-select text-right float-right searchable-multi-select"
+                                    style="direction: rtl;">
+
+                            </select>
+
+                        </div>
+
+                        <!-- Download Buttons -->
+                        <button type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="دانلود اسناد"
+                        class="btn float-left p-0 px-1 mt-2" id="DownloadBtn" onclick="DownloadSerachResultFunction()"
+                        type="button">
+                        <i class="far fa-file-archive m-0" style="font-size: 25px;margin: 0px;"></i>
+
+                        </button>
+
+                        <button class="btn float-left p-0 px-1 mt-2" id="ExportExcel" data-bs-toggle="tooltip"
+                            data-bs-placement="top" title="خروجی اکسل" onclick="ExportExcelSerachResultFunction()"
+                            type="button">
+                            <i class="far fa-file-excel text-success m-0" style="font-size: 25px;margin: 0px;"></i>
+                        </button>
+
+
+                        <!-- Page select -->
+                        <div class="col-md-6 col-12 col-lg-2 float-left">
+
+                            <input type="number" onchange="TablePaginationChanged(event)" id="TablePaginationInput" min="1"
+                                max="1" value="1" class="form-select text-right float-right" style="direction: rtl;">
+
+                        </div>
+
+
+                        <!-- Result Pagination -->
+                        <p id="ResultPagination" class="text-left text-secondary float-left">صفحه:
+                            <span id="from_page">1</span>
+                            /
+                            <span id="total_page">1</span>
+                        </p>
                     </div>
-
-
-                    <!-- Result Pagination -->
-                    <p id="ResultPagination" class="text-left text-secondary float-left">صفحه:
-                        <span id="from_page">1</span>
-                        /
-                        <span id="total_page">1</span>
-                    </p>
                     <!-- Search Result table -->
                     <div class="table-responsive search_result_table mt-4">
-                        <table class="table table-striped SearchTable" style="min-height: 200px;" id="SearchTable">
+                        <table class="table table-striped SearchTable mt-4" style="min-height: 200px;" id="SearchTable">
                         </table>
                     </div>
 
@@ -572,11 +593,19 @@
     <script src="../../static/js/blockUI.js"></script>
     <script src="../../static/js/blockUI_handler.js"></script>
     <link rel="stylesheet" href="../../static/styles/loader.css">
+    <script src="../../static/js/column.js"></script>
 
     <script>
 
         initSearchableSelects();
         init()
+
+        const COLUMNS = {
+            "rahbari_type": 'نوع سند',
+            "rahbari_date": 'تاریخ تصویب',
+            "rahbari_labels": 'برچسب'
+        }
+        append_column(COLUMNS)
 
         const CHART_FIELD_DICT = {
             "labels_container": "label_name",
@@ -594,6 +623,7 @@
         SearchResultValue = []
         ES_SearchResult = []
 
+        TABLE_INFO = []
         MAX_RESULT_WINDOW = 5000
         SEARCH_RESULT_SIZE = 100
 
@@ -794,25 +824,17 @@
                 document_result.push(row)
                 index += 1
             }
-            $('#SearchTable').empty();
-            $('.SearchTable').footable({
-                "paging": {
-                    "enabled": true,
-                    strings: {
-                        last: '»',
-                        next: '›',
-                        prev: '‹',
-                        first: '«'
-                    }
-                },
-                "filtering": {
-                    "enabled": false
-                },
-                "sorting": {
-                    "enabled": true
-                },
-                "empty": "سندی یافت نشد.",
-                "columns": [{
+            TABLE_INFO = document_result
+            show_table_result()
+
+        }
+
+        async function show_table_result() {
+            selected_columns = ["index", "doc_name", "count", "detail"]
+            selected_columns = find_selected_column(selected_columns)
+
+
+            columns = [{
                     "name": "index",
                     "title": "ردیف",
                     "breakpoints": "xs sm",
@@ -850,11 +872,43 @@
                     "style": {
                         "width": "10%"
                     }
+                }]
+
+            if (!selected_columns.includes("all")) {
+                for (let column of columns) {
+                    if (selected_columns.includes(column["name"])) {
+                        column["visible"] = true
+                    } else {
+                        column["visible"] = false
+                    }
                 }
-                ],
-                "rows": document_result
-            });
+            }
+
+            $('#SearchTable').empty();
+            if (typeof TABLE_INFO !== 'undefined') {
+                $('#SearchTable').footable({
+                    "paging": {
+                        "enabled": true,
+                        strings: {
+                            first: '«',
+                            prev: '‹',
+                            next: '›',
+                            last: '»'
+                        }
+                    },
+                    "filtering": {
+                        "enabled": false
+                    },
+                    "sorting": {
+                        "enabled": true
+                    },
+                    "empty": "سندی یافت نشد.",
+                    "columns": columns,
+                    "rows": TABLE_INFO
+                });
+            }
         }
+
 
         async function GetDocumentsInformation(country_id, type_id, label_name, from_year, to_year, place, text, search_type, curr_page) {
 
