@@ -268,7 +268,7 @@
         
         accepted_users = response["users"];
         let users = [];
-        index = 1;
+        let index = 1;
         for (user of accepted_users) {
             const first_name = user["first_name"];
             const last_name = user["last_name"];
@@ -483,7 +483,7 @@
                             </div>`
 
             row = {
-                "id": index,
+                "id": "sjdhfk",
                 "submited_at": submited_at,
                 "stars": stars,
                 "recommendation_text": recommendation_text
@@ -497,6 +497,7 @@
             {
                 "name": "id",
                 "title": "ردیف",
+                "breakpoints": "xs sm",
             },
             {
                 "name": "submited_at",
