@@ -929,11 +929,14 @@
 
 
         async function show_table_result() {
-            selected_columns = ["index", "doc_name", "count", "detail"]
+            let selected_columns = ["index", "doc_name", "count", "detail"]
             selected_columns = find_selected_column(selected_columns)
 
 
-            columns = [{
+            if (selected_columns.length == 4) {
+                return
+            }
+            let columns = [{
                 "name": "index",
                 "title": "ردیف",
                 "breakpoints": "xs sm",
@@ -967,7 +970,7 @@
                 }
             }];
 
-            if (!selected_columns.includes("all")) {
+            if (!selected_columns.includes("all") && selected_columns.length) {
                 for (let column of columns) {
                     if (selected_columns.includes(column["name"])) {
                         column["visible"] = true
