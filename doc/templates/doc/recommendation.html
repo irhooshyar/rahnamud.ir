@@ -111,7 +111,7 @@
                     <div class="form_title mb-3">
                      <p class="title mt-3">فرم انتقادات و پیشنهادات</p>
                     </div>
-                    <div class="col mb-3">
+                    {% comment %} <div class="col mb-3">
                         <label for="firstname">نام <span style="color: red">*</span>:</label>
                         <input type="text" class="form-control fa-input" id="firstname" required>
                     </div>
@@ -124,7 +124,7 @@
                     <div class="mb-3">
                          <label for="email">ایمیل <span style="color: red">*</span>:</label>
                          <input type="email" class="form-control" id="email" required placeholder="example@example.com">
-                     </div>
+                     </div> {% endcomment %}
 
                     <div class="mb-3">
                       <label for="rating">امتیاز شما به سامانه:<span style="color: red">*</span>:</label>
@@ -178,24 +178,25 @@
     let ratingValue = 0
     async function SubmitResult() {
         try {
-            var first_name = document.getElementById("firstname").value;
+            {% comment %} var first_name = document.getElementById("firstname").value;
             var last_name = document.getElementById("lastname").value;
-            var email = document.getElementById("email").value;
+            var email = document.getElementById("email").value; {% endcomment %}
             var recommendation_text = document.getElementById("recommendation_text").value.replace(/\n/g, "<br>")
 
-            if (first_name == '' || last_name == '' || email == '' || recommendation_text == '' || ratingValue == 0) {
+            {% comment %} if (first_name == '' || last_name == '' || email == '' || recommendation_text == '' || ratingValue == 0) { {% endcomment %}
+            if (recommendation_text == '' || ratingValue == 0) {
 
                 notyf.error('برای ثبت نظرات باید تمام فیلدها را پر نمایید.')
                 return
             }
 
-            request_link = 'http://' + location.host + "/Recommendations/" + first_name + "/" + last_name + "/" + email + "/" + recommendation_text + "/" + ratingValue + "/";
+            request_link = 'http://' + location.host + "/Recommendations2/" + recommendation_text + "/" + ratingValue + "/";
             response = await fetch(request_link).then(response => response.json());
             notyf.success('نظر شما با موفقیت ثبت شد');
 
-            document.getElementById("firstname").value = "";
+            {% comment %} document.getElementById("firstname").value = "";
             document.getElementById("lastname").value = "";
-            document.getElementById("email").value = "";
+            document.getElementById("email").value = ""; {% endcomment %}
             document.getElementById("recommendation_text").value = "";
             RemoveStars();
 
