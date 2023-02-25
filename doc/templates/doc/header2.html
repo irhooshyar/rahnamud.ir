@@ -165,36 +165,36 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="AdminDropdown">
                     <li><a id="manage_users_tab" class="dropdown-item text-right" href="{% url 'manage_users_tab' %}"
-                           style="display: none;">
+                        style="display: none;">
                         مدیریت کاربران</a>
                     </li>
-                    <li><a id="admin_waiting_user" class="dropdown-item text-right"
-                           href="{% url 'admin_waiting_user' %}" style="display: none;">
-                        تایید کاربران</a>
-                    </li>
-                    <li><a id="admin_accepted_user" class="dropdown-item text-right"
-                           href="{% url 'admin_accepted_user' %}" style="display: none;">
-                        کاربران تایید شده</a>
-                    </li>
+                    {% comment %} <li><a id="admin_waiting_user" class="dropdown-item text-right"
+                            href="{% url 'admin_waiting_user' %}" style="display: none;">
+                            تایید کاربران</a>
+                    </li> {% endcomment %}
+                    {% comment %} <li><a id="admin_accepted_user" class="dropdown-item text-right"
+                            href="{% url 'admin_accepted_user' %}" style="display: none;">
+                            کاربران تایید شده</a>
+                    </li> {% endcomment %}
                     <li><a id="admin_upload" class="dropdown-item text-right" href="{% url 'admin_upload' %}"
-                           style="display: none;">
-                        آپلود فایل</a>
+                            style="display: none;">
+                            آپلود فایل</a>
                     </li>
-                    <li><a id="admin_user_recommendation" class="dropdown-item text-right"
-                           href="{% url 'admin_user_recommendation' %}" style="display: none;">
-                        مشاهده نظرات کاربران</a>
-                    </li>
+                    {% comment %} <li><a id="admin_user_recommendation" class="dropdown-item text-right"
+                            href="{% url 'admin_user_recommendation' %}" style="display: none;">
+                            مشاهده نظرات کاربران</a>
+                    </li> {% endcomment %}
                     <li><a id="admin_user_report_bug" class="dropdown-item text-right"
-                           href="{% url 'admin_user_report_bug' %}" style="display: none;">
-                        مشاهده گزارشات خطاها</a>
+                            href="{% url 'admin_user_report_bug' %}" style="display: none;">
+                            مشاهده گزارشات خطاها</a>
                     </li>
                     <li><a id="admin_accept_user_comments" class="dropdown-item text-right"
-                           href="{% url 'admin_accept_user_comments' %}" style="display: none;">
-                        تایید نظرات تحلیل اسناد</a>
+                            href="{% url 'admin_accept_user_comments' %}" style="display: none;">
+                            تایید نظرات تحلیل اسناد</a>
                     </li>
                     <li><a id="super_admin_user_log" class="dropdown-item text-right"
-                           href="{% url 'super_admin_user_log' %}" style="display: none;">
-                        لاگ کاربران</a>
+                            href="{% url 'super_admin_user_log' %}" style="display: none;">
+                            لاگ کاربران</a>
                     </li>
                 </ul>
             </li>
