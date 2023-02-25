@@ -46,3 +46,9 @@ AllPanels = {
         }
     }
 }
+
+OtherPanels = {
+
+}
+
+ALLPANELS = {**AllPanels, **OtherPanels}
