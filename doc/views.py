@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.utils.crypto import get_random_string
 from django.forms import FileField
-from doc.forms import ZipFileForm
+from doc.forms import ZipFileForm, CaptchaTestForm
 from doc.models import *
 from django.db.models import Avg
 from es_scripts.persian_automate import ExecutiveClausesExtractor
@@ -505,10 +505,8 @@ def notes(request):
 
 @unathenticated_user
 def signup(request):
-    if request.POST:
-        form = CaptchaTestForm(request.POST)
-    else:
-        form = CaptchaTestForm()
+    
+    form = CaptchaTestForm()
 
     return render(request, "doc/signup.html",  {'form_data': form})
 
@@ -1568,6 +1566,7 @@ def forgot_password_by_email(request, email):
     در صورتی که قصد بازیابی ندارید این پیام را نادیده بگیرید.
     """
     template += f'http://rahnamud.ir:7074/reset-password/{user.id}/{token}'
+    #template += f'http://127.0.0.1:8000/reset-password/{user.id}/{token}'
 
     send_mail(
         subject='بازیابی کلمه عبور',
@@ -3518,7 +3517,7 @@ def send_email(user, email_code, token):
     """
 
     template += f'http://rahnamud.ir:7074/Confirm-Email/{user.id}/{token}'
-
+    #template += f'http://127.0.0.1:8000/Confirm-Email/{user.id}/{token}'
     send_mail(subject='کد تایید ایمیل', message=template, from_email=settings.EMAIL_HOST_USER,
               recipient_list=[user.email])
 
@@ -3593,7 +3592,7 @@ def signup_user_activation(request, email, code):
         return JsonResponse({"status": "Not OK"})
 
 
-def SaveUser(request, firstname, lastname, email, phonenumber, role, username, password, ip, expertise, other_expertise):
+def SaveUser(request, firstname, lastname, email, phonenumber, role, username, password, ip, expertise):
     user_username = User.objects.filter(username=username)
     user_email = User.objects.filter(email=email)
     if user_username.count() > 0:
@@ -3601,19 +3600,33 @@ def SaveUser(request, firstname, lastname, email, phonenumber, role, username, p
     elif user_email.count() > 0:
         return JsonResponse({"status": "duplicated email"})
     else:
-        hashed_pwd = make_password(password)
-        last_login = datetime.datetime.now()
-        user = User.objects.create(first_name=firstname, last_name=lastname, email=email,
-                                   role_id=role,
-                                   mobile=phonenumber, username=username, password=hashed_pwd, last_login=last_login,
-                                   is_super_user=0, is_active=0, other_expertise=other_expertise)
+        
+        form = CaptchaTestForm()
 
-        for e in expertise.split(','):
-            User_Expertise.objects.create(user_id_id=user.id, experise_id_id=e)
-        SaveUserLog(user.id, ip, "signup")
-        confirm_email(user)
+        print("form: ",form)
+        
+        if form.is_valid():
+            print("Valid")
+            
+            hashed_pwd = make_password(password)
+            last_login = datetime.datetime.now()
+            user = User.objects.create(first_name=firstname, last_name=lastname, email=email,
+                                    role_id=role,
+                                    mobile=phonenumber, username=username, password=hashed_pwd, last_login=last_login,
+                                    is_super_user=0, is_active=0)
 
-    return JsonResponse({"status": "OK"})
+            for e in expertise.split(','):
+                User_Expertise.objects.create(user_id_id=user.id, experise_id_id=e)
+            SaveUserLog(user.id, ip, "signup")
+            confirm_email(user)
+            return JsonResponse({"status": "OK"})
+        else:
+            print("Invalid")
+            
+            return JsonResponse({"status": "ROBOT"})
+
+    
+
 
 
 def filter_rahbari_fields_COLUMN(res_query, type_name, label_name_list,
@@ -4297,6 +4310,7 @@ def changeUserState(request, user_id, state):
         تایید شما توسط ادمین انجام شد. هم‌اکنون، می‌توانید وارد سامانه شوید.
         """
         template += f'http://rahnamud.ir:7074/login/'
+        #template += f'http://127.0.0.1:8000/login/'
         send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
                   recipient_list=[accepted_user.email])
 
