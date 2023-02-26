@@ -3590,6 +3590,7 @@ def signup_user_activation(request, email, code):
 def SaveUser(request, firstname, lastname, email, phonenumber, role, username, password, ip, expertise):
     print(username)
     user_username = User.objects.filter(username=username)
+    print(user_username)
     user_email = User.objects.filter(email=email)
     if user_username.count() > 0:
         return JsonResponse({"status": "duplicated username"})
