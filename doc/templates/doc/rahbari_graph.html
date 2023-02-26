@@ -147,14 +147,22 @@
                         </div>
 
                         <div class="col-md-3 pt-3 col-12 col-lg-4 bg-light mt-5" style="direction: rtl">
-                            <label class=" text-right bg-light float-right" style="direction: rtl;;">حداکثر همسایه:</label>
+                            <div class="d-flex">
+                                <label class=" text-right bg-light float-right" style="direction: rtl;;">حداکثر همسایه:</label>
+                                <img style="width: 5%; height: 5%; margin: 0 5px; cursor: pointer; position: relative;"
+                                     onclick="show_LimitNeighbour_Help()" src="../../static/icons/help.png">
+                            </div>
                             <select id="limit_neighbour_count" name="limit_neighbour_count" class="form-select text-right float-right searchable-select"
                                 style="direction: rtl;">
                             </select>
                         </div>
 
                         <div class="col-md-3 pt-3 col-12 col-lg-4 bg-light mt-5" style="direction: rtl">
-                            <label class=" text-right bg-light float-right" style="direction: rtl;;">سطح همسایگی:</label>
+                            <div class="d-flex">
+                                <label class=" text-right bg-light float-right" style="direction: rtl;;">سطح همسایگی:</label>
+                                <img style="width: 5%; height: 5%; margin: 0 5px; cursor: pointer; position: relative;"
+                                     onclick="show_NodeLevel_Help()" src="../../static/icons/help.png">
+                            </div>
                             <select id="SearchNodeLevel" name="SearchNodeLevel" class="form-select text-right float-right searchable-select"
                                 style="direction: rtl;">
                             </select>
@@ -321,8 +329,8 @@
                     </div>
 
                             <div dir="ltr" class="col-md-6 p-1 col-12 col-lg-1 mt-4">
-                                <img style="width: 40%; cursor: pointer; margin-top: 20px;" id="rahbari_graph_SelectNeighbourImg" src="../../static/image/neighbourhood.png">
-                                <img style="width: 30%; cursor: pointer; margin-top: 20px;" id="rahbari_graph_ShowHideImg" src="../../static/image/hide_nodes.png">
+                                <img data-bs-toggle="tooltip" style="width: 40%; cursor: pointer; margin-top: 20px;" title="نمایش همسایه‌های گره‌های انتخاب شده" id="rahbari_graph_SelectNeighbourImg" src="../../static/image/neighbourhood.png">
+                                <img data-bs-toggle="tooltip" style="width: 30%; cursor: pointer; margin-top: 20px;" title="نمایش/پنهان کردن گره‌های انتخاب نشده" id="rahbari_graph_ShowHideImg" src="../../static/image/hide_nodes.png">
                             </div>
                         </div>
 
@@ -1150,6 +1158,40 @@
 
             document.getElementById("HelpModalBody").innerHTML = tag
             document.getElementById("HelpModalHeader").innerText = "راهنما نوع گراف"
+            $("#HelpModalBtn").click()
+
+
+
+        }
+
+        async function show_LimitNeighbour_Help()
+        {
+            const limit_neighbour_name_1 = "حداکثر همسایه"
+            const limit_neighbour_text_1 = "حداکثر تعداد همسایه‌های نشان داده شده برای هر گره"
+
+            let tag =`<table class="table table-light">
+                        <thead class="table" style="background: #0e3f8b;"><tr><th class="text-center" scope="col">${limit_neighbour_name_1}</th></tr></thead>
+                        <tbody><tr><td class="text-center" id="selected_graph_type">${limit_neighbour_text_1}</td></tr></tbody>
+                      </table>`
+
+            document.getElementById("HelpModalBody").innerHTML = tag
+            document.getElementById("HelpModalHeader").innerText = "راهنما حداکثر همسایه "
+            $("#HelpModalBtn").click()
+
+        }
+
+        async function show_NodeLevel_Help()
+        {
+            const node_level_name_1 = "سطح همسایگی"
+            const node_level_text_1 = "تعداد سطح گراف ساخته شده"
+
+            let tag =`<table class="table table-light">
+                        <thead class="table" style="background: #0e3f8b;"><tr><th class="text-center" scope="col">${node_level_name_1}</th></tr></thead>
+                        <tbody><tr><td class="text-center" id="selected_graph_type">${node_level_text_1}</td></tr></tbody>
+                      </table>`
+
+            document.getElementById("HelpModalBody").innerHTML = tag
+            document.getElementById("HelpModalHeader").innerText = "راهنما سطح همسایگی"
             $("#HelpModalBtn").click()
 
 

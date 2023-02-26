@@ -220,7 +220,11 @@
 
             <!-- Match Type -->
             <div class="col-md-6 pt-3 col-12 col-lg-3 mt-1 bg-light" dir="rtl">
-                <label class=" text-right bg-light float-right" style="direction: rtl;;"> نوع جستجو:</label>
+                <div class="d-flex">
+                    <label class=" text-right bg-light float-right" style="direction: rtl;;"> نوع جستجو:</label>
+                    <img style="width: 5%; height: 5%; margin: 0 5px; cursor: pointer; position: relative;"
+                        onclick="show_SearchType_Help()" src="../../static/icons/help.png">
+                </div>
                 <select id="SearchTypeSelect" class="form-select text-right float-right searchable-select"
                         style="direction: rtl;">
                     <option selected value="exact">دقیقا (Exact)</option>
@@ -648,6 +652,26 @@
                         <div id="modal_footer" class="modal-footer">
                             <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن
                             </button> -->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" id="HelpModalBtn" class="btn d-none modal_btn" data-bs-toggle="modal"
+                data-bs-target="#HelpModal"></button>
+            <div class="modal fade" id="HelpModal">
+                <div id="modal_dialog" class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div style="direction: rtl !important;" class="modal-header">
+                            <h5 id="HelpModalHeader" class="modal-title w-100"></h5>
+                            <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div id="HelpModalBody" class="modal-body bg-light text-justify">
                         </div>
 
                     </div>
@@ -1661,6 +1685,43 @@
             document.getElementById(total_page_id).innerText = page_count
 
         }
+
+        async function show_SearchType_Help()
+        {
+            const search_type_name_1 = "دقیقا (Exact)"
+            const search_type_text_1 = "دقیقا عبارت مورد جستجو در متن کل سند آمده باشد و ترتیب کلمات مورد جستجو مهم است."
+
+            const search_type_name_2 = "و (And)"
+            const search_type_text_2 = "اگر عبارت مورد جستجو ترکیبی از کلمات باشد، همه‌ی کلمات ذکر شده در متن کل سند آمده باشد اما در اینجا، ترتیب کلمات اهمیتی ندارد."
+
+            const search_type_name_3 = "یا (OR)"
+            const search_type_text_3 = "اگر عبارت مورد جستجو ترکیبی از کلمات باشد، ممکن است در متن کل سند یا کلمه اول، یا کلمه دوم، یا ... و یا همه‌ی کلمات آمده باشد اما در اینجا، ترتیب کلمات اهمیتی ندارد."
+
+
+            let tag =`<table class="table table-light">
+                        <thead class="table" style="background: #0e3f8b;"><tr><th class="text-center" scope="col">${search_type_name_1}</th></tr></thead>
+                        <tbody><tr><td class="text-center" id="selected_graph_type">${search_type_text_1}</td></tr></tbody>
+                      </table>`
+
+            tag +=`<table class="table table-light mt-4">
+                        <thead class="table" style="background: #0e3f8b;"><tr><th class="text-center" scope="col">${search_type_name_2}</th></tr></thead>
+                        <tbody><tr><td class="text-center" id="selected_graph_type">${search_type_text_2}</td></tr></tbody>
+                      </table>`
+
+
+            tag +=`<table class="table table-light mt-4">
+                    <thead class="table" style="background: #0e3f8b;"><tr><th class="text-center" scope="col">${search_type_name_3}</th></tr></thead>
+                    <tbody><tr><td class="text-center" id="selected_graph_type">${search_type_text_3}</td></tr></tbody>
+                  </table>`
+
+            document.getElementById("HelpModalBody").innerHTML = tag
+            document.getElementById("HelpModalHeader").innerText = "راهنما نوع جستجو"
+            $("#HelpModalBtn").click()
+
+
+
+        }
+
 
 
     </script>
