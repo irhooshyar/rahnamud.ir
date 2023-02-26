@@ -2372,13 +2372,8 @@ def GetMyUserProfile(request):
     user = User.objects.get(username=username)
     user_expertise = User_Expertise.objects.filter(user_id=user.id)
     expertise = []
-    expertise_ids = []
     for e in user_expertise:
-        if e.experise_id.expertise == "سایر موارد":
-            expertise.append(user.other_expertise)
-        else:
-            expertise.append(e.experise_id.expertise)
-        expertise_ids.append(e.experise_id.id)
+        expertise.append(e.experise_id.expertise)
             
     expertise = " - ".join(expertise)
 
