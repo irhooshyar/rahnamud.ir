@@ -10,5 +10,4 @@ class ZipFileForm(forms.Form):
 
 
 class CaptchaTestForm(forms.Form):
-    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox)
-
+    captcha = ReCaptchaField()
