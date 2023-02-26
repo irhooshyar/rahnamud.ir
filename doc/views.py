@@ -1566,7 +1566,6 @@ def forgot_password_by_email(request, email):
     در صورتی که قصد بازیابی ندارید این پیام را نادیده بگیرید.
     """
     template += f'http://rahnamud.ir:7074/reset-password/{user.id}/{token}'
-    #template += f'http://127.0.0.1:8000/reset-password/{user.id}/{token}'
 
     send_mail(
         subject='بازیابی کلمه عبور',
@@ -3512,7 +3511,6 @@ def send_email(user, email_code, token):
     """
 
     template += f'http://rahnamud.ir:7074/Confirm-Email/{user.id}/{token}'
-    #template += f'http://127.0.0.1:8000/Confirm-Email/{user.id}/{token}'
     send_mail(subject='کد تایید ایمیل', message=template, from_email=settings.EMAIL_HOST_USER,
               recipient_list=[user.email])
 
@@ -4293,7 +4291,6 @@ def changeUserState(request, user_id, state):
         تایید شما توسط ادمین انجام شد. هم‌اکنون، می‌توانید وارد سامانه شوید.
         """
         template += f'http://rahnamud.ir:7074/login/'
-        #template += f'http://127.0.0.1:8000/login/'
         send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
                   recipient_list=[accepted_user.email])
 
@@ -4319,25 +4316,24 @@ def change_user_status(request, username, status):
         user.is_active = 1
         user.save()
 
-        # template = f"""
-        # تایید شما توسط ادمین انجام شد. هم‌اکنون، می‌توانید وارد سامانه شوید.
-        # """
-        # template += f'http://virtualjuristic.datakaveh.com/login/'
-        
-        # send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
-        #           recipient_list=[user.email])
+        template = f"""
+        تایید شما توسط ادمین انجام شد. هم‌اکنون، می‌توانید وارد سامانه شوید.
+        """
+        template += f'http://rahnamud.ir:7074/login/'
+        send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
+                   recipient_list=[user.email])
 
         return JsonResponse({"status": "activated"})
     elif status == "-1":
         user.is_active = -1
         user.save()
 
-        # template = f"""
-        # متاسفانه تایید شما توسط ادمین رد شده است.
-        # """
+        template = f"""
+        متاسفانه تایید شما توسط ادمین رد شده است.
+        """
 
-        # send_mail(subject='عدم تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
-        #           recipient_list=[user.email])
+        send_mail(subject='عدم تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
+                   recipient_list=[user.email])
 
         return JsonResponse({"status": "deactivated"})
     else:
