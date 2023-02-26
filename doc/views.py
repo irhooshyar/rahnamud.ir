@@ -3600,30 +3600,18 @@ def SaveUser(request, firstname, lastname, email, phonenumber, role, username, p
     elif user_email.count() > 0:
         return JsonResponse({"status": "duplicated email"})
     else:
-        
-        form = CaptchaTestForm()
+        hashed_pwd = make_password(password)
+        last_login = datetime.datetime.now()
+        user = User.objects.create(first_name=firstname, last_name=lastname, email=email,
+                                role_id=role,
+                                mobile=phonenumber, username=username, password=hashed_pwd, last_login=last_login,
+                                is_super_user=0, is_active=0)
 
-        print("form: ",form)
-        
-        if form.is_valid():
-            print("Valid")
-            
-            hashed_pwd = make_password(password)
-            last_login = datetime.datetime.now()
-            user = User.objects.create(first_name=firstname, last_name=lastname, email=email,
-                                    role_id=role,
-                                    mobile=phonenumber, username=username, password=hashed_pwd, last_login=last_login,
-                                    is_super_user=0, is_active=0)
-
-            for e in expertise.split(','):
-                User_Expertise.objects.create(user_id_id=user.id, experise_id_id=e)
-            SaveUserLog(user.id, ip, "signup")
-            confirm_email(user)
-            return JsonResponse({"status": "OK"})
-        else:
-            print("Invalid")
-            
-            return JsonResponse({"status": "ROBOT"})
+        for e in expertise.split(','):
+            User_Expertise.objects.create(user_id_id=user.id, experise_id_id=e)
+        SaveUserLog(user.id, ip, "signup")
+        confirm_email(user)
+        return JsonResponse({"status": "OK"})
 
     
 
