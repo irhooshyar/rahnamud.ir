@@ -677,31 +677,6 @@
                 <!-- Modal body -->
                 <div id="document_similarity_detail_Body" class="modal-body bg-light text-justify">
                     <div class="row w-100 flex-row">
-                        <ul id="modal_original_tabs"
-                            class="nav nav-pills  mt-5 mx-auto  pr-3 pr-sm-0  float-right  d-block"
-                            role="tablist" id="pills-tabContent">
-                            <li class="nav-item float-right" role="presentation">
-                                <button id="BM25_tab" class="nav-link active" data-bs-toggle="pill"
-                                        data-bs-target="#BM25_pane" type="button" role="tab"
-                                        aria-controls="BM25_pane"
-                                        aria-selected="true">معیار BM25
-                                </button>
-                            </li>
-                            <li class="nav-item float-right" role="presentation">
-                                <button id="DFI_tab" class="nav-link" data-bs-toggle="pill"
-                                        data-bs-target="#DFI_pane" type="button" role="tab"
-                                        aria-controls="DFI_pane" aria-selected="false">معیار DFI
-                                </button>
-                            </li>
-                            <li class="nav-item float-right" role="presentation">
-                                <button id="DFR_tab" class="nav-link" data-bs-toggle="pill"
-                                        data-bs-target="#DFR_pane" type="button" role="tab"
-                                        aria-controls="DFR_pane"
-                                        aria-selected="false"> معیار DFR
-                                </button>
-                            </li>
-                        </ul>
-
                         <div id="modal_original_pane" class="tab-content float-right bg-white px-1"
                              style="position: relative;">
                             <!-- Definition and keywords Pane -->
@@ -711,22 +686,7 @@
                                 <div id="BM25_source_document" class="col-6 border-left-1 float-right py-5"></div>
                                 <div id="BM25_dest_document" class="col-6 float-left py-5"></div>
                             </div>
-                            <div id="DFI_pane"
-                                 class="tab-pane w-100 fade show float-right  px-0 border-0 p-1"
-                                 role="tabpanel" aria-labelledby="DFI_tab">
-                                <div id="DFI_source_document" class="col-6 border-left-1 float-right py-5"></div>
-                                <div id="DFI_dest_document" class="col-6 float-left py-5"></div>
-                            </div>
-                            <div id="DFR_pane"
-                                 class="tab-pane w-100 fade show float-right  px-0 border-0 p-1"
-                                 role="tabpanel" aria-labelledby="DFR_tab">
-                                <div id="DFR_source_document" class="col-6 border-left-1 float-right py-5">
-
-                                </div>
-                                <div id="DFR_dest_document" class="col-6 float-left py-5"></div>
-                            </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -771,6 +731,7 @@
 <script src="../../static/js/rahbari_doc_profile/rahbari_document_actors.js"></script>
 <script src="../../static/js/rahbari_doc_profile/rahbari_doc_ES_similarity.js"></script>
 <script src="../../static/js/rahbari_doc_profile/adaption.js"></script>
+{#<script src="../../static/js/rahbari_doc_profile/rahbari_doc_ES_paragraph_similarity.js"></script>#}
 {#<script src="../../static/js/rahbari_doc_profile/rahbari_document_real_person.js"></script>#}
 {#<script src="../../static/js/rahbari_doc_profile/rahbari_document_locations.js"></script>#}
 {#<script src="../../static/js/rahbari_doc_profile/rahbari_document_summary.js"></script>#}

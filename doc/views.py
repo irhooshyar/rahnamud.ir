@@ -6924,9 +6924,7 @@ def GetBM25Similarity(request, document_id):
                 {
                     "_index": index_name,
                     "_id": "{}".format(document_id),
-
                 }
-
             ],
             "min_term_freq": 50,
             "max_query_terms": 100000
@@ -7123,6 +7121,141 @@ def similarityDetail(request, main_document_id, selected_document_id, similarity
 
     return JsonResponse({"similarity_result": result, "main_doc_result": new_result})
 
+
+# def paragraphApproachSimilarity(request, main_document_id):
+#     country_obj = Document.objects.get(id=main_document_id).country_id
+#     index_name = standardIndexName(country_obj, DocumentParagraphs.__name__)
+# 
+#     fetch_document_paragraph_query = {
+#         "bool": {
+#             "must": [
+#                 {"term": {"document_id": main_document_id}},
+#                 {"range": {"attachment.content_length": {
+#                     "gt": 150
+#                 }}}
+#             ]
+#         }
+#     }
+#     main_document_response = client.search(index=index_name,
+#                                            _source_includes=['attachment.content'],
+#                                            request_timeout=40,
+#                                            query=fetch_document_paragraph_query,
+#                                            size=bucket_size,
+#                                            )
+#     main_document_paragraphs = main_document_response['hits']['hits']
+#     main_doc_paragraphs_count = len(main_document_paragraphs)
+# 
+#     # -----------------------------------------------------------------
+#     similar_document_groupBy_agg = {
+#         "document_agg": {
+#             "terms": {
+#                 "field": "document_id",
+#                 "size": 2200
+#             }
+#         },
+#     }
+#     all_document_paragraph_query = {
+#         "bool": {
+#             "must": [
+#                 {"range": {"attachment.content_length": {
+#                     "gt": 150
+#                 }}}
+#             ]
+#         }
+#     }
+#     all_document_response = client.search(index=index_name,
+#                                           _source_includes=['attachment.content'],
+#                                           request_timeout=40,
+#                                           query=all_document_paragraph_query,
+#                                           aggregations=similar_document_groupBy_agg,
+#                                           size=2200
+#                                           )
+#     all_document_aggregations = all_document_response['aggregations']['document_agg']['buckets']
+#     all_document_dict = {item['key']: item['doc_count'] for item in all_document_aggregations}
+# 
+#     # -------------------------------------------------------------------
+#     paragraph_similars = {}
+#     stopword_list = get_stopword_list('rahbari_doc_similarity_stopwords.txt')
+#     similar_document_query = {
+#         "bool": {
+#             "must": [],
+#             "filter": [
+#                 {"range": {"attachment.content_length": {
+#                     "gt": 150
+#                 }}}
+#             ]
+#         }
+#     }
+#     for paragraph in main_document_paragraphs:
+#         sim_query = {
+#             "more_like_this": {
+#                 "analyzer": "persian_custom_analyzer",
+#                 "fields": ["attachment.content"],
+#                 "like": [
+#                     {
+#                         "_index": index_name,
+#                         "_id": "{}".format(paragraph['_id']),
+#                     }
+#                 ],
+#                 "min_term_freq": 2,
+#                 "min_word_length": 2,
+#                 "max_query_terms": 100000,
+#                 # "minimum_should_match": "50%",
+#                 "stop_words": stopword_list
+#             }}
+#         similar_document_query["bool"]["must"].append(sim_query)
+#         similar_document_response = client.search(index=index_name,
+#                                                   _source_includes=['attachment.content'],
+#                                                   request_timeout=40,
+#                                                   query=similar_document_query,
+#                                                   aggregations=similar_document_groupBy_agg,
+#                                                   size=2200
+#                                                   )
+# 
+#         paragraph_aggregations = similar_document_response['aggregations']['document_agg']['buckets']
+#         # paragraph_document_dict = {item['key']: item['doc_count'] for item in paragraph_aggregations}
+#         for item in paragraph_aggregations:
+#             try:
+#                 paragraph_similars[item['key']] = paragraph_similars[item['key']] + item['doc_count']
+#             except:
+#                 paragraph_similars[item['key']] = item['doc_count']
+# 
+#     # normalize -----------------
+#     for item in paragraph_similars:
+#         try:
+#             key = item
+#             all_paragraphs_count = all_document_dict[key]
+#             paragraph_similars[key] = paragraph_similars[key] / (all_paragraphs_count * main_doc_paragraphs_count)
+#         except:
+#             print("error: ", key)
+# 
+#     paragraph_similars_list = [(item, paragraph_similars[item])
+#                                for item in paragraph_similars]
+#     paragraph_similars_list.sort(key=get_document_count, reverse=True)
+#     best_doc_list = paragraph_similars_list[:10]
+#     best_doc_ids = [item[0] for item in best_doc_list]
+# 
+#     get_document_information_query = {
+#         "terms": {
+#             "document_id": best_doc_ids
+#         }
+#     }
+#     document_index_name = standardIndexName(country_obj, Document.__name__)
+#     get_document_information_response = client.search(index=document_index_name,
+#                                                       _source_includes=['name', 'subject_name', 'document_id',
+#                                                                         'approval_date'],
+#                                                       request_timeout=40,
+#                                                       query=get_document_information_query,
+#                                                       size=bucket_size,
+#                                                       )
+# 
+#     result_document_information_response = get_document_information_response['hits']['hits']
+#     return JsonResponse({"result": result_document_information_response})
+# 
+# 
+# def get_document_count(item):
+#     return item[1]
+# 
 
 def GetDocActorParagraphs_Column_Modal(request, document_id, actor_name, role_name):
     actor_paragraphs = {}
