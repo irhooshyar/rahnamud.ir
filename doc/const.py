@@ -2,10 +2,10 @@ AllPanels = {
     'admin_panels': {
         'persian_name': 'پنل ادمین',
         'sub_panels': {
-            'admin_waiting_user': 'تایید کاربران',
-            'admin_accepted_user': 'کاربران تایید شده',
+            # 'admin_waiting_user': 'تایید کاربران',
+            # 'admin_accepted_user': 'کاربران تایید شده',
             'admin_upload': 'آپلود فایل',
-            'admin_user_recommendation': 'مشاهده نظرات کاربران',
+            # 'admin_user_recommendation': 'مشاهده نظرات کاربران',
             'admin_user_report_bug': 'مشاهده گزارشات خطاها',
             'admin_accept_user_comments': 'نظرات تحلیل اسناد',
             'super_admin_user_log': 'لاگ کاربران'
@@ -46,3 +46,9 @@ AllPanels = {
         }
     }
 }
+
+OtherPanels = {
+
+}
+
+ALLPANELS = {**AllPanels, **OtherPanels}

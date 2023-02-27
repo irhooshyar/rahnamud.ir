@@ -43,7 +43,6 @@ class User(models.Model):
     email_confirm_code = models.CharField(null=True, max_length=500)
     reset_password_token = models.CharField(null=True, max_length=500)
     reset_password_expire_time = models.DateTimeField(default=datetime.utcnow, blank=True)
-
     class Meta:
         app_label = 'doc'
 
@@ -857,17 +856,17 @@ class CountryTFIDFWords(models.Model):
 
 class Recommendation(models.Model):
     id = models.AutoField(primary_key=True)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    email = models.CharField(max_length=500)
-    recommendation_text = models.TextField(max_length=100000)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    recommendation_text = models.TextField(max_length=100000, blank=True, null=True)
     rating_value = models.IntegerField(default=0)
+    submited_at = models.CharField(max_length=256, blank=True, null=True)
 
     class Meta:
         app_label = 'doc'
 
     def __str__(self):
         return f'ID: {self.id}'
+
 
 
 class Report_Bug2(models.Model):

@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.utils.crypto import get_random_string
 from django.forms import FileField
-from doc.forms import ZipFileForm
+from doc.forms import ZipFileForm, CaptchaTestForm
 from doc.models import *
 from django.db.models import Avg
 from es_scripts.persian_automate import ExecutiveClausesExtractor
@@ -56,6 +56,8 @@ import string
 from scripts.Persian.Preprocessing import standardIndexName
 from transformers import MT5ForConditionalGeneration, MT5Tokenizer, AutoTokenizer, AutoModelForTokenClassification, \
     pipeline, AutoModelForSequenceClassification, AutoModelForSeq2SeqLM
+
+from doc.forms import *
 
 # ---------- elastic configs -------------------
 es_url = es_config.ES_URL
@@ -503,7 +505,10 @@ def notes(request):
 
 @unathenticated_user
 def signup(request):
-    return render(request, "doc/signup.html")
+
+    form = CaptchaTestForm()
+
+    return render(request, "doc/signup.html",  {'form_data': form})
 
 
 @unathenticated_user
@@ -515,6 +520,32 @@ def login(request):
 def ManageUsersTab(request):
     return render(request, 'doc/manage_admins.html')
 
+
+@allowed_users()
+def getAcceptedUsers(request, value):
+    search_clause = Q()
+    if value != "all":
+        search_clause = Q(username__icontains=value) | Q(first_name__icontains=value) | Q(last_name__icontains=value) | \
+            Q(email__icontains=value) | Q(mobile__icontains=value)
+    wait_user = User.objects.all().filter(is_active=0).filter(is_super_user=0).filter(enable=1).filter(search_clause)                               
+    accepted_user = User.objects.all().filter(is_active=1).filter(is_super_user=0).filter(enable=1).filter(search_clause)  
+    rejected_user = User.objects.all().filter(is_active=-1).filter(is_super_user=0).filter(enable=1).filter(search_clause)  
+    chain_users = chain(wait_user, accepted_user, rejected_user)
+    result = []
+    for user in chain_users:
+        new_user = {
+            'id': user.id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'username': user.username,
+            'email': user.email,
+            'mobile': user.mobile,
+            'is_active': user.is_active,
+        }
+        result.append(new_user)
+    
+    return JsonResponse({"users": result})
+    
 
 @allowed_users('ManualClustering')
 def ManualClustering(request):
@@ -1618,11 +1649,14 @@ def CheckUserLogin(request, username, password, ip):
         return JsonResponse({"status": "found user"})
 
 
+
 @allowed_users()
 def CreateOrDeleteUserPanel(request, panel_name, username):
+    if panel_name == "all":
+        return CreateOrDeleteUserAllPanel(request, username)
     CreatePanel(request)
-    panel = Panels.objects.all().get(panel_english_name=panel_name)
-    user = User.objects.all().get(username=username)
+    panel = Panels.objects.get(panel_english_name=panel_name)
+    user = User.objects.get(username=username)
     user_admin_panels = UserPanels.objects.filter(panel=panel, user=user)
     if user_admin_panels:
         UserPanels.objects.get(
@@ -1636,6 +1670,43 @@ def CreateOrDeleteUserPanel(request, panel_name, username):
             user=user
         )
         return JsonResponse({"status": "created"})
+
+
+@allowed_users()
+def CreateOrDeleteUserMainPanel(request, panel_name, username):
+    CreatePanel(request)
+    mainpanel = MainPanels.objects.get(panel_english_name=panel_name)
+    user = User.objects.get(username=username)
+    sub_panels = Panels.objects.filter(parent=mainpanel)
+    user_panels = UserPanels.objects.filter(user=user, panel__in=sub_panels)
+    if len(user_panels) < len(sub_panels):
+        for panel in sub_panels:
+            panel = Panels.objects.get(id=panel.id)
+            user_admin_panels = UserPanels.objects.filter(panel=panel, user=user)
+            if not user_admin_panels:
+                UserPanels.objects.create(panel=panel, user=user)
+        return JsonResponse({"status": "created"})
+    else:
+        UserPanels.objects.filter(user=user, panel__in=sub_panels).delete()
+        return JsonResponse({"status": "deleted"})
+
+
+@allowed_users()
+def CreateOrDeleteUserAllPanel(request, username):
+    CreatePanel(request)
+    user = User.objects.get(username=username)
+    panels = Panels.objects.all().exclude(parent__panel_english_name__in=OtherPanels.keys())
+    user_panels = UserPanels.objects.filter(user=user)
+    if len(user_panels) < len(panels):
+        for panel in panels:
+            panel = Panels.objects.get(id=panel.id)
+            user_admin_panels = UserPanels.objects.filter(panel=panel, user=user)
+            if not user_admin_panels:
+                UserPanels.objects.create(panel=panel, user=user)
+        return JsonResponse({"status": "created"})
+    else:
+        UserPanels.objects.filter(user=user).delete()
+        return JsonResponse({"status": "deleted"})
 
 
 def CreateReportBug(request, username, report_bug_text, panel_id, branch_id):
@@ -1732,7 +1803,7 @@ def Excel_Topic_Paragraphs_ES(request, country_id, topic_id, result_size, curr_p
 
 @allowed_users()
 def CreatePanel(request):
-    for main_panel, panel in AllPanels.items():
+    for main_panel, panel in ALLPANELS.items():
         persian_name = panel['persian_name']
         parent = None
         try:
@@ -1827,6 +1898,23 @@ def GetAllPanels(request, username=None):
     return JsonResponse(ret_res)
 
 
+def has_access_to_main_panel(user, main_panel):
+    main_panel = MainPanels.objects.get(panel_english_name=main_panel)
+    sub_panels = Panels.objects.filter(parent=main_panel)
+    user_panels = UserPanels.objects.filter(user=user, panel__in=sub_panels)
+    if len(user_panels) < len(sub_panels):
+        return False
+    return True
+
+
+def has_access_to_all_panel(user):
+    all_panels = Panels.objects.all()
+    panels = all_panels.exclude(parent__panel_english_name__in=OtherPanels.keys())
+    user_panels = UserPanels.objects.filter(user=user)
+    if len(user_panels) < len(panels):
+        return False
+    return True
+
 @is_login
 def GetAllowedPanels(request, username=None):
     if username == None:
@@ -1840,7 +1928,7 @@ def GetAllowedPanels(request, username=None):
 
     ret_res = {'main_panels': {}}
 
-    for main_panel, panel_info in AllPanels.items():
+    for main_panel, panel_info in ALLPANELS.items():
         ret_res['main_panels'][main_panel] = []
         for panel in panel_info['sub_panels'].keys():
             if panel in user_panel:
@@ -1873,7 +1961,7 @@ def GetAllowedPanels(request, username=None):
     ret_res['all_panels'] = all_panels
 
     all_admin_panels = []
-    for panel in AllPanels['admin_panels']['sub_panels'].keys():
+    for panel in ALLPANELS['admin_panels']['sub_panels'].keys():
         all_admin_panels.append(panel)
     ret_res['all_admin_panels'] = all_admin_panels
 
@@ -1895,10 +1983,13 @@ def GetPermissions(request, username):
         user_panel.append(panel_name)
 
     ret_res = {'all_panels': [], 'user_panels': user_panel}
+    ret_res['has_access_to_all_panel'] = has_access_to_all_panel(user)
 
-    for main_panel, panel_info in AllPanels.items():
+    for main_panel, panel_info in ALLPANELS.items():
+        has_access_to_all_sub_panels = has_access_to_main_panel(user, main_panel)
         ret_res['all_panels'].append(
-            {'main_panel': main_panel, 'persian_name': panel_info['persian_name'], 'sub_panels': []})
+            {'main_panel': main_panel, 'persian_name': panel_info['persian_name'],
+             'has_access_to_all_sub_panels': has_access_to_all_sub_panels, 'sub_panels': []})
         for panel in panel_info['sub_panels'].keys():
             new_panel = {}
             new_panel['english_name'] = panel
@@ -1906,7 +1997,6 @@ def GetPermissions(request, username):
             ret_res['all_panels'][-1]['sub_panels'].append(new_panel)
 
     return JsonResponse(ret_res)
-
 
 @is_login
 def GetPermissionsExcel(request):
@@ -2283,6 +2373,7 @@ def GetMyUserProfile(request):
     expertise = []
     for e in user_expertise:
         expertise.append(e.experise_id.expertise)
+            
     expertise = " - ".join(expertise)
 
     if expertise == "":
@@ -2990,7 +3081,7 @@ def ManageUsers(request):
 
         result.append(new_user)
 
-    return JsonResponse({"admins": result, "main_panels": AllPanels, "panels": panels})
+    return JsonResponse({"admins": result, "main_panels": ALLPANELS, "panels": panels})
 
 
 def Recommendations(request, first_name, last_name, email, recommendation_text, rating_value):
@@ -3002,6 +3093,23 @@ def Recommendations(request, first_name, last_name, email, recommendation_text, 
         rating_value=rating_value,
     )
     return JsonResponse({"status": "OK"})
+
+@is_login
+def Recommendations2(request, recommendation_text, rating_value):
+    username = request.COOKIES.get('username')
+    user = User.objects.get(username=username)
+    Recommendation.objects.create(
+        user=user,
+        recommendation_text=recommendation_text,
+        rating_value=rating_value,
+        submited_at=str(jdatetime.strftime(jdatetime.now(), "%H:%M:%S %Y-%m-%d"))
+    )
+    return JsonResponse({"status": "OK"})
+
+def get_user_recommendations(request, username):
+    user = User.objects.get(username=username)
+    recommendations = Recommendation.objects.filter(user=user)
+    return JsonResponse({"recommendations": list(recommendations.values())})
 
 
 def save_lda_topic_label(request, topic_id, username, label):
@@ -3403,7 +3511,6 @@ def send_email(user, email_code, token):
     """
 
     template += f'http://rahnamud.ir:7074/Confirm-Email/{user.id}/{token}'
-
     send_mail(subject='کد تایید ایمیل', message=template, from_email=settings.EMAIL_HOST_USER,
               recipient_list=[user.email])
 
@@ -3489,16 +3596,18 @@ def SaveUser(request, firstname, lastname, email, phonenumber, role, username, p
         hashed_pwd = make_password(password)
         last_login = datetime.datetime.now()
         user = User.objects.create(first_name=firstname, last_name=lastname, email=email,
-                                   role_id=role,
-                                   mobile=phonenumber, username=username, password=hashed_pwd, last_login=last_login,
-                                   is_super_user=0, is_active=0)
+                                role_id=role,
+                                mobile=phonenumber, username=username, password=hashed_pwd, last_login=last_login,
+                                is_super_user=0, is_active=0)
 
         for e in expertise.split(','):
             User_Expertise.objects.create(user_id_id=user.id, experise_id_id=e)
         SaveUserLog(user.id, ip, "signup")
         confirm_email(user)
+        return JsonResponse({"status": "OK"})
 
-    return JsonResponse({"status": "OK"})
+    
+
 
 
 def filter_rahbari_fields_COLUMN(res_query, type_name, label_name_list,
@@ -4198,6 +4307,37 @@ def changeUserState(request, user_id, state):
                   recipient_list=[accepted_user.email])
 
         return JsonResponse({"status": "rejected"})
+
+
+@allowed_users()
+def change_user_status(request, username, status):
+    user = User.objects.get(username=username)
+    if status == "1":
+        user.is_active = 1
+        user.save()
+
+        template = f"""
+        تایید شما توسط ادمین انجام شد. هم‌اکنون، می‌توانید وارد سامانه شوید.
+        """
+        template += f'http://rahnamud.ir:7074/login/'
+        send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
+                   recipient_list=[user.email])
+
+        return JsonResponse({"status": "activated"})
+    elif status == "-1":
+        user.is_active = -1
+        user.save()
+
+        template = f"""
+        متاسفانه تایید شما توسط ادمین رد شده است.
+        """
+
+        send_mail(subject='عدم تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
+                   recipient_list=[user.email])
+
+        return JsonResponse({"status": "deactivated"})
+    else:
+        return JsonResponse({"status": "error"})
 
 
 def DeleteUser(request, user_id):
