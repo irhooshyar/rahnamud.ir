@@ -2985,22 +2985,17 @@ def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRul
             }
             res_query['bool']["must"][0]["bool"]['should'].append(should_query)
 
-    # sort by paragraph_id asc
-    sort_query = {
-        "sort": [
-            {
-                "paragraph_id": {
-                    "order": "asc"
-                }
-            }
-        ]
-    }
+
     
     response = client.search(index=local_index,
                              _source_includes=['document_id', 'paragraph_id', 'document_name', 'attachment.content'],
                              request_timeout=40,
                              query=res_query,
-                             sort=sort_query,
+                             sort={ 
+                                    "paragraph_id": {
+                                        "order": "asc"
+                                    } 
+                                },
                              highlight={
                                  "order": "score",
                                  "fields": {
