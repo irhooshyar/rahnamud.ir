@@ -599,7 +599,7 @@ class MyGraph {
           this.graph_object.getEdges().forEach((edge) => { edge.show() })
           // this.graph_object.getNodes().forEach((node) => { node.show() })
           // back to original color
-          this.graph_object.getNodes().forEach((node) => { node.update({style: {fill: "#00CC66"}}) })
+          this.graph_object.getNodes().forEach((node) => { node.update({style: {fill: "#009999"}}) })
 
 
           const min_degree = this.min_selected_degree
