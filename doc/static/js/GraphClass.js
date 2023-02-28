@@ -630,9 +630,6 @@ class MyGraph {
                     node.update({
                         style: {
                             fill: '#333333',
-                            stroke: '#333333',
-                            lineWidth: 1,
-                            opacity: 0.5
                         }
                     });
                     
