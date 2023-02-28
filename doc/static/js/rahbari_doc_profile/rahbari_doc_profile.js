@@ -557,8 +557,7 @@ async function Search_Document_ByName() {
         return;
     }
 
-    FooTable.get('#PopUpTable').empty = "در حال بازیابی اسناد (لطفا صبر نمایید)",
-    FooTable.get('#PopUpTable').redraw();
+    FooTable.get('#PopUpTable').empty = "در حال بازیابی اسناد (لطفا صبر نمایید)";
     
     const from_advisory_opinion_count = 0
     const from_interpretation_rules_count = 0
@@ -574,7 +573,6 @@ async function Search_Document_ByName() {
     let is_empty = documentsList.length === 0
     if (is_empty) {
         FooTable.get('#PopUpTable').empty = "سندی یافت نشد"
-        FooTable.get('#PopUpTable').redraw();
     } 
 
     document.getElementById("all_doc_count").innerText = document_count.toString()
