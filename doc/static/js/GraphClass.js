@@ -621,13 +621,21 @@ class MyGraph {
               this.graph_object.getNodes().forEach((node) => {
                 const node_degree = this.graph_object.getNodeDegree(node._cfg.model.id, 'total');
                 if (node_degree < min_degree || node_degree > max_degree) {
-                    this.graph_object.findById(node._cfg.model.id).hide();
-
-                    this.graph_object.getEdges().forEach((edge) => {
-                        if (edge._cfg.model.source === node._cfg.model.id || edge._cfg.model.target === node._cfg.model.id) {
-                            edge.hide()
+                    node = this.graph_object.findById(node._cfg.model.id)
+                    // this.graph_object.findById(node._cfg.model.id).hide();
+                    // change color of selected node into gray
+                    node.update({
+                        style: {
+                            fill: '#d9d9d9',
+                            stroke: '#d9d9d9',
                         }
-                    })
+                    });
+                    
+                    // this.graph_object.getEdges().forEach((edge) => {
+                    //     if (edge._cfg.model.source === node._cfg.model.id || edge._cfg.model.target === node._cfg.model.id) {
+                    //         edge.hide()
+                    //     }
+                    // })
                 }
             });
           }
