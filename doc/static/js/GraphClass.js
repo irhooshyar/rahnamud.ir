@@ -626,10 +626,10 @@ class MyGraph {
                 if (node_degree < min_degree || node_degree > max_degree) {
                     node = this.graph_object.findById(node._cfg.model.id)
                     // this.graph_object.findById(node._cfg.model.id).hide();
-                    // change color of selected node into dark grey
+                    // change color of selected node into light grey
                     node.update({
                         style: {
-                            fill: '#333333',
+                            fill: "#e6e6e6"
                         }
                     });
                     
