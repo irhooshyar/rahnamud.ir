@@ -597,7 +597,10 @@ class MyGraph {
           $('#'+this.edges_table).empty();
 
           this.graph_object.getEdges().forEach((edge) => { edge.show() })
-          this.graph_object.getNodes().forEach((node) => { node.show() })
+          // this.graph_object.getNodes().forEach((node) => { node.show() })
+          // back to original color
+          this.graph_object.getNodes().forEach((node) => { node.update({style: {fill: "#00CC66"}}) })
+
 
           const min_degree = this.min_selected_degree
           const max_degree = this.max_selected_degree
