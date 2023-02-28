@@ -556,8 +556,6 @@ async function Search_Document_ByName() {
         Reload();
         return;
     }
-
-    FooTable.get('#PopUpTable').empty = "در حال بازیابی اسناد (لطفا صبر نمایید)";
     
     const from_advisory_opinion_count = 0
     const from_interpretation_rules_count = 0
@@ -570,10 +568,6 @@ async function Search_Document_ByName() {
     let response = await fetch(request_link).then(response => response.json());
     let documentsList = response["result"]
     let document_count = response["total_hits"]
-    let is_empty = documentsList.length === 0
-    if (is_empty) {
-        FooTable.get('#PopUpTable').empty = "سندی یافت نشد"
-    } 
 
     document.getElementById("all_doc_count").innerText = document_count.toString()
 
