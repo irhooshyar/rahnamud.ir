@@ -738,7 +738,7 @@
             request_link = 'http://' + location.host + "/GetRahbariLabels/";
             response = await fetch(request_link).then(response => response.json());
             response = response["label_list"];
-            options = [{value: "0", text: "همه"}];
+            options = [{value: "0", text: "همه"}, {value: "-1", text: "نامشخص"}];
 
             for (let i = 0; i < response.length; i++) {
                 const label_id = response[i]["id"]
