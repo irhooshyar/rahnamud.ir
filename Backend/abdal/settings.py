@@ -10,7 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(5)xa9d&u1)+#rnd_mrw@0_e6g87z(i!d$8+06orf&9of(30y5'
+SECRET_KEY = 'django-insecure-(5)xa9d&u1)+#rnd_mrw@0_e6g87z(i!d$8+06orf&9of(30y5' \
+    if os.environ.get('DJANGO_SECRET_KEY') is None else os.environ.get('DJANGO_SECRET_KEY')
 
 from pathlib import Path
 import os
@@ -19,17 +20,24 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+# Find Docker environment
+DOCKER_ENV = str(os.environ.get('PRODUCTION'))
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if DOCKER_PRODUCTION_ENV == 'None' else DOCKER_PRODUCTION_ENV == 'false'
 
 
+if not DOCKER_PRODUCTION_ENV == 'None':
+    ALLOWED_HOSTS = ['0.0.0.0']
+else:
+    ALLOWED_HOSTS = ['*']  # default option when not using docker
 
-ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -48,25 +56,32 @@ INSTALLED_APPS = [
     'django_extensions',
     'after_response',
     'rest_framework'
-    ]
+]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
     # 'doc.middleware_logger',
     #'doc.middleware_logger.logger_middleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1",
-    "https://irhooshyar.com"
-]
+if not DOCKER_PRODUCTION_ENV == 'None':
+    CORS_ALLOWED_ORIGINS = [
+        'node:3000'
+    ]
+else:
+    CORS_ALLOWED_ORIGINS = [
+        "http://127.0.0.1",
+        "https://irhooshyar.com"
+    ]  # default option when not using docker
+
 
 ROOT_URLCONF = 'abdal.urls'
 
@@ -104,13 +119,13 @@ DATABASES = {
     'Fa_DataBase': {
         'ENGINE': 'django.db.backends.mysql',
         'CONN_MAX_AGE': 60,
-        'NAME': 'RahnamudDB' if os.environ.get('DB_FA_NAME') is None else os.environ.get('DB_FA_NAME'),
+        'NAME': 'RahnamudDB',
         # 'NAME': 'StandardDB_v1',
-        'USER': 'dbadmin',
-        'PASSWORD': '123456789',
+        'USER': 'dbadmin' if os.environ.get('MYSQL_ROOT_PWD') is None else "root",
+        'PASSWORD': '123456789' if os.environ.get('MYSQL_ROOT_PWD') is None else os.environ.get('MYSQL_ROOT_PWD'),
         'HOST': 'localhost' if os.environ.get('DB_URL') is None else
         os.environ.get('DB_URL'),  # Or an IP Address that your DB is hosted on
-        'PORT': '3306' if os.environ.get('DB_PORT') is None else os.environ.get('DB_PORT'),
+        'PORT': '3306',
         'TEST': {
             "DEPENDENCIES": []
         }
@@ -179,7 +194,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 LOCAL_SETTING = {
-    'ENABLE_BERT' : False,
+    'ENABLE_BERT': False,
     'NUMBER_OF_THREAD': 15
 }
 
