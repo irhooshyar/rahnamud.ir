@@ -4044,7 +4044,7 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
                              request_timeout=40,
                              query=res_query,
                              sort={ 
-                                    "rahbari_date": {
+                                    "rahbari_date.keyword": {
                                         "order": "desc"
                                     } 
                                 },
