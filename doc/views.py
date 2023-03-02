@@ -4043,6 +4043,11 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
                                                'labels', 'type', 'rahbari_type'],
                              request_timeout=40,
                              query=res_query,
+                             sort={ 
+                                    "rahbari_date": {
+                                        "order": "desc"
+                                    } 
+                                },
                              aggregations=res_agg,
                              from_=from_value,
                              size=page_size
