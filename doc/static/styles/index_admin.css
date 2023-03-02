@@ -1325,10 +1325,10 @@ table .footable {
 }
 
 
-.footable tbody tr:not(.footable-empty) td:first-child:before{
+/* .footable tbody tr:not(.footable-empty) td:first-child:before{
     counter-increment: Serial;
     content:counter(Serial);
-  } 
+  }  */
 
 .swal-title {
     font-size: 25px !important;
