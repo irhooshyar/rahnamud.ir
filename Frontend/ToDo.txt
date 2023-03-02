@@ -1,0 +1,25 @@
+header:
+    <script src="../../static/library/select2.min-4.1.0.js"></script>
+    <script>
+        $(document).ready(async function () {
+            $('.searchable').select2({
+                dir: 'rtl',
+            });
+
+            $('.multisel').select2({
+                dir: 'rtl',
+                multiple: true,
+                placeholder: "انتخاب نمایید"
+            })
+        });
+    </script>
+    <script src="../../static/js/hide_header_panel.js"></script>
+    <script src="../../static/js/signout_function.js"></script>
+    <script>
+        (async function() {
+            let request_link = 'http://' + location.host + "/account/self/";
+            let response = await fetch(request_link).then(response => response.json());
+            let name = response["name"]
+            document.getElementById("ProfileDropdown").innerText = name
+        })()
+    </script>

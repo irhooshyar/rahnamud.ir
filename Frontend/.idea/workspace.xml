@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ad027759-6704-494b-8be6-cf3a99eb94f5" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="CSS File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2MQmw0pezuIqCt0xiX0HqrxWQ9K" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "credentialsType com.jetbrains.nodejs.remote.NodeJSCreateRemoteSdkForm": "Docker",
+    "last_opened_file_path": "C:/Users/SurpRISE/Work/Workspace/Cybermap/rahnamud.ir/Frontend/src/assets",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "docker://rahnamudir-node:latest/node",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "settings.nodejs",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\assets" />
+      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\pages" />
+      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\assets\library" />
+      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\assets\image" />
+      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\assets\css" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\pages" />
+      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\assets\styles" />
+      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\components\ui" />
+      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\pages\home" />
+      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\components\ui\header" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ad027759-6704-494b-8be6-cf3a99eb94f5" name="Changes" comment="" />
+      <created>1677708419056</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1677708419056</updated>
+      <workItem from="1677708420733" duration="2939000" />
+      <workItem from="1677713282832" duration="3850000" />
+      <workItem from="1677748043472" duration="6425000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

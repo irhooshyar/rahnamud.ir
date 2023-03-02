@@ -31,7 +31,7 @@ services:
             dockerfile: ./docker/node/dev/Dockerfile
         environment:
             - NODE_ENV=development
-#            - CHOKIDAR_USEPOLLING=true
+            - WATCHPACK_POLLING=true
         command: npm start
 #        depends_on:
 #            - django
