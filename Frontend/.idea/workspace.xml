@@ -13,8 +13,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="CSS File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -50,10 +50,10 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\assets" />
-      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\pages" />
+      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\assets\js" />
       <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\assets\library" />
-      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\assets\image" />
-      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\assets\css" />
+      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\public" />
+      <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\assets\styles" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\SurpRISE\Work\Workspace\Cybermap\rahnamud.ir\Frontend\src\pages" />
@@ -74,6 +74,9 @@
       <workItem from="1677708420733" duration="2939000" />
       <workItem from="1677713282832" duration="3850000" />
       <workItem from="1677748043472" duration="6425000" />
+      <workItem from="1677840841301" duration="4116000" />
+      <workItem from="1677862440873" duration="5856000" />
+      <workItem from="1677879538878" duration="6971000" />
     </task>
     <servers />
   </component>

@@ -23,3 +23,6 @@ header:
             document.getElementById("ProfileDropdown").innerText = name
         })()
     </script>
+
+login:
+    <script src="../../static/js/Bita.js"></script>

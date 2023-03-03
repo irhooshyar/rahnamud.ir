@@ -1,14 +1,15 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import '../../../assets/library/bootstrap-icons-1.3.0.css'
-import '../../../assets/library/bootstrap.min-4.5.2.css'
-import '../../../assets/library/bootstrap.min-5.1.2npm.css'
-import '../../../components/form/select2/select2.css'
-import '../../../assets/library/fontawesome-5.10.0.all.css'
-import '../../../assets/library/font-awesome.min-4.7.0.css'
+
 import rahbar_profile1 from "../../../assets/image/rahbar_profile1.png"
 
 function Header(props) {
+    require('../../../assets/library/bootstrap-icons-1.3.0.css')
+    require('../../../assets/library/bootstrap.min-4.5.2.css')
+    require('../../../assets/library/bootstrap.min-5.1.2npm.css')
+    require('../../../components/form/select2/select2.css')
+    require('../../../assets/library/fontawesome-5.10.0.all.css')
+    require('../../../assets/library/font-awesome.min-4.7.0.css')
     return (
         <>
             <nav dir="rtl" className="navbar nav_menu navbar-expand-lg fixed-top p-0 mt-0">

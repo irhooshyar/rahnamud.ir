@@ -1,8 +1,8 @@
 import React from 'react';
 import Header from "../components/ui/header/Header";
-import '../assets/styles/index2.css'
 
 function Home(props) {
+    require('../assets/styles/index2.css');
     return (
         <>
             <Header/>
