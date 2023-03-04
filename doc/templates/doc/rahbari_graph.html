@@ -640,6 +640,10 @@
             let label_id = await GetMultiSelectValue("LabelSelectBox")
             let document_id = await GetMultiSelectValue("DocumentSelectBox")
 
+            if (document.getElementById("graph_show").onclick){
+                document.getElementById("rahbari_graph_SearchBox").value = ""
+            }
+
             if (label_id === "")
                 label_id = "0"
             if (document_id === "")
@@ -682,6 +686,7 @@
                 let Nodes_data = response["Nodes_data"]
                 let Edges_data = response["Edges_data"]
 
+                
                 document.getElementById("selected_graph_type").innerText = $("#GraphTypeSelect option:selected").text();
                 document.getElementById("selected_limit_neighbour_count").innerText = limit_neighbour_count
                 //document.getElementById("selected_search_keyword").innerText = keyword_text
