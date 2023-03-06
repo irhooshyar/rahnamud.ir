@@ -147,7 +147,7 @@ def update_doc(request, id, language, ):
 
         # from scripts.Persian import DocProvisionsFullProfileAnalysis
         # DocProvisionsFullProfileAnalysis.apply.after_response(folder_name, file)
-         from es_scripts import IngestParagraphsVectorsToElastic
+        from es_scripts import IngestParagraphsVectorsToElastic
         IngestParagraphsVectorsToElastic.apply.after_response(folder_name, file, 0)
 
     return redirect('zip')
