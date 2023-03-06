@@ -18,3 +18,4 @@ doc/static/dendrogram_plots
 doc/static/ACF_plot
 doc/static/PACF_plot
 **/__pycache__
+**/node_modules
