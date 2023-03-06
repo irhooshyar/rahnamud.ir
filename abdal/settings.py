@@ -104,13 +104,13 @@ DATABASES = {
     'Fa_DataBase': {
         'ENGINE': 'django.db.backends.mysql',
         'CONN_MAX_AGE': 60,
-        'NAME': 'RahnamudDB' if os.environ.get('DB_FA_NAME') is None else os.environ.get('DB_FA_NAME'),
+        'NAME': 'RahnamudDB',
         # 'NAME': 'StandardDB_v1',
-        'USER': 'dbadmin',
-        'PASSWORD': '123456789',
+        'USER': 'dbadmin' if os.environ.get('MYSQL_ROOT_PWD') is None else "root",
+        'PASSWORD': '123456789' if os.environ.get('MYSQL_ROOT_PWD') is None else os.environ.get('MYSQL_ROOT_PWD'),
         'HOST': 'localhost' if os.environ.get('DB_URL') is None else
         os.environ.get('DB_URL'),  # Or an IP Address that your DB is hosted on
-        'PORT': '3306' if os.environ.get('DB_PORT') is None else os.environ.get('DB_PORT'),
+        'PORT': '3306',
         'TEST': {
             "DEPENDENCIES": []
         }
