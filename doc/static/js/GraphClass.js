@@ -622,7 +622,7 @@ class MyGraph {
                 const node_degree = this.graph_object.getNodeDegree(node._cfg.model.id, 'total');
                 if (node_degree < min_degree || node_degree > max_degree) {
                     this.graph_object.findById(node._cfg.model.id).hide();
-
+                    
                     this.graph_object.getEdges().forEach((edge) => {
                         if (edge._cfg.model.source === node._cfg.model.id || edge._cfg.model.target === node._cfg.model.id) {
                             edge.hide()

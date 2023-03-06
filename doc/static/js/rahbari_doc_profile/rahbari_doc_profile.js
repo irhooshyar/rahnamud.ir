@@ -144,6 +144,10 @@ async function ShowResult() {
     document.getElementById("document_adaption_btn").disabled = false;
     document.getElementById("document_subject_btn").disabled = false;
 
+    
+
+    document.getElementById("SearchBox").value = ""
+
     getDocumentFullProfileInfo(country_id, document_id)
 
     let form_data = new FormData()
@@ -556,8 +560,7 @@ async function Search_Document_ByName() {
         Reload();
         return;
     }
-
-
+    
     const from_advisory_opinion_count = 0
     const from_interpretation_rules_count = 0
     const curr_page = 1
