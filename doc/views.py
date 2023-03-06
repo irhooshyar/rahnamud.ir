@@ -507,10 +507,9 @@ def notes(request):
 
 @unathenticated_user
 def signup(request):
-
     form = CaptchaTestForm()
 
-    return render(request, "doc/signup.html",  {'form_data': form})
+    return render(request, "doc/signup.html", {'form_data': form})
 
 
 @unathenticated_user
@@ -528,10 +527,12 @@ def getAcceptedUsers(request, value):
     search_clause = Q()
     if value != "all":
         search_clause = Q(username__icontains=value) | Q(first_name__icontains=value) | Q(last_name__icontains=value) | \
-            Q(email__icontains=value) | Q(mobile__icontains=value)
-    wait_user = User.objects.all().filter(is_active=0).filter(is_super_user=0).filter(enable=1).filter(search_clause)                               
-    accepted_user = User.objects.all().filter(is_active=1).filter(is_super_user=0).filter(enable=1).filter(search_clause)  
-    rejected_user = User.objects.all().filter(is_active=-1).filter(is_super_user=0).filter(enable=1).filter(search_clause)  
+                        Q(email__icontains=value) | Q(mobile__icontains=value)
+    wait_user = User.objects.all().filter(is_active=0).filter(is_super_user=0).filter(enable=1).filter(search_clause)
+    accepted_user = User.objects.all().filter(is_active=1).filter(is_super_user=0).filter(enable=1).filter(
+        search_clause)
+    rejected_user = User.objects.all().filter(is_active=-1).filter(is_super_user=0).filter(enable=1).filter(
+        search_clause)
     chain_users = chain(wait_user, accepted_user, rejected_user)
     result = []
     for user in chain_users:
@@ -545,9 +546,9 @@ def getAcceptedUsers(request, value):
             'is_active': user.is_active,
         }
         result.append(new_user)
-    
+
     return JsonResponse({"users": result})
-    
+
 
 @allowed_users('ManualClustering')
 def ManualClustering(request):
@@ -1651,7 +1652,6 @@ def CheckUserLogin(request, username, password, ip):
         return JsonResponse({"status": "found user"})
 
 
-
 @allowed_users()
 def CreateOrDeleteUserPanel(request, panel_name, username):
     if panel_name == "all":
@@ -1917,6 +1917,7 @@ def has_access_to_all_panel(user):
         return False
     return True
 
+
 @is_login
 def GetAllowedPanels(request, username=None):
     if username == None:
@@ -1999,6 +2000,7 @@ def GetPermissions(request, username):
             ret_res['all_panels'][-1]['sub_panels'].append(new_panel)
 
     return JsonResponse(ret_res)
+
 
 @is_login
 def GetPermissionsExcel(request):
@@ -2375,7 +2377,7 @@ def GetMyUserProfile(request):
     expertise = []
     for e in user_expertise:
         expertise.append(e.experise_id.expertise)
-            
+
     expertise = " - ".join(expertise)
 
     if expertise == "":
@@ -2987,17 +2989,15 @@ def GetSearchDetails_ES_Rahbari_2(request, document_id, search_type, text, isRul
             }
             res_query['bool']["must"][0]["bool"]['should'].append(should_query)
 
-
-    
     response = client.search(index=local_index,
                              _source_includes=['document_id', 'paragraph_id', 'document_name', 'attachment.content'],
                              request_timeout=40,
                              query=res_query,
-                             sort={ 
-                                    "paragraph_id": {
-                                        "order": "asc"
-                                    } 
-                                },
+                             sort={
+                                 "paragraph_id": {
+                                     "order": "asc"
+                                 }
+                             },
                              highlight={
                                  "order": "score",
                                  "fields": {
@@ -3103,6 +3103,7 @@ def Recommendations(request, first_name, last_name, email, recommendation_text, 
     )
     return JsonResponse({"status": "OK"})
 
+
 @is_login
 def Recommendations2(request, recommendation_text, rating_value):
     username = request.COOKIES.get('username')
@@ -3114,6 +3115,7 @@ def Recommendations2(request, recommendation_text, rating_value):
         submited_at=str(jdatetime.strftime(jdatetime.now(), "%H:%M:%S %Y-%m-%d"))
     )
     return JsonResponse({"status": "OK"})
+
 
 def get_user_recommendations(request, username):
     user = User.objects.get(username=username)
@@ -3605,18 +3607,15 @@ def SaveUser(request, firstname, lastname, email, phonenumber, role, username, p
         hashed_pwd = make_password(password)
         last_login = datetime.datetime.now()
         user = User.objects.create(first_name=firstname, last_name=lastname, email=email,
-                                role_id=role,
-                                mobile=phonenumber, username=username, password=hashed_pwd, last_login=last_login,
-                                is_super_user=0, is_active=0)
+                                   role_id=role,
+                                   mobile=phonenumber, username=username, password=hashed_pwd, last_login=last_login,
+                                   is_super_user=0, is_active=0)
 
         for e in expertise.split(','):
             User_Expertise.objects.create(user_id_id=user.id, experise_id_id=e)
         SaveUserLog(user.id, ip, "signup")
         confirm_email(user)
         return JsonResponse({"status": "OK"})
-
-    
-
 
 
 def filter_rahbari_fields_COLUMN(res_query, type_name, label_name_list,
@@ -4045,11 +4044,11 @@ def SearchRahbari_ES(request, country_id, type_id, label_name, from_year, to_yea
                                                'labels', 'type', 'rahbari_type'],
                              request_timeout=40,
                              query=res_query,
-                             sort={ 
-                                    "rahbari_date.keyword": {
-                                        "order": "desc"
-                                    } 
-                                },
+                             sort={
+                                 "rahbari_date.keyword": {
+                                     "order": "desc"
+                                 }
+                             },
                              aggregations=res_agg,
                              from_=from_value,
                              size=page_size
@@ -4335,7 +4334,7 @@ def change_user_status(request, username, status):
         """
         template += f'http://rahnamud.ir:7074/login/'
         send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
-                   recipient_list=[user.email])
+                  recipient_list=[user.email])
 
         return JsonResponse({"status": "activated"})
     elif status == "-1":
@@ -4347,7 +4346,7 @@ def change_user_status(request, username, status):
         """
 
         send_mail(subject='عدم تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
-                   recipient_list=[user.email])
+                  recipient_list=[user.email])
 
         return JsonResponse({"status": "deactivated"})
     else:
@@ -7276,6 +7275,77 @@ def similarityDetail(request, main_document_id, selected_document_id, similarity
     new_result = new_response['hits']['hits']
 
     return JsonResponse({"similarity_result": result, "main_doc_result": new_result})
+
+
+def full_adaption(request, main_document_id, source_country, destination_countries):
+    sim_docs = []
+    base_index_name = config.FULL_ADAPTION_CONFIGS[source_country]["index_name"]
+
+    destination_country_array = destination_countries.split(";")
+    for destination_country in destination_country_array:
+        dest_index_name = config.FULL_ADAPTION_CONFIGS[destination_country]["index_name"]
+        stopword_list = []
+        all_stopwords = get_stopword_list("all_stopwords.txt")
+        rahbari_stopwords = get_stopword_list("rahbari_stopwords.txt")
+
+        stopword_list.extend(all_stopwords)
+        stopword_list.extend(rahbari_stopwords)
+
+        specific_stopwords = config.FULL_ADAPTION_CONFIGS[source_country]["stopword_filename"]
+        if specific_stopwords:
+            my_stopwords = get_stopword_list("news_profile_stopwords.txt")
+            stopword_list.extend(my_stopwords)
+
+        sim_query = {
+            "more_like_this": {
+                "analyzer": "persian_custom_analyzer",
+                "fields": ["attachment.content"],
+                "like": [
+                    {
+                        "_index": base_index_name,
+                        "_id": "{}".format(main_document_id),
+                    }
+                ],
+                "min_term_freq": 1,
+                "min_word_length": 2,
+                "max_query_terms": 100000,
+                "minimum_should_match": "20%",
+                "stop_words": stopword_list
+            }
+        }
+
+        response = client.search(index=dest_index_name,
+                                 _source_includes=['document_id',
+                                                   config.FULL_ADAPTION_CONFIGS[destination_country]["document_id"],
+                                                   config.FULL_ADAPTION_CONFIGS[destination_country]["document_date"]],
+                                 request_timeout=40,
+                                 query=sim_query,
+                                 size=100,
+                                 )
+
+        result = response['hits']['hits']
+
+
+        for item in result:
+            document_name = config.FULL_ADAPTION_CONFIGS[destination_country]["document_id"]
+            document_date = config.FULL_ADAPTION_CONFIGS[destination_country]["document_date"]
+            country_name = config.FULL_ADAPTION_CONFIGS[destination_country]["country_name"]
+
+            newItem = {"document_id": item["_source"]["document_id"],
+                       "document_name": item["_source"][document_name],
+                       "document_date": item["_source"][document_date],
+                       "BM25_score": item["_score"],
+                       "country_name": item["_source"][country_name]
+                       }
+            sim_docs.append(newItem)
+
+    sim_docs.sort(key=return_score, reverse=True)
+    return JsonResponse({'docs': sim_docs[:20]})
+
+
+
+def return_score(item):
+    return item["BM25_score"]
 
 
 def GetDocActorParagraphs_Column_Modal(request, document_id, actor_name, role_name):
