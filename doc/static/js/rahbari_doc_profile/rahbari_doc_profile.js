@@ -144,6 +144,10 @@ async function ShowResult() {
     document.getElementById("document_adaption_btn").disabled = false;
     document.getElementById("document_subject_btn").disabled = false;
 
+    
+
+    document.getElementById("SearchBox").value = ""
+
     getDocumentFullProfileInfo(country_id, document_id)
 
     let form_data = new FormData()
