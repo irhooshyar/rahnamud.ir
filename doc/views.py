@@ -142,11 +142,13 @@ def update_doc(request, id, language, ):
         # AIParagraphTopicLDA_LDAGraphData-DocsActorsExtractor
         # DocsParagraphsClusteringCubeData,ClusteringGraphData
 
-        from scripts.Persian import DocsSubjectExtractor2
-        DocsSubjectExtractor2.apply.after_response(folder_name, file)
+        # from scripts.Persian import DocsSubjectExtractor2
+        # DocsSubjectExtractor2.apply.after_response(folder_name, file)
 
         # from scripts.Persian import DocProvisionsFullProfileAnalysis
         # DocProvisionsFullProfileAnalysis.apply.after_response(folder_name, file)
+         from es_scripts import IngestParagraphsVectorsToElastic
+        IngestParagraphsVectorsToElastic.apply.after_response(folder_name, file, 0)
 
     return redirect('zip')
 
