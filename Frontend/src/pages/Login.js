@@ -14,6 +14,40 @@ function Login() {
         document.title = 'ورود';
     }, []);
 
+    async function onSubmit(e) {
+        e.preventDefault()
+        const formElements = e.target.elements
+
+        const user_ip = "127.0.0.0"
+
+        const request_link = 'http://' + location.host + "/CheckUserLogin/" + formElements.username.value + "/" + formElements.password.value + "/" + user_ip + "/"
+        let response = await fetch(request_link);
+        response = await response.json();
+
+        const messages = document.getElementById("messages");
+
+        if (response.status === "not found" || response.status === "wrong password" ) {
+            messages.innerText = "نام کاربری یا رمزعبور اشتباه است"
+            messages.classList.add("text-danger")
+        }
+        else if (response.status === "not active") {
+            messages.innerText = "اطلاعات شما درحال بررسی توسط ادمین است."
+            messages.classList.add("text-danger")
+        }
+        else if (response.status === "de active") {
+            messages.innerText = "درخواست عضویت شما توسط ادمین رد شده است."
+            messages.classList.add("text-danger")
+        }
+        else if (response.status === "found admin") {
+            window.location.href = "{% url 'admin_confirm_waiting_user' %}"
+        }
+        else if (response.status === "found user") {
+            const username = formElements.username.value;
+            setCookie("username", username, 1)
+            window.location.href = "{% url 'index' %}"
+        }
+    }
+
     return (
         <>
             <div className="container mt-5">
