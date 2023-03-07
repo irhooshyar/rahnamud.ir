@@ -189,7 +189,7 @@
                 <label class=" text-right bg-light float-right" style="direction: rtl;;"> سال از:</label>
 
                 <select id="YearFrom" class="form-select text-right float-right searchable-select"
-                        style="direction: rtl;">
+                        style="direction: rtl;" onchange="YearFromChanged()">
                 </select>
 
             </div>
@@ -888,6 +888,27 @@
 
         function CountryChanged() {
             init()
+        }
+
+        function YearFromChanged() {
+            let year_from = document.getElementById("YearFrom").value;
+            let year_to = document.getElementById("YearTo").value;
+            // update year_to
+            // YearFrom and YearTo are numstrings
+            year_from = parseInt(year_from)
+            if (year_from > 0) {
+                let year_to_options = document.getElementById("YearTo").options;
+                for (let i = 0; i < year_to_options.length; i++) {
+                    let year_to_option = year_to_options[i];
+                    let year_to_option_value = parseInt(year_to_option.value);
+                    if (year_to_option_value > 0 && year_to_option_value <= year_from) {
+                        year_to_option.display = "block";
+                    } else {
+                        year_to_option.display = "none";
+                    }                        
+                }
+            }
+            return year_from
         }
 
         function showDocumentInformation(documents_information_result, mode, where, total_hits, text, curr_page, max_score) {
