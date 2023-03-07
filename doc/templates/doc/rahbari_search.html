@@ -892,23 +892,20 @@
 
         function YearFromChanged() {
             let year_from = document.getElementById("YearFrom").value;
-            let year_to = document.getElementById("YearTo").value;
-            // update year_to
-            // YearFrom and YearTo are numstrings
             year_from = parseInt(year_from)
+            let year_to_new_options = ""
             if (year_from > 0) {
                 let year_to_options = document.getElementById("YearTo").options;
                 for (let i = 0; i < year_to_options.length; i++) {
                     let year_to_option = year_to_options[i];
                     let year_to_option_value = parseInt(year_to_option.value);
-                    if (year_to_option_value > 0 && year_to_option_value <= year_from) {
-                        year_to_option.display = "block";
-                    } else {
-                        year_to_option.display = "none";
-                    }                        
+                    if (year_to_option_value >= year_from) {
+                        year_to_new_options += "<option value=" + year_to_option_value + " >" + year_to_option.text + "</option>"
+                    }
                 }
             }
-            return year_from
+            document.getElementById("YearTo").innerHTML = "<option value=" + 0 + " >" + "همه" + "</option>" +
+                year_to_new_options;
         }
 
         function showDocumentInformation(documents_information_result, mode, where, total_hits, text, curr_page, max_score) {
