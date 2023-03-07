@@ -68,6 +68,8 @@ services:
             memlock:
                 soft: -1
                 hard: -1
+        ports:
+            - "7086:9200"
         volumes:
             - elasticsearch_volume:/usr/share/elasticsearch/data
             - ./docker/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
