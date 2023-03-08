@@ -875,6 +875,8 @@
             /****************** Update User Search Parameters ****************************/
             UserSearchParameters.update_parameters();
 
+            syncAllSelectsWithResetExceptions(["country"])
+
             //user log
             let form_data = new FormData()
             let detail_type = "نمایش پنل"
@@ -905,8 +907,6 @@
             }
             document.getElementById("YearTo").innerHTML = "";
             document.getElementById("YearTo").innerHTML = "<option value=0 >همه</option>" + newYearToOptions;
-                
-            syncAllSelectsWithResetExceptions(["country"])
         }
 
         function showDocumentInformation(documents_information_result, mode, where, total_hits, text, curr_page, max_score) {
