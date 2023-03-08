@@ -907,14 +907,12 @@
                     let option_value = option.split("value=")[1].split(">")[0]
                     year_to = parseInt(option_value)
                     if (year_to >= year_from) {
-                        // newYearToOptions += option + "</option>"
+                        newYearToOptions += option + "</option>"
                     }
                 }
             }
-            document.getElementById("YearTo").innerHTML = "";
-            //syncAllSelectsWithResetExceptions(["country", "TypeName", "YearFrom", "LabelsName"])
-            //document.getElementById("YearTo").innerHTML = "<option value=0 >همه</option>" + newYearToOptions;
-            //syncAllSelectsWithResetExceptions(["country", "TypeName", "YearFrom", "LabelsName"])
+            document.getElementById("YearTo").innerHTML = "<option value=0 >همه</option>" + newYearToOptions;
+            syncAllSelectsWithResetExceptions(["country", "TypeName", "YearFrom", "LabelsName"])
         }
 
         function showDocumentInformation(documents_information_result, mode, where, total_hits, text, curr_page, max_score) {
