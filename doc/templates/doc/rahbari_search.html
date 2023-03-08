@@ -904,12 +904,9 @@
             }
             document.getElementById("YearTo").innerHTML = "";
             document.getElementById("YearTo").innerHTML = "<option value=0 >همه</option>" + newYearToOptions;
-            try {
-                UserSearchParameters.update_parameters();
-                syncAllSelectsWithResetExceptions(["country"])
-            }
-            catch (e) {
-            }
+                
+            UserSearchParameters.update_parameters();
+            syncAllSelectsWithResetExceptions(["country"])
         }
 
         function showDocumentInformation(documents_information_result, mode, where, total_hits, text, curr_page, max_score) {
