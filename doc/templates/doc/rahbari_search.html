@@ -789,7 +789,6 @@
         }
 
         YearToOptions = ""
-        YearToOptionsFirst = true
 
         initSearchableSelects();
         append_column(COLUMNS)
@@ -893,11 +892,6 @@
         }
 
         function YearFromChanged() {
-            if (YearToOptionsFirst == true) {
-                YearToOptionsFirst = false
-                return
-            }
-            console.log(YearToOptionsFirst)
             let year_from = document.getElementById("YearFrom").value;
             let YearToOptionsArray = YearToOptions.split("</option>")
             let newYearToOptions = ""
