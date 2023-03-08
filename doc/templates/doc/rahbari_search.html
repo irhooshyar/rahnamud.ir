@@ -906,9 +906,8 @@
                     }
                 }
             }
-            console.log(newYearToOptions)
             document.getElementById("YearTo").innerHTML = "";
-            document.getElementById("YearTo").innerHTML = "<option value=0 >همه</option>" + newYearToOptions;
+            {% comment %} document.getElementById("YearTo").innerHTML = "<option value=0 >همه</option>" + newYearToOptions; {% endcomment %}
         }
 
         function showDocumentInformation(documents_information_result, mode, where, total_hits, text, curr_page, max_score) {
