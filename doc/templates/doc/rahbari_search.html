@@ -892,6 +892,9 @@
         }
 
         function YearFromChanged() {
+            if (YearToOptions == "") {
+                return
+            }
             let year_from = document.getElementById("YearFrom").value;
             let YearToOptionsArray = YearToOptions.split("</option>")
             let newYearToOptions = ""
@@ -907,6 +910,9 @@
             }
             document.getElementById("YearTo").innerHTML = "";
             document.getElementById("YearTo").innerHTML = "<option value=0 >همه</option>" + newYearToOptions;
+
+            UserSearchParameters.update_parameters();
+            syncAllSelectsWithResetExceptions(["country"])
         }
 
         function showDocumentInformation(documents_information_result, mode, where, total_hits, text, curr_page, max_score) {
