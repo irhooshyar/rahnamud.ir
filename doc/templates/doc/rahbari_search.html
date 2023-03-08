@@ -873,6 +873,7 @@
                 response['ToYear'];
 
             /****************** Update User Search Parameters ****************************/
+            UserSearchParameters.update_parameters();
 
             //user log
             let form_data = new FormData()
@@ -905,7 +906,6 @@
             document.getElementById("YearTo").innerHTML = "";
             document.getElementById("YearTo").innerHTML = "<option value=0 >همه</option>" + newYearToOptions;
                 
-            UserSearchParameters.update_parameters();
             syncAllSelectsWithResetExceptions(["country"])
         }
 
