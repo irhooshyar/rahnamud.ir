@@ -894,10 +894,10 @@
 
         function YearFromChanged() {
             if (YearToOptionsFirst == true) {
+                YearToOptionsFirst = false
                 return
             }
             console.log(YearToOptionsFirst)
-            YearToOptionsFirst = false
             let year_from = document.getElementById("YearFrom").value;
             let YearToOptionsArray = YearToOptions.split("</option>")
             let newYearToOptions = ""
