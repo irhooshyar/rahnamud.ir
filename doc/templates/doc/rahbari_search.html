@@ -788,6 +788,7 @@
             }
         }
 
+        YearToOptions = ""
 
         initSearchableSelects();
         append_column(COLUMNS)
@@ -867,15 +868,15 @@
             /****************** Year List ****************************/
             document.getElementById("YearFrom").innerHTML = "<option value=" + 0 + " >" + "همه" + "</option>" +
                 response['FromYear'];
+            YearToOptions = response['ToYear']
             document.getElementById("YearTo").innerHTML = "<option value=" + 0 + " >" + "همه" + "</option>" +
                 response['ToYear'];
 
             /****************** Update User Search Parameters ****************************/
-
             UserSearchParameters.update_parameters();
 
-
             syncAllSelectsWithResetExceptions(["country"])
+
             //user log
             let form_data = new FormData()
             let detail_type = "نمایش پنل"
@@ -892,23 +893,20 @@
 
         function YearFromChanged() {
             let year_from = document.getElementById("YearFrom").value;
-            let year_to = document.getElementById("YearTo").value;
-            // update year_to
-            // YearFrom and YearTo are numstrings
-            year_from = parseInt(year_from)
-            if (year_from > 0) {
-                let year_to_options = document.getElementById("YearTo").options;
-                for (let i = 0; i < year_to_options.length; i++) {
-                    let year_to_option = year_to_options[i];
-                    let year_to_option_value = parseInt(year_to_option.value);
-                    if (year_to_option_value > 0 && year_to_option_value <= year_from) {
-                        year_to_option.display = "block";
-                    } else {
-                        year_to_option.display = "none";
-                    }                        
+            let YearToOptionsArray = YearToOptions.split("</option>")
+            let newYearToOptions = ""
+            for (let i = 0; i < YearToOptionsArray.length; i++) {
+                let option = YearToOptionsArray[i]
+                if (option != "") {
+                    let option_value = option.split("value=")[1].split(">")[0]
+                    year_to = parseInt(option_value)
+                    if (year_to >= year_from) {
+                        newYearToOptions += option + "</option>"
+                    }
                 }
             }
-            return year_from
+            document.getElementById("YearTo").innerHTML = "<option value=0 >همه</option>" + newYearToOptions;
+            syncAllSelectsWithResetExceptions(["country", "TypeName", "YearFrom", "LabelsName"])
         }
 
         function showDocumentInformation(documents_information_result, mode, where, total_hits, text, curr_page, max_score) {
