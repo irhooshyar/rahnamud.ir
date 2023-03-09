@@ -6,13 +6,13 @@ MEDIA_PATH = Path(BASE_PATH, 'media_cdn')
 DATA_PATH = Path(BASE_PATH, 'media_cdn', "data")
 
 DECISION_TREE_PATH = Path(BASE_PATH, 'media_cdn', "decision_tree_data")
-DOC_STATIC_PATH = Path(BASE_PATH, 'doc','static')
+DOC_STATIC_PATH = Path(BASE_PATH, 'doc', 'static')
 DENDROGRAM_PATH = Path(DOC_STATIC_PATH, "dendrogram_plots")
 
-#/****** Advanced ARIMA ******/ 
+# /****** Advanced ARIMA ******/
 ACF_PATH = Path(DOC_STATIC_PATH, "ACF_plot")
 PACF_PATH = Path(DOC_STATIC_PATH, "PACF_plot")
-#/****** Advanced ARIMA ******/
+# /****** Advanced ARIMA ******/
 
 RESULT_PATH = Path(BASE_PATH, 'media_cdn', "result")
 ZIPS_PATH = Path(BASE_PATH, 'media_cdn', "zips")
@@ -21,25 +21,23 @@ ENGLISH_PATH = Path(BASE_PATH, 'text_files', "English")
 
 BATCH_SIZE = 1000
 
-
 Thread_Count = 8
 
 # ----------------------------------------------
 LOCAL_HUGGINGFACE_CONFIGS = {
-    "sentimentAnalyser":"local",
-    "taggingAnalyser":"local",
-    "classificationAnalyser":"local",
-    "machineTranslator":"local",
-    "summarizer":"local",
+    "sentimentAnalyser": "local",
+    "taggingAnalyser": "local",
+    "classificationAnalyser": "local",
+    "machineTranslator": "local",
+    "summarizer": "local",
 }
 SERVER_HUGGINGFACE_CONFIGS = {
-    "sentimentAnalyser":"global",
-    "taggingAnalyser":"global",
-    "classificationAnalyser":"global",
-    "machineTranslator":"global",
-    "summarizer":"global",
+    "sentimentAnalyser": "global",
+    "taggingAnalyser": "global",
+    "classificationAnalyser": "global",
+    "machineTranslator": "global",
+    "summarizer": "global",
 }
-
 
 LOAD_MODELS = str(os.environ.get('LOAD_MODELS')) == 'true'
 
@@ -47,3 +45,63 @@ LOAD_MODELS = str(os.environ.get('LOAD_MODELS')) == 'true'
 HUGGINGFACE_CONFIGS = LOCAL_HUGGINGFACE_CONFIGS
 SERVER_USER_NAME = "mn76"
 # ----------------------------------------------
+
+FULL_ADAPTION_CONFIGS = {
+    "rahbari": {
+        "index_name": "rahbarifull_rahbari_bm25_index",
+        "stopword_filename": "rahbari_doc_similarity_stopwords.txt",
+        "document_date": "rahbari_date",
+        "document_name": "name",
+        "country_name": "اسناد رهبری",
+    },
+    "hooshyar": {
+        "index_name": "doticfull_document",
+        "stopword_filename": "",
+        "document_date": "approval_date",
+        "document_name": "name",
+        "country_name": "هوشیار",
+    },
+    "standard": {
+        "index_name": "standard_1500_standard",
+        "stopword_filename": "",
+        "document_date": "approval_year",
+        "document_name": "name",
+        "country_name": "استاندارد",
+
+    },
+    "tabnak": {
+        "index_name": "tabnak_full_document",
+        "stopword_filename": "",
+        "document_date": "document_date",
+        "document_name": "document_name",
+        "country_name": "تابناک",
+    },
+    "asr_iran": {
+        "index_name": "asriran_document",
+        "stopword_filename": "",
+        "document_date": "document_date",
+        "document_name": "document_name",
+        "country_name": "عصرایران",
+    },
+    "khabar_online": {
+        "index_name": "khabar_online_document",
+        "stopword_filename": "",
+        "document_date": "document_date",
+        "document_name": "document_name",
+        "country_name": "خبرآنلاین",
+    },
+    "isna": {
+        "index_name": "isna_full_document",
+        "stopword_filename": "",
+        "document_date": "document_date",
+        "document_name": "document_name",
+        "country_name": "ایسنا",
+    },
+    "bbc": {
+        "index_name": "bbc_full_document",
+        "stopword_filename": "",
+        "document_date": "document_date",
+        "document_name": "document_name",
+        "country_name": "BBC",
+    },
+}
