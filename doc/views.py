@@ -1568,7 +1568,7 @@ def forgot_password_by_email(request, email):
 
     در صورتی که قصد بازیابی ندارید این پیام را نادیده بگیرید.
     """
-    template += f'http://rahnamud.ir:7074/reset-password/{user.id}/{token}'
+    template += f'http://virtualjuristic.datakaveh.com:7074/reset-password/{user.id}/{token}'
 
     send_mail(
         subject='بازیابی کلمه عبور',
@@ -3521,7 +3521,7 @@ def send_email(user, email_code, token):
 
     """
 
-    template += f'http://rahnamud.ir:7074/Confirm-Email/{user.id}/{token}'
+    template += f'http://virtualjuristic.datakaveh.com:7074/Confirm-Email/{user.id}/{token}'
     send_mail(subject='کد تایید ایمیل', message=template, from_email=settings.EMAIL_HOST_USER,
               recipient_list=[user.email])
 
@@ -4303,7 +4303,7 @@ def changeUserState(request, user_id, state):
         template = f"""
         تایید شما توسط ادمین انجام شد. هم‌اکنون، می‌توانید وارد سامانه شوید.
         """
-        template += f'http://rahnamud.ir:7074/login/'
+        template += f'http://virtualjuristic.datakaveh.com:7074/login/'
         send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
                   recipient_list=[accepted_user.email])
 
@@ -4332,7 +4332,7 @@ def change_user_status(request, username, status):
         template = f"""
         تایید شما توسط ادمین انجام شد. هم‌اکنون، می‌توانید وارد سامانه شوید.
         """
-        template += f'http://rahnamud.ir:7074/login/'
+        template += f'http://virtualjuristic.datakaveh.com:7074/login/'
         send_mail(subject='تایید عملیات ثبت‌نام', message=template, from_email=settings.EMAIL_HOST_USER,
                   recipient_list=[user.email])
 
