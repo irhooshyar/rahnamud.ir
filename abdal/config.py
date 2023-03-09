@@ -53,6 +53,7 @@ FULL_ADAPTION_CONFIGS = {
         "document_date": "rahbari_date",
         "document_name": "name",
         "country_name": "اسناد رهبری",
+        "is_term_vector_with_position_offset": True,
     },
     "hooshyar": {
         "index_name": "doticfull_document",
@@ -60,6 +61,7 @@ FULL_ADAPTION_CONFIGS = {
         "document_date": "approval_date",
         "document_name": "name",
         "country_name": "هوشیار",
+        "is_term_vector_with_position_offset": False,
     },
     "standard": {
         "index_name": "standard_1500_standard",
@@ -67,6 +69,7 @@ FULL_ADAPTION_CONFIGS = {
         "document_date": "approval_year",
         "document_name": "name",
         "country_name": "استاندارد",
+        "is_term_vector_with_position_offset": False,
 
     },
     "tabnak": {
@@ -75,6 +78,7 @@ FULL_ADAPTION_CONFIGS = {
         "document_date": "document_date",
         "document_name": "document_name",
         "country_name": "تابناک",
+        "is_term_vector_with_position_offset": True,
     },
     "asr_iran": {
         "index_name": "asriran_document",
@@ -82,6 +86,7 @@ FULL_ADAPTION_CONFIGS = {
         "document_date": "document_date",
         "document_name": "document_name",
         "country_name": "عصرایران",
+        "is_term_vector_with_position_offset": True,
     },
     "khabar_online": {
         "index_name": "khabar_online_document",
@@ -89,6 +94,7 @@ FULL_ADAPTION_CONFIGS = {
         "document_date": "document_date",
         "document_name": "document_name",
         "country_name": "خبرآنلاین",
+        "is_term_vector_with_position_offset": True,
     },
     "isna": {
         "index_name": "isna_full_document",
@@ -96,6 +102,7 @@ FULL_ADAPTION_CONFIGS = {
         "document_date": "document_date",
         "document_name": "document_name",
         "country_name": "ایسنا",
+        "is_term_vector_with_position_offset": True,
     },
     "bbc": {
         "index_name": "bbc_full_document",
@@ -103,5 +110,6 @@ FULL_ADAPTION_CONFIGS = {
         "document_date": "document_date",
         "document_name": "document_name",
         "country_name": "BBC",
+        "is_term_vector_with_position_offset": False,
     },
 }

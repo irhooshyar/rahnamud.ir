@@ -110,6 +110,7 @@ urlpatterns = [
     
     path('full_adaption/', views.full_adaption, name='full_adaption'),
     path('get_full_adaption/<int:main_document_id>/<str:source_country>/<str:destination_countries>/',views.get_full_adaption, name='get_full_adaption'),
+    path('full_adaption_similarity_detail/<int:main_document_id>/<int:selected_document_id>/<str:source_country>/<str:destination_country>/',views.full_adaption_similarity_detail, name='full_adaption_similarity_detail'),
     path('full_adaption_search/<str:country_code>/<str:search_name>/<int:curr_page>/',views.full_adaption_search, name='full_adaption_search'),
 
 

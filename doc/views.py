@@ -7353,7 +7353,7 @@ def get_full_adaption(request, main_document_id, source_country, destination_cou
 
         specific_stopwords = config.FULL_ADAPTION_CONFIGS[source_country]["stopword_filename"]
         if specific_stopwords:
-            my_stopwords = get_stopword_list("news_profile_stopwords.txt")
+            my_stopwords = get_stopword_list(specific_stopwords)
             stopword_list.extend(my_stopwords)
 
         sim_query = {
@@ -7394,7 +7394,7 @@ def get_full_adaption(request, main_document_id, source_country, destination_cou
                        "document_name": item["_source"][document_name],
                        "document_date": item["_source"][document_date],
                        "BM25_score": item["_score"],
-                       "country_name": item["_source"][country_name]
+                       "country_name": country_name
                        }
             sim_docs.append(newItem)
 
@@ -7404,6 +7404,114 @@ def get_full_adaption(request, main_document_id, source_country, destination_cou
 
 def return_score(item):
     return item["BM25_score"]
+
+
+def full_adaption_similarity_detail(request, main_document_id, selected_document_id, source_country,
+                                    destination_country):
+    if not config.FULL_ADAPTION_CONFIGS[destination_country]["is_term_vector_with_position_offset"]:
+        return JsonResponse({"error": "با توجه به مجموعه مقصد انتخاب شده امکان هایلایت کلمات وجود ندارد"})
+
+    main_index_name = config.FULL_ADAPTION_CONFIGS[source_country]["index_name"]
+
+    res_query = {
+        "bool": {
+            "must": [],
+            "filter": [
+                {
+                    "term": {"document_id": selected_document_id}
+                }
+            ]
+        }
+    }
+    dest_index_name = config.FULL_ADAPTION_CONFIGS[destination_country]["index_name"]
+    stopword_list = []
+    all_stopwords = get_stopword_list("all_stopwords.txt")
+    rahbari_stopwords = get_stopword_list("rahbari_stopwords.txt")
+
+    stopword_list.extend(all_stopwords)
+    stopword_list.extend(rahbari_stopwords)
+
+    specific_stopwords = config.FULL_ADAPTION_CONFIGS[source_country]["stopword_filename"]
+    if specific_stopwords:
+        my_stopwords = get_stopword_list(specific_stopwords)
+        stopword_list.extend(my_stopwords)
+
+    sim_query = {
+        "more_like_this": {
+            "analyzer": "persian_custom_analyzer",
+            "fields": ["attachment.content"],
+            "like": [
+                {
+                    "_index": main_index_name,
+                    "_id": "{}".format(main_document_id),
+                }
+            ],
+            "min_term_freq": 1,
+            "min_word_length": 2,
+            "max_query_terms": 100000,
+            "minimum_should_match": "20%",
+            "stop_words": stopword_list
+        }
+    }
+
+    res_query["bool"]["must"].append(sim_query)
+
+    response = client.search(index=dest_index_name,
+                             _source_includes=['document_id',
+                                               config.FULL_ADAPTION_CONFIGS[destination_country]["document_name"],
+                                               config.FULL_ADAPTION_CONFIGS[destination_country]["document_date"]],
+                             request_timeout=40,
+                             query=res_query,
+                             highlight={
+                                 "type": "fvh",
+                                 "fields": {
+                                     "attachment.content":
+                                         {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
+                                          "number_of_fragments": 0
+                                          }
+                                 }
+                             }
+                             )
+
+    result = response['hits']['hits']
+
+    highlighted_result = result[0]['highlight']['attachment.content'][0]
+    splited_list = highlighted_result.split("<span class='text-primary fw-bold'>")
+
+    new_res_query = {
+        "bool": {
+            "filter": [
+                {"term": {
+                    "document_id": main_document_id
+                }
+                }
+            ],
+            "should": []
+        }
+    }
+
+    for item in splited_list:
+        highlighted_word = item.split("</span>")[0]
+        new_res_query["bool"]["should"].append({"match_phrase": {"attachment.content": highlighted_word}})
+
+    new_response = client.search(index=main_index_name,
+                                 _source_includes=['document_id', 'name', 'rahbari_date'],
+                                 request_timeout=40,
+                                 query=new_res_query,
+                                 highlight={
+                                     "fields": {
+                                         "attachment.content":
+                                             {"pre_tags": ["<span class='text-primary fw-bold'>"],
+                                              "post_tags": ["</span>"],
+                                              "number_of_fragments": 0
+                                              }
+                                     }
+                                 }
+                                 )
+
+    new_result = new_response['hits']['hits']
+
+    return JsonResponse({"similarity_result": result, "main_doc_result": new_result})
 
 
 def paragraphApproachSimilarity(request, main_document_id):
