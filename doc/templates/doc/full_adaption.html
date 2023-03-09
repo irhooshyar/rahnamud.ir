@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="../../static/library/bootstrap.min-4.5.2.css">
+    <script src="../../static/js/jquery_351/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../static/library/bootstrap.min-5.1.2npm.css">
+
+    <!-- commented for dromdown menu hover bug -->
+    <!-- <link href="../../static/library/bootstrap-theme.min-3.3.6.css" rel="stylesheet"> -->
+    <script src="../../static/library/bootstrap-5.1.2.bundle.min.js"></script>
+
+    <!--BS Icons -->
+    <link rel="stylesheet" href="../../static/library/bootstrap-icons-1.3.0.css">
+    <!-- Fontawesome Icons -->
+
+    <link rel="stylesheet" href="../../static/library/fontawesome-5.10.0.all.css"/>
+    <link rel="stylesheet" href="../../static/library/font-awesome.min-4.7.0.css">
+
+    <link rel="stylesheet" type="text/css" href="../../static/library/anychart-font.min-8.10.0.css"/>
+
+
+    <!----->
+    <script src="../../static/library/jquery.min-2.2.2.js"></script>
+    <script src="../../static/library/jquery-ui.min-1.11.4.js"></script>
+    <!---->
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="../../static/library/jquery.min-1.11.3.js"></script>
+
+
+    <!-- Intro Js -->
+    <script src="../../static/library/intro.min-4.3.0.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../static/library/introjs.min-4.3.0.css">
+    <link rel="stylesheet" type="text/css" href="../../static/library/introjs-rtl.min-4.3.0.css">
+
+    <link rel="stylesheet" type="text/css" href="../../static/library/notyf.min-npm.css">
+
+    <link rel="stylesheet" href="../../static/styles/loader.css">
+
+    <link rel="stylesheet" type="text/css" href="../../static/library/tom-select-2.2.1.css">
+    <script src="../../static/library/tom-select.complete-2.2.1.min.js"></script>
+    <script type="text/javascript" src="../../static/js/searchable-select.js"></script>
+
+    <link rel="stylesheet" href="../../static/styles/index2.css">
+    <link rel="stylesheet" href="../../static/styles/information_chart.css">
+    <link rel="stylesheet" href="../../static/styles/user_guide_tour.css">
+
+
+    <script src="../../static/library/g6.min-4.3.11.js"></script>
+    <script src="../../static/library/jquery-ui.min-1.11.4.js"></script>
+
+    <!-- Footable  -->
+    <script src="../../static/js/footable/demo-rows.js"></script>
+    <script src="../../static/js/footable/ie10-viewport-bug-workaround.js"></script>
+    <script src="../../static/js/footable/footable.js"></script>
+    <link href="../../static/styles/footable/footable.bootstrap.min.css" rel="stylesheet">
+    <link href="../../static/styles/footable/docs.css" rel="stylesheet">
+    <link href="../../static/styles/footable/FooTable.Glyphicons.css" rel="stylesheet">
+    <link href="../../static/styles/footable/FooTable.FontAwesome.css" rel="stylesheet">
+    <link href="../../static/styles/footable/footable.bootstrap.min.css" rel="stylesheet">
+
+    <meta charset="UTF-8">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../static/js/GraphClass.js"></script>
+
+    <script src="../../static/library/notyf.min.js"></script>
+    {#    <script src="../../static/js/blockUI.js"></script>#}
+    {#    <script src="../../static/js/blockUI_handler.js"></script>#}
+
+    <title>انطباق‌سنجی بین سامانه‌ای</title>
+    {% include "doc/title_icon.html" %}
+
+</head>
+
+<body>
+<!-- Menu -->
+<nav dir="rtl" class="navbar nav_menu navbar-expand-lg fixed-top p-0 mt-0">
+    {% include "doc/header2.html" %}
+</nav>
+
+<script>
+    $(document).ready(function () {
+
+        $('#ApprovalsDropdown').addClass('active');
+        $('#information').addClass('active');
+
+        $('select#language').on('change', function (e) {
+
+            let selected_language = this.value;
+            let current_url = window.location.href;
+            if (selected_language === 'England') {
+                let page_name = current_url.split('/')[3]
+                let requested_url = current_url.replace(page_name, 'en')
+                window.location = requested_url;
+            } else if (selected_language === 'Russia') {
+                let page_name = current_url.split('/')[3]
+                let requested_url = current_url.replace(page_name, 'ru')
+                window.location = requested_url;
+            }
+
+        });
+
+    });
+</script>
+
+
+<!-- End of Menu -->
+
+<!-- Main Container -->
+<div class="row flex-row-reverse px-0 py-5 px-md-5 py-md-5 m-0 mt-4">
+
+    <!-- Form Inputs -->
+    <form autocomplete="on" action="" id="information_form" class="custom-control mx-auto needs-validation"
+          enctype="multipart/form-data" method="post" novalidate>
+        <div class="row flex-row-reverse mx-auto">
+
+            <!-- Country select -->
+            <div class="col-md-6 col-12 col-lg-2 bg-light pt-3  mt-1" dir="rtl">
+                <label for="source_country" class=" text-right bg-light float-right">مجموعه سند مبدا:</label>
+                <select dir="rtl" id="source_country" name="source_country"
+                        class="form-select text-right float-right searchable-select"
+                        onchange="source_country_changed()">
+                    {% for k,v in countries.items %}
+
+                        <option value="{{ k }}">{{ v }}</option>
+
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- selected document -->
+            <div id="document_div" class="col-md-6 pt-3 col-12 col-lg-6 mt-1">
+                <label for="document" class="text-right bg-light float-right">سند مبدا:</label>
+                <select id="document" dir="rtl" name="document"
+                        class="form-select d-none text-right float-right document_select_box"
+                        onchange="select_document()"
+                        disabled>
+                </select>
+                <button dir="rtl" id="document_select" type="button"
+                        class="btn d-inline-block text-truncate w-100 text-right text-black float-right mx-0 bg-white border"
+                        data-bs-toggle="modal" data-bs-target="#SelectDocumentModal">
+                    <i class="dropdown_icon bi bi-chevron-down ml-2 bold text-black"></i>
+                    انتخاب نمایید
+                </button>
+            </div>
+
+            <div class="col-md-6 col-12 col-lg-2 bg-light pt-3  mt-1" dir="rtl">
+                <label for="destination_country" class=" text-right bg-light float-right">مجموعه سند مقصد:</label>
+                <select dir="rtl" id="destination_country" name="destination_country"
+                        class="form-select text-right float-right searchable-select"
+                        onchange="destination_country_changed()">
+                    {% for k,v in countries.items %}
+
+                        <option value="{{ k }}">{{ v }}</option>
+
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2 pt-5 col-12 mt-1 px-0">
+                <button type="button" id="show_result_button" onclick="click_show_result()"
+                        class="btn d-flex float-right  mr-2">
+                    <div class="spinner-border text-light" role="status">
+                        <span class="sr-only">درحال جستجو ...</span>
+                    </div>
+                    نمایش نتیجه
+                </button>
+            </div>
+        </div>
+
+    </form>
+
+    <ul id="original_tabs" class="nav nav-pills  mt-5 mx-auto  pr-3 pr-sm-0  float-right  d-block" id="pills-tab"
+        role="tablist">
+        <li class="nav-item float-right" role="presentation">
+            <button id="result_tab" class="nav-link active" data-bs-toggle="pill"
+                    data-bs-target="#result_pane" type="button" role="tab" aria-controls="result_pane"
+                    aria-selected="false">نتایج
+            </button>
+        </li>
+    </ul>
+
+    <div id="original_pane" class="tab-content float-right bg-white px-1" style="position: relative;"
+         id="pills-tabContent">
+        <div id="result_pane" class="tab-pane w-100 fade show active float-right  px-0 border-0"
+             role="tabpanel" aria-labelledby="result_pane">
+            <div dir="rtl" id="search_result_pane" class="tab-pane w-100 fade show active float-right"
+                 role="tabpanel" aria-labelledby="search_result_tab">
+                <!-- Search Result table -->
+                <div class="table-responsive search_result_table mt-4">
+                    <table class="table table-striped adaptionTable" style="min-height: 200px;" id="adaptionTable">
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="SelectDocumentModal">
+        <div style="max-width: 1200px !important;" class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div style="direction: rtl !important;" class="modal-header">
+                    <h5 id="ModalHeader" class="modal-title">انتخاب سند</h5>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+                </div>
+
+
+                <!-- Modal body -->
+                <div id="ModalBody" class="modal-body text-justify">
+                    <div class="container">
+
+
+                        <div class="d-flex col-12 mb-2">
+                            <input
+                                    style="direction: rtl;width: 90%; border-bottom-left-radius: 0;border-top-left-radius: 0;"
+                                    class="form-control text-right" placeholder="جستجو سند ..." type="text" required=""
+                                    name="SearchBox" id="SearchBox" value="" onkeyup="process_search()">
+
+                            <button class="btn mr-0"
+                                    style="border-bottom-right-radius: 0;border-top-right-radius: 0;" type="button"
+                                    id="document_search" onclick="search_document_name(false)"
+                                    class="btn d-flex float-right mr-4">
+                                <i class="bi bi-search" style="font-size: 16px;position: relative; top: -5px;"></i>
+                            </button>
+
+                            <div class="col-md-6  pt-3 col-12 col-lg-3" style="padding-top: 0px!important;" dir="rtl">
+                                <select name="load_count" id="LoadCount"
+                                        class="form-select text-right float-right searchable-select"
+                                        onchange="paging_change()">
+                                    <option value="10">۱۰</option>
+                                    <option value="20">۲۰</option>
+                                    <option value="30">۳۰</option>
+                                    <option value="40">۴۰</option>
+                                    <option value="50">۵۰</option>
+                                </select>
+                            </div>
+
+                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="تازه‌سازی"
+                                  style="font-size: 25px; text-align: center; cursor: pointer;color: var(--menu_color);"
+                                  class="fa fa-refresh mr-3 mt-2" onclick="reload()"></span>
+                        </div>
+
+                        <table id="PopUpTable" class="table table-striped PopUpTable" style="counter-reset: Serial;">
+                        </table>
+
+                        <p>
+                            <span>از میان </span>
+                            <span style="color: #1A01CC" id="all_doc_count"></span>
+                            <span> سند، </span>
+                            <span style="color: #3e8f3e" id="load_doc_count"></span>
+                            <span> سند بازیابی شده است </span>
+                        </p>
+
+                        <span class="add-row"></span>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <button type="button" id="document_similarity_detail_modal_btn" class="btn d-none modal_btn" data-bs-toggle="modal"
+            data-bs-target="#document_similarity_detail"></button>
+    <div class="modal fade" style="padding-inline: 0 !important;" id="document_similarity_detail">
+        <div id="modal_dialog" class="modal-dialog modal-fullscreen  modal-dialog-scrollable "
+             style="max-height: 100vh !important;">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div style="direction: rtl !important;" class="modal-header">
+                    <h5 id="document_similarity_detail_ModalHeader" class="modal-title text-center w-100">
+
+                    </h5>
+                    <button type="button" class="btn-close m-0" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div id="document_similarity_detail_Body" class="modal-body bg-light text-justify">
+                    <div class="row w-100 flex-row">
+{#                        <ul id="modal_original_tabs"#}
+{#                            class="nav nav-pills  mt-5 mx-auto  pr-3 pr-sm-0  float-right  d-block"#}
+{#                            role="tablist" id="pills-tabContent">#}
+{#                            <li class="nav-item float-right" role="presentation">#}
+{#                                <button id="BM25_tab" class="nav-link active" data-bs-toggle="pill"#}
+{#                                        data-bs-target="#BM25_pane" type="button" role="tab"#}
+{#                                        aria-controls="BM25_pane"#}
+{#                                        aria-selected="true">معیار BM25#}
+{#                                </button>#}
+{#                            </li>#}
+{#                        </ul>#}
+
+                        <div id="modal_original_pane" class="tab-content float-right bg-white px-1"
+                             style="position: relative;">
+                            <!-- Definition and keywords Pane -->
+                            <div id="BM25_pane"
+                                 class="tab-pane w-100 fade show active float-right px-0 border-0 p-1"
+                                 role="tabpanel" aria-labelledby="BM25_tab">
+                                <div id="BM25_source_document" class="col-6 border-left-1 float-right py-5"></div>
+                                <div id="BM25_dest_document" class="col-6 float-left py-5"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div id="document_similarity_detail_modal_footer" class="modal-footer">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript" src="../../static/js/full_adaption/index.js"></script>
+<script type="text/javascript" src="../../static/js/full_adaption/result_tab.js"></script>
+</html>

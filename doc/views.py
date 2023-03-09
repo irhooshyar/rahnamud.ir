@@ -7277,7 +7277,67 @@ def similarityDetail(request, main_document_id, selected_document_id, similarity
     return JsonResponse({"similarity_result": result, "main_doc_result": new_result})
 
 
-def full_adaption(request, main_document_id, source_country, destination_countries):
+def full_adaption_search(request, country_code, search_name, curr_page):
+    base_index_name = config.FULL_ADAPTION_CONFIGS[country_code]["index_name"]
+    query = {
+        "match_all": {}
+    }
+    if search_name != "empty":
+        query = {
+            "bool": {
+                "filter": [{
+                    "match_phrase": {
+                        config.FULL_ADAPTION_CONFIGS[country_code]["document_name"]: search_name,
+                    }
+                }]
+            }
+        }
+
+    from_value = (curr_page - 1) * 200
+    response = client.search(index=base_index_name,
+                             _source_includes=['document_id',
+                                               config.FULL_ADAPTION_CONFIGS[country_code]["document_name"],
+                                               config.FULL_ADAPTION_CONFIGS[country_code]["document_date"]],
+                             request_timeout=40,
+                             query=query,
+                             from_=from_value,
+                             size=200,
+                             )
+
+    result = response['hits']['hits']
+    total_hits = response['hits']['total']['value']
+
+    if total_hits == 10000:
+        total_hits = client.count(body={
+            "query": query
+        }, index=base_index_name, doc_type='_doc')['count']
+
+    docs = []
+    for item in result:
+        document_name = config.FULL_ADAPTION_CONFIGS[country_code]["document_name"]
+        document_date = config.FULL_ADAPTION_CONFIGS[country_code]["document_date"]
+        country_name = config.FULL_ADAPTION_CONFIGS[country_code]["country_name"]
+
+        newItem = {"document_id": item["_source"]["document_id"],
+                   "document_name": item["_source"][document_name],
+                   "document_date": item["_source"][document_date],
+                   "country_name": country_name
+                   }
+        docs.append(newItem)
+
+    return JsonResponse({"result": docs, "total_hits": total_hits})
+
+
+def full_adaption(request):
+    keys = config.FULL_ADAPTION_CONFIGS.keys()
+    country_map = {}
+    for key in keys:
+        country_map[key] = config.FULL_ADAPTION_CONFIGS[key]["country_name"]
+
+    return render(request, 'doc/full_adaption.html', {'countries': country_map})
+
+
+def get_full_adaption(request, main_document_id, source_country, destination_countries):
     sim_docs = []
     base_index_name = config.FULL_ADAPTION_CONFIGS[source_country]["index_name"]
 
@@ -7293,7 +7353,7 @@ def full_adaption(request, main_document_id, source_country, destination_countri
 
         specific_stopwords = config.FULL_ADAPTION_CONFIGS[source_country]["stopword_filename"]
         if specific_stopwords:
-            my_stopwords = get_stopword_list("news_profile_stopwords.txt")
+            my_stopwords = get_stopword_list(specific_stopwords)
             stopword_list.extend(my_stopwords)
 
         sim_query = {
@@ -7316,7 +7376,7 @@ def full_adaption(request, main_document_id, source_country, destination_countri
 
         response = client.search(index=dest_index_name,
                                  _source_includes=['document_id',
-                                                   config.FULL_ADAPTION_CONFIGS[destination_country]["document_id"],
+                                                   config.FULL_ADAPTION_CONFIGS[destination_country]["document_name"],
                                                    config.FULL_ADAPTION_CONFIGS[destination_country]["document_date"]],
                                  request_timeout=40,
                                  query=sim_query,
@@ -7325,9 +7385,8 @@ def full_adaption(request, main_document_id, source_country, destination_countri
 
         result = response['hits']['hits']
 
-
         for item in result:
-            document_name = config.FULL_ADAPTION_CONFIGS[destination_country]["document_id"]
+            document_name = config.FULL_ADAPTION_CONFIGS[destination_country]["document_name"]
             document_date = config.FULL_ADAPTION_CONFIGS[destination_country]["document_date"]
             country_name = config.FULL_ADAPTION_CONFIGS[destination_country]["country_name"]
 
@@ -7335,7 +7394,7 @@ def full_adaption(request, main_document_id, source_country, destination_countri
                        "document_name": item["_source"][document_name],
                        "document_date": item["_source"][document_date],
                        "BM25_score": item["_score"],
-                       "country_name": item["_source"][country_name]
+                       "country_name": country_name
                        }
             sim_docs.append(newItem)
 
@@ -7343,9 +7402,284 @@ def full_adaption(request, main_document_id, source_country, destination_countri
     return JsonResponse({'docs': sim_docs[:20]})
 
 
-
 def return_score(item):
     return item["BM25_score"]
+
+
+def full_adaption_similarity_detail(request, main_document_id, selected_document_id, source_country,
+                                    destination_country):
+    if not config.FULL_ADAPTION_CONFIGS[destination_country]["is_term_vector_with_position_offset"]:
+        return JsonResponse({"error": "با توجه به مجموعه مقصد انتخاب شده امکان هایلایت کلمات وجود ندارد"})
+
+    main_index_name = config.FULL_ADAPTION_CONFIGS[source_country]["index_name"]
+
+    res_query = {
+        "bool": {
+            "must": [],
+            "filter": [
+                {
+                    "term": {"document_id": selected_document_id}
+                }
+            ]
+        }
+    }
+    dest_index_name = config.FULL_ADAPTION_CONFIGS[destination_country]["index_name"]
+    stopword_list = []
+    all_stopwords = get_stopword_list("all_stopwords.txt")
+    rahbari_stopwords = get_stopword_list("rahbari_stopwords.txt")
+
+    stopword_list.extend(all_stopwords)
+    stopword_list.extend(rahbari_stopwords)
+
+    specific_stopwords = config.FULL_ADAPTION_CONFIGS[source_country]["stopword_filename"]
+    if specific_stopwords:
+        my_stopwords = get_stopword_list(specific_stopwords)
+        stopword_list.extend(my_stopwords)
+
+    sim_query = {
+        "more_like_this": {
+            "analyzer": "persian_custom_analyzer",
+            "fields": ["attachment.content"],
+            "like": [
+                {
+                    "_index": main_index_name,
+                    "_id": "{}".format(main_document_id),
+                }
+            ],
+            "min_term_freq": 1,
+            "min_word_length": 2,
+            "max_query_terms": 100000,
+            "minimum_should_match": "20%",
+            "stop_words": stopword_list
+        }
+    }
+
+    res_query["bool"]["must"].append(sim_query)
+
+    response = client.search(index=dest_index_name,
+                             _source_includes=['document_id',
+                                               config.FULL_ADAPTION_CONFIGS[destination_country]["document_name"],
+                                               config.FULL_ADAPTION_CONFIGS[destination_country]["document_date"]],
+                             request_timeout=40,
+                             query=res_query,
+                             highlight={
+                                 "type": "fvh",
+                                 "fields": {
+                                     "attachment.content":
+                                         {"pre_tags": ["<span class='text-primary fw-bold'>"], "post_tags": ["</span>"],
+                                          "number_of_fragments": 0
+                                          }
+                                 }
+                             }
+                             )
+
+    result = response['hits']['hits']
+
+    highlighted_result = result[0]['highlight']['attachment.content'][0]
+    splited_list = highlighted_result.split("<span class='text-primary fw-bold'>")
+
+    new_res_query = {
+        "bool": {
+            "filter": [
+                {"term": {
+                    "document_id": main_document_id
+                }
+                }
+            ],
+            "should": []
+        }
+    }
+
+    for item in splited_list:
+        highlighted_word = item.split("</span>")[0]
+        new_res_query["bool"]["should"].append({"match_phrase": {"attachment.content": highlighted_word}})
+
+    new_response = client.search(index=main_index_name,
+                                 _source_includes=['document_id', 'name', 'rahbari_date'],
+                                 request_timeout=40,
+                                 query=new_res_query,
+                                 highlight={
+                                     "fields": {
+                                         "attachment.content":
+                                             {"pre_tags": ["<span class='text-primary fw-bold'>"],
+                                              "post_tags": ["</span>"],
+                                              "number_of_fragments": 0
+                                              }
+                                     }
+                                 }
+                                 )
+
+    new_result = new_response['hits']['hits']
+
+    return JsonResponse({"similarity_result": result, "main_doc_result": new_result})
+
+
+def paragraphApproachSimilarity(request, main_document_id):
+    country_obj = Document.objects.get(id=main_document_id).country_id
+    index_name = standardIndexName(country_obj, DocumentParagraphs.__name__)
+
+    fetch_document_paragraph_query = {
+        "bool": {
+            "must": [
+                {"term": {"document_id": main_document_id}},
+                {"range": {"attachment.content_length": {
+                    "gt": 150
+                }}}
+            ]
+        }
+    }
+    main_document_response = client.search(index=index_name,
+                                           _source_includes=['attachment.content'],
+                                           request_timeout=40,
+                                           query=fetch_document_paragraph_query,
+                                           size=bucket_size,
+                                           )
+    main_document_paragraphs = main_document_response['hits']['hits']
+    main_doc_paragraphs_count = len(main_document_paragraphs)
+
+    # -----------------------------------------------------------------
+    similar_document_groupBy_agg = {
+        "document_agg": {
+            "terms": {
+                "field": "document_id",
+                "size": 2200
+            }
+        },
+    }
+    all_document_paragraph_query = {
+        "bool": {
+            "must": [
+                {"range": {"attachment.content_length": {
+                    "gt": 150
+                }}}
+            ]
+        }
+    }
+    all_document_response = client.search(index=index_name,
+                                          _source_includes=['attachment.content'],
+                                          request_timeout=40,
+                                          query=all_document_paragraph_query,
+                                          aggregations=similar_document_groupBy_agg,
+                                          size=2200
+                                          )
+    all_document_aggregations = all_document_response['aggregations']['document_agg']['buckets']
+    all_document_dict = {item['key']: item['doc_count'] for item in all_document_aggregations}
+
+    # -------------------------------------------------------------------
+    paragraph_similars = {}
+    # similar_document_query = {
+    #     "bool": {
+    #         "must": [],
+    #         "filter": [
+    #             {"range": {"attachment.content_length": {
+    #                 "gt": 150
+    #             }}}
+    #         ]
+    #     }
+    # }
+
+    vector_index_name = standardIndexName(country_obj, DocumentParagraphs.__name__ + "_vectors")
+
+    for paragraph in main_document_paragraphs:
+        vector_query = {
+            'term': {
+                'paragraph_id': paragraph['_id']
+            }
+        }
+        vector_response = client.search(index=vector_index_name,
+                                        _source_includes=['wikitriplet_vector'],
+                                        request_timeout=40,
+                                        query=vector_query
+                                        )
+
+        para_vector = list(vector_response['hits']['hits'][0]['_source']['wikitriplet_vector'])
+
+        knn_qeury = {
+            "script_score": {
+                "query": {
+                    "bool": {
+                        "must_not": {
+                            "term": {
+                                "document_id": main_document_id
+                            }
+                        },
+                        "filter": [
+                            {"range": {"attachment.content_length": {
+                                "gt": 150
+                            }}}
+                        ]
+                    }
+                },
+                "script": {
+                    "source": "cosineSimilarity(params.query_vector, 'wikitriplet_vector') + 1.0",
+                    "params": {
+                        "query_vector": para_vector
+                    }
+                }
+            }
+        }
+
+        # search and get result
+        similarity_response = client.search(index=vector_index_name,
+                                            _source_includes=['document_id', 'document_name', 'attachment.content'],
+                                            request_timeout=40,
+                                            query=knn_qeury,
+                                            aggregations=similar_document_groupBy_agg,
+                                            size=10
+                                            )
+
+        similar_paragraphs = similarity_response['hits']['hits']
+
+        # vector_response = client.search(index=vector_index_name,
+        #                                 _source_includes=['wikitriplet_vector'],
+        #                                 request_timeout=40,
+        #                                 query=similar_document_query,
+        #                                 aggregations=similar_document_groupBy_agg,
+        #                                 size=2200
+        #                                 )
+        paragraph_aggregations = similarity_response['aggregations']['document_agg']['buckets']
+        # paragraph_document_dict = {item['key']: item['doc_count'] for item in paragraph_aggregations}
+        for item in paragraph_aggregations:
+            try:
+                paragraph_similars[item['key']] = paragraph_similars[item['key']] + item['doc_count']
+            except:
+                paragraph_similars[item['key']] = item['doc_count']
+
+    # normalize -----------------
+    for item in paragraph_similars:
+        try:
+            key = item
+            all_paragraphs_count = all_document_dict[key]
+            paragraph_similars[key] = paragraph_similars[key] / (all_paragraphs_count * main_doc_paragraphs_count)
+        except:
+            print("error: ", key)
+
+    paragraph_similars_list = [(item, paragraph_similars[item])
+                               for item in paragraph_similars]
+    paragraph_similars_list.sort(key=get_document_count, reverse=True)
+    best_doc_list = paragraph_similars_list[:10]
+    best_doc_ids = [item[0] for item in best_doc_list]
+
+    get_document_information_query = {
+        "terms": {
+            "document_id": best_doc_ids
+        }
+    }
+    document_index_name = standardIndexName(country_obj, Document.__name__)
+    get_document_information_response = client.search(index=document_index_name,
+                                                      _source_includes=['name', 'subject_name', 'document_id',
+                                                                        'approval_date'],
+                                                      request_timeout=40,
+                                                      query=get_document_information_query,
+                                                      size=bucket_size,
+                                                      )
+
+    result_document_information_response = get_document_information_response['hits']['hits']
+    return JsonResponse({"result": result_document_information_response})
+
+
+def get_document_count(item):
+    return item[1]
 
 
 def GetDocActorParagraphs_Column_Modal(request, document_id, actor_name, role_name):
