@@ -71,6 +71,14 @@ async function click_show_result() {
         results.push(row)
     }
 
+    const form_data = new FormData()
+    const detail_type = "انطباق‌سنجی بین سامانه‌ای"
+    form_data.append('detail_type', detail_type);
+    form_data.append('source_country_name', source_country_code);
+    form_data.append('destination_country_name', destination_country_code);
+    form_data.append('document_select_name', name);
+    UserLog(form_data)
+
     result_ft.rows.load(results);
 }
 
@@ -78,7 +86,7 @@ async function detail(id, name) {
     document.getElementById("BM25_dest_document").innerHTML = ""
     document.getElementById("BM25_source_document").innerHTML = ""
     const error_child = document.getElementById("error_child")
-    if(error_child) error_child.remove()
+    if (error_child) error_child.remove()
 
 
     const header = document.getElementById("document_similarity_detail_ModalHeader");
@@ -120,4 +128,35 @@ async function detail(id, name) {
 
     // stopBlockUI()
     $("#document_similarity_detail_modal_btn").click()
+}
+
+async function UserLog(form_data) {
+    if (getCookie("username") !== "") {
+        const user_name = getCookie("username")
+        let page_url = window.location.pathname
+        const user_ip = "127.0.0.0"
+
+        page_url = page_url.slice(0, -1);
+        if (page_url === "") {
+            page_url = "/0";
+        }
+        let link_request = 'http://' + location.host + "/UserLogSaved/" + user_name + page_url + "/" + user_ip + "/";
+
+        $.ajax({
+            url: link_request,
+            data: form_data,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            async: true,
+
+
+        }).done(function (res) {
+            console.log("done")
+
+        }).fail(function (res) {
+            console.log("fail")
+        });
+
+    }
 }
