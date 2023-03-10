@@ -112,10 +112,10 @@ services:
 
 networks:
     no-internet:
-        driver: bridge
+#        driver: bridge
         internal: true
-    internet:
-        driver: bridge
+#    internet:
+#        driver: bridge
 
 volumes:
     django_media_cdn_volume:
