@@ -3,7 +3,7 @@ async function semantic_similarity() {
         const main_document_id = document.getElementById("document").value
         document.getElementById("SemanticSimilarityTable").innerHTML = "";
 
-        const request_link = 'http://' + location.host + "/paragraphApproachSimilarity/" + main_document_id + "/";
+        const request_link = 'http://' + location.host + "/paragraph_approach_similarity/" + main_document_id + "/";
         const semantic_response = await fetch(request_link).then(response => response.json());
         const response = semantic_response["result"]
         const similrity_result = []

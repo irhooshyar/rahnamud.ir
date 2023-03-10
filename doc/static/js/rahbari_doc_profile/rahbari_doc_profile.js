@@ -527,7 +527,7 @@ async function SelectDocumentFunction(document_id) {
     document.getElementById('document_labels').innerHTML = result['labels']
     document.getElementById("document_subject").innerHTML = response['subject']
     // GetTextSummary()
-    // semantic_similarity();
+    semantic_similarity();
     ShowResult();
     BM25Similarity()
     find_rahbari_document_actors(document_id)

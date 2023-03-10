@@ -106,7 +106,7 @@ urlpatterns = [
     path('GetBM25Similarity/<int:document_id>/', views.GetBM25Similarity, name='GetBM25Similarity'),
     path('GetDocumentsSimilarity/<int:document_id>/', views.GetDocumentsSimilarity, name='GetDocumentsSimilarity'),
     path('similarityDetail/<int:main_document_id>/<int:selected_document_id>/<str:similarity_type>/', views.similarityDetail, name='similarityDetail'),
-    path('paragraphApproachSimilarity/<int:main_document_id>/', views.paragraphApproachSimilarity, name='paragraphApproachSimilarity'),
+    path('paragraph_approach_similarity/<int:main_document_id>/', views.paragraph_approach_similarity, name='paragraph_approach_similarity'),
     
     path('full_adaption/', views.full_adaption, name='full_adaption'),
     path('get_full_adaption/<int:main_document_id>/<str:source_country>/<str:destination_countries>/',views.get_full_adaption, name='get_full_adaption'),

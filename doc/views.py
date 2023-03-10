@@ -7514,7 +7514,7 @@ def full_adaption_similarity_detail(request, main_document_id, selected_document
     return JsonResponse({"similarity_result": result, "main_doc_result": new_result})
 
 
-def paragraphApproachSimilarity(request, main_document_id):
+def paragraph_approach_similarity(request, main_document_id):
     country_obj = Document.objects.get(id=main_document_id).country_id
     index_name = standardIndexName(country_obj, DocumentParagraphs.__name__)
 
@@ -7621,10 +7621,10 @@ def paragraphApproachSimilarity(request, main_document_id):
 
         # search and get result
         similarity_response = client.search(index=vector_index_name,
-                                            _source_includes=['document_id', 'document_name', 'attachment.content'],
+                                            _source_includes=['document_id'],
                                             request_timeout=40,
                                             query=knn_qeury,
-                                            aggregations=similar_document_groupBy_agg,
+                                            # aggregations=similar_document_groupBy_agg,
                                             size=10
                                             )
 
@@ -7637,13 +7637,14 @@ def paragraphApproachSimilarity(request, main_document_id):
         #                                 aggregations=similar_document_groupBy_agg,
         #                                 size=2200
         #                                 )
-        paragraph_aggregations = similarity_response['aggregations']['document_agg']['buckets']
+        # paragraph_aggregations = similarity_response['aggregations']['document_agg']['buckets']
         # paragraph_document_dict = {item['key']: item['doc_count'] for item in paragraph_aggregations}
-        for item in paragraph_aggregations:
+        for item in similar_paragraphs:
+            key = item['_source']['document_id']
             try:
-                paragraph_similars[item['key']] = paragraph_similars[item['key']] + item['doc_count']
+                paragraph_similars[key] += 1
             except:
-                paragraph_similars[item['key']] = item['doc_count']
+                paragraph_similars[key] = 1
 
     # normalize -----------------
     for item in paragraph_similars:
@@ -7657,7 +7658,7 @@ def paragraphApproachSimilarity(request, main_document_id):
     paragraph_similars_list = [(item, paragraph_similars[item])
                                for item in paragraph_similars]
     paragraph_similars_list.sort(key=get_document_count, reverse=True)
-    best_doc_list = paragraph_similars_list[:10]
+    best_doc_list = paragraph_similars_list[:20]
     best_doc_ids = [item[0] for item in best_doc_list]
 
     get_document_information_query = {
