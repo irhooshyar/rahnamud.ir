@@ -1375,6 +1375,22 @@ class ParagraphVector(models.Model):
     class Meta:
         app_label = 'doc'
 
+class ParagraphSemanticSimilarity(models.Model):
+    id = models.AutoField(primary_key=True)
+
+    paragraph = models.ForeignKey(DocumentParagraphs, on_delete=models.CASCADE, null=True)
+    similar_paragraphs = models.TextField(null=True)
+    class Meta:
+        app_label = 'doc'
+
+class DocumentSemanticSimilarity(models.Model):
+    id = models.AutoField(primary_key=True)
+
+    document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True)
+    similar_documents = models.TextField(null=True)
+    class Meta:
+        app_label = 'doc'
+
 # class DocumentVector(models.Model):
 #     id = models.AutoField(primary_key=True)
 #
