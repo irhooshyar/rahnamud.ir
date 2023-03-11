@@ -10,7 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(5)xa9d&u1)+#rnd_mrw@0_e6g87z(i!d$8+06orf&9of(30y5'
+SECRET_KEY = 'django-insecure-(5)xa9d&u1)+#rnd_mrw@0_e6g87z(i!d$8+06orf&9of(30y5' \
+                 if os.environ.get('DJANGO_SECRET_KEY') is None else os.environ.get('DJANGO_SECRET_KEY'),
 
 from pathlib import Path
 import os
