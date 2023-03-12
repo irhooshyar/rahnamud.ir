@@ -51,6 +51,7 @@ async function select_document(id, name) {
 }
 
 async function click_show_result() {
+    startBlockUI();
     result_ft.rows.load([]);
     const request_link = 'http://' + location.host + "/get_full_adaption/" + selected_document_id + "/" + source_country_code + "/" + destination_country_code + "/";
     const response = await fetch(request_link).then(response => response.json());
@@ -71,14 +72,24 @@ async function click_show_result() {
         results.push(row)
     }
 
+    const form_data = new FormData()
+    const detail_type = "انطباق‌سنجی بین سامانه‌ای"
+    form_data.append('detail_type', detail_type);
+    form_data.append('source_country_name', source_country_code);
+    form_data.append('destination_country_name', destination_country_code);
+    form_data.append('document_select_name', name);
+    UserLog(form_data)
+
     result_ft.rows.load(results);
+    stopBlockUI()
 }
 
 async function detail(id, name) {
+    startBlockUI()
     document.getElementById("BM25_dest_document").innerHTML = ""
     document.getElementById("BM25_source_document").innerHTML = ""
     const error_child = document.getElementById("error_child")
-    if(error_child) error_child.remove()
+    if (error_child) error_child.remove()
 
 
     const header = document.getElementById("document_similarity_detail_ModalHeader");
@@ -96,6 +107,7 @@ async function detail(id, name) {
         child.innerText = BM25_response["error"]
 
         document.getElementById("BM25_pane").appendChild(child)
+        stopBlockUI()
         $("#document_similarity_detail_modal_btn").click()
         return
     }
@@ -118,6 +130,70 @@ async function detail(id, name) {
     document.getElementById("BM25_dest_document").innerHTML = "<p class=\"text-center\">«" + name + "»</p>" + document.getElementById("BM25_dest_document").innerHTML
     document.getElementById("BM25_source_document").innerHTML = source_html
 
-    // stopBlockUI()
+    stopBlockUI()
     $("#document_similarity_detail_modal_btn").click()
+}
+
+async function UserLog(form_data) {
+    if (getCookie("username") !== "") {
+        const user_name = getCookie("username")
+        let page_url = window.location.pathname
+        const user_ip = "127.0.0.0"
+
+        page_url = page_url.slice(0, -1);
+        if (page_url === "") {
+            page_url = "/0";
+        }
+        let link_request = 'http://' + location.host + "/UserLogSaved/" + user_name + page_url + "/" + user_ip + "/";
+
+        $.ajax({
+            url: link_request,
+            data: form_data,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            async: true,
+
+
+        }).done(function (res) {
+            console.log("done")
+
+        }).fail(function (res) {
+            console.log("fail")
+        });
+
+    }
+}
+
+function startBlockUI() {
+    $.blockUI({
+        // BlockUI code for element blocking
+        message: ("<div class='lds-ellipsis'><div></div><div></div><div></div><div></div></div><h6 style = 'font-family:vazir;'>...در حال دریافت اطلاعات<h6>"),
+        css: {
+            color: 'var(--menu_color)',
+            border: 'none',
+            borderRadius: '5px',
+            borderColor: 'var(--menu_color)',
+            paddingTop: '5px'
+        }
+    });
+    startTime = new Date();
+}
+
+function stopBlockUI() {
+    $.unblockUI();
+    elapsed_time = endTimer();
+    toast_message = '<span class="text-secondary"> ' + 'زمان سپری شده: ' + '</span>' + '<span class="bold" style="color:var(--menu_color)">' + elapsed_time + ' ثانیه' + '</span>'
+}
+
+function endTimer() {
+    endTime = new Date();
+    var timeDiff = endTime - startTime; //in ms
+    // strip the ms
+    timeDiff /= 1000;
+
+    // get seconds
+    var seconds = Math.round(timeDiff);
+    console.log(seconds + " seconds");
+    return seconds;
 }

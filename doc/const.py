@@ -26,6 +26,13 @@ AllPanels = {
         }
     },
 
+    'full_adaption': {
+        'persian_name': 'انطباق‌سنجی',
+        'sub_panels': {
+            'full_adaption': 'انطباق‌سنجی',
+        }
+    },
+
     'approvals_adaptation': {
         'persian_name': 'انطباق‌سنجی مصوبات',
         'sub_panels': {
