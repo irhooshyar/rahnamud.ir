@@ -295,7 +295,14 @@ def getRegisteredUser(request):
     data = User.objects.all().filter(enable=1, is_active=0)
     return render(request, 'doc/admin_waiting_user.html', {'data': data})
 
+@allowed_users('full_adaption')
+def full_adaption(request):
+    keys = config.FULL_ADAPTION_CONFIGS.keys()
+    country_map = {}
+    for key in keys:
+        country_map[key] = config.FULL_ADAPTION_CONFIGS[key]["country_name"]
 
+    return render(request, 'doc/full_adaption.html', {'countries': country_map})
 def getRegisteredUser2(request):
     data = User.objects.all().filter(enable=1, is_active=0)
     return render(request, 'doc/admin_waiting_user2.html', {'data': data})
@@ -7326,15 +7333,6 @@ def full_adaption_search(request, country_code, search_name, curr_page):
         docs.append(newItem)
 
     return JsonResponse({"result": docs, "total_hits": total_hits})
-
-
-def full_adaption(request):
-    keys = config.FULL_ADAPTION_CONFIGS.keys()
-    country_map = {}
-    for key in keys:
-        country_map[key] = config.FULL_ADAPTION_CONFIGS[key]["country_name"]
-
-    return render(request, 'doc/full_adaption.html', {'countries': country_map})
 
 
 def get_full_adaption(request, main_document_id, source_country, destination_countries):
