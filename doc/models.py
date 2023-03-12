@@ -1378,28 +1378,20 @@ class ParagraphVector(models.Model):
 class ParagraphSemanticSimilarity(models.Model):
     id = models.AutoField(primary_key=True)
 
-    paragraph_id = models.CharField(null=True, max_length=500)
-    document_id = models.CharField(null=True, max_length=500)
-    similar_paragraphs = models.TextField(null=True)
+    first_paragraph = models.ForeignKey(DocumentParagraphs, on_delete=models.CASCADE, null=True)
+    second_paragraph = models.ForeignKey(DocumentParagraphs, on_delete=models.CASCADE, null=True)
+    score = models.FloatField(default=0)
     class Meta:
         app_label = 'doc'
 
 class DocumentSemanticSimilarity(models.Model):
     id = models.AutoField(primary_key=True)
 
-    document_id = models.CharField(null=True, max_length=500)
-    similar_documents = models.TextField(null=True)
+    first_document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True)
+    second_document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True)
+    score = models.FloatField(default=0)
     class Meta:
         app_label = 'doc'
-
-# class DocumentVector(models.Model):
-#     id = models.AutoField(primary_key=True)
-#
-#     document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True)
-#     vector_type = models.ForeignKey(ParagraphVectorType, on_delete=models.CASCADE, null=True)
-#     vector_value = models.JSONField(null=True)
-#     class Meta:
-#         app_label = 'doc'
 
 class DocumentActor(models.Model):
     Individual = 'منفرد'
