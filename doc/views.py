@@ -295,6 +295,7 @@ def getRegisteredUser(request):
     data = User.objects.all().filter(enable=1, is_active=0)
     return render(request, 'doc/admin_waiting_user.html', {'data': data})
 
+
 @allowed_users('full_adaption')
 def full_adaption(request):
     keys = config.FULL_ADAPTION_CONFIGS.keys()
@@ -303,6 +304,8 @@ def full_adaption(request):
         country_map[key] = config.FULL_ADAPTION_CONFIGS[key]["country_name"]
 
     return render(request, 'doc/full_adaption.html', {'countries': country_map})
+
+
 def getRegisteredUser2(request):
     data = User.objects.all().filter(enable=1, is_active=0)
     return render(request, 'doc/admin_waiting_user2.html', {'data': data})
@@ -9463,6 +9466,18 @@ def ingest_full_profile_analysis_to_elastic(request, id):
     folder_name = my_file[:dot_index]
 
     IngestFullProfileAnalysisToElastic.apply(folder_name, file)
+    return redirect('zip')
+
+
+def fill_semantic_similarity(request):
+    # file = get_object_or_404(Country, id=id)
+    from scripts.Persian import fill_semantic_similarity
+    # my_file = file.file.path
+    # my_file = str(os.path.basename(my_file))
+    # dot_index = my_file.rfind('.')
+    # folder_name = my_file[:dot_index]
+
+    fill_semantic_similarity.apply()
     return redirect('zip')
 
 
