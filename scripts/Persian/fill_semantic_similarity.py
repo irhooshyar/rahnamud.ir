@@ -156,12 +156,10 @@ def apply():
         best_doc_list = paragraph_similars_list[:20]
 
         for document_tuple in best_doc_list:
-            if not DocumentSemanticSimilarity.objects.filter(first_document_id=document_tuple[0],
-                                                             second_document_id=main_document_id).exists():
-                document_semantic_similarity_item = DocumentSemanticSimilarity(first_document_id=main_document_id,
-                                                                               second_document_id=document_tuple[0],
-                                                                               score=document_tuple[1])
-                document_semantic_similarity_create_list.append(document_semantic_similarity_item)
+            document_semantic_similarity_item = DocumentSemanticSimilarity(first_document_id=main_document_id,
+                                                                           second_document_id=document_tuple[0],
+                                                                           score=document_tuple[1])
+            document_semantic_similarity_create_list.append(document_semantic_similarity_item)
 
         if paragraph_semantic_similarity_create_list.__len__() > batch_size:
             ParagraphSemanticSimilarity.objects.bulk_create(paragraph_semantic_similarity_create_list)
