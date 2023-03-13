@@ -11,10 +11,11 @@ async function semantic_similarity() {
         for (let i = 0; i < response.length; i++) {
             const index = i + 1;
 
-            const curr_document_id = response[i]['_source']["document_id"]
-            const document_name = response[i]['_source']["name"]
-            const approval_date = response[i]['_source']["approval_date"]
-            const subject_name = response[i]['_source']["subject_name"] ?? "-"
+            const curr_document_id = response[i]["document_id"]
+            const document_name = response[i]["name"]
+            const approval_date = response[i]["approval_date"]
+            const subject_name = response[i]["subject_name"] ?? "-"
+            const score = (parseFloat(response[i]["score"]) * 1000).toFixed(2)
 
             const book_link = 'http://' + location.host + "/document_profile?id=" + curr_document_id
             const name = "<a target='_blank' href=" + book_link + ">" + document_name + "</a>"
@@ -27,6 +28,7 @@ async function semantic_similarity() {
                 "document_name": name,
                 "subject_name": subject_name,
                 "rahbari_date": approval_date,
+                "score": score,
                 "detail": detail,
             }
 
@@ -78,6 +80,13 @@ async function semantic_similarity() {
                     "width": "10%"
                 }
             },
+                {
+                    "name": "score",
+                    "title": "امتیاز شباهت",
+                    "style": {
+                        "width": "10%"
+                    }
+                },
                 {
                     "name": "detail",
                     "title": "جزییات",

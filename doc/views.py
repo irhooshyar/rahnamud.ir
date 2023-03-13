@@ -7510,273 +7510,176 @@ def full_adaption_similarity_detail(request, main_document_id, selected_document
 
 
 def paragraph_approach_similarity(request, main_document_id):
-    country_obj = Document.objects.get(id=main_document_id).country_id
-    index_name = standardIndexName(country_obj, DocumentParagraphs.__name__)
-
-    fetch_document_paragraph_query = {
-        "bool": {
-            "must": [
-                {"term": {"document_id": main_document_id}},
-                {"range": {"attachment.content_length": {
-                    "gt": 150
-                }}}
-            ]
+    similar_docs = DocumentSemanticSimilarity.objects.filter(first_document__id=main_document_id).order_by(
+        '-score')
+    result = []
+    for doc in similar_docs:
+        row = {
+            "document_id": doc.second_document.id,
+            "name": doc.second_document.name,
+            "approval_date": doc.second_document.approval_date,
+            "subject_name": doc.second_document.subject_name,
+            "score": doc.score,
         }
-    }
-    main_document_response = client.search(index=index_name,
-                                           _source_includes=['attachment.content'],
-                                           request_timeout=40,
-                                           query=fetch_document_paragraph_query,
-                                           size=bucket_size,
-                                           )
-    main_document_paragraphs = main_document_response['hits']['hits']
-    main_doc_paragraphs_count = len(main_document_paragraphs)
+        result.append(row)
 
-    # -----------------------------------------------------------------
-    similar_document_groupBy_agg = {
-        "document_agg": {
-            "terms": {
-                "field": "document_id",
-                "size": 2200
-            }
-        },
-    }
-    all_document_paragraph_query = {
-        "bool": {
-            "must": [
-                {"range": {"attachment.content_length": {
-                    "gt": 150
-                }}}
-            ]
+    return JsonResponse({"result": result})
+
+
+def paragraph_approach_similarity_detail(request, source_doc_id, destination_doc_id):
+    similar_paragraphs = ParagraphSemanticSimilarity.objects.filter(
+        Q(first_paragraph__document_id=source_doc_id, second_paragraph__document_id=destination_doc_id) |
+        Q(first_paragraph__document_id=destination_doc_id, second_paragraph__document_id=source_doc_id)).order_by(
+        "-score")
+
+    seen_paragraph = []
+    result = []
+    for paragraph in similar_paragraphs:
+        source_paragraph_id = 0
+        source_paragraph_text = ""
+        source_document_name = ""
+        destination_document_name = ""
+
+        if paragraph.first_paragraph.document_id == source_doc_id:
+            if paragraph.first_paragraph.paragraph_id in seen_paragraph:
+                continue
+            source_paragraph_id = paragraph.first_paragraph.paragraph_id
+            source_paragraph_text = paragraph.first_paragraph.text
+            source_document_name = paragraph.first_paragraph.document_id.name
+            destination_document_name = paragraph.second_paragraph.document_id.name
+
+        elif paragraph.second_paragraph.document_id == source_doc_id:
+            if paragraph.second_paragraph.paragraph_id in seen_paragraph:
+                continue
+            source_paragraph_id = paragraph.second_paragraph.paragraph_id
+            source_paragraph_text = paragraph.second_paragraph.text
+            source_document_name = paragraph.second_paragraph.document_id.name
+            destination_document_name = paragraph.first_paragraph.document_id.name
+
+        seen_paragraph.append(source_paragraph_id)
+
+        destination_para = []
+        for similar in similar_paragraphs:
+            if similar.first_paragraph.paragraph_id == source_paragraph_id:
+                new_row = {
+                    "score": similar.score,
+                    "dest_para": similar.second_paragraph.text
+                }
+                destination_para.append(new_row)
+            elif similar.second_paragraph.paragraph_id == source_paragraph_id:
+                new_row = {
+                    "score": similar.score,
+                    "dest_para": similar.first_paragraph.text
+                }
+                destination_para.append(new_row)
+
+        row = {
+            "src_para": source_paragraph_text,
+            "src_doc_id": source_doc_id,
+            "src_doc_name": source_document_name,
+            "dest_doc_id": destination_doc_id,
+            "dest_doc_name": destination_document_name,
+            "dest_paras": destination_para,
         }
-    }
-    all_document_response = client.search(index=index_name,
-                                          _source_includes=['attachment.content'],
-                                          request_timeout=40,
-                                          query=all_document_paragraph_query,
-                                          aggregations=similar_document_groupBy_agg,
-                                          size=2200
-                                          )
-    all_document_aggregations = all_document_response['aggregations']['document_agg']['buckets']
-    all_document_dict = {item['key']: item['doc_count'] for item in all_document_aggregations}
+        result.append(row)
 
-    # -------------------------------------------------------------------
-    paragraph_similars = {}
-    # similar_document_query = {
+    return JsonResponse({"result": result})
+    # country_obj = Document.objects.get(id=source_doc_id).country_id
+    # index_name = standardIndexName(country_obj, DocumentParagraphs.__name__)
+    #
+    # fetch_document_paragraph_query = {
     #     "bool": {
-    #         "must": [],
-    #         "filter": [
+    #         "must": [
+    #             {"term": {"document_id": source_doc_id}},
     #             {"range": {"attachment.content_length": {
     #                 "gt": 150
     #             }}}
     #         ]
     #     }
     # }
-
-    vector_index_name = standardIndexName(country_obj, DocumentParagraphs.__name__ + "_vectors")
-
-    for paragraph in main_document_paragraphs:
-        vector_query = {
-            'term': {
-                'paragraph_id': paragraph['_id']
-            }
-        }
-        vector_response = client.search(index=vector_index_name,
-                                        _source_includes=['wikitriplet_vector'],
-                                        request_timeout=40,
-                                        query=vector_query
-                                        )
-
-        para_vector = list(vector_response['hits']['hits'][0]['_source']['wikitriplet_vector'])
-
-        knn_qeury = {
-            "script_score": {
-                "query": {
-                    "bool": {
-                        "must_not": {
-                            "term": {
-                                "document_id": main_document_id
-                            }
-                        },
-                        "filter": [
-                            {"range": {"attachment.content_length": {
-                                "gt": 150
-                            }}}
-                        ]
-                    }
-                },
-                "script": {
-                    "source": "cosineSimilarity(params.query_vector, 'wikitriplet_vector') + 1.0",
-                    "params": {
-                        "query_vector": para_vector
-                    }
-                }
-            }
-        }
-
-        # search and get result
-        similarity_response = client.search(index=vector_index_name,
-                                            _source_includes=['document_id', 'attachment.content'],
-                                            request_timeout=40,
-                                            query=knn_qeury,
-                                            # aggregations=similar_document_groupBy_agg,
-                                            size=100
-                                            )
-
-        similar_paragraphs = similarity_response['hits']['hits']
-
-        # vector_response = client.search(index=vector_index_name,
-        #                                 _source_includes=['wikitriplet_vector'],
-        #                                 request_timeout=40,
-        #                                 query=similar_document_query,
-        #                                 aggregations=similar_document_groupBy_agg,
-        #                                 size=2200
-        #                                 )
-        # paragraph_aggregations = similarity_response['aggregations']['document_agg']['buckets']
-        # paragraph_document_dict = {item['key']: item['doc_count'] for item in paragraph_aggregations}
-        for item in similar_paragraphs:
-            key = item['_source']['document_id']
-            try:
-                paragraph_similars[key] += item["_score"]
-            except:
-                paragraph_similars[key] = item["_score"]
-
-    # normalize -----------------
-    for item in paragraph_similars:
-        try:
-            key = item
-            all_paragraphs_count = all_document_dict[key]
-            paragraph_similars[key] = paragraph_similars[key] / (all_paragraphs_count * main_doc_paragraphs_count)
-        except:
-            print("error: ", key)
-
-    paragraph_similars_list = [(item, paragraph_similars[item])
-                               for item in paragraph_similars]
-    paragraph_similars_list.sort(key=get_document_count, reverse=True)
-    best_doc_list = paragraph_similars_list[:20]
-    best_doc_ids = [item[0] for item in best_doc_list]
-
-    get_document_information_query = {
-        "terms": {
-            "document_id": best_doc_ids
-        }
-    }
-    document_index_name = standardIndexName(country_obj, Document.__name__)
-    get_document_information_response = client.search(index=document_index_name,
-                                                      _source_includes=['name', 'subject_name', 'document_id',
-                                                                        'approval_date'],
-                                                      request_timeout=40,
-                                                      query=get_document_information_query,
-                                                      size=bucket_size,
-                                                      )
-
-    result_document_information_response = get_document_information_response['hits']['hits']
-    return JsonResponse({"result": result_document_information_response})
-
-
-def get_document_count(item):
-    return item[1]
-
-
-def paragraph_approach_similarity_detail(request, source_doc_id, destination_doc_id):
-    country_obj = Document.objects.get(id=source_doc_id).country_id
-    index_name = standardIndexName(country_obj, DocumentParagraphs.__name__)
-
-    fetch_document_paragraph_query = {
-        "bool": {
-            "must": [
-                {"term": {"document_id": source_doc_id}},
-                {"range": {"attachment.content_length": {
-                    "gt": 150
-                }}}
-            ]
-        }
-    }
-    main_document_response = client.search(index=index_name,
-                                           _source_includes=['attachment.content', 'document_name'],
-                                           request_timeout=40,
-                                           query=fetch_document_paragraph_query,
-                                           size=bucket_size,
-                                           )
-    main_document_paragraphs = main_document_response['hits']['hits']
-    main_doc_name = main_document_paragraphs[0]["_source"]["document_name"]
-
-    # -----------------------------------------------------------------
-
-    vector_index_name = standardIndexName(country_obj, DocumentParagraphs.__name__ + "_vectors")
-
-    result = []
-    for paragraph in main_document_paragraphs:
-        vector_query = {
-            'term': {
-                'paragraph_id': paragraph['_id']
-            }
-        }
-        vector_response = client.search(index=vector_index_name,
-                                        _source_includes=['wikitriplet_vector'],
-                                        request_timeout=40,
-                                        query=vector_query
-                                        )
-
-        para_vector = list(vector_response['hits']['hits'][0]['_source']['wikitriplet_vector'])
-
-        knn_qeury = {
-            "script_score": {
-                "query": {
-                    "bool": {
-                        "must_not": {
-                            "term": {
-                                "document_id": source_doc_id
-                            }
-                        },
-                        "filter": [
-                            {"range": {"attachment.content_length": {
-                                "gt": 150
-                            }}}
-                        ]
-                    }
-                },
-                "script": {
-                    "source": "cosineSimilarity(params.query_vector, 'wikitriplet_vector') + 1.0",
-                    "params": {
-                        "query_vector": para_vector
-                    }
-                }
-            }
-        }
-
-        # search and get result
-        similarity_response = client.search(index=vector_index_name,
-                                            _source_includes=['document_id', 'attachment.content', 'document_name'],
-                                            request_timeout=40,
-                                            query=knn_qeury,
-                                            size=100
-                                            )
-        destination_document_name = ""
-        similar_paragraphs = similarity_response['hits']['hits']
-        destination_paras = []
-        for item in similar_paragraphs:
-            key = item['_source']['document_id']
-            if key == destination_doc_id:
-                destination = {
-                    "dest_para": item['_source']["attachment"]["content"],
-                    "score": item["_score"] * 10,
-                }
-                destination_document_name = item["_source"]["document_name"]
-                destination_paras.append(destination)
-
-        if len(destination_paras) != 0:
-            row = {
-                "src_para": paragraph["_source"]["attachment"]["content"],
-                "src_doc_id": paragraph['_id'],
-                "src_doc_name": main_doc_name,
-                "dest_doc_id": destination_doc_id,
-                "dest_doc_name": destination_document_name,
-                "dest_paras": destination_paras,
-            }
-            result.append(row)
-
-    return JsonResponse({"result": result})
+    # main_document_response = client.search(index=index_name,
+    #                                        _source_includes=['attachment.content', 'document_name'],
+    #                                        request_timeout=40,
+    #                                        query=fetch_document_paragraph_query,
+    #                                        size=bucket_size,
+    #                                        )
+    # main_document_paragraphs = main_document_response['hits']['hits']
+    # main_doc_name = main_document_paragraphs[0]["_source"]["document_name"]
+    #
+    # # -----------------------------------------------------------------
+    #
+    # vector_index_name = standardIndexName(country_obj, DocumentParagraphs.__name__ + "_vectors")
+    #
+    # result = []
+    # for paragraph in main_document_paragraphs:
+    #     vector_query = {
+    #         'term': {
+    #             'paragraph_id': paragraph['_id']
+    #         }
+    #     }
+    #     vector_response = client.search(index=vector_index_name,
+    #                                     _source_includes=['wikitriplet_vector'],
+    #                                     request_timeout=40,
+    #                                     query=vector_query
+    #                                     )
+    #
+    #     para_vector = list(vector_response['hits']['hits'][0]['_source']['wikitriplet_vector'])
+    #
+    #     knn_qeury = {
+    #         "script_score": {
+    #             "query": {
+    #                 "bool": {
+    #                     "must_not": {
+    #                         "term": {
+    #                             "document_id": source_doc_id
+    #                         }
+    #                     },
+    #                     "filter": [
+    #                         {"range": {"attachment.content_length": {
+    #                             "gt": 150
+    #                         }}}
+    #                     ]
+    #                 }
+    #             },
+    #             "script": {
+    #                 "source": "cosineSimilarity(params.query_vector, 'wikitriplet_vector') + 1.0",
+    #                 "params": {
+    #                     "query_vector": para_vector
+    #                 }
+    #             }
+    #         }
+    #     }
+    #
+    #     # search and get result
+    #     similarity_response = client.search(index=vector_index_name,
+    #                                         _source_includes=['document_id', 'attachment.content', 'document_name'],
+    #                                         request_timeout=40,
+    #                                         query=knn_qeury,
+    #                                         size=100
+    #                                         )
+    #     destination_document_name = ""
+    #     similar_paragraphs = similarity_response['hits']['hits']
+    #     destination_paras = []
+    #     for item in similar_paragraphs:
+    #         key = item['_source']['document_id']
+    #         if key == destination_doc_id:
+    #             destination = {
+    #                 "dest_para": item['_source']["attachment"]["content"],
+    #                 "score": item["_score"] * 10,
+    #             }
+    #             destination_document_name = item["_source"]["document_name"]
+    #             destination_paras.append(destination)
+    #
+    #     if len(destination_paras) != 0:
+    #         row = {
+    #             "src_para": paragraph["_source"]["attachment"]["content"],
+    #             "src_doc_id": paragraph['_id'],
+    #             "src_doc_name": main_doc_name,
+    #             "dest_doc_id": destination_doc_id,
+    #             "dest_doc_name": destination_document_name,
+    #             "dest_paras": destination_paras,
+    #         }
+    #         result.append(row)
 
 
 def GetDocActorParagraphs_Column_Modal(request, document_id, actor_name, role_name):
