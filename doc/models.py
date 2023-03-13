@@ -1377,18 +1377,16 @@ class ParagraphVector(models.Model):
 
 class ParagraphSemanticSimilarity(models.Model):
     id = models.AutoField(primary_key=True)
-
-    first_paragraph = models.ForeignKey(DocumentParagraphs, on_delete=models.CASCADE, null=True)
-    second_paragraph = models.ForeignKey(DocumentParagraphs, on_delete=models.CASCADE, null=True)
+    first_paragraph = models.ForeignKey(DocumentParagraphs, on_delete=models.CASCADE, null=True, related_name="first_paragraph")
+    second_paragraph = models.ForeignKey(DocumentParagraphs, on_delete=models.CASCADE, null=True, related_name="second_paragraph")
     score = models.FloatField(default=0)
     class Meta:
         app_label = 'doc'
 
 class DocumentSemanticSimilarity(models.Model):
     id = models.AutoField(primary_key=True)
-
-    first_document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True)
-    second_document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True)
+    first_document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, related_name="first_document")
+    second_document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, related_name="second_document")
     score = models.FloatField(default=0)
     class Meta:
         app_label = 'doc'
