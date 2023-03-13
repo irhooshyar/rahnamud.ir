@@ -44,6 +44,8 @@ def apply():
     paragraph_semantic_similarity_create_list = []
     document_semantic_similarity_create_list = []
 
+    added_paragraph_list = []
+
     counter = 0
 
     for document_item in all_document_aggregations:
@@ -134,13 +136,16 @@ def apply():
                 except:
                     document_scores_sum[key] = score
 
-                if not ParagraphSemanticSimilarity.objects.filter(first_paragraph__id=key,
-                                                                  second_paragraph__id=paragraph["_id"]).exists():
+                added_str = str(paragraph["_id"]) + "," + str(key)
+                reverse_added_str = str(key) + "," + str(paragraph["_id"])
+
+                if not (added_str in added_paragraph_list or reverse_added_str in added_paragraph_list):
                     paragraph_semantic_similarity_item = ParagraphSemanticSimilarity(
                         first_paragraph_id=paragraph["_id"],
                         second_paragraph_id=key,
                         score=score)
                     paragraph_semantic_similarity_create_list.append(paragraph_semantic_similarity_item)
+                    added_paragraph_list.append(added_str)
         # normalize -----------------
         for item in document_scores_sum:
             try:
@@ -177,18 +182,19 @@ def apply():
 
             document_semantic_similarity_create_list.clear()
 
-    ParagraphSemanticSimilarity.objects.bulk_create(paragraph_semantic_similarity_create_list)
-    print('====================\n')
-    print(f'{len(paragraph_semantic_similarity_create_list)} paragraph similarity created.')
-    print('====================\n')
+    if paragraph_semantic_similarity_create_list.__len__() != 0:
+        ParagraphSemanticSimilarity.objects.bulk_create(paragraph_semantic_similarity_create_list)
+        print('====================\n')
+        print(f'{len(paragraph_semantic_similarity_create_list)} paragraph similarity created.')
+        print('====================\n')
+        paragraph_semantic_similarity_create_list.clear()
 
-    DocumentSemanticSimilarity.objects.bulk_create(document_semantic_similarity_create_list)
-    print('====================\n')
-    print(f'{len(document_semantic_similarity_create_list)} documents similarity created.')
-    print('====================\n')
-
-    paragraph_semantic_similarity_create_list.clear()
-    document_semantic_similarity_create_list.clear()
+    if document_semantic_similarity_create_list.__len__() != 0:
+        DocumentSemanticSimilarity.objects.bulk_create(document_semantic_similarity_create_list)
+        print('====================\n')
+        print(f'{len(document_semantic_similarity_create_list)} documents similarity created.')
+        print('====================\n')
+        document_semantic_similarity_create_list.clear()
 
     print("...finished")
 
